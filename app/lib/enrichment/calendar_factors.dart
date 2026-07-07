@@ -1,5 +1,5 @@
-/// Trivial local calendar factors (SPEC §5.3): day-of-week, meteorological season
-/// (hemisphere-aware), and time-of-day bucket. No network.
+// Trivial local calendar factors (SPEC §5.3): day-of-week, meteorological season
+// (hemisphere-aware), and time-of-day bucket. No network.
 
 /// Season names, matching the private app's analytics vocabulary.
 const List<String> kSeasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
