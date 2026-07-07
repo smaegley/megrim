@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+._*
+
+# Secrets / signing (never commit)
+*.jks
+*.keystore
+key.properties
+android/key.properties
+*.env
+
+# Flutter/Dart build artifacts (app/ has its own .gitignore too)
+build/
+**/build/
+app/.dart_tool/
+.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+.gradle/
+
+# IDE
+*.iml
+.idea/
+.vscode/

@@ -1,0 +1,21 @@
+Megrim is a privacy-first, offline-first migraine diary. It automatically enriches each logged
+migraine with weather, barometric-pressure, and astronomical context — computed and stored
+entirely on your device — and surfaces personal descriptive analytics plus odds-ratio "suspected
+factors" correlations.
+
+Why Megrim:
+
+* No accounts, no server, no telemetry. The only network traffic is to Open-Meteo.com to fetch
+  weather for the approximate (~1 km rounded) location and date of entries you create.
+* Your data stays yours: on-device storage only, with full export and import (JSON and CSV).
+* Automatic enrichment: weather, 24h/48h pressure change, sunrise/sunset, daylight hours, moon
+  phase — no manual entry.
+* Real personal analytics: trends by day-of-week, time-of-day, season, month, pressure change,
+  and moon phase, plus a "suspected factors" card using odds ratios over your own log.
+* Free and open source (GPL-3.0-or-later).
+
+Megrim is a personal diary and is NOT a medical device. It does not diagnose, treat, cure, or
+prevent any condition. "Suspected factors" are statistical associations in your own log —
+association is not causation. Always consult a qualified healthcare professional.
+
+Weather data by Open-Meteo.com.

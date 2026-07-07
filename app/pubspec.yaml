@@ -1,0 +1,58 @@
+name: megrim
+description: "Privacy-first, offline-first migraine diary with on-device weather, pressure and astronomical enrichment."
+publish_to: 'none'
+
+# versionName / versionCode. Tag = release. versionCode must increase monotonically (SPEC §8).
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.1
+
+# Dependency policy (SPEC §2.1): FOSS-licensed pub.dev packages only. No Firebase, no Play
+# Services, no proprietary SDKs. CI fails if a banned package enters the graph.
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # Storage
+  drift: ^2.22.0
+  sqlite3_flutter_libs: ^0.5.0
+  path_provider: ^2.1.0
+  path: ^1.9.0
+  shared_preferences: ^2.3.0
+
+  # Utilities
+  uuid: ^4.5.0
+  http: ^1.2.0
+  intl: ^0.19.0
+  provider: ^6.1.0
+
+  # UI / platform
+  fl_chart: ^0.70.0
+  url_launcher: ^6.3.0
+  # NOTE (SPEC §2.1): geolocator is intentionally NOT a dependency. Its Android implementation
+  # links com.google.android.gms:play-services-location, which would break the day-one F-Droid
+  # "no Play Services in the dependency graph" constraint. GPS auto-capture is deferred; enrichment
+  # uses the home location set in onboarding (GPS is optional convenience only — the app must be
+  # fully functional without it). See lib/services/location_source.dart for the GMS-free seam.
+  # Export via system share sheet; import via file picker. Both FOSS, GMS-free.
+  share_plus: ^10.0.0
+  file_picker: ^8.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.0
+  drift_dev: ^2.22.0
+
+# The newest flutter_plugin_android_lifecycle (2.0.35, pulled transitively) sets an AAR
+# `minCompileSdk` of 36, which forces every plugin module — and file_picker's metadata check —
+# to compile against API 36 and breaks the build under Flutter 3.44.1. Pin to a version that
+# targets API 34; the plugin is pure Android glue so the patch downgrade is behavior-safe.
+dependency_overrides:
+  flutter_plugin_android_lifecycle: 2.0.24
+
+flutter:
+  uses-material-design: true

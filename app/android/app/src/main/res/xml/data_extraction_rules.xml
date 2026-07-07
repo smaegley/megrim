@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- API 31+ backup rules. Megrim keeps everything on-device; cloud backup to the user's OWN
+     Google account (device-encrypted, controlled by the user in Android settings) is allowed so
+     data survives a device migration. Users who object can disable OS backups; manual
+     export/import remains the canonical path. See docs/PRIVACY.md. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="database" path="." />
+        <include domain="sharedpref" path="." />
+        <include domain="file" path="." />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="database" path="." />
+        <include domain="sharedpref" path="." />
+        <include domain="file" path="." />
+    </device-transfer>
+</data-extraction-rules>

@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.1'
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: flutter analyze
+      - run: flutter test
+
+  dependency-ban:
+    # F-Droid constraint (SPEC §2.1): fail if any proprietary Google dependency
+    # shows up in the merged Android dependency graph.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.1'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Scan pub dependencies for banned packages
+        run: |
+          set -e
+          if grep -qiE 'firebase|com\.google\.android\.gms|crashlytics|google_mobile_ads' pubspec.lock; then
+            echo "::error::Banned proprietary dependency found in pubspec.lock"
+            grep -inE 'firebase|com\.google\.android\.gms|crashlytics|google_mobile_ads' pubspec.lock
+            exit 1
+          fi
+          echo "No banned dependencies found."
+
+  build-apk:
+    needs: [analyze-and-test, dependency-ban]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.1'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      # Unsigned debug-config build on CI; the release workflow signs on tag.
+      - run: flutter build apk --debug
