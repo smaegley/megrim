@@ -7,6 +7,7 @@ import '../analytics/pressure_baseline.dart';
 import '../database/database.dart';
 import '../enrichment/enrichment_service.dart';
 import '../models/home_location.dart';
+import '../models/json_fields.dart';
 import '../services/export_service.dart';
 import '../services/import_service.dart';
 
@@ -115,6 +116,7 @@ class MegrimRepository {
               timeOfDayBucket: dById[e.id]?.timeOfDayBucket,
               moonPhase: dById[e.id]?.moonPhase,
               pressureDelta24h: dById[e.id]?.pressureDelta24h,
+              triggers: decodeStringList(e.triggersSuspected),
             ))
         .toList();
     return computeDashboard(stats);

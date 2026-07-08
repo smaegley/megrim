@@ -18,6 +18,9 @@ class EventStat {
   final String? moonPhase;
   final double? pressureDelta24h;
 
+  /// Self-reported triggers tagged on this event (descriptive only — not correlated).
+  final List<String> triggers;
+
   const EventStat({
     required this.startedAt,
     this.endedAt,
@@ -27,6 +30,7 @@ class EventStat {
     this.timeOfDayBucket,
     this.moonPhase,
     this.pressureDelta24h,
+    this.triggers = const [],
   });
 }
 
@@ -80,6 +84,11 @@ class DashboardResult {
   final List<LabeledCount> bySeason;
   final List<LabeledCount> pressureDelta;
   final List<LabeledCount> byMoonPhase;
+
+  /// Frequency of self-reported triggers, most-tagged first. Descriptive only — NOT a correlation
+  /// (there is no non-migraine-day baseline for self-reported triggers). See SPEC §6.2.
+  final List<LabeledCount> triggerFrequency;
+
   final List<CalendarEntry> calendar;
 
   const DashboardResult({
@@ -91,6 +100,7 @@ class DashboardResult {
     this.bySeason = const [],
     this.pressureDelta = const [],
     this.byMoonPhase = const [],
+    this.triggerFrequency = const [],
     this.calendar = const [],
   });
 
@@ -201,6 +211,21 @@ DashboardResult computeDashboard(List<EventStat> events) {
       .map((b) => LabeledCount(b, pressureCounts[b] ?? 0))
       .toList();
 
+  // Trigger frequency: count each trigger once per event it appears on, most-tagged first.
+  final triggerCounts = <String, int>{};
+  for (final e in sorted) {
+    for (final t in e.triggers.toSet()) {
+      triggerCounts[t] = (triggerCounts[t] ?? 0) + 1;
+    }
+  }
+  final triggerFrequency = triggerCounts.entries
+      .map((e) => LabeledCount(e.key, e.value))
+      .toList()
+    ..sort((a, b) {
+      final byCount = b.count.compareTo(a.count);
+      return byCount != 0 ? byCount : a.label.compareTo(b.label);
+    });
+
   final calendar = sorted
       .map((e) => CalendarEntry(_localDate(e.startedAt), e.severity))
       .toList();
@@ -214,6 +239,7 @@ DashboardResult computeDashboard(List<EventStat> events) {
     bySeason: bySeason,
     pressureDelta: pressureDelta,
     byMoonPhase: byMoon,
+    triggerFrequency: triggerFrequency,
     calendar: calendar,
   );
 }

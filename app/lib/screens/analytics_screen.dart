@@ -84,6 +84,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 _barCard('By moon phase', dash.byMoonPhase),
                 const SizedBox(height: 16),
                 _correlationsCard(corr),
+                const SizedBox(height: 16),
+                _triggerFrequencyCard(dash),
                 const SizedBox(height: 24),
                 Center(
                   child: Text(kWeatherAttribution,
@@ -236,6 +238,69 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 child: Text('• $c',
                     style: Theme.of(context).textTheme.bodySmall),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _triggerFrequencyCard(DashboardResult dash) {
+    final triggers = dash.triggerFrequency;
+    if (triggers.isEmpty) return const SizedBox.shrink();
+    final total = dash.summary.totalEvents;
+    final maxCount = triggers.first.count;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Most-tagged triggers',
+                style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(
+              'How often you tagged each trigger, across $total migraines.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            for (final t in triggers)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(child: Text(t.label)),
+                        Text('${t.count} · ${(t.count / total * 100).round()}%'),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: maxCount == 0 ? 0 : t.count / maxCount,
+                        minHeight: 6,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Colors.tealAccent,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            const Divider(height: 24),
+            Text(
+              'This is a frequency count of what you noted — not a correlation. '
+              'Self-reported triggers are only recorded on migraine days, so there '
+              'is no non-migraine baseline to test them against. Treat these as '
+              'personal notes, not evidence of cause.',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(fontStyle: FontStyle.italic),
+            ),
           ],
         ),
       ),

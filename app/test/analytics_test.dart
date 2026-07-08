@@ -161,5 +161,22 @@ void main() {
       expect(r.byTimeOfDay.map((e) => e.label).toList(), kTimeOfDayOrder);
       expect(r.pressureDelta.map((e) => e.label).toList(), kPressureBuckets);
     });
+
+    test('trigger frequency counts once per event, most-tagged first', () {
+      final r = computeDashboard([
+        EventStat(startedAt: DateTime.utc(2024, 1, 1), triggers: const [
+          'Stress',
+          'Caffeine',
+          'Stress', // duplicate on one event counts once
+        ]),
+        EventStat(startedAt: DateTime.utc(2024, 1, 2), triggers: const ['Stress']),
+        EventStat(startedAt: DateTime.utc(2024, 1, 3), triggers: const ['Caffeine']),
+        EventStat(startedAt: DateTime.utc(2024, 1, 4), triggers: const ['Stress']),
+      ]);
+      expect(r.triggerFrequency.first.label, 'Stress');
+      expect(r.triggerFrequency.first.count, 3); // 3 events, not 4 tags
+      expect(r.triggerFrequency[1].label, 'Caffeine');
+      expect(r.triggerFrequency[1].count, 2);
+    });
   });
 }
