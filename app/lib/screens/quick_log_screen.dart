@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../analytics/dashboard.dart';
 import '../database/database.dart';
+import '../legal.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/days_since_card.dart';
 import 'event_detail_screen.dart';
@@ -116,7 +117,31 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Megrim')),
+      appBar: AppBar(
+        titleSpacing: 16,
+        title: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(9),
+              child: Image.asset('assets/logo.png', width: 40, height: 40),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Megrim',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+                Text(kAppSubtitle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.white70)),
+              ],
+            ),
+          ],
+        ),
+      ),
       body: Center(
         child: _active == null ? _idleView() : _activeView(),
       ),
