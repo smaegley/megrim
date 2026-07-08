@@ -1,4 +1,4 @@
-import '../enrichment/astro.dart' show moonPhaseName;
+import '../enrichment/astro.dart' show moonPhaseName, sunTimes;
 import '../enrichment/calendar_factors.dart' show seasonForMonth;
 
 /// Port of the private app's `correlations.py` (SPEC §6.2) — "Top Suspected Factors".
@@ -32,6 +32,20 @@ const List<String> kMoonOrder = [
 const List<String> kPressureBuckets = [
   '< -10', '-10 to -5', '-5 to 0', '0 to 5', '5 to 10', '> 10' //
 ];
+
+/// Daylight-length buckets (hours of daylight). Distinct from season: e.g. spring and autumn share
+/// daylight lengths, so this isolates photoperiod (the seasonal-affective / SAD hypothesis).
+const List<String> kDaylightBuckets = [
+  '< 9.5 h', '9.5–11 h', '11–12.5 h', '12.5–14 h', '≥ 14 h' //
+];
+
+String daylightBucket(double hours) {
+  if (hours < 9.5) return '< 9.5 h';
+  if (hours < 11) return '9.5–11 h';
+  if (hours < 12.5) return '11–12.5 h';
+  if (hours < 14) return '12.5–14 h';
+  return '≥ 14 h';
+}
 
 /// Minimum events before correlations are offered.
 const int kMinEventsForCorrelations = 5;
@@ -150,6 +164,7 @@ CorrelationResult computeCorrelations({
   List<double> migrainePressureDeltas = const [],
   Map<String, int>? pressureBaseline,
   double homeLat = 40.0,
+  double homeLon = 0.0,
 }) {
   if (eventStarts.length < kMinEventsForCorrelations) {
     return CorrelationResult(
@@ -175,6 +190,7 @@ CorrelationResult computeCorrelations({
   final seasonBase = <String, int>{}, seasonMig = <String, int>{};
   final monthBase = <String, int>{}, monthMig = <String, int>{};
   final moonBase = <String, int>{}, moonMig = <String, int>{};
+  final daylightBase = <String, int>{}, daylightMig = <String, int>{};
 
   for (var cur = start;
       !cur.isAfter(end);
@@ -182,19 +198,26 @@ CorrelationResult computeCorrelations({
     final dow = kDowLabels[cur.weekday - 1];
     final season = seasonForMonth(cur.month, homeLat);
     final month = kMonthLabels[cur.month - 1];
-    // Moon phase computed at local noon for stability near midnight boundaries.
-    final moon = moonPhaseName(DateTime.utc(cur.year, cur.month, cur.day, 12));
+    // Moon phase and daylight computed at (local) noon for stability near midnight boundaries.
+    final noon = DateTime.utc(cur.year, cur.month, cur.day, 12);
+    final moon = moonPhaseName(noon);
+    // Daylight length depends on latitude and date (not longitude), so it is well-defined for every
+    // day in range — the same analytic-baseline treatment used for the calendar/moon factors.
+    final daylight =
+        daylightBucket(sunTimes(noon, homeLat, homeLon).daylightHours);
 
     dowBase[dow] = (dowBase[dow] ?? 0) + 1;
     seasonBase[season] = (seasonBase[season] ?? 0) + 1;
     monthBase[month] = (monthBase[month] ?? 0) + 1;
     moonBase[moon] = (moonBase[moon] ?? 0) + 1;
+    daylightBase[daylight] = (daylightBase[daylight] ?? 0) + 1;
 
     if (migraineDaySet.contains(cur)) {
       dowMig[dow] = (dowMig[dow] ?? 0) + 1;
       seasonMig[season] = (seasonMig[season] ?? 0) + 1;
       monthMig[month] = (monthMig[month] ?? 0) + 1;
       moonMig[moon] = (moonMig[moon] ?? 0) + 1;
+      daylightMig[daylight] = (daylightMig[daylight] ?? 0) + 1;
     }
   }
 
@@ -207,6 +230,8 @@ CorrelationResult computeCorrelations({
         factorRows(kMonthLabels, monthMig, monthBase, totalMigraine, totalDays),
     'Moon phase':
         factorRows(kMoonOrder, moonMig, moonBase, totalMigraine, totalDays),
+    'Daylight hours': factorRows(
+        kDaylightBuckets, daylightMig, daylightBase, totalMigraine, totalDays),
   };
 
   if (pressureBaseline != null && pressureBaseline.isNotEmpty) {

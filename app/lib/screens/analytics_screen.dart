@@ -129,6 +129,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
                 const SizedBox(height: 16),
                 _collapsibleChart(
+                  title: 'By daylight hours',
+                  data: dash.byDaylight,
+                  child: _barChart(dash.byDaylight),
+                ),
+                const SizedBox(height: 16),
+                _collapsibleChart(
                   title: 'Pressure change (24h)',
                   data: dash.pressureDelta,
                   child: _barChart(dash.pressureDelta),

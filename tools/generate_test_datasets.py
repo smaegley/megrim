@@ -84,11 +84,26 @@ def tod_bucket(hour):
     return "night"
 
 
-def daylight_hours(day_of_year, lat=39.96):
-    decl = 23.44 * math.cos(math.radians(360 / 365 * (day_of_year + 10)))
-    lat_r, decl_r = math.radians(lat), math.radians(decl)
-    x = max(-1, min(1, -math.tan(lat_r) * math.tan(decl_r)))
-    return round(2 * math.degrees(math.acos(x)) / 15, 1)
+def daylight_hours(d, lat=39.96):
+    """Hours of daylight for date d at latitude lat — the SAME NOAA math as the app (astro.dart),
+    so the stored value matches what the correlation engine recomputes. Longitude cancels out of the
+    day length, so it is omitted."""
+    doy = d.timetuple().tm_yday
+    diy = 366 if (d.year % 4 == 0 and (d.year % 100 != 0 or d.year % 400 == 0)) else 365
+    g = (2 * math.pi / diy) * (doy - 1 + 0.5)
+    decl = (0.006918 - 0.399912 * math.cos(g) + 0.070257 * math.sin(g)
+            - 0.006758 * math.cos(2 * g) + 0.000907 * math.sin(2 * g)
+            - 0.002697 * math.cos(3 * g) + 0.00148 * math.sin(3 * g))
+    lat_r = math.radians(lat)
+    zenith = math.radians(90.833)
+    cos_ha = (math.cos(zenith) / (math.cos(lat_r) * math.cos(decl))
+              - math.tan(lat_r) * math.tan(decl))
+    if cos_ha > 1:
+        return 0.0
+    if cos_ha < -1:
+        return 24.0
+    ha_deg = math.degrees(math.acos(cos_ha))
+    return round(8 * ha_deg / 60.0, 1)
 
 
 def is_full_moon(d):
@@ -107,7 +122,6 @@ def build_event(rng, i, d):
     ended = started + timedelta(hours=rng.choice([2, 3, 4, 5, 6, 8, 10, 12, 18, 24]))
 
     f = moon_frac(started)
-    doy = started.timetuple().tm_yday
 
     meds = []
     if rng.random() < 0.7:
@@ -144,7 +158,7 @@ def build_event(rng, i, d):
             "day_of_week": local_dt.weekday(),  # Mon=0..Sun=6
             "season": season(local_dt.month),
             "time_of_day_bucket": tod_bucket(local_hour),
-            "daylight_hours": daylight_hours(doy),
+            "daylight_hours": daylight_hours(local_dt.date(), HOME["lat"]),
             "sunrise_utc": None,
             "sunset_utc": None,
             "moon_phase": moon_name(f),
@@ -232,6 +246,25 @@ def main():
     # 05 — Below the correlation threshold: only 4 events.
     sparse = [END - timedelta(days=i) for i in (2, 16, 33, 51)]
     write("05-sparse-below-threshold.json", make_events(sparse, [], seed=5))
+
+    # 06 — Daylight (photoperiod) signal: cluster migraines on short-daylight days in the
+    # "9.5-11 h" band. At this latitude that band falls in BOTH late autumn and late winter, so with
+    # picks spread across the sub-bands and years the signal shows up as a Daylight-hours factor
+    # while the Season is split (autumn + winter) — the point that daylight is not the same as
+    # season. 8 long-daylight (summer) days give the baseline contrast.
+    def spread(candidates, count, min_gap_days):
+        picked = []
+        for d in candidates:
+            if all(abs((d - p).days) >= min_gap_days for p in picked):
+                picked.append(d)
+                if len(picked) >= count:
+                    break
+        return picked
+
+    band = [d for d in pool if 9.5 <= daylight_hours(d, HOME["lat"]) < 11.0]
+    short_day = spread(band, 22, 10)
+    long_day = days_back(pool, lambda d: daylight_hours(d, HOME["lat"]) >= 14.0, 8, None)
+    write("06-daylight-short.json", make_events(short_day, long_day, seed=6))
 
     for rel, n in written:
         print(f"wrote {rel:48s} {n} events")

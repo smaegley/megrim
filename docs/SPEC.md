@@ -480,6 +480,11 @@ the app on his Mac and pulls changes via a regenerated git bundle (see the memor
   also shown on the otherwise-blank idle **Log** screen.
 - Streak-card colour valence kept as green (recent) → red (overdue) after discussion; the far-overdue
   tail is the spot to revisit if it feels punishing.
+- Added a **Daylight-hours** suspected factor (photoperiod / SAD hypothesis): daylight length is
+  computed per day from latitude + date (the app's NOAA `sunTimes`) and bucketed, so it forms an
+  analytic baseline like the calendar/moon factors. It is deliberately *distinct from season* —
+  spring and autumn share daylight lengths. Surfaces in Top Suspected Factors and gets its own
+  descriptive "By daylight hours" chart. Themed fixture `06-daylight-short.json` demonstrates it.
 
 **Deliberate deviations from this spec, and why (each is noted in code too):**
 

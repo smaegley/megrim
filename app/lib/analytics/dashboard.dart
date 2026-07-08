@@ -1,7 +1,14 @@
 import 'dart:math' show sqrt;
 
 import 'correlations.dart'
-    show kDowLabels, kMonthLabels, kMoonOrder, kPressureBuckets, pressureBucket;
+    show
+        kDaylightBuckets,
+        kDowLabels,
+        kMonthLabels,
+        kMoonOrder,
+        kPressureBuckets,
+        daylightBucket,
+        pressureBucket;
 
 /// Port of the private app's dashboard aggregates (SPEC §6.1). Pure functions over the event +
 /// derived data. Dates are treated in local time (the app displays local time throughout).
@@ -19,6 +26,7 @@ class EventStat {
   final String? timeOfDayBucket;
   final String? moonPhase;
   final double? pressureDelta24h;
+  final double? daylightHours;
 
   /// Self-reported triggers tagged on this event (descriptive only — not correlated).
   final List<String> triggers;
@@ -32,6 +40,7 @@ class EventStat {
     this.timeOfDayBucket,
     this.moonPhase,
     this.pressureDelta24h,
+    this.daylightHours,
     this.triggers = const [],
   });
 }
@@ -92,6 +101,7 @@ class DashboardResult {
   final List<LabeledCount> bySeason;
   final List<LabeledCount> pressureDelta;
   final List<LabeledCount> byMoonPhase;
+  final List<LabeledCount> byDaylight;
 
   /// Frequency of self-reported triggers, most-tagged first. Descriptive only — NOT a correlation
   /// (there is no non-migraine-day baseline for self-reported triggers). See SPEC §6.2.
@@ -108,6 +118,7 @@ class DashboardResult {
     this.bySeason = const [],
     this.pressureDelta = const [],
     this.byMoonPhase = const [],
+    this.byDaylight = const [],
     this.triggerFrequency = const [],
     this.calendar = const [],
   });
@@ -229,6 +240,18 @@ DashboardResult computeDashboard(List<EventStat> events) {
       .map((b) => LabeledCount(b, pressureCounts[b] ?? 0))
       .toList();
 
+  // Daylight-length buckets (from derived daylight_hours) — photoperiod, distinct from season.
+  final daylightCounts = <String, int>{};
+  for (final e in sorted) {
+    if (e.daylightHours != null) {
+      final b = daylightBucket(e.daylightHours!);
+      daylightCounts[b] = (daylightCounts[b] ?? 0) + 1;
+    }
+  }
+  final byDaylight = kDaylightBuckets
+      .map((b) => LabeledCount(b, daylightCounts[b] ?? 0))
+      .toList();
+
   // Trigger frequency: count each trigger once per event it appears on, most-tagged first.
   final triggerCounts = <String, int>{};
   for (final e in sorted) {
@@ -257,6 +280,7 @@ DashboardResult computeDashboard(List<EventStat> events) {
     bySeason: bySeason,
     pressureDelta: pressureDelta,
     byMoonPhase: byMoon,
+    byDaylight: byDaylight,
     triggerFrequency: triggerFrequency,
     calendar: calendar,
   );

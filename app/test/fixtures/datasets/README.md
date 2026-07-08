@@ -11,6 +11,7 @@ regenerate. Also exercised by `app/test/test_datasets_test.dart`.
 | `03-moon-fullmoon.json` | 28 events, 18 near full moons → **"Moon phase: Full Moon"** factor; Full Moon leads the moon chart. |
 | `04-mixed-no-signal.json` | 40 events spread evenly → correlations run but **nothing stands out** (all odds ratios near 1). Good contrast. |
 | `05-sparse-below-threshold.json` | Only 4 events → **"Need at least 5 events for correlation analysis"** state; still exercises the days-since card and charts. |
+| `06-daylight-short.json` | 22 events on short-daylight (9.5–11 h) days spread across **autumn and winter** → **"Daylight hours: 9.5–11 h"** factor (the SAD / photoperiod hypothesis), while no single season dominates — showing daylight is *not* the same as season. |
 
 All files:
 - carry a `derived` block (season / day-of-week / time-of-day / moon computed with the app's own

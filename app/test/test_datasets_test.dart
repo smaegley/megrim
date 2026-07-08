@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:megrim/analytics/correlations.dart' show kDaylightBuckets;
 import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
@@ -65,6 +66,32 @@ void main() {
         .where((t) => t.factor == 'Moon phase' && t.condition == 'Full Moon');
     expect(full, isNotEmpty);
     expect(full.first.oddsRatio, greaterThan(1.5));
+    await repo.db.close();
+  });
+
+  test('06 daylight-short: short daylight is a suspected factor, distinct from season', () async {
+    final repo = await _import('06-daylight-short.json');
+    final dash = await repo.dashboard();
+    expect(dash.summary.totalEvents, 30);
+    final shortBand = kDaylightBuckets[1]; // '9.5–11 h'
+    expect(_maxLabel(dash.byDaylight), shortBand);
+
+    final corr = await repo.correlations();
+    expect(corr.available, isTrue);
+    final daylight = corr.topFactors
+        .where((t) => t.factor == 'Daylight hours' && t.condition == shortBand);
+    expect(daylight, isNotEmpty,
+        reason: 'expected a short-daylight factor; got '
+            '${corr.topFactors.map((t) => "${t.factor}:${t.condition}")}');
+    expect(daylight.first.oddsRatio, greaterThan(1.5));
+
+    // The point of this dataset: daylight beats season here (the short-daylight days span autumn
+    // and winter), so no single season should out-rank the daylight factor.
+    final seasonORs = corr.topFactors
+        .where((t) => t.factor == 'Season')
+        .map((t) => t.oddsRatio);
+    final maxSeason = seasonORs.isEmpty ? 0.0 : seasonORs.reduce((a, b) => a > b ? a : b);
+    expect(daylight.first.oddsRatio, greaterThanOrEqualTo(maxSeason));
     await repo.db.close();
   });
 

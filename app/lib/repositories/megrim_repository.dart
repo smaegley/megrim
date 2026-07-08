@@ -116,6 +116,7 @@ class MegrimRepository {
               timeOfDayBucket: dById[e.id]?.timeOfDayBucket,
               moonPhase: dById[e.id]?.moonPhase,
               pressureDelta24h: dById[e.id]?.pressureDelta24h,
+              daylightHours: dById[e.id]?.daylightHours,
               triggers: decodeStringList(e.triggersSuspected),
             ))
         .toList();
@@ -150,6 +151,7 @@ class MegrimRepository {
       migrainePressureDeltas: deltas,
       pressureBaseline: baseline,
       homeLat: home?.lat ?? 40.0,
+      homeLon: home?.lon ?? 0.0,
     );
   }
 
