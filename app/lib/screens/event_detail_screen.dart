@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../database/database.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
+import '../models/med_entry.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/location_picker.dart';
 import 'manage_vocab_screen.dart';
@@ -26,6 +27,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   DerivedFactor? _derived;
   List<String> _triggerVocab = const [];
   List<String> _locationVocab = const [];
+  List<String> _medVocab = const [];
 
   DateTime _startedAt = DateTime.now();
   DateTime? _endedAt;
@@ -39,6 +41,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   final _notes = TextEditingController();
   final Set<String> _locations = {};
   final Set<String> _triggers = {};
+  final List<MedEntry> _meds = [];
 
   @override
   void initState() {
@@ -58,12 +61,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     final d = await widget.repo.getDerived(widget.eventId);
     final triggers = await widget.repo.vocab(VocabKind.trigger);
     final locations = await widget.repo.vocab(VocabKind.headLocation);
+    final meds = await widget.repo.vocab(VocabKind.medication);
     if (!mounted || e == null) return;
     setState(() {
       _event = e;
       _derived = d;
       _triggerVocab = triggers;
       _locationVocab = locations;
+      _medVocab = meds;
       _startedAt = e.startedAt.toLocal();
       _endedAt = e.endedAt?.toLocal();
       _geoLat = e.geoLat;
@@ -80,6 +85,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       _triggers
         ..clear()
         ..addAll(decodeStringList(e.triggersSuspected));
+      _meds
+        ..clear()
+        ..addAll(decodeMeds(e.medsTaken));
     });
   }
 
@@ -101,6 +109,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       notes: Value(_notes.text.isEmpty ? null : _notes.text),
       locationHead: Value(encodeStringList(_locations.toList())),
       triggersSuspected: Value(encodeStringList(_triggers.toList())),
+      medsTaken: Value(encodeMeds(_meds)),
       geoLat: Value(_geoLat),
       geoLon: Value(_geoLon),
       geoLabel: Value(_geoLabel),
@@ -275,6 +284,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           _sectionHeader('Suspected triggers', VocabKind.trigger),
           _chips(_triggerVocab, _triggers),
 
+          _sectionHeader('Medications', VocabKind.medication),
+          _medsSection(),
+
           const SizedBox(height: 16),
           TextField(
             controller: _sleep,
@@ -390,6 +402,89 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
+  /// Medications taken for this event: a list of rich entries (name + optional dose, time,
+  /// "helped?"), plus an add button. Backed by the `medication` vocab, which is learned from
+  /// whatever names are entered here (SPEC §3.4). Writes the `meds_taken` JSON that export/CSV emit.
+  Widget _medsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < _meds.length; i++) _medTile(i),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: () => _editMed(),
+            icon: const Icon(Icons.add, size: 18),
+            label: const Text('Add medication'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _medTile(int index) {
+    final m = _meds[index];
+    final parts = <String>[
+      if (m.dose != null && m.dose!.isNotEmpty) m.dose!,
+      if (m.time != null) _fmtMedTime(m.time!),
+    ];
+    final subtitle = parts.join(' · ');
+    final (helpIcon, helpColor) = switch (m.helped) {
+      true => (Icons.thumb_up_outlined, Colors.greenAccent),
+      false => (Icons.thumb_down_outlined, Colors.orangeAccent),
+      null => (Icons.help_outline, Colors.white38),
+    };
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        dense: true,
+        leading: Icon(helpIcon, color: helpColor),
+        title: Text(m.name),
+        subtitle: subtitle.isEmpty ? null : Text(subtitle),
+        trailing: IconButton(
+          icon: const Icon(Icons.close),
+          tooltip: 'Remove medication',
+          onPressed: () => setState(() => _meds.removeAt(index)),
+        ),
+        onTap: () => _editMed(index: index),
+      ),
+    );
+  }
+
+  /// Format an ISO-8601 UTC med time for display in the device's local zone.
+  String _fmtMedTime(String iso) {
+    final dt = DateTime.tryParse(iso);
+    if (dt == null) return iso;
+    return DateFormat('HH:mm').format(dt.toLocal());
+  }
+
+  /// Add (index null) or edit an existing medication entry. New names are learned into the
+  /// `medication` vocab so they appear as suggestions next time.
+  Future<void> _editMed({int? index}) async {
+    final result = await showDialog<MedEntry>(
+      context: context,
+      builder: (_) => _MedEditDialog(
+        vocab: _medVocab,
+        initial: index == null ? null : _meds[index],
+        eventDay: _startedAt,
+      ),
+    );
+    if (result == null || !mounted) return;
+    if (result.name.trim().isEmpty) return;
+    if (!_medVocab.contains(result.name)) {
+      await widget.repo.addVocab(VocabKind.medication, result.name);
+      if (!mounted) return;
+      setState(() => _medVocab = [..._medVocab, result.name]);
+    }
+    setState(() {
+      if (index == null) {
+        _meds.add(result);
+      } else {
+        _meds[index] = result;
+      }
+    });
+  }
+
   Widget _enrichmentCard() {
     final d = _derived;
     if (d == null) {
@@ -439,6 +534,169 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Add/edit a single medication: name (chosen from vocab or typed free), optional dose, optional
+/// time, and a tri-state "helped?". Returns the built [MedEntry] via Navigator.pop, or null on cancel.
+class _MedEditDialog extends StatefulWidget {
+  final List<String> vocab;
+  final MedEntry? initial;
+
+  /// The event's start day, used to anchor a picked time-of-day to a concrete date.
+  final DateTime eventDay;
+
+  const _MedEditDialog({
+    required this.vocab,
+    required this.initial,
+    required this.eventDay,
+  });
+
+  @override
+  State<_MedEditDialog> createState() => _MedEditDialogState();
+}
+
+class _MedEditDialogState extends State<_MedEditDialog> {
+  late final TextEditingController _name;
+  late final TextEditingController _dose;
+  TimeOfDay? _time;
+  bool? _helped;
+
+  @override
+  void initState() {
+    super.initState();
+    final m = widget.initial;
+    _name = TextEditingController(text: m?.name ?? '');
+    _dose = TextEditingController(text: m?.dose ?? '');
+    _helped = m?.helped;
+    final iso = m?.time;
+    if (iso != null) {
+      final dt = DateTime.tryParse(iso);
+      if (dt != null) _time = TimeOfDay.fromDateTime(dt.toLocal());
+    }
+  }
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _dose.dispose();
+    super.dispose();
+  }
+
+  /// Combine the picked time-of-day with the event's date, return as an ISO-8601 UTC string.
+  String? _isoTime() {
+    if (_time == null) return null;
+    final d = widget.eventDay;
+    return DateTime(d.year, d.month, d.day, _time!.hour, _time!.minute)
+        .toUtc()
+        .toIso8601String();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.initial == null ? 'Add medication' : 'Edit medication'),
+      content: SizedBox(
+        width: 400,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Name: free text, with previously-used meds as autocomplete suggestions.
+              Autocomplete<String>(
+                initialValue: TextEditingValue(text: _name.text),
+                optionsBuilder: (value) {
+                  final q = value.text.trim().toLowerCase();
+                  if (q.isEmpty) return widget.vocab;
+                  return widget.vocab
+                      .where((v) => v.toLowerCase().contains(q));
+                },
+                onSelected: (v) => _name.text = v,
+                fieldViewBuilder: (context, controller, focusNode, _) {
+                  // Keep our _name in sync with the internal Autocomplete controller.
+                  controller.text = _name.text;
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    autofocus: widget.initial == null,
+                    decoration: const InputDecoration(
+                        labelText: 'Name', border: OutlineInputBorder()),
+                    onChanged: (v) => _name.text = v,
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _dose,
+                decoration: const InputDecoration(
+                    labelText: 'Dose (optional)',
+                    hintText: 'e.g. 400 mg',
+                    border: OutlineInputBorder()),
+              ),
+              const SizedBox(height: 12),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.schedule),
+                title: const Text('Time taken'),
+                subtitle: Text(_time == null ? 'Not set' : _time!.format(context)),
+                trailing: _time == null
+                    ? const Icon(Icons.edit_outlined)
+                    : IconButton(
+                        icon: const Icon(Icons.clear),
+                        tooltip: 'Clear time',
+                        onPressed: () => setState(() => _time = null),
+                      ),
+                onTap: () async {
+                  final picked = await showTimePicker(
+                    context: context,
+                    initialTime: _time ?? TimeOfDay.now(),
+                  );
+                  if (picked != null) setState(() => _time = picked);
+                },
+              ),
+              const SizedBox(height: 8),
+              const Text('Helped?'),
+              const SizedBox(height: 4),
+              SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(value: 1, label: Text('Yes')),
+                  ButtonSegment(value: 0, label: Text('No')),
+                  ButtonSegment(value: -1, label: Text('Unknown')),
+                ],
+                selected: {_helped == null ? -1 : (_helped! ? 1 : 0)},
+                onSelectionChanged: (s) => setState(() {
+                  final v = s.first;
+                  _helped = v == -1 ? null : v == 1;
+                }),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () {
+            final name = _name.text.trim();
+            if (name.isEmpty) return;
+            final dose = _dose.text.trim();
+            Navigator.pop(
+              context,
+              MedEntry(
+                name: name,
+                dose: dose.isEmpty ? null : dose,
+                time: _isoTime(),
+                helped: _helped,
+              ),
+            );
+          },
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }
