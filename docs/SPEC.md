@@ -447,6 +447,28 @@ a **sample demo dataset** (`tools/generate_sample_data.py` → `app/test/fixture
 plus an import→analytics verification test. Dev loop: build/test happen on the Linux VM; Steve runs
 the app on his Mac and pulls changes via a regenerated git bundle (see the memory notes).
 
+**Session-2 review changes (2026-07-08):** a batch of post-review UI improvements —
+- **Delete/discard.** History rows keep swipe-to-delete; Event detail gains a delete action (with
+  undo); the in-progress Quick Log view gains a **Discard** action to stop and delete a mistaken
+  entry.
+- **History list.** A coloured **severity badge** (green→red circle with the 1–10 number) leads each
+  row; the List/Calendar toggle is now a persistent **segmented picker**; a **"Add past entry"**
+  FAB creates an entry and opens the editor for recreating a migraine after the fact.
+- **Editable entries.** Event detail now edits **start/end date-time** and the **recorded
+  location** (re-enqueues enrichment on change), so an un-logged migraine can be fully recreated.
+- **Analytics layout.** New **"days since last migraine"** card at the top, colour-coded by how the
+  current gap compares to the mean interval μ ± SD σ (green `d<μ−σ` → red `d≥μ+σ`, i.e. redder =
+  more "overdue"; comparison documented in code for easy inversion). Order is now days-since →
+  summary → **Top suspected factors** (collapsed to the strongest condition per factor category,
+  expand for the full list + caveats) → **Most-tagged triggers** (top 5, expand for all + the
+  not-a-correlation disclaimer) → charts. Every chart is a **collapsible** card showing a one-line
+  "Most: …" summary when minimised. Added **By-season** and **By-time-of-day donut** charts (fl_chart
+  `PieChart`; dark-validated categorical palette with a direct-labelled legend).
+- **Two review questions answered (no code needed).** *Export share targets:* already uses the
+  Android system share sheet (`share_plus`), which lists every installed app that can receive the
+  file — nothing to add. *Check-for-updates:* intentionally omitted — in-app self-update is an
+  F-Droid anti-feature; the store client handles updates and the About dialog shows the version.
+
 **Deliberate deviations from this spec, and why (each is noted in code too):**
 
 1. **`geolocator` dropped → GPS auto-capture deferred.** The `geolocator` Android implementation
