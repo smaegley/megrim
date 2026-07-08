@@ -424,3 +424,48 @@ in tests.
 2. Donation platform(s) (Liberapay / Ko-fi / GitHub Sponsors) — Phase 4 (just a URL).
 3. Ever do Play? If yes: org account vs personal-name exposure; revisit after F-Droid traction.
 4. Med-list vocab: seed with common abortives (sumatriptan…) or start empty? — Phase 1 (leaning empty + learn-from-entries).
+
+---
+
+## 12. Implementation status (2026-07-08)
+
+First implementation pass complete: a buildable Flutter app under `app/`, `flutter analyze`
+clean, **52 tests passing**, and a **signed release APK** produced (release signing path verified
+with a throwaway keystore, not just the debug fallback).
+
+**Done:** Phase 0 (scaffold, CI incl. FOSS dependency-ban check, license/README/privacy, fastlane
+metadata) · Phase 1 (Drift schema v1 + seeding + all screens) · Phase 2 (enrichment: astro golden
+tests, Open-Meteo client, retry queue) · Phase 3 (analytics: dashboard + correlations + pressure
+baseline, golden tests) · Phase 4 (JSON+CSV export / JSON import with round-trip test, onboarding,
+disclaimer gate, settings) · Phase 6 (signed release workflow on tag).
+
+**Deliberate deviations from this spec, and why (each is noted in code too):**
+
+1. **`geolocator` dropped → GPS auto-capture deferred.** The `geolocator` Android implementation
+   links `com.google.android.gms:play-services-location`, which violates the day-one F-Droid
+   constraint in §2.1 ("CI should fail if `com.google.android.gms` appears"). Since GPS is
+   explicitly optional and the app must work without it, v1 uses the onboarding home location for
+   all enrichment. `lib/services/` keeps a seam for a future GMS-free `LocationManager` provider.
+   The manifest still declares the (optional) location permissions for later use.
+2. **`flutter_plugin_android_lifecycle` pinned to 2.0.24** via `dependency_overrides`. The current
+   release (2.0.35) sets an AAR `minCompileSdk` of 36 that breaks the build under Flutter 3.44.1
+   (file_picker's metadata check fails). Revisit when Flutter's default compileSdk reaches 36.
+3. **`compileSdk = 36`** pinned in `app/android/app/build.gradle.kts` (some transitive plugins
+   require it); `minSdk 26`, `targetSdk` from Flutter, per §8.
+4. **Correlations match the reference Python, not the §6.2 prose**, in two places (documented in
+   `lib/analytics/correlations.dart`): the study window ends at the **last event** (prose says
+   "today"), and the Top-Factors filter is **OR > 1.0** (prose says "≥ 1.5"). Chosen so the golden
+   tests validate against the actual `correlations.py`. Reconcile deliberately if the prose is the
+   intended behaviour.
+5. **Application id is a placeholder** (`io.github.megrimapp.megrim`). Immutable once published —
+   set the real pseudonym handle before first release (open item #1 above).
+6. **Golden fixtures hand-computed.** The spec calls for generating fixtures from the private
+   app's Python (`astral`/`ephem`); that stack isn't runnable in this environment, so astro and
+   correlations goldens assert against independently hand-computed values and physical invariants
+   instead. Regenerating from Python remains a good future cross-check.
+
+**Not yet done (follow-up):** a custom launcher icon (still the default Flutter icon;
+`flutter_launcher_icons` + an asset needed) · a full licenses page (`showLicensePage` is wired via
+About; a generated third-party list can be added) · connectivity-triggered queue retry (currently
+retried on app start / after edits / on import) · the one-time "computing baseline…" progress UI
+for the first pressure-baseline fetch · real F-Droid `fdroiddata` recipe (Phase 6, post-1.0).
