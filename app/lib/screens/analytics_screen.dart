@@ -10,7 +10,11 @@ import '../repositories/megrim_repository.dart';
 /// with caveats. Computed locally. Includes the required Open-Meteo attribution footer.
 class AnalyticsScreen extends StatefulWidget {
   final MegrimRepository repo;
-  const AnalyticsScreen({super.key, required this.repo});
+
+  /// Bumped by the shell each time this tab is opened, so analytics recompute against the latest
+  /// data (the screens are kept alive in an IndexedStack, so initState only runs once).
+  final int refreshToken;
+  const AnalyticsScreen({super.key, required this.repo, this.refreshToken = 0});
 
   @override
   State<AnalyticsScreen> createState() => _AnalyticsScreenState();
@@ -25,6 +29,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     _future = _load();
   }
 
+  @override
+  void didUpdateWidget(AnalyticsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.refreshToken != widget.refreshToken) {
+      _reload();
+    }
+  }
+
+  void _reload() => setState(() => _future = _load());
+
   Future<(DashboardResult, CorrelationResult)> _load() async {
     final dash = await widget.repo.dashboard();
     final corr = await widget.repo.correlations();
@@ -34,7 +48,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Analytics')),
+      appBar: AppBar(
+        title: const Text('Analytics'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _reload,
+          ),
+        ],
+      ),
       body: FutureBuilder<(DashboardResult, CorrelationResult)>(
         future: _future,
         builder: (context, snap) {
@@ -45,26 +68,29 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           if (dash.isEmpty) {
             return const Center(child: Text('Log a few migraines to see analytics.'));
           }
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _summaryCard(dash.summary),
-              const SizedBox(height: 16),
-              _barCard('By day of week', dash.byDayOfWeek),
-              const SizedBox(height: 16),
-              _barCard('By time of day', dash.byTimeOfDay),
-              const SizedBox(height: 16),
-              _barCard('Pressure change (24h)', dash.pressureDelta),
-              const SizedBox(height: 16),
-              _barCard('By moon phase', dash.byMoonPhase),
-              const SizedBox(height: 16),
-              _correlationsCard(corr),
-              const SizedBox(height: 24),
-              Center(
-                child: Text(kWeatherAttribution,
-                    style: Theme.of(context).textTheme.bodySmall),
-              ),
-            ],
+          return RefreshIndicator(
+            onRefresh: () async => _reload(),
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                _summaryCard(dash.summary),
+                const SizedBox(height: 16),
+                _barCard('By day of week', dash.byDayOfWeek),
+                const SizedBox(height: 16),
+                _barCard('By time of day', dash.byTimeOfDay),
+                const SizedBox(height: 16),
+                _barCard('Pressure change (24h)', dash.pressureDelta),
+                const SizedBox(height: 16),
+                _barCard('By moon phase', dash.byMoonPhase),
+                const SizedBox(height: 16),
+                _correlationsCard(corr),
+                const SizedBox(height: 24),
+                Center(
+                  child: Text(kWeatherAttribution,
+                      style: Theme.of(context).textTheme.bodySmall),
+                ),
+              ],
+            ),
           );
         },
       ),

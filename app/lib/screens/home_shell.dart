@@ -17,20 +17,25 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   int _index = 0;
+  // Bumped whenever the Analytics tab is opened, forcing it to recompute against current data.
+  int _analyticsToken = 0;
 
   @override
   Widget build(BuildContext context) {
     final pages = [
       QuickLogScreen(repo: widget.repo),
       HistoryScreen(repo: widget.repo),
-      AnalyticsScreen(repo: widget.repo),
+      AnalyticsScreen(repo: widget.repo, refreshToken: _analyticsToken),
       SettingsScreen(repo: widget.repo),
     ];
     return Scaffold(
       body: IndexedStack(index: _index, children: pages),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
+        onDestinationSelected: (i) => setState(() {
+          _index = i;
+          if (i == 2) _analyticsToken++;
+        }),
         destinations: const [
           NavigationDestination(icon: Icon(Icons.add_circle_outline), label: 'Log'),
           NavigationDestination(icon: Icon(Icons.list_alt), label: 'History'),
