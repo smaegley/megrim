@@ -1,3 +1,5 @@
+import 'dart:math' show sqrt;
+
 import 'correlations.dart'
     show kDowLabels, kMonthLabels, kMoonOrder, kPressureBuckets, pressureBucket;
 
@@ -42,6 +44,11 @@ class Summary {
   final double? avgSeverity;
   final double? avgDurationHours;
   final double? avgIntervalDays;
+
+  /// Sample standard deviation of the between-event intervals (days). Null until there are at
+  /// least two intervals (three events). Used to colour-code the "Days since last migraine" card.
+  final double? intervalStdDevDays;
+
   final double eventsPerYear;
 
   const Summary({
@@ -52,6 +59,7 @@ class Summary {
     this.avgSeverity,
     this.avgDurationHours,
     this.avgIntervalDays,
+    this.intervalStdDevDays,
     this.eventsPerYear = 0,
   });
 }
@@ -139,9 +147,18 @@ DashboardResult computeDashboard(List<EventStat> events) {
   for (var i = 1; i < n; i++) {
     intervals.add(sorted[i].startedAt.difference(sorted[i - 1].startedAt).inDays);
   }
-  final avgInterval = intervals.isEmpty
+  final avgIntervalRaw = intervals.isEmpty
       ? null
-      : _round1(intervals.reduce((a, b) => a + b) / intervals.length);
+      : intervals.reduce((a, b) => a + b) / intervals.length;
+  final avgInterval = avgIntervalRaw == null ? null : _round1(avgIntervalRaw);
+  double? intervalStd;
+  if (intervals.length >= 2) {
+    final variance = intervals
+            .map((x) => (x - avgIntervalRaw!) * (x - avgIntervalRaw))
+            .reduce((a, b) => a + b) /
+        (intervals.length - 1);
+    intervalStd = _round1(sqrt(variance));
+  }
 
   final summary = Summary(
     totalEvents: n,
@@ -151,6 +168,7 @@ DashboardResult computeDashboard(List<EventStat> events) {
     avgSeverity: avgSev,
     avgDurationHours: avgDur,
     avgIntervalDays: avgInterval,
+    intervalStdDevDays: intervalStd,
     eventsPerYear: yearsTracked > 0 ? _round1(n / yearsTracked) : n.toDouble(),
   );
 

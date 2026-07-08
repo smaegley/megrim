@@ -130,12 +130,26 @@ void main() {
       expect(r.summary.avgSeverity, 6.0); // (4+6+8)/3
       expect(r.summary.avgDurationHours, 3.0); // (2+4)/2
       expect(r.summary.avgIntervalDays, 2.5); // (2+3)/2
+      // Sample SD of intervals [2, 3]: sqrt(((0.5)^2 + (0.5)^2)/(2-1)) = 0.707 → 0.7.
+      expect(r.summary.intervalStdDevDays, 0.7);
       expect(r.calendar, hasLength(3));
       final jan = r.byMonthOfYear.firstWhere((m) => m.label == 'Jan');
       expect(jan.count, 3);
       final y2024 = r.byYear.firstWhere((y) => y.year == 2024);
       expect(y2024.count, 3);
       expect(y2024.avgSeverity, 6.0);
+    });
+
+    test('interval SD needs at least two intervals', () {
+      final one =
+          computeDashboard([EventStat(startedAt: DateTime.utc(2024, 1, 1))]);
+      expect(one.summary.intervalStdDevDays, isNull);
+      final two = computeDashboard([
+        EventStat(startedAt: DateTime.utc(2024, 1, 1)),
+        EventStat(startedAt: DateTime.utc(2024, 1, 4)),
+      ]);
+      expect(two.summary.avgIntervalDays, 3.0);
+      expect(two.summary.intervalStdDevDays, isNull); // only one interval
     });
 
     test('derived-factor buckets are ordered and counted', () {
