@@ -32,10 +32,14 @@ class _HomeShellState extends State<HomeShell> {
       body: IndexedStack(index: _index, children: pages),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() {
-          _index = i;
-          if (i == 2) _analyticsToken++;
-        }),
+        onDestinationSelected: (i) {
+          // Dismiss any lingering snackbar (e.g. the delete/undo) on page change.
+          ScaffoldMessenger.of(context).clearSnackBars();
+          setState(() {
+            _index = i;
+            if (i == 2) _analyticsToken++;
+          });
+        },
         destinations: const [
           NavigationDestination(icon: Icon(Icons.add_circle_outline), label: 'Log'),
           NavigationDestination(icon: Icon(Icons.list_alt), label: 'History'),

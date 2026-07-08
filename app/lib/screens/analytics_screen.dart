@@ -1,12 +1,24 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
 import '../legal.dart';
 import '../repositories/megrim_repository.dart';
-import '../widgets/severity_badge.dart' show StatusColors, onStatusColor;
+import '../widgets/days_since_card.dart';
+import '../widgets/severity_badge.dart' show onStatusColor;
+
+/// x-axis glyphs for the moon-phase chart — icons in place of text labels (review item #6).
+const Map<String, String> _moonGlyphs = {
+  'New Moon': '🌑',
+  'Waxing Crescent': '🌒',
+  'First Quarter': '🌓',
+  'Waxing Gibbous': '🌔',
+  'Full Moon': '🌕',
+  'Waning Gibbous': '🌖',
+  'Last Quarter': '🌗',
+  'Waning Crescent': '🌘',
+};
 
 /// Categorical series palette (dark steps from the data-viz reference palette, validated for the
 /// dark card surface). Colour follows the entity by fixed index — never cycled — so a season/bucket
@@ -90,7 +102,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                _daysSinceCard(dash.summary),
+                DaysSinceCard(summary: dash.summary),
                 const SizedBox(height: 16),
                 _summaryCard(dash.summary),
                 const SizedBox(height: 16),
@@ -125,7 +137,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 _collapsibleChart(
                   title: 'By moon phase',
                   data: dash.byMoonPhase,
-                  child: _barChart(dash.byMoonPhase),
+                  child: _barChart(dash.byMoonPhase, axisGlyphs: _moonGlyphs),
                 ),
                 const SizedBox(height: 24),
                 Center(
@@ -136,82 +148,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  // ── Days since last migraine (review item #5) ──────────────────────────────
-  Widget _daysSinceCard(Summary s) {
-    final last = s.lastEvent;
-    if (last == null) return const SizedBox.shrink();
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final days = today.difference(last).inDays;
-
-    // Colour-code by how the current gap compares to the mean interval μ and its SD σ:
-    //   green  d < μ−σ  (recently had one)   → yellow μ−σ ≤ d < μ
-    //   orange μ ≤ d < μ+σ                    → red    d ≥ μ+σ  (statistically "overdue").
-    // Flip the comparisons here if the opposite valence is wanted.
-    final mu = s.avgIntervalDays;
-    final sigma = s.intervalStdDevDays;
-    Color color = StatusColors.neutral;
-    String note = 'Not enough history to gauge yet.';
-    if (mu != null && sigma != null) {
-      if (days < mu - sigma) {
-        color = StatusColors.good;
-        note = 'Well within your usual gap (avg ${mu.round()} d).';
-      } else if (days < mu) {
-        color = StatusColors.warning;
-        note = 'Approaching your average gap (avg ${mu.round()} d).';
-      } else if (days < mu + sigma) {
-        color = StatusColors.serious;
-        note = 'Past your average gap (avg ${mu.round()} d).';
-      } else {
-        color = StatusColors.critical;
-        note = 'Well past your average gap (avg ${mu.round()} d).';
-      }
-    }
-
-    final df = DateFormat('EEE d MMM yyyy');
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-              child: Text(
-                '$days',
-                style: TextStyle(
-                  color: onStatusColor(color),
-                  fontWeight: FontWeight.bold,
-                  fontSize: days >= 100 ? 20 : 26,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                      days == 1
-                          ? 'day since last migraine'
-                          : 'days since last migraine',
-                      style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 2),
-                  Text('Last: ${df.format(last)}',
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(height: 2),
-                  Text(note, style: Theme.of(context).textTheme.bodySmall),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -245,7 +181,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         ),
       );
 
-  // ── Collapsible chart card (review item #8) ────────────────────────────────
+  // ── Collapsible chart card (review items #3, #8) ───────────────────────────
   Widget _collapsibleChart({
     required String title,
     required List<LabeledCount> data,
@@ -258,7 +194,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
         title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-        subtitle: Text(summary, style: Theme.of(context).textTheme.bodySmall),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(summary, style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: 6),
+            // A mini sparkline of the distribution gives the collapsed card visual interest.
+            _MiniBars(data: data, color: _seriesColors.first),
+          ],
+        ),
         childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         children: [child],
       ),
@@ -285,61 +229,36 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         child: Center(child: Text('No data yet')),
       );
     }
-    return Column(
-      children: [
-        SizedBox(
-          height: 180,
-          child: PieChart(
-            PieChartData(
-              sectionsSpace: 2,
-              centerSpaceRadius: 44,
-              sections: [
-                for (final i in present)
-                  PieChartSectionData(
-                    value: data[i].count.toDouble(),
-                    color: _seriesColors[i % _seriesColors.length],
-                    radius: 46,
-                    title: '${data[i].count}',
-                    titleStyle: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: onStatusColor(_seriesColors[i % _seriesColors.length]),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        // Legend — direct labels supply the secondary encoding the palette's CVD floor requires.
-        Wrap(
-          spacing: 16,
-          runSpacing: 6,
-          children: [
+    // Labels (name + count) sit inside each slice — this is the direct labelling the palette's CVD
+    // floor requires, so no separate legend is needed (review items #4, #5).
+    return SizedBox(
+      height: 210,
+      child: PieChart(
+        PieChartData(
+          sectionsSpace: 2,
+          centerSpaceRadius: 36,
+          sections: [
             for (final i in present)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: _seriesColors[i % _seriesColors.length],
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text('${data[i].label} (${data[i].count})',
-                      style: Theme.of(context).textTheme.bodySmall),
-                ],
+              PieChartSectionData(
+                value: data[i].count.toDouble(),
+                color: _seriesColors[i % _seriesColors.length],
+                radius: 68,
+                titlePositionPercentageOffset: 0.6,
+                title: '${data[i].label}\n${data[i].count}',
+                titleStyle: TextStyle(
+                  fontSize: 11,
+                  height: 1.2,
+                  fontWeight: FontWeight.bold,
+                  color: onStatusColor(_seriesColors[i % _seriesColors.length]),
+                ),
               ),
           ],
         ),
-      ],
+      ),
     );
   }
 
-  Widget _barChart(List<LabeledCount> data) {
+  Widget _barChart(List<LabeledCount> data, {Map<String, String>? axisGlyphs}) {
     final maxY = data.fold<double>(
         1, (m, e) => e.count > m ? e.count.toDouble() : m);
     return SizedBox(
@@ -363,12 +282,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   final i = v.toInt();
                   if (i < 0 || i >= data.length) return const SizedBox();
                   final label = data[i].label;
+                  final glyph = axisGlyphs?[label];
                   return Padding(
                     padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      label.length > 4 ? label.substring(0, 4) : label,
-                      style: const TextStyle(fontSize: 9),
-                    ),
+                    child: glyph != null
+                        ? Text(glyph, style: const TextStyle(fontSize: 15))
+                        : Text(
+                            label.length > 4 ? label.substring(0, 4) : label,
+                            style: const TextStyle(fontSize: 9),
+                          ),
                   );
                 },
               ),
@@ -389,6 +311,39 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ]),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// A compact sparkline of a distribution, shown on collapsed chart cards for visual interest
+/// (review item #3). Bars are proportional to each bucket's count; empty buckets are faint stubs.
+class _MiniBars extends StatelessWidget {
+  final List<LabeledCount> data;
+  final Color color;
+  const _MiniBars({required this.data, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final maxV = data.fold<int>(0, (m, e) => e.count > m ? e.count : m);
+    if (maxV == 0) return const SizedBox.shrink();
+    return SizedBox(
+      height: 26,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          for (final d in data) ...[
+            Container(
+              width: 6,
+              height: 2 + 24 * (d.count / maxV),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: d.count == 0 ? 0.2 : 0.8),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
+              ),
+            ),
+            const SizedBox(width: 3),
+          ],
+        ],
       ),
     );
   }

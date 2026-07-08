@@ -154,12 +154,12 @@ class _CalendarView extends StatelessWidget {
   Widget build(BuildContext context) {
     // Group by month; render a simple heat grid per month with events.
     final byMonth = <String, Set<int>>{};
-    final severityByDay = <String, int>{};
+    final severityByDay = <String, int?>{};
     for (final e in events) {
       final l = e.startedAt.toLocal();
       final key = DateFormat('yyyy-MM').format(l);
       (byMonth[key] ??= {}).add(l.day);
-      severityByDay['$key-${l.day}'] = e.severity ?? 0;
+      severityByDay['$key-${l.day}'] = e.severity;
     }
     final months = byMonth.keys.toList()..sort((a, b) => b.compareTo(a));
     return ListView(
@@ -179,7 +179,7 @@ class _CalendarView extends StatelessWidget {
 class _MonthGrid extends StatelessWidget {
   final String month; // yyyy-MM
   final Set<int> days;
-  final Map<String, int> severityByDay;
+  final Map<String, int?> severityByDay;
   const _MonthGrid(
       {required this.month, required this.days, required this.severityByDay});
 
@@ -214,9 +214,10 @@ class _MonthGrid extends StatelessWidget {
   }
 
   Widget _dayCell(BuildContext context, int day, bool hit) {
-    final sev = severityByDay['$month-$day'] ?? 0;
+    // Match the List view's severity badge scale (green→red buckets), not a saturation ramp.
+    final sev = severityByDay['$month-$day'];
     final color = hit
-        ? Color.lerp(Colors.orange.shade200, Colors.red.shade700, sev / 10)
+        ? severityColor(sev)
         : Theme.of(context).colorScheme.surfaceContainerHighest;
     return Container(
       width: 30,
@@ -226,7 +227,13 @@ class _MonthGrid extends StatelessWidget {
         color: color,
         borderRadius: BorderRadius.circular(6),
       ),
-      child: Text('$day', style: const TextStyle(fontSize: 11)),
+      child: Text(
+        '$day',
+        style: TextStyle(
+          fontSize: 11,
+          color: hit ? onStatusColor(color) : null,
+        ),
+      ),
     );
   }
 }

@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 
+import '../analytics/dashboard.dart';
 import '../database/database.dart';
 import '../repositories/megrim_repository.dart';
+import '../widgets/days_since_card.dart';
 import 'event_detail_screen.dart';
 
 /// Quick Log (SPEC §4.2): one tap to start a migraine; an active view with an elapsed timer,
@@ -124,8 +126,17 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   Widget _idleView() => Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Days-since-last graphic so the idle Log page isn't blank (review item #8).
+            FutureBuilder<DashboardResult>(
+              future: widget.repo.dashboard(),
+              builder: (context, snap) {
+                final dash = snap.data;
+                if (dash == null || dash.isEmpty) return const SizedBox.shrink();
+                return DaysSinceCard(summary: dash.summary);
+              },
+            ),
+            const Spacer(),
             const Icon(Icons.self_improvement, size: 72),
             const SizedBox(height: 24),
             SizedBox(
@@ -140,6 +151,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
             const SizedBox(height: 12),
             Text('Tap to start. You can add details any time.',
                 style: Theme.of(context).textTheme.bodySmall),
+            const Spacer(),
           ],
         ),
       );
