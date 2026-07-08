@@ -34,7 +34,8 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 from sqlalchemy import create_engine, text
 
@@ -102,6 +103,16 @@ def _f(v):
     return float(v) if v is not None else None
 
 
+def relocalize(dt, tz):
+    """Correct a timestamp that was stored as a local wall-clock time mislabeled UTC (the
+    import_history.py bug: `datetime.combine(date, time, tzinfo=timezone.utc)`). Re-interpret the
+    wall-clock in [tz] (DST-aware) and return the true UTC instant."""
+    if dt is None:
+        return None
+    wall = dt.replace(tzinfo=None)            # drop the (wrong) UTC label -> local wall clock
+    return wall.replace(tzinfo=ZoneInfo(tz)).astimezone(timezone.utc)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -111,13 +122,19 @@ def main():
                     help="Postgres URL; else $DATABASE_URL, else app.config.settings")
     ap.add_argument("--include-deleted", action="store_true",
                     help="also export soft-deleted (deleted_at) rows (default: skip)")
+    ap.add_argument("--relocalize", choices=["legacy", "all", "none"], default="legacy",
+                    help="fix event times stored local-as-UTC by import_history.py. "
+                         "'legacy' (default): only rows with a legacy_incident_no (spreadsheet "
+                         "imports). 'all': every row. 'none': leave times as-is.")
+    ap.add_argument("--home-tz", default="America/Denver",
+                    help="timezone to re-interpret mislabeled wall-clock times in (default: %(default)s)")
     args = ap.parse_args()
 
     engine = create_engine(resolve_database_url(args.database_url))
 
     where = "" if args.include_deleted else "WHERE e.deleted_at IS NULL"
     sql = text(f"""
-        SELECT e.id, e.started_at, e.ended_at, e.severity, e.location_head,
+        SELECT e.id, e.legacy_incident_no, e.started_at, e.ended_at, e.severity, e.location_head,
                e.aura_present, e.aura_description, e.meds_taken, e.triggers_suspected,
                e.sleep_hours_prior, e.stress_level, e.foods_notable, e.notes,
                e.geo_lat, e.geo_lon, e.geo_label, e.created_at, e.updated_at,
@@ -135,10 +152,18 @@ def main():
     events = []
     triggers, head_locs, meds_vocab = set(), set(), set()
     home = None
+    relocalized = 0
 
     with engine.connect() as conn:
         for r in conn.execute(sql):
             m = r._mapping
+            # Correct the local-as-UTC timestamps (import_history.py bug) for the chosen rows.
+            fix = args.relocalize == "all" or (
+                args.relocalize == "legacy" and m["legacy_incident_no"] is not None)
+            started = relocalize(m["started_at"], args.home_tz) if fix else m["started_at"]
+            ended = relocalize(m["ended_at"], args.home_tz) if fix else m["ended_at"]
+            if fix:
+                relocalized += 1
             trig = as_list(m["triggers_suspected"])
             loc = as_list(m["location_head"])
             meds = m["meds_taken"] or []
@@ -163,8 +188,8 @@ def main():
 
             ev = {
                 "id": str(m["id"]),
-                "started_at": iso_utc(m["started_at"]),
-                "ended_at": iso_utc(m["ended_at"]),
+                "started_at": iso_utc(started),
+                "ended_at": iso_utc(ended),
                 "severity": m["severity"],
                 "location_head": loc,
                 "aura_present": m["aura_present"],
@@ -227,6 +252,9 @@ def main():
     print(f"wrote {args.out}: {len(events)} events "
           f"({enriched} with enrichment, {len(events) - enriched} to be re-enriched on import); "
           f"{len(triggers)} triggers, {len(head_locs)} head locations, {len(meds_vocab)} meds")
+    print(f"time correction: re-localized {relocalized}/{len(events)} events "
+          f"from {args.home_tz} (mode={args.relocalize}); "
+          f"{len(events) - relocalized} left unchanged")
 
 
 if __name__ == "__main__":
