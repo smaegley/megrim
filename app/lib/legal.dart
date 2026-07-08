@@ -19,6 +19,8 @@ const String kPrivacySummary =
 
 /// Caveats shown verbatim on the correlations card (SPEC §9 / §6.2).
 const List<String> kCorrelationCaveats = [
+  'OR = odds ratio: how much more likely a migraine is on days with that factor. '
+      'OR 2.0 ≈ twice the odds vs. other days; OR 1.0 means no effect.',
   'Small sample: results from a limited number of migraine days are noisy.',
   'Odds ratios use a +0.5 correction for empty cells; treat values near 1.0 as no signal.',
   'Many factors are tested at once (multiple comparisons) — some apparent associations are chance.',
