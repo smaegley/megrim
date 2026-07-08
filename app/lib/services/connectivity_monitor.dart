@@ -21,13 +21,14 @@ class ConnectivityMonitor {
   })  : _stream = stream ?? Connectivity().onConnectivityChanged,
         _wasOnline = initiallyOnline;
 
-  static bool _isOnline(List<ConnectivityResult> results) =>
+  /// True if any interface in [results] is connected (shared by the listener and one-shot checks).
+  static bool isOnlineResult(List<ConnectivityResult> results) =>
       results.any((r) => r != ConnectivityResult.none);
 
   /// Begin listening. [onOnline] is invoked on each offline→online transition.
   void start(void Function() onOnline) {
     _sub = _stream.listen((results) {
-      final online = _isOnline(results);
+      final online = isOnlineResult(results);
       if (online && !_wasOnline) onOnline();
       _wasOnline = online;
     });

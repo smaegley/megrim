@@ -1,10 +1,13 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
+import '../analytics/pressure_baseline.dart';
 import '../legal.dart';
 import '../repositories/megrim_repository.dart';
+import '../services/connectivity_monitor.dart';
 import '../widgets/days_since_card.dart';
 import '../widgets/severity_badge.dart' show onStatusColor;
 
@@ -70,7 +73,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   Future<(DashboardResult, CorrelationResult)> _load() async {
     final dash = await widget.repo.dashboard();
-    final corr = await widget.repo.correlations();
+    // The pressure "suspected factor" needs a one-time bulk fetch of daily pressure history at the
+    // home location (cached after). Only allow that fetch when online, so the Analytics tab never
+    // blocks on the network offline — it uses the cached baseline (or omits pressure) instead.
+    final online = ConnectivityMonitor.isOnlineResult(
+        await Connectivity().checkConnectivity());
+    final corr = await widget.repo.correlations(
+      baselineService: PressureBaselineService(db: widget.repo.db),
+      allowFetch: online,
+    );
     return (dash, corr);
   }
 

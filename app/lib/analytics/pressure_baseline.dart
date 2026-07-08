@@ -94,7 +94,11 @@ class PressureBaselineService {
 
   /// Return the cached baseline if its tag matches, else fetch/build/cache. Returns null if there
   /// is no home location or the fetch fails (the pressure factor is then simply omitted).
-  Future<PressureBaseline?> getOrBuild(DateTime start, DateTime end) async {
+  ///
+  /// [allowFetch] gates the network call: pass false when offline so the Analytics screen never
+  /// blocks on a request — it then returns the cached baseline (or null) immediately.
+  Future<PressureBaseline?> getOrBuild(DateTime start, DateTime end,
+      {bool allowFetch = true}) async {
     final home = HomeLocation.tryDecode(await db.getSetting('home_location'));
     if (home == null) return null;
     final tag = pressureBaselineTag(start, end, home.lat, home.lon);
@@ -102,6 +106,7 @@ class PressureBaselineService {
     final cached = PressureBaseline.tryDecode(
         await db.getSetting('pressure_baseline'));
     if (cached != null && cached.tag == tag) return cached;
+    if (!allowFetch) return cached; // offline: use cache if any, never hit the network
 
     try {
       final uri = dailyUri(home.lat, home.lon, start, end);

@@ -124,7 +124,7 @@ class MegrimRepository {
   }
 
   Future<CorrelationResult> correlations(
-      {PressureBaselineService? baselineService}) async {
+      {PressureBaselineService? baselineService, bool allowFetch = true}) async {
     final events = await db.select(db.migraineEvents).get();
     if (events.length < kMinEventsForCorrelations) {
       return computeCorrelations(eventStarts: events.map((e) => e.startedAt).toList());
@@ -142,6 +142,7 @@ class MegrimRepository {
       final b = await baselineService.getOrBuild(
         DateTime(dates.first.year, dates.first.month, dates.first.day),
         DateTime(dates.last.year, dates.last.month, dates.last.day),
+        allowFetch: allowFetch,
       );
       baseline = b?.histogram;
     }

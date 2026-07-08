@@ -82,4 +82,25 @@ void main() {
     svc.close();
     await db.close();
   });
+
+  test('allowFetch:false never hits the network (offline Analytics path)', () async {
+    final db = MegrimDatabase.forTesting(NativeDatabase.memory());
+    await db.setSetting('home_location',
+        jsonEncode({'lat': 40.0, 'lon': -105.0, 'label': 'Home'}));
+    var httpCalls = 0;
+    final client = MockClient((req) async {
+      httpCalls++;
+      return http.Response('{}', 200);
+    });
+    final svc = PressureBaselineService(db: db, httpClient: client);
+
+    // No cache + offline → returns null immediately, no request.
+    final r = await svc.getOrBuild(DateTime(2024, 1, 1), DateTime(2024, 1, 3),
+        allowFetch: false);
+    expect(r, isNull);
+    expect(httpCalls, 0);
+
+    svc.close();
+    await db.close();
+  });
 }
