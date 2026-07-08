@@ -1,0 +1,2062 @@
+{
+  "format": "megrim-export",
+  "format_version": 1,
+  "exported_at": "2026-07-08T15:34:17.999586Z",
+  "app_version": "1.0.0",
+  "settings": {
+    "home_location": {
+      "lat": 39.96,
+      "lon": -105.05,
+      "label": "Boulder, Colorado, United States"
+    }
+  },
+  "vocabularies": {
+    "trigger": [
+      "Stress",
+      "Sleep change",
+      "Bright light",
+      "Exercise",
+      "Weather / pressure",
+      "Alcohol",
+      "Caffeine",
+      "Food",
+      "Hormonal",
+      "Strong smell",
+      "Screen time"
+    ],
+    "head_location": [
+      "Left temple",
+      "Right temple",
+      "Behind left eye",
+      "Behind right eye",
+      "Forehead",
+      "Top of head",
+      "Back of head",
+      "Neck",
+      "Both sides"
+    ],
+    "medication": [
+      "Sumatriptan",
+      "Rizatriptan",
+      "Ibuprofen",
+      "Naproxen",
+      "Acetaminophen"
+    ]
+  },
+  "events": [
+    {
+      "id": "000-20240802",
+      "started_at": "2024-08-02T16:30:00Z",
+      "ended_at": "2024-08-02T19:30:00Z",
+      "severity": 6,
+      "location_head": [
+        "Right temple"
+      ],
+      "aura_present": true,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Weather / pressure",
+        "Stress",
+        "Exercise"
+      ],
+      "sleep_hours_prior": 5.3,
+      "stress_level": 2,
+      "foods_notable": [],
+      "notes": "rough day",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2024-08-02T16:30:00Z",
+      "updated_at": "2024-08-02T16:30:00Z",
+      "derived": {
+        "day_of_week": 4,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 10.0,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Crescent",
+        "moon_illumination": 0.062,
+        "temp_c": 10.8,
+        "humidity_pct": 64.0,
+        "pressure_hpa": 1030.9,
+        "precipitation_mm": 2.2,
+        "pressure_delta_24h": -8.0,
+        "pressure_delta_48h": 1.2,
+        "aqi": 54,
+        "enriched_at": "2024-08-02T16:30:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "001-20240820",
+      "started_at": "2024-08-20T17:30:00Z",
+      "ended_at": "2024-08-20T20:30:00Z",
+      "severity": 5,
+      "location_head": [
+        "Both sides",
+        "Behind right eye"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Sleep change",
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 5.7,
+      "stress_level": 3,
+      "foods_notable": [],
+      "notes": "rough day",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2024-08-20T17:30:00Z",
+      "updated_at": "2024-08-20T17:30:00Z",
+      "derived": {
+        "day_of_week": 1,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 10.7,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Full Moon",
+        "moon_illumination": 0.991,
+        "temp_c": -6.6,
+        "humidity_pct": 39.0,
+        "pressure_hpa": 1018.5,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": -5.8,
+        "pressure_delta_48h": 4.2,
+        "aqi": 70,
+        "enriched_at": "2024-08-20T17:30:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "002-20240907",
+      "started_at": "2024-09-07T21:15:00Z",
+      "ended_at": "2024-09-08T02:15:00Z",
+      "severity": 6,
+      "location_head": [
+        "Both sides",
+        "Neck"
+      ],
+      "aura_present": false,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Sumatriptan",
+          "dose": "50mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Exercise",
+        "Sleep change",
+        "Caffeine"
+      ],
+      "sleep_hours_prior": 8.1,
+      "stress_level": 4,
+      "foods_notable": [
+        "Red wine"
+      ],
+      "notes": "rough day",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2024-09-07T21:15:00Z",
+      "updated_at": "2024-09-07T21:15:00Z",
+      "derived": {
+        "day_of_week": 5,
+        "season": "Autumn",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 11.4,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Crescent",
+        "moon_illumination": 0.195,
+        "temp_c": 4.7,
+        "humidity_pct": 33.0,
+        "pressure_hpa": 1017.2,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": -2.5,
+        "pressure_delta_48h": -5.1,
+        "aqi": 44,
+        "enriched_at": "2024-09-07T21:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "003-20240925",
+      "started_at": "2024-09-25T17:15:00Z",
+      "ended_at": "2024-09-25T20:15:00Z",
+      "severity": 3,
+      "location_head": [
+        "Top of head"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Rizatriptan",
+          "dose": "200mg",
+          "helped": null
+        }
+      ],
+      "triggers_suspected": [
+        "Screen time",
+        "Alcohol"
+      ],
+      "sleep_hours_prior": 8.7,
+      "stress_level": 1,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "notes": "rough day",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2024-09-25T17:15:00Z",
+      "updated_at": "2024-09-25T17:15:00Z",
+      "derived": {
+        "day_of_week": 2,
+        "season": "Autumn",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 12.2,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Last Quarter",
+        "moon_illumination": 0.502,
+        "temp_c": 28.9,
+        "humidity_pct": 48.0,
+        "pressure_hpa": 996.8,
+        "precipitation_mm": 3.1,
+        "pressure_delta_24h": -6.7,
+        "pressure_delta_48h": -7.6,
+        "aqi": 52,
+        "enriched_at": "2024-09-25T17:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "004-20241013",
+      "started_at": "2024-10-13T23:15:00Z",
+      "ended_at": "2024-10-14T11:15:00Z",
+      "severity": 5,
+      "location_head": [
+        "Top of head"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Ibuprofen",
+          "dose": "400mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Alcohol",
+        "Weather / pressure"
+      ],
+      "sleep_hours_prior": 5.2,
+      "stress_level": 2,
+      "foods_notable": [
+        "Red wine"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2024-10-13T23:15:00Z",
+      "updated_at": "2024-10-13T23:15:00Z",
+      "derived": {
+        "day_of_week": 6,
+        "season": "Autumn",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 13.0,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Gibbous",
+        "moon_illumination": 0.836,
+        "temp_c": 7.3,
+        "humidity_pct": 61.0,
+        "pressure_hpa": 1014.0,
+        "precipitation_mm": 2.0,
+        "pressure_delta_24h": 6.6,
+        "pressure_delta_48h": 1.0,
+        "aqi": 77,
+        "enriched_at": "2024-10-13T23:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "005-20241031",
+      "started_at": "2024-10-31T23:15:00Z",
+      "ended_at": "2024-11-01T07:15:00Z",
+      "severity": 3,
+      "location_head": [
+        "Back of head",
+        "Behind right eye"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Caffeine",
+        "Food"
+      ],
+      "sleep_hours_prior": 6.8,
+      "stress_level": 1,
+      "foods_notable": [],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2024-10-31T23:15:00Z",
+      "updated_at": "2024-10-31T23:15:00Z",
+      "derived": {
+        "day_of_week": 3,
+        "season": "Autumn",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 13.8,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "New Moon",
+        "moon_illumination": 0.005,
+        "temp_c": -1.5,
+        "humidity_pct": 64.0,
+        "pressure_hpa": 1008.0,
+        "precipitation_mm": 1.1,
+        "pressure_delta_24h": 0.5,
+        "pressure_delta_48h": 1.5,
+        "aqi": 47,
+        "enriched_at": "2024-10-31T23:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "006-20241118",
+      "started_at": "2024-11-18T16:15:00Z",
+      "ended_at": "2024-11-18T21:15:00Z",
+      "severity": 3,
+      "location_head": [
+        "Right temple",
+        "Back of head"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Ibuprofen",
+          "dose": "100mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Caffeine"
+      ],
+      "sleep_hours_prior": 7.1,
+      "stress_level": 2,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2024-11-18T16:15:00Z",
+      "updated_at": "2024-11-18T16:15:00Z",
+      "derived": {
+        "day_of_week": 0,
+        "season": "Autumn",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.4,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Gibbous",
+        "moon_illumination": 0.943,
+        "temp_c": 31.7,
+        "humidity_pct": 63.0,
+        "pressure_hpa": 1002.1,
+        "precipitation_mm": 1.5,
+        "pressure_delta_24h": -5.6,
+        "pressure_delta_48h": -5.1,
+        "aqi": 49,
+        "enriched_at": "2024-11-18T16:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "007-20241206",
+      "started_at": "2024-12-06T18:45:00Z",
+      "ended_at": "2024-12-07T06:45:00Z",
+      "severity": 6,
+      "location_head": [
+        "Forehead"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Ibuprofen",
+          "dose": "100mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Screen time",
+        "Food",
+        "Strong smell"
+      ],
+      "sleep_hours_prior": 4.9,
+      "stress_level": 4,
+      "foods_notable": [
+        "Red wine"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2024-12-06T18:45:00Z",
+      "updated_at": "2024-12-06T18:45:00Z",
+      "derived": {
+        "day_of_week": 4,
+        "season": "Winter",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.7,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "First Quarter",
+        "moon_illumination": 0.315,
+        "temp_c": 13.4,
+        "humidity_pct": 65.0,
+        "pressure_hpa": 1008.2,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": -6.8,
+        "pressure_delta_48h": 6.3,
+        "aqi": 63,
+        "enriched_at": "2024-12-06T18:45:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "008-20241224",
+      "started_at": "2024-12-24T16:00:00Z",
+      "ended_at": "2024-12-24T21:00:00Z",
+      "severity": 7,
+      "location_head": [
+        "Left temple",
+        "Right temple"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Acetaminophen",
+          "dose": "200mg",
+          "helped": null
+        }
+      ],
+      "triggers_suspected": [
+        "Food"
+      ],
+      "sleep_hours_prior": 5.6,
+      "stress_level": 2,
+      "foods_notable": [],
+      "notes": "rough day",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2024-12-24T16:00:00Z",
+      "updated_at": "2024-12-24T16:00:00Z",
+      "derived": {
+        "day_of_week": 1,
+        "season": "Winter",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.8,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Last Quarter",
+        "moon_illumination": 0.36,
+        "temp_c": 9.1,
+        "humidity_pct": 87.0,
+        "pressure_hpa": 1020.9,
+        "precipitation_mm": 1.9,
+        "pressure_delta_24h": -2.4,
+        "pressure_delta_48h": -1.4,
+        "aqi": 84,
+        "enriched_at": "2024-12-24T16:00:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "009-20250111",
+      "started_at": "2025-01-11T21:45:00Z",
+      "ended_at": "2025-01-12T02:45:00Z",
+      "severity": 5,
+      "location_head": [
+        "Behind right eye",
+        "Neck"
+      ],
+      "aura_present": null,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Strong smell"
+      ],
+      "sleep_hours_prior": 6.9,
+      "stress_level": 3,
+      "foods_notable": [
+        "Citrus",
+        "Red wine"
+      ],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-01-11T21:45:00Z",
+      "updated_at": "2025-01-11T21:45:00Z",
+      "derived": {
+        "day_of_week": 5,
+        "season": "Winter",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 14.6,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Gibbous",
+        "moon_illumination": 0.927,
+        "temp_c": 30.8,
+        "humidity_pct": 70.0,
+        "pressure_hpa": 1015.3,
+        "precipitation_mm": 2.1,
+        "pressure_delta_24h": 2.7,
+        "pressure_delta_48h": -5.4,
+        "aqi": 86,
+        "enriched_at": "2025-01-11T21:45:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "010-20250129",
+      "started_at": "2025-01-29T15:30:00Z",
+      "ended_at": "2025-01-29T19:30:00Z",
+      "severity": 9,
+      "location_head": [
+        "Forehead",
+        "Left temple"
+      ],
+      "aura_present": false,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Rizatriptan",
+          "dose": "200mg",
+          "helped": null
+        }
+      ],
+      "triggers_suspected": [
+        "Sleep change",
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 8.3,
+      "stress_level": 5,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-01-29T15:30:00Z",
+      "updated_at": "2025-01-29T15:30:00Z",
+      "derived": {
+        "day_of_week": 2,
+        "season": "Winter",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.2,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "New Moon",
+        "moon_illumination": 0.002,
+        "temp_c": 23.3,
+        "humidity_pct": 56.0,
+        "pressure_hpa": 1028.5,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 6.7,
+        "pressure_delta_48h": 8.4,
+        "aqi": 21,
+        "enriched_at": "2025-01-29T15:30:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "011-20250216",
+      "started_at": "2025-02-16T23:30:00Z",
+      "ended_at": "2025-02-17T17:30:00Z",
+      "severity": 6,
+      "location_head": [
+        "Both sides",
+        "Neck"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Strong smell",
+        "Alcohol"
+      ],
+      "sleep_hours_prior": 6.3,
+      "stress_level": 3,
+      "foods_notable": [],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-02-16T23:30:00Z",
+      "updated_at": "2025-02-16T23:30:00Z",
+      "derived": {
+        "day_of_week": 6,
+        "season": "Winter",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 13.5,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Gibbous",
+        "moon_illumination": 0.832,
+        "temp_c": 16.8,
+        "humidity_pct": 60.0,
+        "pressure_hpa": 1014.8,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 3.9,
+        "pressure_delta_48h": -3.3,
+        "aqi": 88,
+        "enriched_at": "2025-02-16T23:30:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "012-20250306",
+      "started_at": "2025-03-06T18:00:00Z",
+      "ended_at": "2025-03-06T21:00:00Z",
+      "severity": 5,
+      "location_head": [
+        "Forehead"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Rizatriptan",
+          "dose": "200mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Sleep change",
+        "Alcohol",
+        "Screen time"
+      ],
+      "sleep_hours_prior": 7.4,
+      "stress_level": 4,
+      "foods_notable": [
+        "Cheese",
+        "Citrus"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-03-06T18:00:00Z",
+      "updated_at": "2025-03-06T18:00:00Z",
+      "derived": {
+        "day_of_week": 3,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 12.7,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "First Quarter",
+        "moon_illumination": 0.457,
+        "temp_c": 23.1,
+        "humidity_pct": 39.0,
+        "pressure_hpa": 1003.2,
+        "precipitation_mm": 0.4,
+        "pressure_delta_24h": -6.9,
+        "pressure_delta_48h": 2.5,
+        "aqi": 66,
+        "enriched_at": "2025-03-06T18:00:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "013-20250324",
+      "started_at": "2025-03-24T23:15:00Z",
+      "ended_at": "2025-03-25T11:15:00Z",
+      "severity": 5,
+      "location_head": [
+        "Behind right eye",
+        "Top of head"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Hormonal",
+        "Caffeine"
+      ],
+      "sleep_hours_prior": 5.5,
+      "stress_level": 3,
+      "foods_notable": [
+        "Citrus"
+      ],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-03-24T23:15:00Z",
+      "updated_at": "2025-03-24T23:15:00Z",
+      "derived": {
+        "day_of_week": 0,
+        "season": "Spring",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 11.9,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Crescent",
+        "moon_illumination": 0.198,
+        "temp_c": 5.5,
+        "humidity_pct": 48.0,
+        "pressure_hpa": 1020.1,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": -8.7,
+        "pressure_delta_48h": -4.2,
+        "aqi": 66,
+        "enriched_at": "2025-03-24T23:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "014-20250411",
+      "started_at": "2025-04-11T20:00:00Z",
+      "ended_at": "2025-04-12T00:00:00Z",
+      "severity": 3,
+      "location_head": [
+        "Neck",
+        "Behind right eye"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Naproxen",
+          "dose": "200mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Bright light"
+      ],
+      "sleep_hours_prior": 6.9,
+      "stress_level": 2,
+      "foods_notable": [],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-04-11T20:00:00Z",
+      "updated_at": "2025-04-11T20:00:00Z",
+      "derived": {
+        "day_of_week": 4,
+        "season": "Spring",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 11.1,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Full Moon",
+        "moon_illumination": 0.983,
+        "temp_c": 10.3,
+        "humidity_pct": 36.0,
+        "pressure_hpa": 1019.3,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": -5.4,
+        "pressure_delta_48h": -1.1,
+        "aqi": 46,
+        "enriched_at": "2025-04-11T20:00:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "015-20250429",
+      "started_at": "2025-04-29T15:00:00Z",
+      "ended_at": "2025-04-29T20:00:00Z",
+      "severity": 5,
+      "location_head": [
+        "Forehead"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Ibuprofen",
+          "dose": "50mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Caffeine",
+        "Bright light",
+        "Sleep change"
+      ],
+      "sleep_hours_prior": 6.4,
+      "stress_level": 5,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-04-29T15:00:00Z",
+      "updated_at": "2025-04-29T15:00:00Z",
+      "derived": {
+        "day_of_week": 1,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 10.4,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "New Moon",
+        "moon_illumination": 0.036,
+        "temp_c": 17.7,
+        "humidity_pct": 70.0,
+        "pressure_hpa": 1014.5,
+        "precipitation_mm": 2.1,
+        "pressure_delta_24h": -4.9,
+        "pressure_delta_48h": -0.3,
+        "aqi": 35,
+        "enriched_at": "2025-04-29T15:00:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "016-20250517",
+      "started_at": "2025-05-17T17:45:00Z",
+      "ended_at": "2025-05-18T11:45:00Z",
+      "severity": 6,
+      "location_head": [
+        "Back of head"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Naproxen",
+          "dose": "200mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Stress",
+        "Weather / pressure",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 7.1,
+      "stress_level": 5,
+      "foods_notable": [],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-05-17T17:45:00Z",
+      "updated_at": "2025-05-17T17:45:00Z",
+      "derived": {
+        "day_of_week": 5,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 9.7,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Gibbous",
+        "moon_illumination": 0.73,
+        "temp_c": 14.5,
+        "humidity_pct": 55.0,
+        "pressure_hpa": 1014.0,
+        "precipitation_mm": 2.6,
+        "pressure_delta_24h": -3.3,
+        "pressure_delta_48h": 5.0,
+        "aqi": 63,
+        "enriched_at": "2025-05-17T17:45:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "017-20250604",
+      "started_at": "2025-06-04T18:15:00Z",
+      "ended_at": "2025-06-05T12:15:00Z",
+      "severity": 5,
+      "location_head": [
+        "Left temple",
+        "Behind right eye"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Sumatriptan",
+          "dose": "400mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Strong smell",
+        "Weather / pressure",
+        "Food"
+      ],
+      "sleep_hours_prior": 5.6,
+      "stress_level": 3,
+      "foods_notable": [],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-06-04T18:15:00Z",
+      "updated_at": "2025-06-04T18:15:00Z",
+      "derived": {
+        "day_of_week": 2,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 9.3,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "First Quarter",
+        "moon_illumination": 0.607,
+        "temp_c": 28.2,
+        "humidity_pct": 32.0,
+        "pressure_hpa": 1006.3,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": -4.8,
+        "pressure_delta_48h": -4.5,
+        "aqi": 60,
+        "enriched_at": "2025-06-04T18:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "018-20250622",
+      "started_at": "2025-06-22T14:15:00Z",
+      "ended_at": "2025-06-22T16:15:00Z",
+      "severity": 3,
+      "location_head": [
+        "Right temple"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Acetaminophen",
+          "dose": "10mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Weather / pressure"
+      ],
+      "sleep_hours_prior": 9.2,
+      "stress_level": 5,
+      "foods_notable": [],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-06-22T14:15:00Z",
+      "updated_at": "2025-06-22T14:15:00Z",
+      "derived": {
+        "day_of_week": 6,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 9.2,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Crescent",
+        "moon_illumination": 0.118,
+        "temp_c": 30.6,
+        "humidity_pct": 69.0,
+        "pressure_hpa": 1003.7,
+        "precipitation_mm": 0.2,
+        "pressure_delta_24h": -0.7,
+        "pressure_delta_48h": -0.2,
+        "aqi": 76,
+        "enriched_at": "2025-06-22T14:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "019-20250710",
+      "started_at": "2025-07-10T15:15:00Z",
+      "ended_at": "2025-07-10T23:15:00Z",
+      "severity": 8,
+      "location_head": [
+        "Left temple",
+        "Behind left eye"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Ibuprofen",
+          "dose": "200mg",
+          "helped": null
+        }
+      ],
+      "triggers_suspected": [
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 6.2,
+      "stress_level": 5,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-07-10T15:15:00Z",
+      "updated_at": "2025-07-10T15:15:00Z",
+      "derived": {
+        "day_of_week": 3,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 9.3,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Full Moon",
+        "moon_illumination": 1.0,
+        "temp_c": 9.0,
+        "humidity_pct": 36.0,
+        "pressure_hpa": 1013.7,
+        "precipitation_mm": 0.8,
+        "pressure_delta_24h": 8.8,
+        "pressure_delta_48h": -9.1,
+        "aqi": 50,
+        "enriched_at": "2025-07-10T15:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "020-20250728",
+      "started_at": "2025-07-28T18:45:00Z",
+      "ended_at": "2025-07-29T04:45:00Z",
+      "severity": 5,
+      "location_head": [
+        "Left temple"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Acetaminophen",
+          "dose": "100mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Screen time",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 5.6,
+      "stress_level": 2,
+      "foods_notable": [
+        "Cheese",
+        "Chocolate"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-07-28T18:45:00Z",
+      "updated_at": "2025-07-28T18:45:00Z",
+      "derived": {
+        "day_of_week": 0,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 9.8,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Crescent",
+        "moon_illumination": 0.122,
+        "temp_c": 6.4,
+        "humidity_pct": 68.0,
+        "pressure_hpa": 1010.5,
+        "precipitation_mm": 1.1,
+        "pressure_delta_24h": 7.0,
+        "pressure_delta_48h": 0.8,
+        "aqi": 16,
+        "enriched_at": "2025-07-28T18:45:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "021-20250815",
+      "started_at": "2025-08-15T21:15:00Z",
+      "ended_at": "2025-08-16T01:15:00Z",
+      "severity": 9,
+      "location_head": [
+        "Forehead",
+        "Behind left eye"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Acetaminophen",
+          "dose": "50mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Stress"
+      ],
+      "sleep_hours_prior": 4.6,
+      "stress_level": 2,
+      "foods_notable": [
+        "Red wine",
+        "Citrus"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-08-15T21:15:00Z",
+      "updated_at": "2025-08-15T21:15:00Z",
+      "derived": {
+        "day_of_week": 4,
+        "season": "Summer",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 10.4,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Last Quarter",
+        "moon_illumination": 0.573,
+        "temp_c": 0.2,
+        "humidity_pct": 41.0,
+        "pressure_hpa": 1011.8,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 8.1,
+        "pressure_delta_48h": -14.6,
+        "aqi": 35,
+        "enriched_at": "2025-08-15T21:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "022-20250902",
+      "started_at": "2025-09-02T15:15:00Z",
+      "ended_at": "2025-09-02T17:15:00Z",
+      "severity": 4,
+      "location_head": [
+        "Forehead"
+      ],
+      "aura_present": null,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Bright light"
+      ],
+      "sleep_hours_prior": 5.1,
+      "stress_level": 4,
+      "foods_notable": [
+        "Chocolate",
+        "Red wine"
+      ],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-09-02T15:15:00Z",
+      "updated_at": "2025-09-02T15:15:00Z",
+      "derived": {
+        "day_of_week": 1,
+        "season": "Autumn",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 11.2,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Gibbous",
+        "moon_illumination": 0.735,
+        "temp_c": 20.5,
+        "humidity_pct": 54.0,
+        "pressure_hpa": 997.7,
+        "precipitation_mm": 0.5,
+        "pressure_delta_24h": -1.4,
+        "pressure_delta_48h": 2.4,
+        "aqi": 45,
+        "enriched_at": "2025-09-02T15:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "023-20250920",
+      "started_at": "2025-09-20T18:15:00Z",
+      "ended_at": "2025-09-21T18:15:00Z",
+      "severity": 4,
+      "location_head": [
+        "Top of head"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Naproxen",
+          "dose": "200mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Stress"
+      ],
+      "sleep_hours_prior": 7.2,
+      "stress_level": 1,
+      "foods_notable": [],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-09-20T18:15:00Z",
+      "updated_at": "2025-09-20T18:15:00Z",
+      "derived": {
+        "day_of_week": 5,
+        "season": "Autumn",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 12.0,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "New Moon",
+        "moon_illumination": 0.033,
+        "temp_c": 7.6,
+        "humidity_pct": 81.0,
+        "pressure_hpa": 1008.7,
+        "precipitation_mm": 2.7,
+        "pressure_delta_24h": 11.4,
+        "pressure_delta_48h": -5.3,
+        "aqi": 65,
+        "enriched_at": "2025-09-20T18:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "024-20251008",
+      "started_at": "2025-10-08T15:15:00Z",
+      "ended_at": "2025-10-09T01:15:00Z",
+      "severity": 6,
+      "location_head": [
+        "Neck"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Ibuprofen",
+          "dose": "200mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Caffeine",
+        "Exercise",
+        "Sleep change"
+      ],
+      "sleep_hours_prior": 5.7,
+      "stress_level": 1,
+      "foods_notable": [],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-10-08T15:15:00Z",
+      "updated_at": "2025-10-08T15:15:00Z",
+      "derived": {
+        "day_of_week": 2,
+        "season": "Autumn",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 12.8,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Full Moon",
+        "moon_illumination": 0.979,
+        "temp_c": 23.8,
+        "humidity_pct": 69.0,
+        "pressure_hpa": 1023.2,
+        "precipitation_mm": 4.0,
+        "pressure_delta_24h": 3.6,
+        "pressure_delta_48h": 0.3,
+        "aqi": 17,
+        "enriched_at": "2025-10-08T15:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "025-20251026",
+      "started_at": "2025-10-26T13:45:00Z",
+      "ended_at": "2025-10-26T23:45:00Z",
+      "severity": 4,
+      "location_head": [
+        "Forehead"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Acetaminophen",
+          "dose": "100mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Hormonal",
+        "Alcohol"
+      ],
+      "sleep_hours_prior": 7.7,
+      "stress_level": 2,
+      "foods_notable": [
+        "Chocolate",
+        "Citrus"
+      ],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-10-26T13:45:00Z",
+      "updated_at": "2025-10-26T13:45:00Z",
+      "derived": {
+        "day_of_week": 6,
+        "season": "Autumn",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 13.5,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Crescent",
+        "moon_illumination": 0.217,
+        "temp_c": 5.0,
+        "humidity_pct": 35.0,
+        "pressure_hpa": 1006.9,
+        "precipitation_mm": 2.7,
+        "pressure_delta_24h": 1.2,
+        "pressure_delta_48h": -0.3,
+        "aqi": 34,
+        "enriched_at": "2025-10-26T13:45:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "026-20251113",
+      "started_at": "2025-11-13T18:15:00Z",
+      "ended_at": "2025-11-14T06:15:00Z",
+      "severity": 4,
+      "location_head": [
+        "Both sides"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Sumatriptan",
+          "dose": "50mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 7.6,
+      "stress_level": 1,
+      "foods_notable": [
+        "Cheese",
+        "Chocolate"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-11-13T18:15:00Z",
+      "updated_at": "2025-11-13T18:15:00Z",
+      "derived": {
+        "day_of_week": 3,
+        "season": "Autumn",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.2,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Last Quarter",
+        "moon_illumination": 0.437,
+        "temp_c": -6.4,
+        "humidity_pct": 41.0,
+        "pressure_hpa": 1011.3,
+        "precipitation_mm": 2.6,
+        "pressure_delta_24h": 2.0,
+        "pressure_delta_48h": 2.7,
+        "aqi": 75,
+        "enriched_at": "2025-11-13T18:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "027-20251201",
+      "started_at": "2025-12-01T17:00:00Z",
+      "ended_at": "2025-12-01T21:00:00Z",
+      "severity": 5,
+      "location_head": [
+        "Right temple",
+        "Behind right eye"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Naproxen",
+          "dose": "50mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Stress",
+        "Weather / pressure"
+      ],
+      "sleep_hours_prior": 5.8,
+      "stress_level": 2,
+      "foods_notable": [
+        "Red wine",
+        "Cheese"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-12-01T17:00:00Z",
+      "updated_at": "2025-12-01T17:00:00Z",
+      "derived": {
+        "day_of_week": 0,
+        "season": "Winter",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.6,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Gibbous",
+        "moon_illumination": 0.86,
+        "temp_c": 8.4,
+        "humidity_pct": 26.0,
+        "pressure_hpa": 1016.1,
+        "precipitation_mm": 0.9,
+        "pressure_delta_24h": 9.5,
+        "pressure_delta_48h": -9.7,
+        "aqi": 81,
+        "enriched_at": "2025-12-01T17:00:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "028-20251219",
+      "started_at": "2025-12-19T22:45:00Z",
+      "ended_at": "2025-12-20T01:45:00Z",
+      "severity": 7,
+      "location_head": [
+        "Left temple"
+      ],
+      "aura_present": true,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Ibuprofen",
+          "dose": "100mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Sleep change"
+      ],
+      "sleep_hours_prior": 8.0,
+      "stress_level": 5,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2025-12-19T22:45:00Z",
+      "updated_at": "2025-12-19T22:45:00Z",
+      "derived": {
+        "day_of_week": 4,
+        "season": "Winter",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 14.8,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "New Moon",
+        "moon_illumination": 0.0,
+        "temp_c": 9.4,
+        "humidity_pct": 47.0,
+        "pressure_hpa": 1010.9,
+        "precipitation_mm": 0.0,
+        "pressure_delta_24h": -1.5,
+        "pressure_delta_48h": 3.4,
+        "aqi": 49,
+        "enriched_at": "2025-12-19T22:45:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "029-20260106",
+      "started_at": "2026-01-06T22:45:00Z",
+      "ended_at": "2026-01-07T04:45:00Z",
+      "severity": 7,
+      "location_head": [
+        "Behind right eye",
+        "Neck"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Rizatriptan",
+          "dose": "10mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Strong smell",
+        "Hormonal",
+        "Stress"
+      ],
+      "sleep_hours_prior": 6.3,
+      "stress_level": 5,
+      "foods_notable": [
+        "Red wine",
+        "Citrus"
+      ],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-01-06T22:45:00Z",
+      "updated_at": "2026-01-06T22:45:00Z",
+      "derived": {
+        "day_of_week": 1,
+        "season": "Winter",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 14.7,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Gibbous",
+        "moon_illumination": 0.895,
+        "temp_c": 5.5,
+        "humidity_pct": 29.0,
+        "pressure_hpa": 1021.4,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": -2.1,
+        "pressure_delta_48h": 4.4,
+        "aqi": 55,
+        "enriched_at": "2026-01-06T22:45:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "030-20260124",
+      "started_at": "2026-01-24T17:30:00Z",
+      "ended_at": "2026-01-24T22:30:00Z",
+      "severity": 5,
+      "location_head": [
+        "Top of head"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Acetaminophen",
+          "dose": "200mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Screen time",
+        "Exercise"
+      ],
+      "sleep_hours_prior": 6.8,
+      "stress_level": 3,
+      "foods_notable": [],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-01-24T17:30:00Z",
+      "updated_at": "2026-01-24T17:30:00Z",
+      "derived": {
+        "day_of_week": 5,
+        "season": "Winter",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.3,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "First Quarter",
+        "moon_illumination": 0.367,
+        "temp_c": 16.0,
+        "humidity_pct": 91.0,
+        "pressure_hpa": 1013.6,
+        "precipitation_mm": 3.4,
+        "pressure_delta_24h": 0.1,
+        "pressure_delta_48h": -4.0,
+        "aqi": 46,
+        "enriched_at": "2026-01-24T17:30:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "031-20260211",
+      "started_at": "2026-02-11T18:45:00Z",
+      "ended_at": "2026-02-12T04:45:00Z",
+      "severity": 7,
+      "location_head": [
+        "Top of head"
+      ],
+      "aura_present": true,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Naproxen",
+          "dose": "400mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Caffeine"
+      ],
+      "sleep_hours_prior": 6.2,
+      "stress_level": 1,
+      "foods_notable": [
+        "Red wine"
+      ],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-02-11T18:45:00Z",
+      "updated_at": "2026-02-11T18:45:00Z",
+      "derived": {
+        "day_of_week": 2,
+        "season": "Winter",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 13.7,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Crescent",
+        "moon_illumination": 0.291,
+        "temp_c": 10.8,
+        "humidity_pct": 50.0,
+        "pressure_hpa": 1014.3,
+        "precipitation_mm": 2.4,
+        "pressure_delta_24h": -10.2,
+        "pressure_delta_48h": -0.6,
+        "aqi": 31,
+        "enriched_at": "2026-02-11T18:45:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "032-20260301",
+      "started_at": "2026-03-01T13:30:00Z",
+      "ended_at": "2026-03-01T21:30:00Z",
+      "severity": 6,
+      "location_head": [
+        "Back of head",
+        "Right temple"
+      ],
+      "aura_present": null,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Naproxen",
+          "dose": "10mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Caffeine",
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 6.6,
+      "stress_level": 3,
+      "foods_notable": [],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-03-01T13:30:00Z",
+      "updated_at": "2026-03-01T13:30:00Z",
+      "derived": {
+        "day_of_week": 6,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 12.9,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Gibbous",
+        "moon_illumination": 0.939,
+        "temp_c": 14.3,
+        "humidity_pct": 68.0,
+        "pressure_hpa": 1019.1,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 8.7,
+        "pressure_delta_48h": -5.1,
+        "aqi": 54,
+        "enriched_at": "2026-03-01T13:30:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "033-20260319",
+      "started_at": "2026-03-19T20:00:00Z",
+      "ended_at": "2026-03-20T04:00:00Z",
+      "severity": 7,
+      "location_head": [
+        "Neck"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Exercise",
+        "Strong smell"
+      ],
+      "sleep_hours_prior": 7.2,
+      "stress_level": 5,
+      "foods_notable": [],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-03-19T20:00:00Z",
+      "updated_at": "2026-03-19T20:00:00Z",
+      "derived": {
+        "day_of_week": 3,
+        "season": "Spring",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 12.1,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "New Moon",
+        "moon_illumination": 0.015,
+        "temp_c": 10.0,
+        "humidity_pct": 71.0,
+        "pressure_hpa": 1029.0,
+        "precipitation_mm": 1.4,
+        "pressure_delta_24h": -5.1,
+        "pressure_delta_48h": -6.5,
+        "aqi": 45,
+        "enriched_at": "2026-03-19T20:00:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "034-20260406",
+      "started_at": "2026-04-06T23:15:00Z",
+      "ended_at": "2026-04-07T11:15:00Z",
+      "severity": 6,
+      "location_head": [
+        "Both sides",
+        "Right temple"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Acetaminophen",
+          "dose": "200mg",
+          "helped": null
+        }
+      ],
+      "triggers_suspected": [
+        "Caffeine"
+      ],
+      "sleep_hours_prior": 6.6,
+      "stress_level": 3,
+      "foods_notable": [],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-04-06T23:15:00Z",
+      "updated_at": "2026-04-06T23:15:00Z",
+      "derived": {
+        "day_of_week": 0,
+        "season": "Spring",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 11.3,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Gibbous",
+        "moon_illumination": 0.785,
+        "temp_c": 0.8,
+        "humidity_pct": 50.0,
+        "pressure_hpa": 1017.0,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": -3.1,
+        "pressure_delta_48h": 14.1,
+        "aqi": 76,
+        "enriched_at": "2026-04-06T23:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "035-20260424",
+      "started_at": "2026-04-24T23:15:00Z",
+      "ended_at": "2026-04-25T11:15:00Z",
+      "severity": 8,
+      "location_head": [
+        "Top of head",
+        "Left temple"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Bright light",
+        "Hormonal",
+        "Screen time"
+      ],
+      "sleep_hours_prior": 4.7,
+      "stress_level": 1,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-04-24T23:15:00Z",
+      "updated_at": "2026-04-24T23:15:00Z",
+      "derived": {
+        "day_of_week": 4,
+        "season": "Spring",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 10.6,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "First Quarter",
+        "moon_illumination": 0.541,
+        "temp_c": 29.7,
+        "humidity_pct": 64.0,
+        "pressure_hpa": 1013.6,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 3.9,
+        "pressure_delta_48h": -10.5,
+        "aqi": 88,
+        "enriched_at": "2026-04-24T23:15:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "036-20260512",
+      "started_at": "2026-05-12T16:30:00Z",
+      "ended_at": "2026-05-12T18:30:00Z",
+      "severity": 8,
+      "location_head": [
+        "Behind right eye"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Sumatriptan",
+          "dose": "400mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 5.9,
+      "stress_level": 1,
+      "foods_notable": [],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-05-12T16:30:00Z",
+      "updated_at": "2026-05-12T16:30:00Z",
+      "derived": {
+        "day_of_week": 1,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 9.9,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Crescent",
+        "moon_illumination": 0.174,
+        "temp_c": 7.9,
+        "humidity_pct": 59.0,
+        "pressure_hpa": 1007.6,
+        "precipitation_mm": 2.8,
+        "pressure_delta_24h": 0.5,
+        "pressure_delta_48h": -4.6,
+        "aqi": 88,
+        "enriched_at": "2026-05-12T16:30:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "037-20260530",
+      "started_at": "2026-05-30T15:30:00Z",
+      "ended_at": "2026-05-30T18:30:00Z",
+      "severity": 9,
+      "location_head": [
+        "Left temple",
+        "Back of head"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Ibuprofen",
+          "dose": "50mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Stress"
+      ],
+      "sleep_hours_prior": 7.9,
+      "stress_level": 4,
+      "foods_notable": [
+        "Citrus",
+        "Red wine"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-05-30T15:30:00Z",
+      "updated_at": "2026-05-30T15:30:00Z",
+      "derived": {
+        "day_of_week": 5,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 9.4,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Full Moon",
+        "moon_illumination": 0.992,
+        "temp_c": 27.7,
+        "humidity_pct": 44.0,
+        "pressure_hpa": 1012.3,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 6.6,
+        "pressure_delta_48h": 10.4,
+        "aqi": 72,
+        "enriched_at": "2026-05-30T15:30:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "038-20260617",
+      "started_at": "2026-06-17T20:45:00Z",
+      "ended_at": "2026-06-17T23:45:00Z",
+      "severity": 7,
+      "location_head": [
+        "Neck",
+        "Top of head"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Sumatriptan",
+          "dose": "100mg",
+          "helped": null
+        }
+      ],
+      "triggers_suspected": [
+        "Weather / pressure",
+        "Screen time",
+        "Stress"
+      ],
+      "sleep_hours_prior": 6.3,
+      "stress_level": 3,
+      "foods_notable": [
+        "Chocolate",
+        "Citrus"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-06-17T20:45:00Z",
+      "updated_at": "2026-06-17T20:45:00Z",
+      "derived": {
+        "day_of_week": 2,
+        "season": "Summer",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 9.2,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Crescent",
+        "moon_illumination": 0.075,
+        "temp_c": 27.2,
+        "humidity_pct": 72.0,
+        "pressure_hpa": 1024.6,
+        "precipitation_mm": 5.2,
+        "pressure_delta_24h": -5.0,
+        "pressure_delta_48h": -2.1,
+        "aqi": 84,
+        "enriched_at": "2026-06-17T20:45:00Z",
+        "enrich_error": null
+      }
+    },
+    {
+      "id": "039-20260705",
+      "started_at": "2026-07-05T15:15:00Z",
+      "ended_at": "2026-07-06T15:15:00Z",
+      "severity": 7,
+      "location_head": [
+        "Both sides"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Sleep change"
+      ],
+      "sleep_hours_prior": 5.3,
+      "stress_level": 5,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-07-05T15:15:00Z",
+      "updated_at": "2026-07-05T15:15:00Z",
+      "derived": {
+        "day_of_week": 6,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 9.2,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Last Quarter",
+        "moon_illumination": 0.684,
+        "temp_c": 19.8,
+        "humidity_pct": 56.0,
+        "pressure_hpa": 1017.4,
+        "precipitation_mm": 3.7,
+        "pressure_delta_24h": 2.9,
+        "pressure_delta_48h": 3.1,
+        "aqi": 66,
+        "enriched_at": "2026-07-05T15:15:00Z",
+        "enrich_error": null
+      }
+    }
+  ]
+}

@@ -79,6 +79,24 @@ void main() {
       expect(r.factors.containsKey('Pressure Δ 24h (hPa)'), isTrue);
     });
 
+    test('balanced weekdays are not flagged (guard against false positives)', () {
+      // A migraine every other day over eight weeks: each weekday ends up with a near-equal split
+      // of migraine and non-migraine days, so its migraine rate ≈ the base rate and no weekday
+      // should surface as a suspected factor (odds ratios sit around 1).
+      final start = DateTime.utc(2024, 3, 4, 12); // a Monday
+      final events = <DateTime>[
+        for (var i = 0; i < 56; i += 2) start.add(Duration(days: i)),
+      ];
+      final r = computeCorrelations(eventStarts: events, homeLat: 40.0);
+      expect(r.available, isTrue);
+      // Every weekday odds ratio hugs 1 — nothing like the 6.4 a real Monday signal produces
+      // (see the hand-verified test above). Small boundary noise from an odd-length window is fine.
+      for (final f in r.factors['Day of week']!) {
+        expect(f.oddsRatio, lessThan(1.5),
+            reason: '${f.bucket} OR ${f.oddsRatio} should be near 1 for balanced data');
+      }
+    });
+
     test('top factors are sorted by odds ratio and need >=3 migraine days', () {
       // Cluster many migraines on Mondays so a bucket clears the >=3 threshold.
       final events = <DateTime>[];
