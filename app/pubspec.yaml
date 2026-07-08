@@ -46,6 +46,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.4.0
   drift_dev: ^2.22.0
+  flutter_launcher_icons: ^0.14.0
 
 # The newest flutter_plugin_android_lifecycle (2.0.35, pulled transitively) sets an AAR
 # `minCompileSdk` of 36, which forces every plugin module — and file_picker's metadata check —
@@ -56,3 +57,12 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+
+# Launcher icon generation (run: dart run flutter_launcher_icons).
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon.png"
+  min_sdk_android: 26
+  adaptive_icon_background: "#5B1A8B"
+  adaptive_icon_foreground: "assets/icon_foreground.png"
