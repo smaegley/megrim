@@ -23,10 +23,9 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 **Want:** shade bars to convey magnitude/significance — but **not** harsh primary red/orange/yellow/green. Something within a palette that fits the app's purple theme.
 **Notes:** A **sequential (single-hue, light→dark) purple ramp** keyed to relative magnitude fits the design language and the `dataviz` guidance (magnitude = sequential, not categorical). For the suspected-factors bars, "significance" = odds ratio; for the descriptive count charts it'd be relative count. Validate the ramp with the dataviz palette validator.
 
-### 6. Add a medications UI to Event Detail *(real gap, not a bug)*
-**Now:** the schema (`meds_taken` = `[{name, dose, time, helped}]`), the `medication` vocab (managed in Settings), and export/import **all support meds — but there is no screen to add them to an event.** Event Detail only has Head-location and Suspected-trigger chip sections.
-**Want:** a Medications section in Event Detail (and ideally Quick Log) to add meds to an entry.
-**Notes:** More than a chip picker — each med has name (from vocab) + optional dose, time, and "helped?" tri-state. Likely a small add-row sub-form backed by the `medication` vocab, writing the `meds_taken` JSON that export/CSV already emit.
+### 6. Add a medications UI to Event Detail *(real gap, not a bug)* — **DONE**
+**Was:** the schema (`meds_taken` = `[{name, dose, time, helped}]`), the `medication` vocab (managed in Settings), and export/import **all supported meds — but there was no screen to add them to an event.** Event Detail only had Head-location and Suspected-trigger chip sections.
+**Done:** Event Detail now has a Medications section (below Suspected triggers). Each entry is a card showing name + optional dose/time and a thumb-up/down/? "helped" glyph, with tap-to-edit and a remove button. "Add medication" opens a sub-form dialog: name (Autocomplete over the `medication` vocab, or free text — new names are learned into the vocab), optional dose, optional time (time picker anchored to the event's date, stored ISO-8601 UTC), and a Yes/No/Unknown "helped?" tri-state. Writes the `meds_taken` JSON that export/CSV already emit. Quick Log reaches this via its existing "Add more details" → Event Detail link. Covered by `app/test/event_detail_meds_test.dart` (add/learn, remove, encode round-trip).
 
 ## Release / infra
 
