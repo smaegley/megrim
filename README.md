@@ -24,8 +24,10 @@ plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-Pre-release. Implemented against [`docs/SPEC.md`](docs/SPEC.md). See that document for the full
-product definition, data model, and build plan.
+**`v0.1.0`** — first signed release (pre-release, dogfood phase). Built against
+[`docs/SPEC.md`](docs/SPEC.md); see that document for the full product definition, data model, and
+build plan. App id `org.maegley.megrim`. Next milestones: dogfood, then an F-Droid `fdroiddata`
+submission, then `v1.0.0`.
 
 ## Repository layout
 

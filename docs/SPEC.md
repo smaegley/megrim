@@ -36,50 +36,28 @@ headache apps — "we collect nothing" is the differentiator, not a limitation.
 | Data location | On-device SQLite only | Concern #3: user owns everything |
 | Monetization | **Free + donate button** | Concern #4; also required: Open-Meteo free tier is non-commercial-only |
 | Telemetry / crash SDK | **None** (no Firebase/Crashlytics — banned on F-Droid anyway) | Privacy story; add a "copy error details" button instead |
-| First distribution | **GitHub Releases → F-Droid**; Play optional later | Pseudonym-compatible; defers Play's identity/org-account/health-declaration burden |
+| First distribution | **GitHub Releases → F-Droid**; Play optional later | Simplest FOSS path; defers Play's org-account / health-declaration burden |
 | Platform | Android only for v1 (Flutter keeps iOS possible) | Matches existing expertise and code |
 
-### 1.2 Anonymity / identity plan
+### 1.2 Identity / publishing
 
-- **GitHub:** a **separate, fresh account is required** — a pseudonymous *organization* under the
-  existing personal account does not work, because every interactive action (PR merges, issue
-  replies, releases) is publicly stamped with the real username. Known wrinkle: GitHub ToS
-  technically allows one *free* personal account per person; separate-identity accounts are
-  common and unenforced in practice, but if that clause is a concern the alternatives are
-  Codeberg (pseudonym-friendly, FOSS-native, but no GitHub Actions — CI would need rework) or a
-  paid GitHub account. Decision: **second free GitHub account** (platform knowing the identity
-  privately was already accepted — payouts require it; the goal is *public* pseudonymity).
+**Decision (2026-07-08): published under the author's own identity — the earlier pseudonym /
+anonymity plan was dropped.** Concretely:
 
-  **Account setup checklist (do in Phase 0, before first push):**
-  1. New email address (fresh ProtonMail/Gmail — never `@maegley.com` or aliases) → register the
-     pseudonym handle. The handle becomes the app id (`io.github.<handle>.megrim`) unless a
-     domain is bought — choose it with that in mind; it's immutable once published.
-  2. Enable "Keep my email addresses private" + block command-line pushes that expose email
-     (GitHub setting) on the new account.
-  3. Commits: **repo-local** git identity only (never `--global`), so other projects on the same
-     machines are unaffected:
-     `git config user.name "<pseudonym>" && git config user.email "<handle>@users.noreply.github.com"`
-  4. SSH: second keypair + host alias in `~/.ssh/config` (e.g. `Host github-megrim`), remote
-     set to `git@github-megrim:<handle>/megrim.git` — no cross-contamination from VM 201 or
-     the Mac.
-  5. Separate browser profile/container for the pseudonym's web sessions.
-  6. Ongoing discipline: never star/fork/comment from the real account; no references to personal
-     repos, hostnames, locations, or family names in code, issues, or commit messages; audit
-     `git log` authorship before the repo goes public.
-- **F-Droid:** accepts pseudonymous developers; submission is a merge request to `fdroiddata`
-  from the pseudonymous account.
-- **Donations:** platforms need real identity **privately** for payout/tax, but display the
-  pseudonym **publicly**. Liberapay is the FOSS-community standard and pseudonym-friendly; Ko-fi
-  also works. GitHub Sponsors shows only the handle. Verify current terms at setup. Add
-  `.github/FUNDING.yml` + a Donate item in the app (plain URL → browser; no payment SDK in-app).
-- **Google Play (if ever):** individual accounts display the **legal name** on the listing
-  (policy since 2023), and third-party reports (unverified against official policy — check Play
-  Console) say Health-category apps now require a verified **Organization** account. Play is
-  therefore the identity-exposing path; treat it as an optional later phase, possibly via an LLC
-  (which doubles as a liability shield).
-- **Residual exposure:** APK signing certs, DNS/websites, and payment rails are the usual
-  de-anonymization vectors. "Fairly anonymous" is achievable; "forensically anonymous" is not a
-  goal.
+- **GitHub:** [`github.com/smaegley/megrim`](https://github.com/smaegley/megrim) (public); commits
+  authored as Steve Maegley <steve@maegley.com>.
+- **Application id:** `org.maegley.megrim` — reverse-domain of `maegley.org` (a domain the author
+  controls via Cloudflare); independent of the GitHub handle and of the `maegley.com` email domain.
+  Immutable once published.
+- **Signing:** a dedicated release keystore (RSA-2048, alias `megrim`, CN=Steve Maegley), kept only
+  on the author's Mac + password manager. The four signing values are stored as repo Actions
+  secrets (`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`); tagging `v*` builds
+  a signed APK + AAB via `release.yml`.
+- **F-Droid:** submission is a merge request to `fdroiddata` (post-1.0).
+- **Google Play (if ever):** optional later phase; individual accounts display the legal name and
+  Health-category apps may require an Organization account. Not pursued for now.
+- **Donations:** optional; wire `.github/FUNDING.yml` + the in-app Donate URL to a platform if/when
+  desired (no payment SDK in-app).
 
 ### 1.3 Non-goals (v1)
 
@@ -398,7 +376,7 @@ emit `megrim-export` JSON → import on phone. ~50 lines of Python against
 
 | Phase | Deliverable | Notes |
 |---|---|---|
-| 0 | Repo scaffold: license, README, CI (analyze+test), theme, pseudonymous account + git identity (checklist in §1.2), new keystore | Half a day |
+| 0 | Repo scaffold: license, README, CI (analyze+test), theme, GitHub account + git identity (§1.2), release keystore | Half a day |
 | 1 | Data layer: Drift schema v1, vocab seeding, settings; Quick Log + History (list+calendar) + Event Detail + vocab manage screens ported from private app | Largest UI port; most code reusable with sync/API surgery |
 | 2 | Enrichment engine: astro math + golden tests; Open-Meteo client + hourly-series extraction + retry queue; wiring to save/edit/import | The genuinely new code |
 | 3 | Analytics engine: dashboard port + correlations port + pressure baseline cache; golden tests vs Python fixtures; Analytics screen wiring | Fixtures generated from private app **before** starting |
@@ -419,9 +397,8 @@ in tests.
 - License: **GPL-3.0-or-later**.
 
 **Still open (decide before the phase that needs them):**
-1. Application id — depends on the pseudonym/domain: `io.github.<pseudonym>.megrim` (no domain
-   needed) or `app.megrim.*` if the domain is acquired. **Immutable once published** — Phase 0.
-2. Donation platform(s) (Liberapay / Ko-fi / GitHub Sponsors) — Phase 4 (just a URL).
+1. ~~Application id~~ — **decided: `org.maegley.megrim`** (shipped in v0.1.0; see §1.2).
+2. Donation platform(s) (Liberapay / Ko-fi / GitHub Sponsors) — optional (just a URL).
 3. Ever do Play? If yes: org account vs personal-name exposure; revisit after F-Droid traction.
 4. Med-list vocab: seed with common abortives (sumatriptan…) or start empty? — Phase 1 (leaning empty + learn-from-entries).
 
@@ -504,42 +481,32 @@ the app on his Mac and pulls changes via a regenerated git bundle (see the memor
    "today"), and the Top-Factors filter is **OR > 1.0** (prose says "≥ 1.5"). Chosen so the golden
    tests validate against the actual `correlations.py`. Reconcile deliberately if the prose is the
    intended behaviour.
-5. **Application id is a placeholder** (`io.github.megrimapp.megrim`). Immutable once published —
-   set the real pseudonym handle before first release (open item #1 above).
+5. **Application id finalized as `org.maegley.megrim`** (was a placeholder; see §1.2). Shipped in
+   `v0.1.0`; immutable from here.
 6. **Golden fixtures hand-computed.** The spec calls for generating fixtures from the private
    app's Python (`astral`/`ephem`); that stack isn't runnable in this environment, so astro and
    correlations goldens assert against independently hand-computed values and physical invariants
    instead. Regenerating from Python remains a good future cross-check.
 
-### Quick enhancement — wire barometric pressure into the correlations
+### Barometric pressure in the correlations — DONE
 
-> **Decided 2026-07-08: NOT pursuing this.** Steve dropped the pressure correlation after review.
-> The engine support below stays in place but is intentionally not surfaced; the descriptive
-> pressure bar chart on the dashboard remains. The analysis is kept for context only.
+Dropped after the first review, then **reinstated 2026-07-08** at the user's request (his imported
+migraine-tracker data showed a pressure signal). `AnalyticsScreen` now passes a
+`PressureBaselineService` into `repo.correlations()`; a fast local connectivity check gates the
+one-time Open-Meteo baseline fetch (`allowFetch`) so the tab never blocks offline (it uses the
+cached baseline or omits the factor). The baseline is cached in `app_settings.pressure_baseline`
+keyed by window+location. So "Pressure Δ 24h" now appears in Top Suspected Factors alongside the
+descriptive pressure bar chart.
 
-**The reference app (`migraine-tracker`) already does this; Megrim does not yet.** The engine is
-fully built and unit-tested — `computeCorrelations` accepts a `pressureBaseline`, and
-`PressureBaselineService` fetches + caches the all-days 24h-pressure-Δ histogram from Open-Meteo —
-but the Analytics screen calls `repo.correlations()` **without** a baseline service, so the
-"Pressure Δ 24h" factor is omitted from Top Suspected Factors. (The dashboard still shows a
-*descriptive* pressure-change bar chart; it's the odds-ratio correlation that's missing.)
+**Suspected-factor set (current):** Day of week · Season · Month · Moon phase · **Daylight hours**
+(photoperiod / SAD, added at the user's request) · **Pressure Δ 24h**. Self-reported triggers are
+deliberately not correlated (no non-migraine baseline) — shown descriptively as "Most-tagged".
 
-Why it's not automatic like the calendar/moon factors: those baselines are analytic (every date
-has a known weekday/season/moon phase), but the pressure baseline needs one bulk network fetch of
-daily pressure history at the home location — see `_get_pressure_baseline` in the original
-`backend/app/correlations.py`, which Megrim's `PressureBaselineService` ports.
+**Remaining follow-ups:** real F-Droid `fdroiddata` recipe (post-1.0). *(Done since first pass:
+generated licenses page — Megrim's GPL registered on the About licences page; connectivity-triggered
+enrichment retry; barometric-pressure factor; daylight factor.)*
 
-To finish it (small, contained):
-1. Pass a `PressureBaselineService` into `MegrimRepository.correlations(...)` from
-   `AnalyticsScreen` (the plumbing already exists — see `megrim_repository.dart:124`).
-2. Add the one-time "computing baseline…" progress state on first fetch (SPEC §6.2); the result
-   is cached in `app_settings.pressure_baseline`, keyed by window+location.
-3. Refresh only when the window grows >30 days or the home location changes (already handled by
-   the cache tag).
-
-Best validated against **real** entries — with the synthetic sample dataset the migraine pressure
-deltas are made up, but the baseline would be fetched as real history, so the OR would be noise.
-
-**Other follow-ups:** a full licenses page (`showLicensePage` is wired via About; a generated
-third-party list can be added) · connectivity-triggered queue retry (currently retried on app
-start / after edits / on import) · real F-Droid `fdroiddata` recipe (Phase 6, post-1.0).
+**Known-bug fixes worth noting:** a DST day-stepping bug in `computeCorrelations` dropped migraine
+days after a spring-forward in DST timezones (fixed 2026-07-08; CI now also runs under
+`TZ=America/Denver`). The `migraine-tracker` exporter corrects timestamps that its own importer had
+stored as local-clock-mislabeled-as-UTC (6–7h early).

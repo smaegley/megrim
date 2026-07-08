@@ -1,6 +1,6 @@
 # Donation links shown on the GitHub repo and mirrored by the in-app Donate button.
-# TODO(phase-4): fill in once a pseudonym-friendly platform account exists (Liberapay / Ko-fi /
-# GitHub Sponsors). Leave commented until then — an empty value renders an error.
+# Optional: uncomment/fill a platform if/when desired. Leave commented until then — an empty
+# value renders an error.
 # liberapay: megrim
 # ko_fi: megrim
-# github: [megrim-dev]
+# github: [smaegley]
