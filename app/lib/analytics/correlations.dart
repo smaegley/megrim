@@ -182,7 +182,6 @@ CorrelationResult computeCorrelations({
 
   final start = eventDates.first;
   final end = eventDates.last;
-  final totalDays = end.difference(start).inDays + 1;
   final migraineDaySet = eventDates.toSet();
   final totalMigraine = migraineDaySet.length;
 
@@ -192,9 +191,15 @@ CorrelationResult computeCorrelations({
   final moonBase = <String, int>{}, moonMig = <String, int>{};
   final daylightBase = <String, int>{}, daylightMig = <String, int>{};
 
+  // Step by calendar day via the constructor (always lands on local midnight of the next day).
+  // NB: do NOT use `cur.add(Duration(days: 1))` — a fixed 24h drifts off midnight across DST
+  // transitions, so days after a spring-forward would fail the midnight-equality match below and
+  // their migraines would be dropped from the tallies (a real bug in DST timezones).
+  var totalDays = 0;
   for (var cur = start;
       !cur.isAfter(end);
-      cur = cur.add(const Duration(days: 1))) {
+      cur = DateTime(cur.year, cur.month, cur.day + 1)) {
+    totalDays++;
     final dow = kDowLabels[cur.weekday - 1];
     final season = seasonForMonth(cur.month, homeLat);
     final month = kMonthLabels[cur.month - 1];

@@ -30,6 +30,11 @@ jobs:
       - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter analyze
       - run: flutter test
+      # Re-run under a DST timezone so date/time bucketing bugs that only appear across a
+      # daylight-saving transition (see analytics day-stepping) are actually exercised.
+      - run: flutter test
+        env:
+          TZ: America/Denver
 
   dependency-ban:
     # F-Droid constraint (SPEC §2.1): fail if any proprietary Google dependency

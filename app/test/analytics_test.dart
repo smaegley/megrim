@@ -117,6 +117,27 @@ void main() {
         expect(t.oddsRatio, greaterThan(1.0));
       }
     });
+
+    test('every migraine day is counted in each factor (DST-safe day stepping)', () {
+      // Regression guard: the day-by-day baseline loop must count every migraine day exactly once
+      // per factor. A previous version stepped with `add(Duration(days:1))`, which drifts off local
+      // midnight across a DST spring-forward and silently dropped later days — only visible in a
+      // DST timezone. This invariant (per-factor migraine-day sums == total) catches it; the CI
+      // suite is also run under TZ=America/Denver so the drift is actually exercised.
+      final events = <DateTime>[
+        for (var y = 2022; y <= 2024; y++)
+          for (final m in [1, 3, 4, 7, 11]) // incl. March (spring-forward month)
+            DateTime.utc(y, m, 15, 18), // 18:00Z -> still same local day in the Americas
+      ];
+      final r = computeCorrelations(eventStarts: events, homeLat: 40.0, homeLon: -105.0);
+      expect(r.available, isTrue);
+      for (final entry in r.factors.entries) {
+        final sum = entry.value.fold<int>(0, (s, row) => s + row.migraineDays);
+        expect(sum, r.totalMigraineDays,
+            reason: '${entry.key}: migraine-day counts sum to $sum, '
+                'expected ${r.totalMigraineDays}');
+      }
+    });
   });
 
   group('computeDashboard', () {
