@@ -430,14 +430,22 @@ in tests.
 ## 12. Implementation status (2026-07-08)
 
 First implementation pass complete: a buildable Flutter app under `app/`, `flutter analyze`
-clean, **52 tests passing**, and a **signed release APK** produced (release signing path verified
-with a throwaway keystore, not just the debug fallback).
+clean, **55 tests passing**, and a **signed release APK** produced (release signing path verified
+with a throwaway keystore, not just the debug fallback). **The app has been run on an Android
+emulator** (on Steve's Mac) through onboarding, logging, history, and analytics.
 
 **Done:** Phase 0 (scaffold, CI incl. FOSS dependency-ban check, license/README/privacy, fastlane
 metadata) · Phase 1 (Drift schema v1 + seeding + all screens) · Phase 2 (enrichment: astro golden
 tests, Open-Meteo client, retry queue) · Phase 3 (analytics: dashboard + correlations + pressure
 baseline, golden tests) · Phase 4 (JSON+CSV export / JSON import with round-trip test, onboarding,
-disclaimer gate, settings) · Phase 6 (signed release workflow on tag).
+disclaimer gate, settings) · Phase 6 (signed release workflow on tag) · adaptive launcher icon.
+
+**Session-1 run-in fixes/additions (2026-07-08):** fixed the Analytics tab not recomputing on open
+(it lives in an IndexedStack; now refreshes on tab-open + pull-to-refresh + a refresh button);
+added a descriptive **"Most-tagged triggers"** frequency card (explicitly not a correlation); added
+a **sample demo dataset** (`tools/generate_sample_data.py` → `app/test/fixtures/sample-data.json`)
+plus an import→analytics verification test. Dev loop: build/test happen on the Linux VM; Steve runs
+the app on his Mac and pulls changes via a regenerated git bundle (see the memory notes).
 
 **Deliberate deviations from this spec, and why (each is noted in code too):**
 
