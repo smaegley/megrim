@@ -57,6 +57,8 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/logo.png
 
 # Launcher icon generation (run: dart run flutter_launcher_icons).
 flutter_launcher_icons:

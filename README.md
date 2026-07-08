@@ -1,6 +1,13 @@
-# Megrim
+<p align="center">
+  <img src="app/assets/logo.png" alt="Megrim logo" width="128">
+</p>
 
-**Smart migraine tracking that stays on your device.**
+<h1 align="center">Megrim: Migraine Log</h1>
+
+<p align="center">
+  <strong>Offline Migraine Log</strong><br>
+  Smart migraine tracking that stays on your device.
+</p>
 
 **Megrim** is a privacy-first, offline-first migraine diary for Android. It automatically
 enriches each logged migraine with weather, barometric-pressure, and astronomical context —

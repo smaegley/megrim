@@ -181,13 +181,29 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Future<void> _about(BuildContext context) async {
+    final theme = Theme.of(context);
     showAboutDialog(
       context: context,
       applicationName: 'Megrim',
       applicationVersion: '1.0.0',
+      applicationIcon: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.asset('assets/logo.png', width: 56, height: 56),
+      ),
       applicationLegalese: 'GPL-3.0-or-later · $kWeatherAttribution',
       children: [
         const SizedBox(height: 12),
+        Text(kAppTitle, style: theme.textTheme.titleMedium),
+        Text(kAppSubtitle,
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(color: theme.colorScheme.primary)),
+        const SizedBox(height: 12),
+        Text(kShortDescription,
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        const Text(kFullDescription),
+        const Divider(height: 24),
         const Text(kPrivacySummary),
         const SizedBox(height: 12),
         const Text(kMedicalDisclaimer),

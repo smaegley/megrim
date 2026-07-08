@@ -29,3 +29,16 @@ const List<String> kCorrelationCaveats = [
 
 const String kWeatherAttribution = 'Weather data by Open-Meteo.com';
 const String kSourceUrl = 'https://github.com/megrim-app/megrim';
+
+/// Store / About listing copy (kept in sync with fastlane/metadata and the README).
+const String kAppTitle = 'Megrim: Migraine Log';
+const String kAppSubtitle = 'Offline Migraine Log';
+const String kAppTagline = 'Smart migraine tracking that stays on your device.';
+const String kShortDescription =
+    'Private, offline migraine log with automatic on-device pattern insights.';
+const String kFullDescription =
+    'Megrim is an open-source, offline-first migraine diary that helps you find '
+    'your personal triggers. The app automatically adds local weather, '
+    'barometric pressure, and time-of-day context to your entries, calculating '
+    'correlations entirely on your phone. With no accounts, no cloud servers, and '
+    'zero tracking, your health data stays completely private and under your control.';
