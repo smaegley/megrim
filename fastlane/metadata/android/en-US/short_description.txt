@@ -1,1 +1,1 @@
-Private, offline migraine diary with on-device weather & pressure insights.
+Private migraine tracking with automatic weather and trigger insights.

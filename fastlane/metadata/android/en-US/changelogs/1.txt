@@ -1,7 +1,6 @@
 First release.
 
 - Log migraines with severity, symptoms, triggers, medications, and notes.
-- Automatic on-device enrichment: weather, 24h/48h barometric-pressure change, sunrise/sunset,
-  daylight hours, and moon phase.
-- Personal analytics and an odds-ratio "suspected factors" card.
+- Automatic on-device enrichment: weather, 24h/48h barometric-pressure change, sunrise/sunset, daylight hours, season, and moon phase.
+- Personal analytics and an odds-ratio "suspected factors" card, including a daylight/photoperiod factor.
 - Full export/import (JSON and CSV). No accounts, no server, no telemetry.

@@ -1,4 +1,6 @@
-# Megrim — Migraine Tracker & Diary
+# Megrim
+
+**Smart migraine tracking that stays on your device.**
 
 **Megrim** is a privacy-first, offline-first migraine diary for Android. It automatically
 enriches each logged migraine with weather, barometric-pressure, and astronomical context —

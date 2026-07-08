@@ -1,21 +1,15 @@
-Megrim is a privacy-first, offline-first migraine diary. It automatically enriches each logged
-migraine with weather, barometric-pressure, and astronomical context — computed and stored
-entirely on your device — and surfaces personal descriptive analytics plus odds-ratio "suspected
-factors" correlations.
+Smart migraine tracking that stays on your device.
 
-Why Megrim:
+Megrim is an open-source, offline-first migraine diary that helps you find your personal triggers. The app automatically adds local weather, barometric pressure, and time-of-day context to your entries, calculating correlations entirely on your phone. With no accounts, no cloud servers, and zero tracking, your health data stays completely private and under your control.
 
-* No accounts, no server, no telemetry. The only network traffic is to Open-Meteo.com to fetch
-  weather for the approximate (~1 km rounded) location and date of entries you create.
-* Your data stays yours: on-device storage only, with full export and import (JSON and CSV).
-* Automatic enrichment: weather, 24h/48h pressure change, sunrise/sunset, daylight hours, moon
-  phase — no manual entry.
-* Real personal analytics: trends by day-of-week, time-of-day, season, month, pressure change,
-  and moon phase, plus a "suspected factors" card using odds ratios over your own log.
+What's inside:
+
+* Automatic on-device enrichment — weather, 24h/48h barometric-pressure change, sunrise/sunset, daylight hours, season, and moon phase. No manual entry.
+* Real personal analytics — trends by day-of-week, time-of-day, season, daylight, pressure change, and moon phase, plus a "suspected factors" card that uses odds ratios over your own log.
+* Your data stays yours — on-device storage only, with full export and import (JSON and CSV).
+* No accounts, no servers, no telemetry — the only network request is to Open-Meteo.com, to fetch weather for the approximate (~1 km rounded) location and date of the entries you create.
 * Free and open source (GPL-3.0-or-later).
 
-Megrim is a personal diary and is NOT a medical device. It does not diagnose, treat, cure, or
-prevent any condition. "Suspected factors" are statistical associations in your own log —
-association is not causation. Always consult a qualified healthcare professional.
+Megrim is a personal diary and is NOT a medical device. It does not diagnose, treat, cure, or prevent any condition. "Suspected factors" are statistical associations in your own log — association is not causation. Always consult a qualified healthcare professional.
 
 Weather data by Open-Meteo.com.
