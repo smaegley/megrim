@@ -1,1 +1,1 @@
-Private migraine tracking with automatic weather and trigger insights.
+Private, offline migraine log with automatic on-device pattern insights.

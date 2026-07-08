@@ -4,7 +4,7 @@ Megrim is an open-source, offline-first migraine diary that helps you find your 
 
 What's inside:
 
-* Automatic on-device enrichment — weather, 24h/48h barometric-pressure change, sunrise/sunset, daylight hours, season, and moon phase. No manual entry.
+* Automatic on-device enrichment — barometric-pressure change (24h/48h), daylight hours, time of day, season, moon phase, and local weather. No manual entry.
 * Real personal analytics — trends by day-of-week, time-of-day, season, daylight, pressure change, and moon phase, plus a "suspected factors" card that uses odds ratios over your own log.
 * Your data stays yours — on-device storage only, with full export and import (JSON and CSV).
 * No accounts, no servers, no telemetry — the only network request is to Open-Meteo.com, to fetch weather for the approximate (~1 km rounded) location and date of the entries you create.
