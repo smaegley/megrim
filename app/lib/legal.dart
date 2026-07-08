@@ -28,7 +28,7 @@ const List<String> kCorrelationCaveats = [
 ];
 
 const String kWeatherAttribution = 'Weather data by Open-Meteo.com';
-const String kSourceUrl = 'https://github.com/megrim-app/megrim';
+const String kSourceUrl = 'https://github.com/smaegley/megrim';
 
 /// Store / About listing copy (kept in sync with fastlane/metadata and the README).
 const String kAppTitle = 'Megrim: Migraine Log';

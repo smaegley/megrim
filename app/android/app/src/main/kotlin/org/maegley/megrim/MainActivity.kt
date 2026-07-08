@@ -1,4 +1,4 @@
-package io.github.megrimapp.megrim
+package org.maegley.megrim
 
 import io.flutter.embedding.android.FlutterActivity
 

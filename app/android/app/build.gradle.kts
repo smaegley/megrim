@@ -21,7 +21,7 @@ if (hasReleaseSigning) {
 }
 
 android {
-    namespace = "io.github.megrimapp.megrim"
+    namespace = "org.maegley.megrim"
     // Pinned to 36: some transitive plugins require compiling against API 36.
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
@@ -32,10 +32,9 @@ android {
     }
 
     defaultConfig {
-        // NOTE (SPEC §11 open item #1): application id is IMMUTABLE once published and should be
-        // finalized with the real pseudonym handle before the first public release
-        // (io.github.<pseudonym>.megrim). "megrimapp" is a placeholder.
-        applicationId = "io.github.megrimapp.megrim"
+        // Application id is IMMUTABLE once published. Reverse-domain of maegley.org (a domain the
+        // author controls); independent of the GitHub repo and of the maegley.com email domain.
+        applicationId = "org.maegley.megrim"
         minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
