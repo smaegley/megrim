@@ -5,23 +5,19 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 
 ## UI / UX
 
-### 1. Make the Analytics summary + suspected factors more visual
-**Now:** Summary is a plain key/value list; Top Suspected Factors is a text list of `factor: condition — OR n`.
-**Want (from migraine-tracker):**
-- Summary as **stat cards/tiles** at the top — migraine-tracker used **two rows of three** (e.g. Total, Avg severity, Avg interval, Events/year, Years tracked, …).
-- Suspected factors as **horizontal bars**, one per factor, length encoding significance (odds ratio), so relative strength reads at a glance instead of scanning numbers.
+### 1. Make the Analytics summary + suspected factors more visual — **DONE**
+**Was:** Summary was a plain key/value list; Top Suspected Factors a text list of `factor: condition — OR n`.
+**Done:**
+- Summary is now a **2×3 grid of stat tiles** (big figure over a muted label, tabular figures): Events, Years tracked, Avg severity, Avg duration, Avg interval, Per year. Null stats show an em dash so the grid stays fixed.
+- Suspected factors render as **horizontal bars** (one per factor) whose length encodes the odds ratio relative to the strongest shown factor, shaded by the same magnitude. The OR value + caveats are kept — the bar is an addition, not a replacement.
 
-**Notes:** Load the `dataviz` skill before building — stat-tile and horizontal-bar specs, and use the app's purple-family palette (not raw primaries). Keep the OR value + caveats; the bar is an addition, not a replacement. The "days since last migraine" card already establishes the card style to build on.
+### 2. Show counts on the bar charts — **DONE**
+**Was:** `by day / season / time-of-day / pressure / moon / daylight` bars showed no value.
+**Done:** each bar now prints its **count directly above it** (always-on, chrome-less fl_chart tooltips; touch stays enabled). `maxY` gains 25% headroom so labels don't clip; zero-count bars omit the label to avoid a "0" on the baseline. Donuts already show in-slice counts.
 
-### 2. Show counts on the bar charts
-**Now:** `by day / season / time-of-day / pressure / moon / daylight` bars show no value; touch is enabled (`BarTouchData`) but there's no visible count.
-**Want:** Either a small count label per bar, or tap-to-reveal the count in a tooltip. The bars look like they have room to widen and fit a number.
-**Notes:** fl_chart `BarTouchData` can render a tooltip on tap already — may just need styling/enabling the tooltip text; direct labels are the more glanceable option. Decide per-chart (donuts already show in-slice counts).
-
-### 3. Color-code bars by significance
-**Now:** all bars are a single blue.
-**Want:** shade bars to convey magnitude/significance — but **not** harsh primary red/orange/yellow/green. Something within a palette that fits the app's purple theme.
-**Notes:** A **sequential (single-hue, light→dark) purple ramp** keyed to relative magnitude fits the design language and the `dataviz` guidance (magnitude = sequential, not categorical). For the suspected-factors bars, "significance" = odds ratio; for the descriptive count charts it'd be relative count. Validate the ramp with the dataviz palette validator.
+### 3. Color-code bars by significance — **DONE**
+**Was:** all bars a single blue.
+**Done:** bars are shaded by a **sequential single-hue purple ramp** (`_seqPurple`, dim→bright = low→high magnitude), keyed to relative count on the descriptive charts and to odds ratio on the suspected-factor bars. Donuts stay **categorical** (they encode identity, not magnitude). The ramp is validated for the `#1E1E1E` dark card surface with the dataviz validator (ordinal: monotone lightness, single hue, dim end clears the 2:1 floor at 2.20:1). The collapsed-card mini sparkline was retinted to the same family.
 
 ### 6. Add a medications UI to Event Detail *(real gap, not a bug)* — **DONE**
 **Was:** the schema (`meds_taken` = `[{name, dose, time, helped}]`), the `medication` vocab (managed in Settings), and export/import **all supported meds — but there was no screen to add them to an event.** Event Detail only had Head-location and Suspected-trigger chip sections.
