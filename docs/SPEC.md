@@ -474,6 +474,10 @@ the app on his Mac and pulls changes via a regenerated git bundle (see the memor
 
 ### Quick enhancement — wire barometric pressure into the correlations
 
+> **Decided 2026-07-08: NOT pursuing this.** Steve dropped the pressure correlation after review.
+> The engine support below stays in place but is intentionally not surfaced; the descriptive
+> pressure bar chart on the dashboard remains. The analysis is kept for context only.
+
 **The reference app (`migraine-tracker`) already does this; Megrim does not yet.** The engine is
 fully built and unit-tested — `computeCorrelations` accepts a `pressureBaseline`, and
 `PressureBaselineService` fetches + caches the all-days 24h-pressure-Δ histogram from Open-Meteo —
