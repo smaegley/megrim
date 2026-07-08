@@ -464,8 +464,31 @@ disclaimer gate, settings) · Phase 6 (signed release workflow on tag).
    correlations goldens assert against independently hand-computed values and physical invariants
    instead. Regenerating from Python remains a good future cross-check.
 
-**Not yet done (follow-up):** a custom launcher icon (still the default Flutter icon;
-`flutter_launcher_icons` + an asset needed) · a full licenses page (`showLicensePage` is wired via
-About; a generated third-party list can be added) · connectivity-triggered queue retry (currently
-retried on app start / after edits / on import) · the one-time "computing baseline…" progress UI
-for the first pressure-baseline fetch · real F-Droid `fdroiddata` recipe (Phase 6, post-1.0).
+### Quick enhancement — wire barometric pressure into the correlations
+
+**The reference app (`migraine-tracker`) already does this; Megrim does not yet.** The engine is
+fully built and unit-tested — `computeCorrelations` accepts a `pressureBaseline`, and
+`PressureBaselineService` fetches + caches the all-days 24h-pressure-Δ histogram from Open-Meteo —
+but the Analytics screen calls `repo.correlations()` **without** a baseline service, so the
+"Pressure Δ 24h" factor is omitted from Top Suspected Factors. (The dashboard still shows a
+*descriptive* pressure-change bar chart; it's the odds-ratio correlation that's missing.)
+
+Why it's not automatic like the calendar/moon factors: those baselines are analytic (every date
+has a known weekday/season/moon phase), but the pressure baseline needs one bulk network fetch of
+daily pressure history at the home location — see `_get_pressure_baseline` in the original
+`backend/app/correlations.py`, which Megrim's `PressureBaselineService` ports.
+
+To finish it (small, contained):
+1. Pass a `PressureBaselineService` into `MegrimRepository.correlations(...)` from
+   `AnalyticsScreen` (the plumbing already exists — see `megrim_repository.dart:124`).
+2. Add the one-time "computing baseline…" progress state on first fetch (SPEC §6.2); the result
+   is cached in `app_settings.pressure_baseline`, keyed by window+location.
+3. Refresh only when the window grows >30 days or the home location changes (already handled by
+   the cache tag).
+
+Best validated against **real** entries — with the synthetic sample dataset the migraine pressure
+deltas are made up, but the baseline would be fetched as real history, so the OR would be noise.
+
+**Other follow-ups:** a full licenses page (`showLicensePage` is wired via About; a generated
+third-party list can be added) · connectivity-triggered queue retry (currently retried on app
+start / after edits / on import) · real F-Droid `fdroiddata` recipe (Phase 6, post-1.0).
