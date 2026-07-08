@@ -73,6 +73,44 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     await _loadActive();
   }
 
+  /// Stop and delete an in-progress migraine — e.g. started by accident (review item #1).
+  Future<void> _discard() async {
+    if (_active == null) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Discard this migraine?'),
+        content: const Text(
+            'This stops the timer and permanently deletes the in-progress entry.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Keep')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Discard', style: TextStyle(color: Colors.redAccent)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final removed = await widget.repo.deleteEvent(_active!.id);
+    await _loadActive();
+    if (removed != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Migraine discarded'),
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () async {
+            await widget.repo.restoreEvent(removed.event, removed.derived);
+            await _loadActive();
+          },
+        ),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,6 +203,12 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               await _loadActive();
             },
             child: const Text('Add more details'),
+          ),
+          TextButton.icon(
+            onPressed: _discard,
+            icon: const Icon(Icons.delete_outline, size: 18),
+            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            label: const Text('Discard'),
           ),
         ],
       ),

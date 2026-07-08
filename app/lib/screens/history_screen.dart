@@ -3,9 +3,12 @@ import 'package:intl/intl.dart';
 
 import '../database/database.dart';
 import '../repositories/megrim_repository.dart';
+import '../widgets/severity_badge.dart';
 import 'event_detail_screen.dart';
 
-/// History (SPEC §4.3): list + month-grid calendar toggle; swipe-to-delete with Snackbar undo.
+/// History (SPEC §4.3): a persistent List | Calendar segmented picker, a severity badge on each
+/// row, swipe-to-delete with Snackbar undo, and a manual "add past entry" action so a migraine
+/// that couldn't be logged live can be recreated after the fact (review items #2, #3, #4).
 class HistoryScreen extends StatefulWidget {
   final MegrimRepository repo;
   const HistoryScreen({super.key, required this.repo});
@@ -14,34 +17,63 @@ class HistoryScreen extends StatefulWidget {
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
+enum _HistoryView { list, calendar }
+
 class _HistoryScreenState extends State<HistoryScreen> {
-  bool _calendar = false;
+  _HistoryView _view = _HistoryView.list;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('History'),
-        actions: [
-          IconButton(
-            tooltip: _calendar ? 'List view' : 'Calendar view',
-            icon: Icon(_calendar ? Icons.list : Icons.calendar_month),
-            onPressed: () => setState(() => _calendar = !_calendar),
+      appBar: AppBar(title: const Text('History')),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _addManual,
+        icon: const Icon(Icons.add),
+        label: const Text('Add past entry'),
+        tooltip: 'Log a migraine that happened earlier',
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<_HistoryView>(
+                segments: const [
+                  ButtonSegment(
+                    value: _HistoryView.list,
+                    icon: Icon(Icons.list),
+                    label: Text('List'),
+                  ),
+                  ButtonSegment(
+                    value: _HistoryView.calendar,
+                    icon: Icon(Icons.calendar_month),
+                    label: Text('Calendar'),
+                  ),
+                ],
+                selected: {_view},
+                onSelectionChanged: (s) => setState(() => _view = s.first),
+              ),
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<List<MigraineEvent>>(
+              stream: widget.repo.watchEvents(),
+              builder: (context, snap) {
+                final events = snap.data ?? const [];
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (events.isEmpty) {
+                  return const Center(child: Text('No migraines logged yet.'));
+                }
+                return _view == _HistoryView.calendar
+                    ? _CalendarView(events: events)
+                    : _listView(events);
+              },
+            ),
           ),
         ],
-      ),
-      body: StreamBuilder<List<MigraineEvent>>(
-        stream: widget.repo.watchEvents(),
-        builder: (context, snap) {
-          final events = snap.data ?? const [];
-          if (snap.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (events.isEmpty) {
-            return const Center(child: Text('No migraines logged yet.'));
-          }
-          return _calendar ? _CalendarView(events: events) : _listView(events);
-        },
       ),
     );
   }
@@ -49,6 +81,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _listView(List<MigraineEvent> events) {
     final df = DateFormat('EEE d MMM yyyy, HH:mm');
     return ListView.separated(
+      // Room so the FAB doesn't cover the last row.
+      padding: const EdgeInsets.only(bottom: 88),
       itemCount: events.length,
       separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (context, i) {
@@ -64,6 +98,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
           onDismissed: (_) => _delete(e.id),
           child: ListTile(
+            leading: SeverityBadge(severity: e.severity),
             title: Text(df.format(e.startedAt.toLocal())),
             subtitle: Text([
               if (e.severity != null) 'Severity ${e.severity}/10',
@@ -77,6 +112,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
         );
       },
     );
+  }
+
+  Future<void> _addManual() async {
+    final home = await widget.repo.homeLocation;
+    final id = await widget.repo.startEvent(
+      lat: home?.lat,
+      lon: home?.lon,
+      label: home?.label,
+    );
+    // End it immediately so a past entry isn't picked up as the live "in-progress" migraine by
+    // Quick Log; the user then sets the real start/end in the editor.
+    await widget.repo.endEvent(id);
+    if (!mounted) return;
+    // Open the detail editor so the user can set the real start/end time and details.
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => EventDetailScreen(repo: widget.repo, eventId: id),
+    ));
   }
 
   Future<void> _delete(String id) async {
@@ -111,7 +163,7 @@ class _CalendarView extends StatelessWidget {
     }
     final months = byMonth.keys.toList()..sort((a, b) => b.compareTo(a));
     return ListView(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 88),
       children: [
         for (final m in months)
           _MonthGrid(

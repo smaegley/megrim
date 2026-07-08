@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../database/database.dart';
+import '../models/home_location.dart';
 import '../models/json_fields.dart';
 import '../repositories/megrim_repository.dart';
+import '../widgets/location_picker.dart';
 import 'manage_vocab_screen.dart';
 
 /// Event Detail (SPEC §4.4): edit all fields; chips from user vocab; shows the computed
-/// enrichment. Saving re-enqueues enrichment (location may have changed).
+/// enrichment. Start/end time and the recorded location are editable so an entry can be recreated
+/// after the fact (review item #4). Saving re-enqueues enrichment (date/location may have changed).
 class EventDetailScreen extends StatefulWidget {
   final MegrimRepository repo;
   final String eventId;
@@ -24,6 +27,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   List<String> _triggerVocab = const [];
   List<String> _locationVocab = const [];
 
+  DateTime _startedAt = DateTime.now();
+  DateTime? _endedAt;
+  double? _geoLat;
+  double? _geoLon;
+  String? _geoLabel;
   int? _severity;
   bool? _aura;
   int? _stress;
@@ -56,6 +64,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       _derived = d;
       _triggerVocab = triggers;
       _locationVocab = locations;
+      _startedAt = e.startedAt.toLocal();
+      _endedAt = e.endedAt?.toLocal();
+      _geoLat = e.geoLat;
+      _geoLon = e.geoLon;
+      _geoLabel = e.geoLabel;
       _severity = e.severity;
       _aura = e.auraPresent;
       _stress = e.stressLevel;
@@ -71,8 +84,16 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Future<void> _save() async {
+    final messenger = ScaffoldMessenger.of(context);
+    if (_endedAt != null && _endedAt!.isBefore(_startedAt)) {
+      messenger.showSnackBar(
+          const SnackBar(content: Text('End time must be after the start time.')));
+      return;
+    }
     await widget.repo.updateEvent(MigraineEventsCompanion(
       id: Value(widget.eventId),
+      startedAt: Value(_startedAt.toUtc()),
+      endedAt: Value(_endedAt?.toUtc()),
       severity: Value(_severity),
       auraPresent: Value(_aura),
       stressLevel: Value(_stress),
@@ -80,11 +101,112 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       notes: Value(_notes.text.isEmpty ? null : _notes.text),
       locationHead: Value(encodeStringList(_locations.toList())),
       triggersSuspected: Value(encodeStringList(_triggers.toList())),
+      geoLat: Value(_geoLat),
+      geoLon: Value(_geoLon),
+      geoLabel: Value(_geoLabel),
     ));
-    // Location/edit may change enrichment inputs — re-enqueue (local, not an API POST).
+    // Date and/or location may change enrichment inputs — re-enqueue (local, not an API POST).
     await widget.repo.enrichment.enqueue(widget.eventId);
     widget.repo.processEnrichmentQueue().catchError((_) {});
     if (mounted) Navigator.of(context).pop();
+  }
+
+  Future<void> _delete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete this entry?'),
+        content: const Text('This permanently removes the migraine and its computed factors.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete', style: TextStyle(color: Colors.redAccent)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final removed = await widget.repo.deleteEvent(widget.eventId);
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    if (removed != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Entry deleted'),
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () => widget.repo.restoreEvent(removed.event, removed.derived),
+        ),
+      ));
+    }
+  }
+
+  Future<void> _pickDateTime({required bool isStart}) async {
+    final base = isStart ? _startedAt : (_endedAt ?? _startedAt);
+    final now = DateTime.now();
+    final date = await showDatePicker(
+      context: context,
+      initialDate: base,
+      firstDate: DateTime(now.year - 20),
+      lastDate: now,
+    );
+    if (date == null || !mounted) return;
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(base),
+    );
+    if (!mounted) return;
+    final picked = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time?.hour ?? base.hour,
+      time?.minute ?? base.minute,
+    );
+    setState(() {
+      if (isStart) {
+        _startedAt = picked;
+      } else {
+        _endedAt = picked;
+      }
+    });
+  }
+
+  Future<void> _editLocation() async {
+    HomeLocation? picked;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Recorded location'),
+        content: SizedBox(
+          width: 400,
+          child: LocationPickerField(
+            initial: (_geoLat != null && _geoLon != null)
+                ? HomeLocation(lat: _geoLat!, lon: _geoLon!, label: _geoLabel ?? '')
+                : null,
+            onSelected: (loc) => picked = loc,
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel')),
+          FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Use location')),
+        ],
+      ),
+    );
+    if (confirmed == true && picked != null) {
+      setState(() {
+        _geoLat = picked!.lat;
+        _geoLon = picked!.lon;
+        _geoLabel = picked!.label;
+      });
+    }
   }
 
   @override
@@ -92,22 +214,34 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     if (_event == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    final df = DateFormat('EEE d MMM yyyy, HH:mm');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Event detail'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: 'Delete entry',
+            onPressed: _delete,
+          ),
           IconButton(icon: const Icon(Icons.check), onPressed: _save),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(df.format(_event!.startedAt.toLocal()),
-              style: Theme.of(context).textTheme.titleMedium),
-          if (_event!.endedAt != null)
-            Text('Ended: ${df.format(_event!.endedAt!.toLocal())}',
-                style: Theme.of(context).textTheme.bodySmall),
+          _dateTimeTile(
+            label: 'Started',
+            value: _startedAt,
+            onTap: () => _pickDateTime(isStart: true),
+          ),
+          _dateTimeTile(
+            label: 'Ended',
+            value: _endedAt,
+            onTap: () => _pickDateTime(isStart: false),
+            onClear: _endedAt == null ? null : () => setState(() => _endedAt = null),
+            emptyHint: 'ongoing — tap to set',
+          ),
+          _locationTile(),
           const Divider(height: 24),
 
           Text('Severity: ${_severity ?? '—'} / 10'),
@@ -170,6 +304,47 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           _enrichmentCard(),
         ],
       ),
+    );
+  }
+
+  Widget _dateTimeTile({
+    required String label,
+    required DateTime? value,
+    required VoidCallback onTap,
+    VoidCallback? onClear,
+    String? emptyHint,
+  }) {
+    final df = DateFormat('EEE d MMM yyyy, HH:mm');
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: const Icon(Icons.schedule),
+      title: Text(label),
+      subtitle: Text(value != null ? df.format(value) : (emptyHint ?? '—')),
+      trailing: onClear != null
+          ? IconButton(
+              icon: const Icon(Icons.clear),
+              tooltip: 'Clear (mark ongoing)',
+              onPressed: onClear,
+            )
+          : const Icon(Icons.edit_outlined),
+      onTap: onTap,
+    );
+  }
+
+  Widget _locationTile() {
+    final subtitle = (_geoLabel != null && _geoLabel!.isNotEmpty)
+        ? '$_geoLabel'
+            '${_geoLat != null && _geoLon != null ? ' (${_geoLat!.toStringAsFixed(2)}, ${_geoLon!.toStringAsFixed(2)})' : ''}'
+        : (_geoLat != null && _geoLon != null)
+            ? '(${_geoLat!.toStringAsFixed(2)}, ${_geoLon!.toStringAsFixed(2)})'
+            : 'Not set — tap to add';
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: const Icon(Icons.place_outlined),
+      title: const Text('Recorded location'),
+      subtitle: Text(subtitle),
+      trailing: const Icon(Icons.edit_outlined),
+      onTap: _editLocation,
     );
   }
 
