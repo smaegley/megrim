@@ -59,6 +59,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo.png
+    - assets/gpl-3.0.txt
 
 # Launcher icon generation (run: dart run flutter_launcher_icons).
 flutter_launcher_icons:
