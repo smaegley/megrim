@@ -469,6 +469,18 @@ the app on his Mac and pulls changes via a regenerated git bundle (see the memor
   file — nothing to add. *Check-for-updates:* intentionally omitted — in-app self-update is an
   F-Droid anti-feature; the store client handles updates and the About dialog shows the version.
 
+**Session-2 refinements (2026-07-08, second pass):**
+- Calendar view now uses the same bucketed green→red **severity colours** as the List badge (was a
+  saturation ramp); a day with no recorded severity is grey.
+- Collapsed Analytics chart cards show a **mini sparkline** of the distribution for visual interest.
+- Season & time-of-day **donuts label the slices in-place** (name + count) and drop the legend.
+- Moon-phase chart uses **moon-emoji glyphs** on the axis instead of truncated text.
+- The delete/undo **snackbar is cleared on tab change** (plus its existing 5 s timeout).
+- The **"days since last migraine" card is now a shared widget** (`widgets/days_since_card.dart`),
+  also shown on the otherwise-blank idle **Log** screen.
+- Streak-card colour valence kept as green (recent) → red (overdue) after discussion; the far-overdue
+  tail is the spot to revisit if it feels punishing.
+
 **Deliberate deviations from this spec, and why (each is noted in code too):**
 
 1. **`geolocator` dropped → GPS auto-capture deferred.** The `geolocator` Android implementation
