@@ -3,7 +3,7 @@ description: "Privacy-first, offline-first migraine diary with on-device weather
 publish_to: 'none'
 
 # versionName / versionCode. Tag = release. versionCode must increase monotonically (SPEC §8).
-version: 1.0.0+1
+version: 0.1.0+1
 
 environment:
   sdk: ^3.12.1

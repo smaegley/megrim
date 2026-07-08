@@ -9,7 +9,7 @@ class ExportService {
   final MegrimDatabase db;
   final String appVersion;
 
-  ExportService({required this.db, this.appVersion = '1.0.0'});
+  ExportService({required this.db, this.appVersion = '0.1.0'});
 
   /// The complete export document as a map.
   Future<Map<String, dynamic>> buildExport({DateTime? now}) async {
