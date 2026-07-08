@@ -25,7 +25,7 @@ const Map<String, String> _moonGlyphs = {
 
 /// Categorical series palette (dark steps from the data-viz reference palette, validated for the
 /// dark card surface). Colour follows the entity by fixed index — never cycled — so a season/bucket
-/// keeps its colour regardless of which buckets are present.
+/// keeps its colour regardless of which buckets are present. Used for *identity* encodings (donuts).
 const List<Color> _seriesColors = [
   Color(0xFF3987E5), // blue
   Color(0xFF199E70), // aqua
@@ -36,6 +36,25 @@ const List<Color> _seriesColors = [
   Color(0xFFD55181), // magenta
   Color(0xFFD95926), // orange
 ];
+
+/// Sequential single-hue purple ramp (dim→bright = low→high magnitude), used for *magnitude*
+/// encodings: the descriptive count bars and the suspected-factor bars (backlog #1b/#2/#3). Steps
+/// are validated for the #1E1E1E dark card surface (ordinal: monotone lightness, single hue, dim
+/// end clears the 2:1 surface floor at 2.20:1). Distinct job from [_seriesColors] (identity).
+const List<Color> _seqPurple = [
+  Color(0xFF5A4796),
+  Color(0xFF6D55B3),
+  Color(0xFF8168D2),
+  Color(0xFF9A86EA),
+  Color(0xFFB8A8F6),
+];
+
+/// Map a normalised magnitude [t] in [0,1] to a step of the sequential purple ramp. Higher =
+/// brighter. NaN (e.g. a max of 0) collapses to the dimmest step.
+Color _magnitudeColor(double t) {
+  final clamped = (t.isNaN ? 0.0 : t).clamp(0.0, 1.0);
+  return _seqPurple[(clamped * (_seqPurple.length - 1)).round()];
+}
 
 /// Analytics (SPEC §4.5): a "days since last migraine" status card, summary, Top Suspected Factors,
 /// Most-tagged triggers, then collapsible per-factor charts (incl. season & time-of-day donuts).
@@ -169,32 +188,58 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     );
   }
 
-  Widget _summaryCard(Summary s) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Summary', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 8),
-              _kv('Total events', '${s.totalEvents}'),
-              _kv('Years tracked', '${s.yearsTracked}'),
-              if (s.avgSeverity != null) _kv('Avg severity', '${s.avgSeverity}/10'),
-              if (s.avgDurationHours != null)
-                _kv('Avg duration', '${s.avgDurationHours} h'),
-              if (s.avgIntervalDays != null)
-                _kv('Avg interval', '${s.avgIntervalDays} days'),
-              _kv('Events / year', '${s.eventsPerYear}'),
-            ],
-          ),
+  // Summary as stat tiles — two rows of three (backlog #1). Each tile is a big glanceable figure
+  // over a muted label; null-valued stats show an em dash so the grid stays a fixed 2×3.
+  Widget _summaryCard(Summary s) {
+    final tiles = <Widget>[
+      _statTile('${s.totalEvents}', 'Events'),
+      _statTile('${s.yearsTracked}', 'Years tracked'),
+      _statTile(s.avgSeverity != null ? '${s.avgSeverity}' : '—', 'Avg severity'),
+      _statTile(
+          s.avgDurationHours != null ? '${s.avgDurationHours}h' : '—', 'Avg duration'),
+      _statTile(
+          s.avgIntervalDays != null ? '${s.avgIntervalDays}d' : '—', 'Avg interval'),
+      _statTile('${s.eventsPerYear}', 'Per year'),
+    ];
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Summary', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 12),
+            Row(children: [for (final t in tiles.take(3)) Expanded(child: t)]),
+            const SizedBox(height: 8),
+            Row(children: [for (final t in tiles.skip(3)) Expanded(child: t)]),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
-  Widget _kv(String k, String v) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Text(k), Text(v)],
+  Widget _statTile(String value, String label) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        child: Column(
+          children: [
+            Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontFeatures: const [FontFeature.tabularFigures()]),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).textTheme.bodySmall?.color?.withValues(
+                        alpha: 0.7,
+                      )),
+            ),
+          ],
         ),
       );
 
@@ -217,7 +262,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Text(summary, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 6),
             // A mini sparkline of the distribution gives the collapsed card visual interest.
-            _MiniBars(data: data, color: _seriesColors.first),
+            _MiniBars(data: data, color: _seqPurple[2]),
           ],
         ),
         childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -276,14 +321,33 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Widget _barChart(List<LabeledCount> data, {Map<String, String>? axisGlyphs}) {
-    final maxY = data.fold<double>(
-        1, (m, e) => e.count > m ? e.count.toDouble() : m);
+    final maxCount = data.fold<int>(0, (m, e) => e.count > m ? e.count : m);
+    // Headroom above the tallest bar so the count label printed on top doesn't clip.
+    final maxY = (maxCount == 0 ? 1 : maxCount) * 1.25;
+    final labelColor =
+        Theme.of(context).textTheme.bodySmall?.color ?? Colors.white70;
     return SizedBox(
       height: 160,
       child: BarChart(
         BarChartData(
-          maxY: maxY,
-          barTouchData: BarTouchData(enabled: true),
+          maxY: maxY.toDouble(),
+          // Counts are always shown above each bar (backlog #2) via always-on, chrome-less
+          // tooltips; touch stays enabled so a tap still highlights a bar.
+          barTouchData: BarTouchData(
+            enabled: true,
+            touchTooltipData: BarTouchTooltipData(
+              getTooltipColor: (_) => Colors.transparent,
+              tooltipPadding: EdgeInsets.zero,
+              tooltipMargin: 2,
+              getTooltipItem: (group, _, rod, _) => BarTooltipItem(
+                '${rod.toY.round()}',
+                TextStyle(
+                    color: labelColor,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
           titlesData: FlTitlesData(
             leftTitles: const AxisTitles(
                 sideTitles: SideTitles(showTitles: false)),
@@ -317,15 +381,22 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           borderData: FlBorderData(show: false),
           barGroups: [
             for (var i = 0; i < data.length; i++)
-              BarChartGroupData(x: i, barRods: [
-                BarChartRodData(
-                  toY: data[i].count.toDouble(),
-                  width: 14,
-                  color: _seriesColors.first,
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(4)),
-                ),
-              ]),
+              BarChartGroupData(
+                x: i,
+                // Show the count label only over bars that have one (avoids a "0" on the baseline).
+                showingTooltipIndicators: data[i].count > 0 ? const [0] : const [],
+                barRods: [
+                  BarChartRodData(
+                    toY: data[i].count.toDouble(),
+                    width: 16,
+                    // Shade by magnitude relative to the tallest bar (backlog #3).
+                    color: _magnitudeColor(
+                        maxCount == 0 ? 0 : data[i].count / maxCount),
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(4)),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
@@ -401,6 +472,8 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
     final collapsed = perCategory.values.toList();
     final hasMore = corr.topFactors.length > collapsed.length;
     final shown = _expanded ? corr.topFactors : collapsed;
+    // Longest bar = strongest odds ratio among the shown factors; the rest scale against it.
+    final maxOr = shown.fold<double>(1, (m, t) => t.oddsRatio > m ? t.oddsRatio : m);
 
     return Card(
       child: Padding(
@@ -420,18 +493,7 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
             if (corr.topFactors.isEmpty)
               const Text('No factors stand out above chance yet.')
             else
-              for (final t in shown)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(child: Text('${t.factor}: ${t.condition}')),
-                      Text('OR ${t.oddsRatio}',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ),
+              for (final t in shown) _factorBar(context, t, maxOr),
             if (hasMore)
               Align(
                 alignment: Alignment.centerLeft,
@@ -454,6 +516,40 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
             ],
           ],
         ),
+      ),
+    );
+  }
+
+  /// One suspected factor rendered as a horizontal bar whose length encodes the odds ratio relative
+  /// to the strongest shown factor, shaded by the same magnitude (backlog #1b/#3). The OR value and
+  /// factor:condition label are kept as text — the bar is an addition, not a replacement.
+  Widget _factorBar(BuildContext context, TopFactor t, double maxOr) {
+    final frac = maxOr <= 0 ? 0.0 : (t.oddsRatio / maxOr).clamp(0.0, 1.0);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text('${t.factor}: ${t.condition}')),
+              const SizedBox(width: 8),
+              Text('OR ${t.oddsRatio}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
+          const SizedBox(height: 4),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: frac,
+              minHeight: 8,
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: _magnitudeColor(frac),
+            ),
+          ),
+        ],
       ),
     );
   }
