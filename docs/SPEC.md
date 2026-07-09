@@ -547,12 +547,60 @@ descriptive pressure bar chart.
 (photoperiod / SAD, added at the user's request) · **Pressure Δ 24h**. Self-reported triggers are
 deliberately not correlated (no non-migraine baseline) — shown descriptively as "Most-tagged".
 
+**Session-4: full code review + fix cycle, `v0.2.0` → `v0.3.0` (2026-07-09).** A full read-through
+review of `v0.2.0` surfaced a punch list of bugs, gaps, and hygiene items; each was implemented on
+its own branch, tested (analyze clean, full suite green under both UTC and `TZ=America/Denver`,
+merged only after Steve confirmed on-device), then landed on `main`. Test suite grew from 72 to
+**97 tests** over the cycle. Summary:
+- **Data-correctness fixes.** Import decoded bytes as UTF-16 instead of UTF-8, mangling any
+  non-ASCII text on restore — fixed, with a round-trip test. Events 7–8 days old could sample the
+  wrong hourly weather slot (an `ageDays` truncation routed them to a forecast window that didn't
+  reach far enough back); widened the window and added a distance guard. A failed re-enrich (e.g.
+  editing an event's time/location while offline) unconditionally nulled every derived-factor
+  column, erasing previously-fetched weather — `_writeDerived` now uses `Value.absent()` per group
+  so only the group that actually changed is touched. Malformed import events threw a raw
+  `TypeError` that escaped the `ImportException` handling, failing silently — now surfaced.
+- **DST date-math fixes** (same bug class as the `cb6671c` correlations fix): "days since last
+  migraine" and the pressure baseline both undercounted/dropped a day across a spring-forward
+  transition — both normalized to UTC-based date arithmetic. The History calendar's day color also
+  picked whichever event was iterated last instead of the day's max severity.
+- **Pressure-factor semantics.** The pressure correlation counted one delta per *event* instead of
+  per migraine *day*, double-counting same-day entries — deduped to one per day (earliest wins),
+  matching every other factor's day-based units. This is the one change that alters correlation
+  output for anyone with multiple same-day entries.
+- **New Event Detail fields.** `aura_description` and `foods_notable` had schema/export/import
+  support since `v0.1.0` but no UI — same gap class as the `v0.2.0` medications section. Aura
+  description is a free-text field shown when Aura = Yes; Foods notable is a free-text tag list
+  (no shared vocab table like triggers/head-location, so it's add-via-dialog + delete-via-chip).
+- **Export "Save to device."** Export only offered the Android share sheet, whose available
+  targets depend entirely on what's installed — some phones/emulators have nothing registered to
+  save locally, so export had no reliable on-device save path. Added a Share / Save-to-device
+  choice; Save-to-device uses `file_picker`'s `saveFile()` (Android's Storage Access Framework),
+  already a dependency (used for import).
+- **Analytics: a "By year" chart.** `byYear` and `byMonthOfYear` were computed but never rendered.
+  Decided to render `byYear` (Analytics' only chronological/trend view — everything else is
+  cyclical) and drop `byMonthOfYear` (it mostly duplicated the By-season chart at finer
+  resolution). With 15+ years tracked the year labels ran together — added `barChartLabelStep()`
+  to thin the bottom-axis labels once a chart exceeds 8 buckets (every other chart here tops out
+  at 8), keeping a small tick on skipped bars.
+- **Hygiene.** Dropped unused `provider`/`shared_preferences` dependencies (9 transitive packages
+  gone); deduped the triplicated version string into `legal.dart`'s `kAppVersion`; closed a
+  `PressureBaselineService` `http.Client` leak (one per Analytics load, never closed); CSV export
+  hardened against formula injection (only on the 7 free-text columns — numeric columns keep plain
+  escaping since they can legitimately start with `-`); export temp files now get cleaned up.
+- **CI: closed the dependency-ban blind spot.** The `dependency-ban` job only scans pub package
+  *names* in `pubspec.lock`, so it can't see a native Android dependency a plugin pulls in
+  transitively under a name that gives no hint of it — exactly how `geolocator` would have slipped
+  past it (its Android implementation links `com.google.android.gms:play-services-location`, but
+  "geolocator" matches none of the banned patterns). Added a step to `build-apk` that runs
+  `./gradlew :app:dependencies` after the debug build and greps the real resolved Maven
+  coordinates. Verified on an actual PR + Actions run, not just locally.
+
 **Remaining follow-ups (all post-`v0.1.0`, gated on cutting `v1.0.0`):** bump the drafted F-Droid
 recipe's version fields to the `v1.0.0` tag and open the `fdroiddata` MR (recipe + playbook already
-in [`fdroid/`](../fdroid/)); add a `fastlane/.../changelogs/2.txt` for the new versionCode.
-*(Done since first pass: generated licenses page; connectivity-triggered enrichment retry;
-barometric-pressure factor; daylight factor; the full Session-3 review backlog above; F-Droid recipe
-drafted + store screenshots.)*
+in [`fdroid/`](../fdroid/)). *(Done since first pass: generated licenses page; connectivity-triggered
+enrichment retry; barometric-pressure factor; daylight factor; the full Session-3 review backlog;
+F-Droid recipe drafted + store screenshots; the full Session-4 review + fix cycle above.)*
 
 **Known-bug fixes worth noting:** a DST day-stepping bug in `computeCorrelations` dropped migraine
 days after a spring-forward in DST timezones (fixed 2026-07-08; CI now also runs under

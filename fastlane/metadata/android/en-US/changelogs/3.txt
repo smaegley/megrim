@@ -1,0 +1,9 @@
+v0.3.0 — improvements since v0.2.0:
+
+- Event Detail: record an aura description and notable foods on any entry.
+- Export now offers a direct "Save to device" option alongside sharing, so a backup can be saved straight to your phone's storage.
+- Analytics: a new "By year" chart shows how your migraine frequency has changed over the years you've tracked.
+- Fixed a bug where editing an entry while offline could erase its already-fetched weather.
+- Fixed weather accuracy for entries about a week old, and a couple of date-counting edge cases around daylight-saving time changes.
+- Fixed importing entries with accented characters or emoji in notes and locations.
+- Hardened the CSV export against a known spreadsheet-formula security issue.

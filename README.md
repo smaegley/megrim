@@ -24,15 +24,18 @@ plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v0.1.0`** — first signed release (pre-release, dogfood phase). App id `org.maegley.megrim`.
+**`v0.3.0`** — latest signed release (pre-release, dogfood phase). App id `org.maegley.megrim`.
 Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
 definition and running implementation status.
 
-Since `v0.1.0`, a review backlog has been closed on `main` ([`docs/BACKLOG.md`](docs/BACKLOG.md)):
-**light/dark theme** following the system setting, a **Medications** section in Event Detail, a more
-visual **Analytics** tab (stat tiles + odds-ratio bars + labelled/shaded charts), **Ko-fi
-donations**, and a fix for the Source-code/Donate links on Android 11+. An F-Droid `fdroiddata`
-recipe + store screenshots are **prepared** in [`fdroid/`](fdroid/), held for the `v1.0.0` debut.
+Since `v0.1.0`: **light/dark theme** following the system setting, a **Medications** section in
+Event Detail, a more visual **Analytics** tab (stat tiles + odds-ratio bars + labelled/shaded
+charts, plus a **By year** trend chart), **Ko-fi donations**, and a fix for the Source-code/Donate
+links on Android 11+. `v0.3.0` adds **Aura description** and **Foods notable** fields to Event
+Detail, a **"Save to device" export option** alongside sharing, and a round of data-accuracy fixes
+(import text encoding, weather-fetch edge cases, DST date-counting, CSV export hardening). An
+F-Droid `fdroiddata` recipe + store screenshots are **prepared** in [`fdroid/`](fdroid/), held for
+the `v1.0.0` debut.
 
 **Next milestones:** finish dogfooding → cut `v1.0.0` → open the F-Droid `fdroiddata` MR.
 
@@ -48,8 +51,8 @@ Pick whichever suits you:
   installs and **auto-updates** apps straight from their GitHub releases. Add
   `https://github.com/smaegley/megrim` as an app in Obtainium and it will track new releases for you
   — Play-store-style updates, no account or store required. **While Megrim is in its pre-release
-  (dogfood) phase, turn on _Include prereleases_ for it in Obtainium** so it picks up `v0.1.0`; once
-  `v1.0.0` ships as a stable release this is no longer needed.
+  (dogfood) phase, turn on _Include prereleases_ for it in Obtainium** so it picks up the latest
+  `0.x` tag; once `v1.0.0` ships as a stable release this is no longer needed.
 - **F-Droid (planned).** An [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) build recipe is
   prepared (see [`fdroid/`](fdroid/)); the submission is held for the `v1.0.0` release. Once merged,
   Megrim will be installable and auto-updating through the F-Droid client. Note that the F-Droid

@@ -33,7 +33,7 @@ const String kSourceUrl = 'https://github.com/smaegley/megrim';
 /// The single Dart-level source of truth for the displayed app version. There's no plugin-free
 /// way to read pubspec.yaml's `version:` at runtime, so keep this in sync with it by hand at each
 /// release (both are one-line edits).
-const String kAppVersion = '0.2.0';
+const String kAppVersion = '0.3.0';
 
 /// Store / About listing copy (kept in sync with fastlane/metadata and the README).
 const String kAppTitle = 'Megrim: Migraine Log';
