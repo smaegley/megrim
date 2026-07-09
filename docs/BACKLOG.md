@@ -3,7 +3,36 @@
 Non-blocking improvements captured for later. Not committed to a release; groom as needed.
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
+## Bugs
+
+### 7. Home-location label doesn't refresh after changing it *(fix next update)*
+**Symptom:** In Settings, after changing the Home location, the on-screen value (the `Home location`
+tile subtitle) keeps showing the old location. It only updates after navigating away and back to
+Settings. Found by Steve 2026-07-09.
+**Likely cause:** the Settings screen reads `repo.homeLocation` once (e.g. a `FutureBuilder` built at
+screen creation) and isn't re-run when the change dialog returns. Needs a `setState`/refresh after the
+home-location picker completes so the tile rebuilds against the new value (same pattern as the vocab
+"Manage" tiles, which re-`_load()` on return).
+**Where:** `app/lib/screens/settings_screen.dart` — the Home location `ListTile` + `_changeHome()`.
+
 ## UI / UX
+
+### 8. Support light theme + follow the system setting *(open)*
+**Now:** the app is **dark-only** — `app/lib/theme.dart` defines only `megrimDarkTheme()`, and the app
+forces dark (no light theme, no `ThemeMode.system`). It ignores the phone's light/dark preference.
+**Want:** a proper light theme and `themeMode: ThemeMode.system` so Megrim follows the OS setting
+(with an optional in-app Light/Dark/System override in Settings later).
+**Scope / gotchas:**
+- Add a light `ColorScheme.fromSeed(seedColor: purple, brightness: light)` theme; wire `theme:` +
+  `darkTheme:` + `themeMode: ThemeMode.system` in the root `MaterialApp`.
+- **Audit hard-coded colors** — there are several `Colors.redAccent/orangeAccent/white70`, chart label
+  colors, etc. that assume a dark surface; move them to `Theme.of(context).colorScheme` roles.
+- **Re-validate the chart palettes for a light surface.** The categorical `_seriesColors`, the
+  sequential `_seqPurple` magnitude ramp, and `onStatusColor` were validated for the **`#1E1E1E` dark
+  card** only. Light mode needs its own validated steps (run the `dataviz` validator with
+  `--mode light` against the light card surface) — not an automatic flip.
+- Check the donut in-slice label contrast and the severity-badge colors in light mode.
+Requested by Steve 2026-07-09.
 
 ### 1. Make the Analytics summary + suspected factors more visual — **DONE**
 **Was:** Summary was a plain key/value list; Top Suspected Factors a text list of `factor: condition — OR n`.
