@@ -15,22 +15,27 @@ updates immediately. Smoke test in `app/test/settings_home_location_test.dart`.
 
 ## UI / UX
 
-### 8. Support light theme + follow the system setting *(open)*
-**Now:** the app is **dark-only** — `app/lib/theme.dart` defines only `megrimDarkTheme()`, and the app
-forces dark (no light theme, no `ThemeMode.system`). It ignores the phone's light/dark preference.
-**Want:** a proper light theme and `themeMode: ThemeMode.system` so Megrim follows the OS setting
-(with an optional in-app Light/Dark/System override in Settings later).
-**Scope / gotchas:**
-- Add a light `ColorScheme.fromSeed(seedColor: purple, brightness: light)` theme; wire `theme:` +
-  `darkTheme:` + `themeMode: ThemeMode.system` in the root `MaterialApp`.
-- **Audit hard-coded colors** — there are several `Colors.redAccent/orangeAccent/white70`, chart label
-  colors, etc. that assume a dark surface; move them to `Theme.of(context).colorScheme` roles.
-- **Re-validate the chart palettes for a light surface.** The categorical `_seriesColors`, the
-  sequential `_seqPurple` magnitude ramp, and `onStatusColor` were validated for the **`#1E1E1E` dark
-  card** only. Light mode needs its own validated steps (run the `dataviz` validator with
-  `--mode light` against the light card surface) — not an automatic flip.
-- Check the donut in-slice label contrast and the severity-badge colors in light mode.
-Requested by Steve 2026-07-09.
+### 8. Support light theme + follow the system setting — **DONE**
+**Was:** the app was **dark-only** — `theme.dart` defined only `megrimDarkTheme()` and the app forced
+dark, ignoring the phone's light/dark preference.
+**Done:**
+- `theme.dart` now builds both `megrimLightTheme()` and `megrimDarkTheme()` from the same purple seed;
+  `app.dart` wires `theme:` + `darkTheme:` + `themeMode: ThemeMode.system`, so Megrim follows the OS
+  setting. (An in-app Light/Dark/System override in Settings is still a possible future add.)
+- The chart card surface is pinned per mode (`kDarkCardSurface` `#1E1E1E`, `kLightCardSurface`
+  `#FCFCFB`) so the chart palettes have a known background.
+- **Chart palettes are theme-aware and each dataviz-validated for its surface:** categorical
+  `_seriesColorsDark/Light` and the sequential purple magnitude ramp `_seqPurpleDark/Light` (light
+  runs pale→deep, low→high; ordinal checks pass, surface-adjacent end clears 2:1). `onStatusColor`
+  already picks its own contrast, so donut labels adapt automatically.
+- **Hard-coded accent colors moved to theme roles:** destructive text/buttons → `colorScheme.error`
+  /`onError` (Delete, Discard, Replace, swipe-delete, MIGRAINE ENDED); the meds "helped" glyph →
+  fixed `StatusColors` + `onSurfaceVariant`; the enrichment-error text → `colorScheme.error`; the
+  trigger-frequency bar → `colorScheme.tertiary`; the Log app-bar subtitle → `onSurface`@70%.
+- Severity badges + the days-since card already used the fixed `StatusColors` + adaptive
+  `onStatusColor`, so they work in both modes unchanged.
+Requested by Steve 2026-07-09. `flutter analyze` clean, theme wiring test added. Visual pass in both
+modes is Steve's on-device check (can't render light mode on the build VM).
 
 ### 1. Make the Analytics summary + suspected factors more visual — **DONE**
 **Was:** Summary was a plain key/value list; Top Suspected Factors a text list of `factor: condition — OR n`.

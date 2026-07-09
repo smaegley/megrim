@@ -23,10 +23,11 @@ const Map<String, String> _moonGlyphs = {
   'Waning Crescent': '🌘',
 };
 
-/// Categorical series palette (dark steps from the data-viz reference palette, validated for the
-/// dark card surface). Colour follows the entity by fixed index — never cycled — so a season/bucket
-/// keeps its colour regardless of which buckets are present. Used for *identity* encodings (donuts).
-const List<Color> _seriesColors = [
+/// Categorical series palette (from the data-viz reference palette). Colour follows the entity by
+/// fixed index — never cycled — so a season/bucket keeps its colour regardless of which buckets are
+/// present. Used for *identity* encodings (donuts). Each mode's steps are validated for that mode's
+/// card surface (dark `#1E1E1E`, light `#FCFCFB`); use [_seriesColorsFor].
+const List<Color> _seriesColorsDark = [
   Color(0xFF3987E5), // blue
   Color(0xFF199E70), // aqua
   Color(0xFFC98500), // yellow
@@ -36,24 +37,47 @@ const List<Color> _seriesColors = [
   Color(0xFFD55181), // magenta
   Color(0xFFD95926), // orange
 ];
+const List<Color> _seriesColorsLight = [
+  Color(0xFF2A78D6), // blue
+  Color(0xFF1BAF7A), // aqua
+  Color(0xFFEDA100), // yellow
+  Color(0xFF008300), // green
+  Color(0xFF4A3AA7), // violet
+  Color(0xFFE34948), // red
+  Color(0xFFE87BA4), // magenta
+  Color(0xFFEB6834), // orange
+];
+List<Color> _seriesColorsFor(Brightness b) =>
+    b == Brightness.dark ? _seriesColorsDark : _seriesColorsLight;
 
-/// Sequential single-hue purple ramp (dim→bright = low→high magnitude), used for *magnitude*
-/// encodings: the descriptive count bars and the suspected-factor bars (backlog #1b/#2/#3). Steps
-/// are validated for the #1E1E1E dark card surface (ordinal: monotone lightness, single hue, dim
-/// end clears the 2:1 surface floor at 2.20:1). Distinct job from [_seriesColors] (identity).
-const List<Color> _seqPurple = [
+/// Sequential single-hue purple ramp for *magnitude* encodings (the descriptive count bars and the
+/// suspected-factor bars — backlog #1b/#2/#3). Low→high magnitude runs from the step nearest the
+/// surface to the most prominent one: on dark that is dim→bright, on light it is pale→deep. Each
+/// ramp is dataviz-validated as an ordinal ramp for its card surface (monotone lightness, single
+/// hue, surface-adjacent end clears 2:1). Distinct job from the categorical palette (identity).
+const List<Color> _seqPurpleDark = [
   Color(0xFF5A4796),
   Color(0xFF6D55B3),
   Color(0xFF8168D2),
   Color(0xFF9A86EA),
   Color(0xFFB8A8F6),
 ];
+const List<Color> _seqPurpleLight = [
+  Color(0xFFA594DE),
+  Color(0xFF8A74D9),
+  Color(0xFF6F58C4),
+  Color(0xFF5644A0),
+  Color(0xFF3E2E7E),
+];
+List<Color> _seqPurpleFor(Brightness b) =>
+    b == Brightness.dark ? _seqPurpleDark : _seqPurpleLight;
 
-/// Map a normalised magnitude [t] in [0,1] to a step of the sequential purple ramp. Higher =
-/// brighter. NaN (e.g. a max of 0) collapses to the dimmest step.
-Color _magnitudeColor(double t) {
+/// Map a normalised magnitude [t] in [0,1] to a step of the sequential purple ramp for [b]. Higher
+/// magnitude = the more prominent end. NaN (e.g. a max of 0) collapses to the surface-adjacent step.
+Color _magnitudeColor(double t, Brightness b) {
+  final ramp = _seqPurpleFor(b);
   final clamped = (t.isNaN ? 0.0 : t).clamp(0.0, 1.0);
-  return _seqPurple[(clamped * (_seqPurple.length - 1)).round()];
+  return ramp[(clamped * (ramp.length - 1)).round()];
 }
 
 /// Analytics (SPEC §4.5): a "days since last migraine" status card, summary, Top Suspected Factors,
@@ -262,7 +286,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Text(summary, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 6),
             // A mini sparkline of the distribution gives the collapsed card visual interest.
-            _MiniBars(data: data, color: _seqPurple[2]),
+            _MiniBars(
+                data: data,
+                color: _seqPurpleFor(Theme.of(context).brightness)[2]),
           ],
         ),
         childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -281,6 +307,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   // ── Donut (review items #9, #10) ───────────────────────────────────────────
   Widget _donut(List<LabeledCount> data) {
+    final colors = _seriesColorsFor(Theme.of(context).brightness);
     final present = <int>[]; // indices into data with count > 0
     for (var i = 0; i < data.length; i++) {
       if (data[i].count > 0) present.add(i);
@@ -303,7 +330,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             for (final i in present)
               PieChartSectionData(
                 value: data[i].count.toDouble(),
-                color: _seriesColors[i % _seriesColors.length],
+                color: colors[i % colors.length],
                 radius: 68,
                 titlePositionPercentageOffset: 0.6,
                 title: '${data[i].label}\n${data[i].count}',
@@ -311,7 +338,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   fontSize: 11,
                   height: 1.2,
                   fontWeight: FontWeight.bold,
-                  color: onStatusColor(_seriesColors[i % _seriesColors.length]),
+                  color: onStatusColor(colors[i % colors.length]),
                 ),
               ),
           ],
@@ -321,11 +348,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Widget _barChart(List<LabeledCount> data, {Map<String, String>? axisGlyphs}) {
+    final brightness = Theme.of(context).brightness;
     final maxCount = data.fold<int>(0, (m, e) => e.count > m ? e.count : m);
     // Headroom above the tallest bar so the count label printed on top doesn't clip.
     final maxY = (maxCount == 0 ? 1 : maxCount) * 1.25;
-    final labelColor =
-        Theme.of(context).textTheme.bodySmall?.color ?? Colors.white70;
+    final labelColor = Theme.of(context).textTheme.bodySmall?.color ??
+        Theme.of(context).colorScheme.onSurface;
     return SizedBox(
       height: 160,
       child: BarChart(
@@ -391,7 +419,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     width: 16,
                     // Shade by magnitude relative to the tallest bar (backlog #3).
                     color: _magnitudeColor(
-                        maxCount == 0 ? 0 : data[i].count / maxCount),
+                        maxCount == 0 ? 0 : data[i].count / maxCount, brightness),
                     borderRadius:
                         const BorderRadius.vertical(top: Radius.circular(4)),
                   ),
@@ -546,7 +574,7 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
               minHeight: 8,
               backgroundColor:
                   Theme.of(context).colorScheme.surfaceContainerHighest,
-              color: _magnitudeColor(frac),
+              color: _magnitudeColor(frac, Theme.of(context).brightness),
             ),
           ),
         ],
@@ -612,7 +640,9 @@ class _TriggerCardState extends State<_TriggerCard> {
                         minHeight: 6,
                         backgroundColor:
                             Theme.of(context).colorScheme.surfaceContainerHighest,
-                        color: Colors.tealAccent,
+                        // Tertiary keeps these frequency bars visually distinct from the purple
+                        // correlation bars, and adapts to light/dark.
+                        color: Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
                   ],

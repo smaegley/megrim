@@ -51,7 +51,10 @@ class _MegrimAppState extends State<MegrimApp> {
     return MaterialApp(
       title: 'Megrim',
       debugShowCheckedModeBanner: false,
-      theme: megrimDarkTheme(),
+      // Follow the phone's light/dark setting (backlog #8).
+      theme: megrimLightTheme(),
+      darkTheme: megrimDarkTheme(),
+      themeMode: ThemeMode.system,
       home: FutureBuilder<bool>(
         future: _onboarded,
         builder: (context, snap) {

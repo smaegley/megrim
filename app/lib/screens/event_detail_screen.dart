@@ -8,6 +8,7 @@ import '../models/json_fields.dart';
 import '../models/med_entry.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/location_picker.dart';
+import '../widgets/severity_badge.dart' show StatusColors;
 import 'manage_vocab_screen.dart';
 
 /// Event Detail (SPEC §4.4): edit all fields; chips from user vocab; shows the computed
@@ -132,7 +133,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               child: const Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.redAccent)),
+            child: Text('Delete',
+                style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
         ],
       ),
@@ -429,10 +431,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       if (m.time != null) _fmtMedTime(m.time!),
     ];
     final subtitle = parts.join(' · ');
+    // Fixed status palette (works on both light/dark surfaces; the icon carries the meaning);
+    // unknown uses a theme-muted tone.
     final (helpIcon, helpColor) = switch (m.helped) {
-      true => (Icons.thumb_up_outlined, Colors.greenAccent),
-      false => (Icons.thumb_down_outlined, Colors.orangeAccent),
-      null => (Icons.help_outline, Colors.white38),
+      true => (Icons.thumb_up_outlined, StatusColors.good),
+      false => (Icons.thumb_down_outlined, StatusColors.serious),
+      null => (Icons.help_outline, Theme.of(context).colorScheme.onSurfaceVariant),
     };
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
@@ -529,7 +533,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(d.enrichError!,
-                    style: const TextStyle(color: Colors.orangeAccent)),
+                    style: TextStyle(color: Theme.of(context).colorScheme.error)),
               ),
           ],
         ),
