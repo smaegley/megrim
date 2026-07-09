@@ -25,6 +25,23 @@ void main() {
     expect(hist['0 to 5'], 0);
   });
 
+  test('bucketDailyDeltas counts every delta across a DST spring-forward', () {
+    // 2026-03-08 is the US spring-forward date; under TZ=America/Denver, local midnight that
+    // day is only 23 hours after the prior local midnight. Local-date subtraction that doesn't
+    // normalize to UTC first would miss the day-3 lookup and drop a delta.
+    final dates = [
+      DateTime(2026, 3, 6),
+      DateTime(2026, 3, 7),
+      DateTime(2026, 3, 8),
+      DateTime(2026, 3, 9),
+      DateTime(2026, 3, 10),
+    ];
+    final pressures = <double?>[1000, 1002, 1004, 1006, 1008];
+    final hist = bucketDailyDeltas(dates, pressures);
+    final total = hist.values.fold<int>(0, (a, b) => a + b);
+    expect(total, 4); // n-1 deltas; pre-fix under Denver TZ this drops to 3
+  });
+
   test('parseDailyPressure reads the archive daily shape', () {
     final json = {
       'daily': {
