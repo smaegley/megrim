@@ -130,10 +130,20 @@ class MegrimRepository {
       return computeCorrelations(eventStarts: events.map((e) => e.startedAt).toList());
     }
     final derived = await db.select(db.derivedFactors).get();
-    final deltas = derived
-        .where((d) => d.pressureDelta24h != null)
-        .map((d) => d.pressureDelta24h!)
-        .toList();
+    final derivedById = {for (final d in derived) d.eventId: d};
+    // One pressure delta per migraine *day* (earliest event with data wins), so the pressure 2×2
+    // counts days like every other factor — the baseline (built from daily archive data) is per
+    // day, but events are per-event, so two same-day events would otherwise double-count cell
+    // `a` and could even drive `c = inBucketTotal - a` negative.
+    final deltaByDay = <DateTime, double>{};
+    final byStart = [...events]..sort((a, b) => a.startedAt.compareTo(b.startedAt));
+    for (final e in byStart) {
+      final delta = derivedById[e.id]?.pressureDelta24h;
+      if (delta == null) continue;
+      final l = e.startedAt.toLocal();
+      deltaByDay.putIfAbsent(DateTime(l.year, l.month, l.day), () => delta);
+    }
+    final deltas = deltaByDay.values.toList();
 
     final dates = events.map((e) => e.startedAt.toLocal()).toList()..sort();
     final home = await homeLocation;
