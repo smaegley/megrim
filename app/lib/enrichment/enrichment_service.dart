@@ -80,6 +80,9 @@ class EnrichmentService {
     return w != null;
   }
 
+  /// Writes computed factors, leaving a group's columns untouched (rather than nulling them) when
+  /// that group's inputs are null — e.g. a re-enrich whose weather fetch failed must not erase
+  /// weather already stored from a previous successful enrichment.
   Future<void> _writeDerived(
     String eventId, {
     CalendarFactors? cal,
@@ -90,21 +93,25 @@ class EnrichmentService {
   }) async {
     final companion = DerivedFactorsCompanion(
       eventId: Value(eventId),
-      dayOfWeek: Value(cal?.dayOfWeek),
-      season: Value(cal?.season),
-      timeOfDayBucket: Value(cal?.timeOfDayBucket),
-      daylightHours: Value(astro?.daylightHours),
-      sunriseUtc: Value(astro?.sunriseUtc),
-      sunsetUtc: Value(astro?.sunsetUtc),
-      moonPhase: Value(astro?.moonPhase),
-      moonIllumination: Value(astro?.moonIllumination),
-      tempC: Value(weather?.tempC),
-      humidityPct: Value(weather?.humidityPct),
-      pressureHpa: Value(weather?.pressureHpa),
-      precipitationMm: Value(weather?.precipitationMm),
-      pressureDelta24h: Value(weather?.pressureDelta24h),
-      pressureDelta48h: Value(weather?.pressureDelta48h),
-      aqi: Value(weather?.aqi),
+      dayOfWeek: cal != null ? Value(cal.dayOfWeek) : const Value.absent(),
+      season: cal != null ? Value(cal.season) : const Value.absent(),
+      timeOfDayBucket: cal != null ? Value(cal.timeOfDayBucket) : const Value.absent(),
+      daylightHours: astro != null ? Value(astro.daylightHours) : const Value.absent(),
+      sunriseUtc: astro != null ? Value(astro.sunriseUtc) : const Value.absent(),
+      sunsetUtc: astro != null ? Value(astro.sunsetUtc) : const Value.absent(),
+      moonPhase: astro != null ? Value(astro.moonPhase) : const Value.absent(),
+      moonIllumination:
+          astro != null ? Value(astro.moonIllumination) : const Value.absent(),
+      tempC: weather != null ? Value(weather.tempC) : const Value.absent(),
+      humidityPct: weather != null ? Value(weather.humidityPct) : const Value.absent(),
+      pressureHpa: weather != null ? Value(weather.pressureHpa) : const Value.absent(),
+      precipitationMm:
+          weather != null ? Value(weather.precipitationMm) : const Value.absent(),
+      pressureDelta24h:
+          weather != null ? Value(weather.pressureDelta24h) : const Value.absent(),
+      pressureDelta48h:
+          weather != null ? Value(weather.pressureDelta48h) : const Value.absent(),
+      aqi: weather != null ? Value(weather.aqi) : const Value.absent(),
       enrichedAt: Value(enriched ? DateTime.now().toUtc() : null),
       enrichError: Value(error),
     );
