@@ -1,6 +1,7 @@
 # Donation links shown on the GitHub repo and mirrored by the in-app Donate button.
-# Optional: uncomment/fill a platform if/when desired. Leave commented until then — an empty
-# value renders an error.
+# Ko-fi is the primary: it takes one-time tips with no donor account (lowest friction for the
+# app's users), 0% platform fee, and no in-app payment SDK (a plain URL → browser, F-Droid-clean).
+ko_fi: smaegley
+# Other platforms left off by choice — see docs/BACKLOG.md #4:
 # liberapay: megrim
-# ko_fi: megrim
 # github: [smaegley]
