@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../database/database.dart';
+import '../legal.dart' show kAppVersion;
 import '../models/json_fields.dart';
 import 'export_format.dart';
 
@@ -9,7 +10,7 @@ class ExportService {
   final MegrimDatabase db;
   final String appVersion;
 
-  ExportService({required this.db, this.appVersion = '0.2.0'});
+  ExportService({required this.db, this.appVersion = kAppVersion});
 
   /// The complete export document as a map.
   Future<Map<String, dynamic>> buildExport({DateTime? now}) async {
