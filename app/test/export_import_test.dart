@@ -202,4 +202,32 @@ void main() {
     expect(csv, contains('"rough one, with a comma, and ""quotes"""'));
     await db.close();
   });
+
+  test('CSV export neutralizes formula-injection-prone free-text fields',
+      () async {
+    final db = freshDb();
+    await db.into(db.migraineEvents).insert(MigraineEventsCompanion.insert(
+          id: 'evt-formula',
+          startedAt: DateTime.utc(2024, 6, 1, 9),
+          notes: const Value('=cmd|/c calc'),
+          geoLabel: const Value('+1;DDE'),
+          createdAt: DateTime.utc(2024, 6, 1),
+          updatedAt: DateTime.utc(2024, 6, 1),
+        ));
+    await db.into(db.derivedFactors).insert(const DerivedFactorsCompanion(
+          eventId: Value('evt-formula'),
+          pressureDelta24h: Value(-6.2),
+        ));
+    final csv = await ExportService(db: db).toCsv();
+
+    // Free-text fields that could be interpreted as a spreadsheet formula are prefixed with a
+    // single quote.
+    expect(csv, contains("'=cmd|/c calc"));
+    expect(csv, contains("'+1;DDE"));
+    // A numeric column that legitimately starts with '-' (a negative pressure delta) is
+    // untouched — only free-text fields get the guard.
+    expect(csv, contains(',-6.2,'));
+    expect(csv, isNot(contains("'-6.2")));
+    await db.close();
+  });
 }
