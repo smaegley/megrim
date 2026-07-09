@@ -1,5 +1,7 @@
 import 'dart:async' show unawaited;
+import 'dart:convert' show utf8;
 import 'dart:io';
+import 'dart:typed_data' show Uint8List;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,8 @@ import '../repositories/megrim_repository.dart';
 import '../services/import_service.dart';
 import '../widgets/location_picker.dart';
 import 'manage_vocab_screen.dart';
+
+enum _ExportAction { share, save }
 
 /// Settings (SPEC §4.6): home location, vocab management, export/import, donate, About.
 class SettingsScreen extends StatefulWidget {
@@ -148,14 +152,69 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _exportJson(BuildContext context) async {
     final json = await repo.exporter.toJsonString();
+    if (!context.mounted) return;
     final name = ExportServiceFilename.json();
-    await _shareText(json, name);
+    await _exportContent(context, json, name);
   }
 
   Future<void> _exportCsv(BuildContext context) async {
     final csv = await repo.exporter.toCsv();
+    if (!context.mounted) return;
     final name = ExportServiceFilename.csv();
-    await _shareText(csv, name);
+    await _exportContent(context, csv, name);
+  }
+
+  /// Offer both delivery paths (SPEC §7.1): the share sheet, and a direct "Save to device" via
+  /// Android's Storage Access Framework (file_picker's saveFile). The share sheet's available
+  /// targets depend entirely on what's installed — some phones/emulators have nothing registered
+  /// to save straight to local storage, so "share only" isn't a reliable substitute for this.
+  Future<void> _exportContent(
+      BuildContext context, String content, String filename) async {
+    final action = await showDialog<_ExportAction>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: const Text('Export'),
+        children: [
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, _ExportAction.share),
+            child: const ListTile(
+              leading: Icon(Icons.share_outlined),
+              title: Text('Share'),
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, _ExportAction.save),
+            child: const ListTile(
+              leading: Icon(Icons.save_alt_outlined),
+              title: Text('Save to device'),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (!context.mounted || action == null) return;
+    if (action == _ExportAction.share) {
+      await _shareText(content, filename);
+    } else {
+      await _saveToFile(context, content, filename);
+    }
+  }
+
+  Future<void> _saveToFile(
+      BuildContext context, String content, String filename) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final path = await FilePicker.platform.saveFile(
+        fileName: filename,
+        bytes: Uint8List.fromList(utf8.encode(content)),
+      );
+      if (path != null) {
+        messenger.showSnackBar(const SnackBar(content: Text('Saved.')));
+      }
+      // path == null: the user cancelled the save dialog — nothing to report.
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Save failed: $e')));
+    }
   }
 
   Future<void> _shareText(String content, String filename) async {
