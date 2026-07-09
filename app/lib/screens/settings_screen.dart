@@ -27,14 +27,27 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   MegrimRepository get repo => widget.repo;
 
-  /// Held in state so it can be re-fetched after the home location changes — otherwise the tile
-  /// keeps showing the old label until the screen is left and reopened (backlog #7).
-  late Future<HomeLocation?> _homeFuture;
+  /// The displayed home location, held directly in state (not via a FutureBuilder). After a change
+  /// we set it straight from the picked value, so the label updates immediately — the old
+  /// FutureBuilder re-read the DB, and that read got queued behind reEnrichAll's heavy DB work, so
+  /// the new label didn't surface until the screen was left and reopened (backlog #7).
+  HomeLocation? _home;
+  bool _homeLoaded = false;
 
   @override
   void initState() {
     super.initState();
-    _homeFuture = repo.homeLocation;
+    _loadHome();
+  }
+
+  Future<void> _loadHome() async {
+    final h = await repo.homeLocation;
+    if (mounted) {
+      setState(() {
+        _home = h;
+        _homeLoaded = true;
+      });
+    }
   }
 
   @override
@@ -46,10 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const Icon(Icons.home_outlined),
             title: const Text('Home location'),
-            subtitle: FutureBuilder<HomeLocation?>(
-              future: _homeFuture,
-              builder: (context, snap) => Text(snap.data?.label ?? '—'),
-            ),
+            subtitle: Text(_home?.label ?? (_homeLoaded ? '—' : '…')),
             onTap: () => _changeHome(context),
           ),
           const Divider(),
@@ -125,8 +135,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     if (confirmed == true && picked != null) {
       await repo.setHomeLocation(picked!);
-      // Refresh the tile so it shows the new location immediately (backlog #7).
-      if (mounted) setState(() => _homeFuture = repo.homeLocation);
+      // Update the tile straight from the picked value — no DB re-read, so it shows immediately
+      // even before the (slow) re-enrich below runs (backlog #7).
+      if (mounted) setState(() => _home = picked);
       messenger.showSnackBar(
           const SnackBar(content: Text('Re-enriching entries…')));
       await repo.reEnrichAll();
