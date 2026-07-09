@@ -68,6 +68,11 @@ class OpenMeteoClient {
   /// `past_days` window instead (SPEC §5.1).
   static const int recentThresholdDays = 7;
 
+  /// `past_days` requested from the forecast API. Wider than [recentThresholdDays] because
+  /// `ageDays` below truncates (an event 7.99 days old is still routed here), so the window needs
+  /// slack to still cover the onset hour.
+  static const int pastDaysFetch = 9;
+
   OpenMeteoClient({
     http.Client? httpClient,
     this.timeout = const Duration(seconds: 15),
@@ -98,7 +103,7 @@ class OpenMeteoClient {
     return Uri.https(kForecastHost, '/v1/forecast', {
       'latitude': '$la',
       'longitude': '$lo',
-      'past_days': '$recentThresholdDays',
+      'past_days': '$pastDaysFetch',
       'forecast_days': '1',
       'hourly': _hourlyVars.join(','),
       'timezone': 'UTC',
@@ -247,5 +252,9 @@ int _closestHourIndex(List<String> times, DateTime onsetHour) {
       best = i;
     }
   }
+  // Onset falls outside the returned series entirely (e.g. a routing/window edge case) — treat as
+  // no data rather than silently sampling the series edge. A real match is always <= 30 min away
+  // in an hourly series; 120 min leaves generous slack.
+  if (bestDiff > 120) return -1;
   return best;
 }
