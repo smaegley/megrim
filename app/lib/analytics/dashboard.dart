@@ -4,7 +4,6 @@ import 'correlations.dart'
     show
         kDaylightBuckets,
         kDowLabels,
-        kMonthLabels,
         kMoonOrder,
         kPressureBuckets,
         daylightBucket,
@@ -95,7 +94,6 @@ class CalendarEntry {
 class DashboardResult {
   final Summary summary;
   final List<YearCount> byYear;
-  final List<LabeledCount> byMonthOfYear;
   final List<LabeledCount> byDayOfWeek;
   final List<LabeledCount> byTimeOfDay;
   final List<LabeledCount> bySeason;
@@ -112,7 +110,6 @@ class DashboardResult {
   const DashboardResult({
     required this.summary,
     this.byYear = const [],
-    this.byMonthOfYear = const [],
     this.byDayOfWeek = const [],
     this.byTimeOfDay = const [],
     this.bySeason = const [],
@@ -203,15 +200,6 @@ DashboardResult computeDashboard(List<EventStat> events) {
           ))
       .toList();
 
-  // By month of year (1..12).
-  final monthCounts = <int, int>{};
-  for (final e in sorted) {
-    monthCounts[e.startedAt.toLocal().month] =
-        (monthCounts[e.startedAt.toLocal().month] ?? 0) + 1;
-  }
-  final byMonth = List.generate(
-      12, (i) => LabeledCount(kMonthLabels[i], monthCounts[i + 1] ?? 0));
-
   // By day of week (from derived day_of_week).
   final dowCounts = <int, int>{};
   for (final e in sorted) {
@@ -274,7 +262,6 @@ DashboardResult computeDashboard(List<EventStat> events) {
   return DashboardResult(
     summary: summary,
     byYear: byYear,
-    byMonthOfYear: byMonth,
     byDayOfWeek: byDow,
     byTimeOfDay: byTod,
     bySeason: bySeason,

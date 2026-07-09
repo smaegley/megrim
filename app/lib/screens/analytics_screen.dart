@@ -80,6 +80,15 @@ Color _magnitudeColor(double t, Brightness b) {
   return ramp[(clamped * (ramp.length - 1)).round()];
 }
 
+/// Bottom-axis label thinning for the shared bar chart: with [length] buckets, print at most
+/// [maxLabels] of them (evenly spaced) so a long series — currently only "By year" once several
+/// years are tracked — doesn't run its labels together. Returns 1 (show every label) when
+/// [length] is already at or under [maxLabels], which covers every other bucket count in this
+/// screen (day of week 7, moon phase 8, ...) unchanged.
+@visibleForTesting
+int barChartLabelStep(int length, {int maxLabels = 8}) =>
+    length > maxLabels ? (length / maxLabels).ceil() : 1;
+
 /// Analytics (SPEC §4.5): a "days since last migraine" status card, summary, Top Suspected Factors,
 /// Most-tagged triggers, then collapsible per-factor charts (incl. season & time-of-day donuts).
 /// Computed locally. Includes the required Open-Meteo attribution footer.
@@ -170,6 +179,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 _CorrelationsCard(corr: corr),
                 const SizedBox(height: 16),
                 _TriggerCard(dash: dash),
+                const SizedBox(height: 16),
+                _collapsibleChart(
+                  title: 'By year',
+                  data: _yearCounts(dash.byYear),
+                  child: _barChart(_yearCounts(dash.byYear)),
+                ),
                 const SizedBox(height: 16),
                 _collapsibleChart(
                   title: 'By day of week',
@@ -304,6 +319,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     );
   }
 
+  /// Adapts the by-year trend data to the shared bar-chart shape (year label, count). The only
+  /// chronological/trend view on the screen — everything else is cyclical (day of week, season,
+  /// moon phase, ...); this instead shows whether migraines are becoming more or less frequent
+  /// year over year. avgSeverity isn't plotted here to keep parity with the other count charts.
+  static List<LabeledCount> _yearCounts(List<YearCount> years) =>
+      years.map((y) => LabeledCount(y.year.toString(), y.count)).toList();
+
   static LabeledCount? _topOf(List<LabeledCount> data) {
     LabeledCount? top;
     for (final d in data) {
@@ -361,6 +383,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final maxY = (maxCount == 0 ? 1 : maxCount) * 1.25;
     final labelColor = Theme.of(context).textTheme.bodySmall?.color ??
         Theme.of(context).colorScheme.onSurface;
+    // Thin the bottom-axis labels once a series gets long (e.g. "By year" after many years
+    // tracked) so they stop running together; every other bucket type here tops out at 8 (moon
+    // phase) so this is a no-op for them. Skipped bars still get a small tick so the bar-to-bar
+    // spacing stays legible even without a label on every one.
+    final labelStep = barChartLabelStep(data.length);
     return SizedBox(
       height: 160,
       child: BarChart(
@@ -399,6 +426,22 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   if (i < 0 || i >= data.length) return const SizedBox();
                   final label = data[i].label;
                   final glyph = axisGlyphs?[label];
+                  // Always label the first and last bar (the extremes are the most useful to
+                  // read on a long series) plus every labelStep-th one in between.
+                  final showLabel = glyph != null ||
+                      labelStep == 1 ||
+                      i % labelStep == 0 ||
+                      i == data.length - 1;
+                  if (!showLabel) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Container(
+                        width: 1,
+                        height: 4,
+                        color: labelColor.withValues(alpha: 0.4),
+                      ),
+                    );
+                  }
                   return Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: glyph != null
