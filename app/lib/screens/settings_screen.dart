@@ -223,7 +223,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showAboutDialog(
       context: context,
       applicationName: 'Megrim',
-      applicationVersion: '0.1.0',
+      applicationVersion: '0.2.0',
       applicationIcon: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.asset('assets/logo.png', width: 56, height: 56),

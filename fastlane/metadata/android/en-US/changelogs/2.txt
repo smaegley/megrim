@@ -1,0 +1,7 @@
+v0.2.0 — improvements since the first release:
+
+- Light and dark themes: the app now follows your phone's system setting.
+- Medications: add what you took to an entry (name, dose, time, and whether it helped).
+- A more visual Analytics tab: summary stat tiles, "suspected factors" as ranked bars, and counts + shading on the charts.
+- Donate link (Ko-fi) and a fix so the Source-code and Donate links open correctly on Android 11+.
+- Fixed the home-location label not refreshing immediately after you change it.
