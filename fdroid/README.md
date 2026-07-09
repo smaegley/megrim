@@ -75,8 +75,20 @@ order of likelihood:
   `fastlane/metadata/android/en-US/images/phoneScreenshots/` in the Megrim repo (captured on the
   emulator) — F-Droid imports them into the listing.
 
-## When to submit
+## When to submit — **decided: debut at v1.0.0**
 
-The recipe targets the existing **`v0.1.0`** tag, so it works today. If you'd rather have F-Droid
-debut at **v1.0.0**, just bump `versionName`/`versionCode`/`commit`/`CurrentVersion*` to the 1.0.0
-tag when you cut it — the rest of the recipe is unchanged.
+F-Droid will debut Megrim at **v1.0.0**, not v0.1.0. So: **hold the fdroiddata MR** until v1.0.0 is
+cut, then bump `versionName` / `versionCode` / `commit` / `CurrentVersion` / `CurrentVersionCode` in
+the recipe to the 1.0.0 tag (a one-line-per-field change — the rest is unchanged) and open the MR.
+
+The recipe currently pins **`v0.1.0`** only as a working placeholder so it stays valid/lintable in
+the meantime.
+
+## Screenshots — **decided: add them**
+
+F-Droid imports screenshots from `fastlane/metadata/android/en-US/images/phoneScreenshots/` in the
+Megrim repo (PNG/JPG, named e.g. `1.png`, `2.png`, …, shown in filename order). Capture them on the
+emulator against current `main` (the UI is frozen for v1.0.0, so today's screens are representative).
+Recommended set: Log tab, an Event detail with the Medications section, the Analytics tab (stat tiles
++ factor bars + a shaded bar chart), History (List and Calendar), and Settings. See the capture
+steps handed off in chat.
