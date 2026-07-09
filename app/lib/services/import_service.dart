@@ -29,6 +29,18 @@ class ImportService {
   final MegrimDatabase db;
   ImportService(this.db);
 
+  /// Decode raw file bytes as UTF-8 (export files are always UTF-8 JSON) before parsing, so
+  /// non-ASCII text (accented labels, emoji in notes) round-trips correctly.
+  Future<ImportResult> importJsonBytes(List<int> bytes, {bool replace = false}) {
+    final String raw;
+    try {
+      raw = utf8.decode(bytes);
+    } on FormatException {
+      throw ImportException('File is not valid UTF-8 text.');
+    }
+    return importJsonString(raw, replace: replace);
+  }
+
   Future<ImportResult> importJsonString(String raw, {bool replace = false}) {
     final Object? decoded;
     try {
@@ -76,10 +88,16 @@ class ImportService {
           skipped++;
           continue;
         }
-        final parsed = eventFromJson(j);
-        await db.into(db.migraineEvents).insert(parsed.event);
-        if (parsed.derived != null) {
-          await db.into(db.derivedFactors).insert(parsed.derived!);
+        try {
+          final parsed = eventFromJson(j);
+          await db.into(db.migraineEvents).insert(parsed.event);
+          if (parsed.derived != null) {
+            await db.into(db.derivedFactors).insert(parsed.derived!);
+          }
+        } on ImportException {
+          rethrow;
+        } catch (e) {
+          throw ImportException('Event "$id" is malformed ($e). Nothing was imported.');
         }
         existing.add(id);
         imported++;

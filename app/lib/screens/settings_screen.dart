@@ -170,7 +170,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (result == null || result.files.isEmpty) return;
     final bytes = result.files.first.bytes;
     if (bytes == null) return;
-    final raw = String.fromCharCodes(bytes);
 
     if (!context.mounted) return;
     final replace = await showDialog<bool>(
@@ -195,12 +194,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (replace == null) return;
 
     try {
-      final r = await repo.importer.importJsonString(raw, replace: replace);
+      final r = await repo.importer.importJsonBytes(bytes, replace: replace);
       messenger.showSnackBar(SnackBar(
           content: Text('Imported ${r.imported}, skipped ${r.skipped}.')));
       await repo.processEnrichmentQueue();
     } on ImportException catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('Import failed: ${e.message}')));
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Import failed: $e')));
     }
   }
 

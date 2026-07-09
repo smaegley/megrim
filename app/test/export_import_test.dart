@@ -130,6 +130,55 @@ void main() {
     await dst.close();
   });
 
+  test('importJsonBytes decodes UTF-8 text correctly (non-ASCII round-trips)', () async {
+    final src = freshDb();
+    await seed(src);
+    // Overwrite evt-1 with non-ASCII notes/location so the round-trip has something to corrupt.
+    await (src.update(src.migraineEvents)..where((t) => t.id.equals('evt-1'))).write(
+      const MigraineEventsCompanion(
+        notes: Value('Kopfschmerz in Zürich ☂️'),
+        geoLabel: Value('Zúrich, Schweiz'),
+      ),
+    );
+    final json = await ExportService(db: src).toJsonString();
+    final bytes = utf8.encode(json);
+
+    final dst = freshDb();
+    final result = await ImportService(dst).importJsonBytes(bytes, replace: true);
+    expect(result.imported, 2);
+
+    final evt1 = await (dst.select(dst.migraineEvents)
+          ..where((t) => t.id.equals('evt-1')))
+        .getSingle();
+    expect(evt1.notes, 'Kopfschmerz in Zürich ☂️');
+    expect(evt1.geoLabel, 'Zúrich, Schweiz');
+
+    await src.close();
+    await dst.close();
+  });
+
+  test('malformed event throws ImportException and rolls back entirely', () async {
+    final db = freshDb();
+    final svc = ImportService(db);
+    final doc = {
+      'format': 'megrim-export',
+      'format_version': 1,
+      'events': [
+        {
+          'id': 'bad-1',
+          'started_at': '2024-06-01T09:00:00.000Z',
+          'severity': '5', // wrong type: should be an int
+          'created_at': '2024-06-01T08:30:00.000Z',
+          'updated_at': '2024-06-01T08:30:00.000Z',
+        }
+      ],
+    };
+    await expectLater(
+        () => svc.importJson(doc), throwsA(isA<ImportException>()));
+    expect(await db.select(db.migraineEvents).get(), isEmpty);
+    await db.close();
+  });
+
   test('rejects wrong format and unsupported version', () async {
     final db = freshDb();
     final svc = ImportService(db);
