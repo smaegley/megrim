@@ -1,0 +1,29 @@
+Categories:
+  - Sports & Health
+License: GPL-3.0-or-later
+AuthorName: Steve Maegley
+SourceCode: https://github.com/smaegley/megrim
+IssueTracker: https://github.com/smaegley/megrim/issues
+Changelog: https://github.com/smaegley/megrim/releases
+Donate: https://ko-fi.com/smaegley
+
+RepoType: git
+Repo: https://github.com/smaegley/megrim.git
+
+Builds:
+  - versionName: 0.1.0
+    versionCode: 1
+    commit: v0.1.0
+    subdir: app
+    output: build/app/outputs/flutter-apk/app-release.apk
+    srclibs:
+      - flutter@3.44.1
+    build:
+      - $$flutter$$/bin/flutter config --no-analytics --no-cli-animations
+      - $$flutter$$/bin/flutter pub get
+      - $$flutter$$/bin/flutter build apk --release
+
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags ^v[0-9.]+$
+CurrentVersion: 0.1.0
+CurrentVersionCode: 1
