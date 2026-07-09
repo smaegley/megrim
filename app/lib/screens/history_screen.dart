@@ -91,10 +91,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
           key: ValueKey(e.id),
           direction: DismissDirection.endToStart,
           background: Container(
-            color: Colors.redAccent,
+            color: Theme.of(context).colorScheme.error,
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 24),
-            child: const Icon(Icons.delete, color: Colors.white),
+            child: Icon(Icons.delete,
+                color: Theme.of(context).colorScheme.onError),
           ),
           onDismissed: (_) => _delete(e.id),
           child: ListTile(

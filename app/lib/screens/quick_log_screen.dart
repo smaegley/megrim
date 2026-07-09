@@ -91,7 +91,8 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               child: const Text('Keep')),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Discard', style: TextStyle(color: Colors.redAccent)),
+            child: Text('Discard',
+                style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
         ],
       ),
@@ -133,10 +134,11 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
                 const Text('Megrim',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                 Text(kAppSubtitle,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.white70)),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.7))),
               ],
             ),
           ],
@@ -225,7 +227,10 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           SizedBox(
             height: 56,
             child: FilledButton.icon(
-              style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor: Theme.of(context).colorScheme.onError,
+              ),
               onPressed: _end,
               icon: const Icon(Icons.stop),
               label: const Text('MIGRAINE ENDED'),
@@ -244,7 +249,8 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           TextButton.icon(
             onPressed: _discard,
             icon: const Icon(Icons.delete_outline, size: 18),
-            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error),
             label: const Text('Discard'),
           ),
         ],

@@ -156,7 +156,8 @@ class SettingsScreen extends StatelessWidget {
               child: const Text('Merge')),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Replace', style: TextStyle(color: Colors.redAccent)),
+            child: Text('Replace',
+                style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
         ],
       ),
