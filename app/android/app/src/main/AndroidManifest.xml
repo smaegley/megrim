@@ -43,5 +43,12 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Package-visibility (Android 11+/API 30+): without this, url_launcher's canLaunchUrl()
+             returns false for https URLs, so the Donate and Source-code tiles silently no-op.
+             Declares that we resolve a browser to open https links. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
     </queries>
 </manifest>
