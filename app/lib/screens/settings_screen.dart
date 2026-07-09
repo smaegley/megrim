@@ -60,12 +60,12 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Icons.favorite_outline),
             title: const Text('Donate'),
             subtitle: const Text('Support development'),
-            onTap: () => _launch('https://ko-fi.com/smaegley'),
+            onTap: () => _launch(context, 'https://ko-fi.com/smaegley'),
           ),
           ListTile(
             leading: const Icon(Icons.code),
             title: const Text('Source code'),
-            onTap: () => _launch(kSourceUrl),
+            onTap: () => _launch(context, kSourceUrl),
           ),
           ListTile(
             leading: const Icon(Icons.info_outline),
@@ -173,10 +173,17 @@ class SettingsScreen extends StatelessWidget {
     }
   }
 
-  Future<void> _launch(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+  Future<void> _launch(BuildContext context, String url) async {
+    // Launch directly rather than gating on canLaunchUrl(): a web ACTION_VIEW is exempt from
+    // Android 11+ package-visibility, whereas canLaunchUrl() needs the <queries> browser intent
+    // declared in AndroidManifest and returns false without it — the old cause of a silent no-op.
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final opened =
+          await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      if (!opened) throw Exception('no handler for $url');
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text('Could not open $url')));
     }
   }
 
