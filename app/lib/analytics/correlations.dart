@@ -18,6 +18,10 @@ import '../enrichment/calendar_factors.dart' show seasonForMonth;
 ///  - Study window is first-event → LAST-event date (Python uses the last event, not "today").
 ///  - "Top factors" filter is migraine_days ≥ 3 AND OR > 1.0 (prose says OR ≥ 1.5).
 /// These are noted so a future change can reconcile prose and code deliberately.
+///
+/// Known, accepted bias: a migraine day with no pressure data (enrichment pending/failed) still
+/// counts in `totalMigraine` (cell b), but contributes no delta to any pressure bucket — matching
+/// the reference Python.
 
 const List<String> kDowLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const List<String> kMonthLabels = [
@@ -156,9 +160,11 @@ List<FactorRow> factorRows(
 /// Compute correlations.
 ///
 /// [eventStarts] are the event start instants (any tz; reduced to local calendar dates).
-/// [migrainePressureDeltas] are the non-null `pressure_delta_24h` values from enriched migraine
-/// events. [pressureBaseline] is the cached all-days delta histogram (§6.2); when null/empty the
-/// pressure factor is omitted. [homeLat] selects the hemisphere for season labels.
+/// [migrainePressureDeltas] is one non-null `pressure_delta_24h` value per migraine *day* (not
+/// per event — a day with multiple enriched events contributes only one delta), so its units
+/// match the day-based baseline. [pressureBaseline] is the cached all-days delta histogram
+/// (§6.2); when null/empty the pressure factor is omitted. [homeLat] selects the hemisphere for
+/// season labels.
 CorrelationResult computeCorrelations({
   required List<DateTime> eventStarts,
   List<double> migrainePressureDeltas = const [],
