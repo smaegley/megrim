@@ -85,8 +85,11 @@ class PressureBaselineService {
       Uri.https(kArchiveHost, '/v1/archive', {
         'latitude': '${roundCoord(lat)}',
         'longitude': '${roundCoord(lon)}',
-        // One prior day so the first in-range day has a delta.
-        'start_date': _d(start.subtract(const Duration(days: 1))),
+        // One prior day so the first in-range day has a delta. Subtract on a UTC copy of the
+        // date fields (not `start` directly) so a local-time DST transition can't shift this by
+        // a day.
+        'start_date':
+            _d(DateTime.utc(start.year, start.month, start.day).subtract(const Duration(days: 1))),
         'end_date': _d(end),
         'daily': 'surface_pressure_mean',
         'timezone': 'UTC',
@@ -124,7 +127,9 @@ class PressureBaselineService {
   }
 }
 
-DateTime _dateOnly(DateTime t) => DateTime(t.year, t.month, t.day);
+// UTC (not local) so `date.subtract(Duration(days: 1))` in bucketDailyDeltas lands exactly on
+// the prior calendar day's key even across a local DST transition (UTC has no DST).
+DateTime _dateOnly(DateTime t) => DateTime.utc(t.year, t.month, t.day);
 String _d(DateTime d) =>
     '${d.year.toString().padLeft(4, '0')}-'
     '${d.month.toString().padLeft(2, '0')}-'

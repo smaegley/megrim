@@ -147,6 +147,26 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 }
 
+/// Max recorded severity per local day, keyed 'yyyy-MM-d' (matches _CalendarView's grouping key).
+/// A day with multiple events keeps its most severe entry rather than whichever event was
+/// iterated last (which could overwrite a real severity with null and grey out the day).
+@visibleForTesting
+Map<String, int?> severityByLocalDay(Iterable<MigraineEvent> events) {
+  final out = <String, int?>{};
+  for (final e in events) {
+    final l = e.startedAt.toLocal();
+    final key = '${DateFormat('yyyy-MM').format(l)}-${l.day}';
+    final sev = e.severity;
+    final prev = out[key];
+    if (sev != null && (prev == null || sev > prev)) {
+      out[key] = sev;
+    } else {
+      out.putIfAbsent(key, () => null);
+    }
+  }
+  return out;
+}
+
 class _CalendarView extends StatelessWidget {
   final List<MigraineEvent> events;
   const _CalendarView({required this.events});
@@ -155,13 +175,12 @@ class _CalendarView extends StatelessWidget {
   Widget build(BuildContext context) {
     // Group by month; render a simple heat grid per month with events.
     final byMonth = <String, Set<int>>{};
-    final severityByDay = <String, int?>{};
     for (final e in events) {
       final l = e.startedAt.toLocal();
       final key = DateFormat('yyyy-MM').format(l);
       (byMonth[key] ??= {}).add(l.day);
-      severityByDay['$key-${l.day}'] = e.severity;
     }
+    final severityByDay = severityByLocalDay(events);
     final months = byMonth.keys.toList()..sort((a, b) => b.compareTo(a));
     return ListView(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 88),
