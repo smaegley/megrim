@@ -3,6 +3,9 @@
 Non-blocking improvements captured for later. Not committed to a release; groom as needed.
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
+> **Status: all items closed as of 2026-07-09** — #1–8 below are **DONE** and merged to `main`
+> (see [`SPEC.md` §12](SPEC.md) "Session-3"). Kept here as a record; add new items as they come up.
+
 ## Bugs
 
 ### 7. Home-location label doesn't refresh after changing it — **DONE**

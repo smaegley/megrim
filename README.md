@@ -24,10 +24,17 @@ plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v0.1.0`** — first signed release (pre-release, dogfood phase). Built against
-[`docs/SPEC.md`](docs/SPEC.md); see that document for the full product definition, data model, and
-build plan. App id `org.maegley.megrim`. Next milestones: dogfood, then an F-Droid `fdroiddata`
-submission, then `v1.0.0`.
+**`v0.1.0`** — first signed release (pre-release, dogfood phase). App id `org.maegley.megrim`.
+Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
+definition and running implementation status.
+
+Since `v0.1.0`, a review backlog has been closed on `main` ([`docs/BACKLOG.md`](docs/BACKLOG.md)):
+**light/dark theme** following the system setting, a **Medications** section in Event Detail, a more
+visual **Analytics** tab (stat tiles + odds-ratio bars + labelled/shaded charts), **Ko-fi
+donations**, and a fix for the Source-code/Donate links on Android 11+. An F-Droid `fdroiddata`
+recipe + store screenshots are **prepared** in [`fdroid/`](fdroid/), held for the `v1.0.0` debut.
+
+**Next milestones:** finish dogfooding → cut `v1.0.0` → open the F-Droid `fdroiddata` MR.
 
 ## Installing
 

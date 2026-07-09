@@ -183,7 +183,8 @@ rewrite historical events; chips shown = vocab ∪ values present on the open ev
 
 ## 4. Screens & UX
 
-Port the private app's screens (same dark theme, same layouts) with these changes:
+Port the private app's screens (same layouts; the theme now supports **both light and dark and
+follows the system setting** — see §12 Session-3, backlog #8) with these changes:
 
 1. **Onboarding (new, first run):** welcome → **medical disclaimer** (must accept; text in §9)
    → home-location search (Open-Meteo geocoder, same `LocationPickerField` pattern) → optional
@@ -196,15 +197,18 @@ Port the private app's screens (same dark theme, same layouts) with these change
    to the server disappears). Coordinates rounded to 2 decimals before storing.
 3. **History:** list + month-grid calendar toggle (both already built in the private app —
    port as-is). Swipe-to-delete becomes hard delete with Snackbar undo (5 s).
-4. **Event Detail:** identical, plus "Manage triggers"/"Manage head locations" entries; the
-   re-enrich-on-location-change call becomes a local enqueue instead of an API POST.
-5. **Analytics:** all charts from the private app (summary cards, days-since w/ date, per-year,
-   day-of-week, time-of-day, season, month-of-year full-width, pressure-delta buckets, moon
-   phase, calendar heatmap, Top Suspected Factors card with caveats) — computed locally (§6).
-   Add "Weather data by Open-Meteo.com" attribution footer (required, CC-BY 4.0).
+4. **Event Detail:** editable start/end date-time + recorded location; head-location and
+   suspected-trigger chips; a **Medications section** (per-med name/dose/time/"helped?", backlog #6);
+   the re-enrich-on-location-change call is a local enqueue instead of an API POST.
+5. **Analytics:** computed locally (§6). Summary is a **2×3 stat-tile grid**; Top Suspected Factors
+   are **horizontal odds-ratio bars** (with caveats); descriptive charts (day-of-week, season,
+   time-of-day, daylight, pressure-delta buckets, moon phase) show **per-bar counts** and a
+   **purple magnitude shade**; season & time-of-day are donuts. Plus a "days since last migraine"
+   card and a "Most-tagged triggers" frequency card. Includes the required "Weather data by
+   Open-Meteo.com" attribution footer (CC-BY 4.0).
 6. **Settings:** home location (change → confirm → bulk re-enrich), vocab management, export /
-   import (§7), donate (URL → browser), About (version, license, source link, licenses page via
-   `flutter_oss_licenses` or LicenseRegistry, privacy summary, disclaimer re-read).
+   import (§7), **donate (Ko-fi URL → browser)**, About (version, license, source link, bundled
+   licenses page via `showAboutDialog`'s LicenseRegistry, privacy summary, disclaimer re-read).
 7. **Removed vs private app:** sync button/status, OTA update checker (stores handle updates),
    web entry point (`web_main.dart`), all of `api_service.dart` except nothing — it's deleted.
 
@@ -404,7 +408,7 @@ in tests.
 
 ---
 
-## 12. Implementation status (2026-07-08)
+## 12. Implementation status (2026-07-09)
 
 First implementation pass complete: a buildable Flutter app under `app/`, `flutter analyze`
 clean, **55 tests passing**, and a **signed release APK** produced (release signing path verified
@@ -463,6 +467,47 @@ the app on his Mac and pulls changes via a regenerated git bundle (see the memor
   spring and autumn share daylight lengths. Surfaces in Top Suspected Factors and gets its own
   descriptive "By daylight hours" chart. Themed fixture `06-daylight-short.json` demonstrates it.
 
+**Session-3: post-`v0.1.0` review backlog closed (2026-07-09).** After the `v0.1.0` release, a
+running "would-be-nice" list was tracked in [`docs/BACKLOG.md`](BACKLOG.md); **all eight items are
+now done and merged to `main`** (test suite now **70 tests**, `flutter analyze` clean, signed
+release APK builds ~67 MB). Summary:
+- **Analytics visual refresh (#1–3).** Summary is now a **2×3 grid of stat tiles**; Top Suspected
+  Factors render as **horizontal bars** whose length encodes each factor's odds ratio (OR value +
+  caveats kept). Every descriptive bar prints its **count** above it, and bars are shaded by a
+  **sequential single-hue purple magnitude ramp**. Donuts stay categorical (identity, not
+  magnitude). All chart palettes are **theme-aware and dataviz-validated per card surface**.
+- **Medications UI (#6)** — a real feature gap: the `meds_taken` schema/vocab/export existed but had
+  no entry screen. Event Detail now has a **Medications section** (per-med card with name + optional
+  dose/time + a Yes/No/Unknown "helped?" glyph) and an add/edit dialog (name Autocomplete over the
+  `medication` vocab, learned from entries). Writes the existing `meds_taken` JSON.
+- **Donations (#4)** — chose **Ko-fi** (`https://ko-fi.com/smaegley`), wired into the Settings Donate
+  tile and `.github/FUNDING.yml`. Rationale: donors are expected to be app users, and Ko-fi takes a
+  one-time tip with no donor account, 0% fee, no in-app payment SDK.
+- **Source-code / Donate links (#5)** — found and fixed a **real Android 11+ bug**: `_launch()`
+  gated on `canLaunchUrl()`, which returns false for `https` unless the manifest declares a
+  `<queries>` browser intent (it only had the Flutter-template `PROCESS_TEXT` query). Both links
+  silently no-opped on modern devices. Fixed by adding the `VIEW`/`https` query and hardening
+  `_launch()` to call `launchUrl()` directly + surface a "Could not open…" SnackBar on failure.
+- **Home-location label refresh (#7)** — the Settings tile kept the old location until you left and
+  returned. First fix (a state-held `FutureBuilder`) was wrong: its DB re-read got queued behind the
+  slow `reEnrichAll()`. Real fix: display the location from a plain state field set **directly from
+  the picked value** (no DB re-read), so it updates instantly.
+- **Light/dark theme (#8)** — the app was dark-only. `theme.dart` now builds both themes from the
+  purple seed and `app.dart` wires `ThemeMode.system`, so Megrim follows the phone's setting. Chart
+  card surfaces are pinned per mode (`#1E1E1E` / `#FCFCFB`); the categorical and sequential-purple
+  chart palettes have theme-aware, dataviz-validated variants; hard-coded accents moved to
+  `colorScheme` roles (destructive → `error`, etc.).
+
+**F-Droid submission prepared (2026-07-09).** A draft `fdroiddata` recipe + submission playbook live
+in [`fdroid/`](../fdroid/) (recipe validated with `fdroid lint`); **seven phone screenshots** were
+added to `fastlane/metadata/android/en-US/images/phoneScreenshots/`; the README gained an
+**Installing** section (direct APK · Obtainium auto-updates · F-Droid planned). Decision: **debut on
+F-Droid at `v1.0.0`** — the recipe is pinned to `v0.1.0` as a working placeholder and its version
+fields get bumped when `v1.0.0` is tagged, at which point the GitLab MR to `fdroiddata` is opened.
+**Google Play was evaluated and declined** for now — the ~20-tester/14-day closed-test gate for new
+personal developer accounts isn't worth it for a solo FOSS app; F-Droid + GitHub-Releases-via-
+Obtainium already provide install *and* auto-update.
+
 **Deliberate deviations from this spec, and why (each is noted in code too):**
 
 1. **`geolocator` dropped → GPS auto-capture deferred.** The `geolocator` Android implementation
@@ -502,9 +547,12 @@ descriptive pressure bar chart.
 (photoperiod / SAD, added at the user's request) · **Pressure Δ 24h**. Self-reported triggers are
 deliberately not correlated (no non-migraine baseline) — shown descriptively as "Most-tagged".
 
-**Remaining follow-ups:** real F-Droid `fdroiddata` recipe (post-1.0). *(Done since first pass:
-generated licenses page — Megrim's GPL registered on the About licences page; connectivity-triggered
-enrichment retry; barometric-pressure factor; daylight factor.)*
+**Remaining follow-ups (all post-`v0.1.0`, gated on cutting `v1.0.0`):** bump the drafted F-Droid
+recipe's version fields to the `v1.0.0` tag and open the `fdroiddata` MR (recipe + playbook already
+in [`fdroid/`](../fdroid/)); add a `fastlane/.../changelogs/2.txt` for the new versionCode.
+*(Done since first pass: generated licenses page; connectivity-triggered enrichment retry;
+barometric-pressure factor; daylight factor; the full Session-3 review backlog above; F-Droid recipe
+drafted + store screenshots.)*
 
 **Known-bug fixes worth noting:** a DST day-stepping bug in `computeCorrelations` dropped migraine
 days after a spring-forward in DST timezones (fixed 2026-07-08; CI now also runs under
