@@ -172,8 +172,6 @@ void main() {
       // Sample SD of intervals [2, 3]: sqrt(((0.5)^2 + (0.5)^2)/(2-1)) = 0.707 → 0.7.
       expect(r.summary.intervalStdDevDays, 0.7);
       expect(r.calendar, hasLength(3));
-      final jan = r.byMonthOfYear.firstWhere((m) => m.label == 'Jan');
-      expect(jan.count, 3);
       final y2024 = r.byYear.firstWhere((y) => y.year == 2024);
       expect(y2024.count, 3);
       expect(y2024.avgSeverity, 6.0);

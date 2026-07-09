@@ -172,6 +172,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 _TriggerCard(dash: dash),
                 const SizedBox(height: 16),
                 _collapsibleChart(
+                  title: 'By year',
+                  data: _yearCounts(dash.byYear),
+                  child: _barChart(_yearCounts(dash.byYear)),
+                ),
+                const SizedBox(height: 16),
+                _collapsibleChart(
                   title: 'By day of week',
                   data: dash.byDayOfWeek,
                   child: _barChart(dash.byDayOfWeek),
@@ -303,6 +309,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       ),
     );
   }
+
+  /// Adapts the by-year trend data to the shared bar-chart shape (year label, count). The only
+  /// chronological/trend view on the screen — everything else is cyclical (day of week, season,
+  /// moon phase, ...); this instead shows whether migraines are becoming more or less frequent
+  /// year over year. avgSeverity isn't plotted here to keep parity with the other count charts.
+  static List<LabeledCount> _yearCounts(List<YearCount> years) =>
+      years.map((y) => LabeledCount(y.year.toString(), y.count)).toList();
 
   static LabeledCount? _topOf(List<LabeledCount> data) {
     LabeledCount? top;
