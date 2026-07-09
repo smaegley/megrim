@@ -16,9 +16,26 @@ import '../widgets/location_picker.dart';
 import 'manage_vocab_screen.dart';
 
 /// Settings (SPEC §4.6): home location, vocab management, export/import, donate, About.
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   final MegrimRepository repo;
   const SettingsScreen({super.key, required this.repo});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  MegrimRepository get repo => widget.repo;
+
+  /// Held in state so it can be re-fetched after the home location changes — otherwise the tile
+  /// keeps showing the old label until the screen is left and reopened (backlog #7).
+  late Future<HomeLocation?> _homeFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _homeFuture = repo.homeLocation;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +47,7 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Icons.home_outlined),
             title: const Text('Home location'),
             subtitle: FutureBuilder<HomeLocation?>(
-              future: repo.homeLocation,
+              future: _homeFuture,
               builder: (context, snap) => Text(snap.data?.label ?? '—'),
             ),
             onTap: () => _changeHome(context),
@@ -108,6 +125,8 @@ class SettingsScreen extends StatelessWidget {
     );
     if (confirmed == true && picked != null) {
       await repo.setHomeLocation(picked!);
+      // Refresh the tile so it shows the new location immediately (backlog #7).
+      if (mounted) setState(() => _homeFuture = repo.homeLocation);
       messenger.showSnackBar(
           const SnackBar(content: Text('Re-enriching entries…')));
       await repo.reEnrichAll();

@@ -5,15 +5,13 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 
 ## Bugs
 
-### 7. Home-location label doesn't refresh after changing it *(fix next update)*
-**Symptom:** In Settings, after changing the Home location, the on-screen value (the `Home location`
-tile subtitle) keeps showing the old location. It only updates after navigating away and back to
-Settings. Found by Steve 2026-07-09.
-**Likely cause:** the Settings screen reads `repo.homeLocation` once (e.g. a `FutureBuilder` built at
-screen creation) and isn't re-run when the change dialog returns. Needs a `setState`/refresh after the
-home-location picker completes so the tile rebuilds against the new value (same pattern as the vocab
-"Manage" tiles, which re-`_load()` on return).
-**Where:** `app/lib/screens/settings_screen.dart` — the Home location `ListTile` + `_changeHome()`.
+### 7. Home-location label doesn't refresh after changing it — **DONE**
+**Was:** In Settings, after changing the Home location, the tile subtitle kept showing the old
+location until you left and reopened the screen. Found by Steve 2026-07-09. Cause: `SettingsScreen`
+was a `StatelessWidget` whose home-location `FutureBuilder` never re-ran after `_changeHome`.
+**Done:** converted `SettingsScreen` to a `StatefulWidget` holding the home-location `Future` in
+state; after `setHomeLocation` succeeds, `_changeHome` calls `setState` to re-fetch it so the tile
+updates immediately. Smoke test in `app/test/settings_home_location_test.dart`.
 
 ## UI / UX
 
