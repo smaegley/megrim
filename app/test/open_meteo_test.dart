@@ -58,7 +58,18 @@ void main() {
       final now = DateTime.utc(2024, 6, 4); // 3 days after onset
       final uri = OpenMeteoClient.weatherUri(10.0, 20.0, onset, now: now);
       expect(uri.host, kForecastHost);
-      expect(uri.queryParameters['past_days'], '7');
+      // Wider than recentThresholdDays: ageDays truncates, so an event just under the routing
+      // threshold still needs the forecast window to reach far enough back to cover it.
+      expect(uri.queryParameters['past_days'], '9');
+    });
+
+    test('an event just under the routing threshold still uses the forecast host', () {
+      // 7.5 days old: ageDays.inDays truncates to 7, so this is NOT routed to the archive host
+      // (which requires ageDays > 7) — it must stay on the forecast path.
+      final now = onset.add(const Duration(hours: 180));
+      final uri = OpenMeteoClient.weatherUri(39.9612, -105.0567, onset, now: now);
+      expect(uri.host, kForecastHost);
+      expect(uri.queryParameters['past_days'], '9');
     });
   });
 
@@ -91,6 +102,15 @@ void main() {
       expect(
           extractHourlyWeather(const {'hourly': {}}, DateTime.utc(2024)).isEmpty,
           isTrue);
+    });
+
+    test('onset far outside the returned series yields an empty result', () {
+      final start = DateTime.utc(2024, 6, 29, 0);
+      final json = fakeHourly(start); // series covers [start, start + 72h)
+      // 20 hours after the series ends — a plausible mis-routed-window case, not just off-by-one.
+      final onset = start.add(const Duration(hours: 92));
+      final w = extractHourlyWeather(json, onset);
+      expect(w.isEmpty, isTrue);
     });
   });
 
