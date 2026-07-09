@@ -34,13 +34,15 @@ submission, then `v1.0.0`.
 Megrim is distributed outside the big app stores, in keeping with its privacy-first, FOSS goals.
 Pick whichever suits you:
 
-- **Direct APK (available now).** Download the signed `.apk` from the
-  [latest release](https://github.com/smaegley/megrim/releases/latest) and install it. You may need
-  to allow installing from your browser/file manager. Releases are signed with the maintainer's key.
+- **Direct APK (available now).** Download the signed `app-release.apk` from the
+  [Releases page](https://github.com/smaegley/megrim/releases) and install it. You may need to allow
+  installing from your browser/file manager. Releases are signed with the maintainer's key.
 - **Obtainium (recommended for auto-updates).** [Obtainium](https://github.com/ImranR98/Obtainium)
   installs and **auto-updates** apps straight from their GitHub releases. Add
-  `https://github.com/smaegley/megrim` as an app in Obtainium and it will track every new `v*`
-  release for you — Play-store-style updates, no account or store required.
+  `https://github.com/smaegley/megrim` as an app in Obtainium and it will track new releases for you
+  — Play-store-style updates, no account or store required. **While Megrim is in its pre-release
+  (dogfood) phase, turn on _Include prereleases_ for it in Obtainium** so it picks up `v0.1.0`; once
+  `v1.0.0` ships as a stable release this is no longer needed.
 - **F-Droid (planned).** An [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) build recipe is
   prepared (see [`fdroid/`](fdroid/)); the submission is held for the `v1.0.0` release. Once merged,
   Megrim will be installable and auto-updating through the F-Droid client. Note that the F-Droid
