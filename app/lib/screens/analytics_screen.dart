@@ -121,11 +121,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     // blocks on the network offline — it uses the cached baseline (or omits pressure) instead.
     final online = ConnectivityMonitor.isOnlineResult(
         await Connectivity().checkConnectivity());
-    final corr = await widget.repo.correlations(
-      baselineService: PressureBaselineService(db: widget.repo.db),
-      allowFetch: online,
-    );
-    return (dash, corr);
+    // Own http.Client is created per load — close it afterwards so a tab-open/refresh/pull-to-
+    // refresh cycle doesn't leak one client (and its connection pool) every time.
+    final baselineService = PressureBaselineService(db: widget.repo.db);
+    try {
+      final corr = await widget.repo.correlations(
+        baselineService: baselineService,
+        allowFetch: online,
+      );
+      return (dash, corr);
+    } finally {
+      baselineService.close();
+    }
   }
 
   @override

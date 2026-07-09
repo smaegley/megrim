@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -162,6 +163,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final file = File(p.join(dir.path, filename));
     await file.writeAsString(content);
     await Share.shareXFiles([XFile(file.path)], subject: filename);
+    // shareXFiles() resolves once the user picks a target, not once that app has finished reading
+    // the file over its content:// URI — so delete after a delay (best-effort) rather than
+    // immediately, to avoid a race with a slow receiving app. Worst case it lingers in the
+    // OS-managed cache dir, which Android reclaims under storage pressure anyway.
+    unawaited(Future.delayed(const Duration(seconds: 30), () async {
+      try {
+        await file.delete();
+      } catch (_) {}
+    }));
   }
 
   Future<void> _import(BuildContext context) async {
@@ -224,7 +234,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showAboutDialog(
       context: context,
       applicationName: 'Megrim',
-      applicationVersion: '0.2.0',
+      applicationVersion: kAppVersion,
       applicationIcon: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.asset('assets/logo.png', width: 56, height: 56),

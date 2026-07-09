@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../database/database.dart';
+import '../legal.dart' show kAppVersion;
 import '../models/json_fields.dart';
 import 'export_format.dart';
 
@@ -9,7 +10,7 @@ class ExportService {
   final MegrimDatabase db;
   final String appVersion;
 
-  ExportService({required this.db, this.appVersion = '0.2.0'});
+  ExportService({required this.db, this.appVersion = kAppVersion});
 
   /// The complete export document as a map.
   Future<Map<String, dynamic>> buildExport({DateTime? now}) async {
@@ -68,38 +69,42 @@ class ExportService {
       final meds = decodeMeds(e.medsTaken)
           .map((m) => [m.name, if (m.dose != null) m.dose].join(' '))
           .join(';');
+      // Free-text columns (user-authored, or passed through from an external geocoder) use
+      // _csvSafeText to guard against CSV/formula injection; numeric/enum/date columns use plain
+      // _csv (they're never user-authored and can legitimately start with '-', e.g. a negative
+      // pressure delta, which _csvSafeText would otherwise misinterpret as a formula prefix).
       final row = [
-        e.id,
-        e.startedAt.toUtc().toIso8601String(),
-        e.endedAt?.toUtc().toIso8601String() ?? '',
-        e.severity?.toString() ?? '',
-        decodeStringList(e.locationHead).join(';'),
-        e.auraPresent?.toString() ?? '',
-        e.auraDescription ?? '',
-        meds,
-        decodeStringList(e.triggersSuspected).join(';'),
-        e.sleepHoursPrior?.toString() ?? '',
-        e.stressLevel?.toString() ?? '',
-        decodeStringList(e.foodsNotable).join(';'),
-        e.notes ?? '',
-        e.geoLat?.toString() ?? '',
-        e.geoLon?.toString() ?? '',
-        e.geoLabel ?? '',
-        d?.dayOfWeek?.toString() ?? '',
-        d?.season ?? '',
-        d?.timeOfDayBucket ?? '',
-        d?.daylightHours?.toString() ?? '',
-        d?.moonPhase ?? '',
-        d?.moonIllumination?.toString() ?? '',
-        d?.tempC?.toString() ?? '',
-        d?.humidityPct?.toString() ?? '',
-        d?.pressureHpa?.toString() ?? '',
-        d?.precipitationMm?.toString() ?? '',
-        d?.pressureDelta24h?.toString() ?? '',
-        d?.pressureDelta48h?.toString() ?? '',
-        d?.aqi?.toString() ?? '',
+        _csv(e.id),
+        _csv(e.startedAt.toUtc().toIso8601String()),
+        _csv(e.endedAt?.toUtc().toIso8601String() ?? ''),
+        _csv(e.severity?.toString() ?? ''),
+        _csvSafeText(decodeStringList(e.locationHead).join(';')),
+        _csv(e.auraPresent?.toString() ?? ''),
+        _csvSafeText(e.auraDescription ?? ''),
+        _csvSafeText(meds),
+        _csvSafeText(decodeStringList(e.triggersSuspected).join(';')),
+        _csv(e.sleepHoursPrior?.toString() ?? ''),
+        _csv(e.stressLevel?.toString() ?? ''),
+        _csvSafeText(decodeStringList(e.foodsNotable).join(';')),
+        _csvSafeText(e.notes ?? ''),
+        _csv(e.geoLat?.toString() ?? ''),
+        _csv(e.geoLon?.toString() ?? ''),
+        _csvSafeText(e.geoLabel ?? ''),
+        _csv(d?.dayOfWeek?.toString() ?? ''),
+        _csv(d?.season ?? ''),
+        _csv(d?.timeOfDayBucket ?? ''),
+        _csv(d?.daylightHours?.toString() ?? ''),
+        _csv(d?.moonPhase ?? ''),
+        _csv(d?.moonIllumination?.toString() ?? ''),
+        _csv(d?.tempC?.toString() ?? ''),
+        _csv(d?.humidityPct?.toString() ?? ''),
+        _csv(d?.pressureHpa?.toString() ?? ''),
+        _csv(d?.precipitationMm?.toString() ?? ''),
+        _csv(d?.pressureDelta24h?.toString() ?? ''),
+        _csv(d?.pressureDelta48h?.toString() ?? ''),
+        _csv(d?.aqi?.toString() ?? ''),
       ];
-      buf.writeln(row.map(_csv).join(','));
+      buf.writeln(row.join(','));
     }
     return buf.toString();
   }
@@ -115,5 +120,17 @@ class ExportService {
       return '"${v.replaceAll('"', '""')}"';
     }
     return v;
+  }
+
+  /// CSV/formula-injection guard (OWASP): a field opened in a spreadsheet that starts with
+  /// `=`, `+`, `-`, `@`, tab, or CR can be interpreted as a formula. Prefix with a single quote —
+  /// spreadsheet apps render that as literal text — before the normal RFC-4180 escaping. Only
+  /// apply this to free-text fields (see call sites); numeric columns can legitimately start
+  /// with '-' and must not be mangled.
+  static String _csvSafeText(String v) {
+    if (v.isNotEmpty && '=+-@\t\r'.contains(v[0])) {
+      return _csv("'$v");
+    }
+    return _csv(v);
   }
 }
