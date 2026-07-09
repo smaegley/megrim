@@ -40,9 +40,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   int? _stress;
   final _sleep = TextEditingController();
   final _notes = TextEditingController();
+  final _auraDescription = TextEditingController();
   final Set<String> _locations = {};
   final Set<String> _triggers = {};
   final List<MedEntry> _meds = [];
+  final List<String> _foods = [];
 
   @override
   void initState() {
@@ -54,6 +56,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   void dispose() {
     _sleep.dispose();
     _notes.dispose();
+    _auraDescription.dispose();
     super.dispose();
   }
 
@@ -80,12 +83,16 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       _stress = e.stressLevel;
       _sleep.text = e.sleepHoursPrior?.toString() ?? '';
       _notes.text = e.notes ?? '';
+      _auraDescription.text = e.auraDescription ?? '';
       _locations
         ..clear()
         ..addAll(decodeStringList(e.locationHead));
       _triggers
         ..clear()
         ..addAll(decodeStringList(e.triggersSuspected));
+      _foods
+        ..clear()
+        ..addAll(decodeStringList(e.foodsNotable));
       _meds
         ..clear()
         ..addAll(decodeMeds(e.medsTaken));
@@ -105,11 +112,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       endedAt: Value(_endedAt?.toUtc()),
       severity: Value(_severity),
       auraPresent: Value(_aura),
+      auraDescription:
+          Value(_auraDescription.text.isEmpty ? null : _auraDescription.text),
       stressLevel: Value(_stress),
       sleepHoursPrior: Value(double.tryParse(_sleep.text)),
       notes: Value(_notes.text.isEmpty ? null : _notes.text),
       locationHead: Value(encodeStringList(_locations.toList())),
       triggersSuspected: Value(encodeStringList(_triggers.toList())),
+      foodsNotable: Value(encodeStringList(_foods)),
       medsTaken: Value(encodeMeds(_meds)),
       geoLat: Value(_geoLat),
       geoLon: Value(_geoLon),
@@ -234,7 +244,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             tooltip: 'Delete entry',
             onPressed: _delete,
           ),
-          IconButton(icon: const Icon(Icons.check), onPressed: _save),
+          IconButton(
+            icon: const Icon(Icons.check),
+            tooltip: 'Save',
+            onPressed: _save,
+          ),
         ],
       ),
       body: ListView(
@@ -282,9 +296,23 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               _aura = v == -1 ? null : v == 1;
             }),
           ),
+          if (_aura == true) ...[
+            const SizedBox(height: 8),
+            TextField(
+              controller: _auraDescription,
+              decoration: const InputDecoration(
+                labelText: 'Aura description (optional)',
+                hintText: 'e.g. shimmering lights, zigzag lines',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
 
           _sectionHeader('Suspected triggers', VocabKind.trigger),
           _chips(_triggerVocab, _triggers),
+
+          _plainSectionHeader('Foods notable'),
+          _foodsSection(),
 
           _sectionHeader('Medications', VocabKind.medication),
           _medsSection(),
@@ -381,6 +409,64 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           ],
         ),
       );
+
+  /// A section header without a "Manage" link, for fields not backed by a vocab kind.
+  Widget _plainSectionHeader(String title) => Padding(
+        padding: const EdgeInsets.only(top: 16, bottom: 4),
+        child: Text(title, style: Theme.of(context).textTheme.titleSmall),
+      );
+
+  /// Notable foods for this event (SPEC §3.1 `foods_notable`): a free-text tag list, distinct
+  /// from the vocab-backed chip pickers above — there's no shared "food" vocabulary to choose
+  /// from, so entries are typed rather than selected.
+  Widget _foodsSection() {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 4,
+      children: [
+        for (var i = 0; i < _foods.length; i++)
+          InputChip(
+            label: Text(_foods[i]),
+            onDeleted: () => setState(() => _foods.removeAt(i)),
+          ),
+        ActionChip(
+          avatar: const Icon(Icons.add, size: 18),
+          label: const Text('Add food'),
+          onPressed: _addFood,
+        ),
+      ],
+    );
+  }
+
+  Future<void> _addFood() async {
+    final value = await _promptText('Add food', hint: 'e.g. chocolate, red wine');
+    if (value != null && value.isNotEmpty && !_foods.contains(value)) {
+      setState(() => _foods.add(value));
+    }
+  }
+
+  Future<String?> _promptText(String title, {String? hint}) {
+    final controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(hintText: hint),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, controller.text.trim()),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _chips(List<String> vocab, Set<String> selected) {
     // Chips shown = vocab ∪ values present on the event (SPEC §3.4).
