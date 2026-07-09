@@ -39,6 +39,13 @@ jobs:
   dependency-ban:
     # F-Droid constraint (SPEC §2.1): fail if any proprietary Google dependency
     # shows up in the merged Android dependency graph.
+    #
+    # This only scans pub package *names* in pubspec.lock — it catches a package like
+    # `firebase_core` being added directly, but it CANNOT see a native Android dependency pulled
+    # in transitively by a plugin whose pub name gives no hint of it (e.g. `geolocator`'s Android
+    # implementation links `com.google.android.gms:play-services-location`, but "geolocator"
+    # matches none of the patterns below). See the `build-apk` job for the check that closes that
+    # gap by scanning the actual resolved Gradle dependency graph.
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -55,7 +62,7 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
-      - name: Scan pub dependencies for banned packages
+      - name: Scan pub package names for banned packages
         run: |
           set -e
           if grep -qiE 'firebase|com\.google\.android\.gms|crashlytics|google_mobile_ads' pubspec.lock; then
@@ -63,7 +70,7 @@ jobs:
             grep -inE 'firebase|com\.google\.android\.gms|crashlytics|google_mobile_ads' pubspec.lock
             exit 1
           fi
-          echo "No banned dependencies found."
+          echo "No banned dependencies found in pubspec.lock."
 
   build-apk:
     needs: [analyze-and-test, dependency-ban]
@@ -84,5 +91,20 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
-      # Unsigned debug-config build on CI; the release workflow signs on tag.
+      # Unsigned debug-config build on CI; the release workflow signs on tag. This also generates
+      # android/gradlew, which the next step needs (Flutter injects the wrapper on first Gradle
+      # invocation — it isn't committed to the repo, see android/.gitignore).
       - run: flutter build apk --debug
+      - name: Scan the resolved Gradle dependency graph for banned packages
+        # Closes the gap in the dependency-ban job: that job can only see pub package *names*, not
+        # native Android dependencies a plugin pulls in transitively (SPEC §2.1).
+        working-directory: app/android
+        run: |
+          set -e
+          ./gradlew :app:dependencies --configuration debugRuntimeClasspath > /tmp/gradle-deps.txt
+          if grep -qiE 'com\.google\.android\.gms|firebase|crashlytics' /tmp/gradle-deps.txt; then
+            echo "::error::Banned proprietary dependency found in the resolved Android Gradle dependency graph"
+            grep -inE 'com\.google\.android\.gms|firebase|crashlytics' /tmp/gradle-deps.txt
+            exit 1
+          fi
+          echo "No banned dependencies found in the Gradle dependency graph."
