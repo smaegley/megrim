@@ -60,7 +60,7 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Icons.favorite_outline),
             title: const Text('Donate'),
             subtitle: const Text('Support development'),
-            onTap: () => _launch('https://liberapay.com/megrim'),
+            onTap: () => _launch('https://ko-fi.com/smaegley'),
           ),
           ListTile(
             leading: const Icon(Icons.code),

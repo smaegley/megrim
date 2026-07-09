@@ -25,9 +25,9 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 
 ## Release / infra
 
-### 4. Donations — decide and wire up
-**Now:** the in-app Donate tile links to a placeholder `https://liberapay.com/megrim`; `.github/FUNDING.yml` is fully commented out.
-**Want:** pick a platform (Liberapay / Ko-fi / GitHub Sponsors), then set the real URL in the Donate action **and** `.github/FUNDING.yml`. Keep it a plain URL → browser (no in-app payment SDK, per SPEC §1.3 / F-Droid).
+### 4. Donations — decide and wire up — **DONE**
+**Was:** the in-app Donate tile linked to a placeholder `https://liberapay.com/megrim`; `.github/FUNDING.yml` was fully commented out.
+**Done:** picked **Ko-fi** (chosen because donations are expected from app users — migraine sufferers — not the FOSS/dev community; Ko-fi takes one-time tips with **no donor account**, 0% platform fee, and needs no in-app payment SDK). Real page: `https://ko-fi.com/smaegley`. Wired in both places — the Settings › Donate tile (`_launch('https://ko-fi.com/smaegley')`, opens in the browser, F-Droid-clean) and `.github/FUNDING.yml` (`ko_fi: smaegley`, which also renders GitHub's Sponsor button). Liberapay/GitHub Sponsors left commented for a future revisit.
 
 ### 5. "Source code" link must open the repo
 **Now:** Settings › Source code launches `kSourceUrl` = `https://github.com/smaegley/megrim` (updated during the identity switch).
