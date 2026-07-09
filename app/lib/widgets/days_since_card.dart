@@ -4,6 +4,13 @@ import 'package:intl/intl.dart';
 import '../analytics/dashboard.dart';
 import 'severity_badge.dart' show StatusColors, onStatusColor;
 
+/// Whole calendar days between two local dates. Computed on UTC copies of the y/m/d fields so a
+/// 23- or 25-hour DST day can't shift the count by one (a plain `.difference(...).inDays` on
+/// local DateTimes undercounts a gap that crosses a spring-forward transition).
+int daysBetweenLocalDates(DateTime a, DateTime b) => DateTime.utc(b.year, b.month, b.day)
+    .difference(DateTime.utc(a.year, a.month, a.day))
+    .inDays;
+
 /// "Days since last migraine" status graphic, shared by Analytics and the idle Log screen.
 ///
 /// Colour-coded by how the current gap compares to the mean interval μ and its SD σ:
@@ -18,9 +25,7 @@ class DaysSinceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final last = summary.lastEvent;
     if (last == null) return const SizedBox.shrink();
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final days = today.difference(last).inDays;
+    final days = daysBetweenLocalDates(last, DateTime.now());
 
     final mu = summary.avgIntervalDays;
     final sigma = summary.intervalStdDevDays;
