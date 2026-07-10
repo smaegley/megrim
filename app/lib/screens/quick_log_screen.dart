@@ -127,19 +127,25 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               child: Image.asset('assets/logo.png', width: 40, height: 40),
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Megrim',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-                Text(kAppSubtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.7))),
-              ],
+            // Expanded + ellipsis so a narrow screen (found on a Nexus S/API 26 emulator: a 12px
+            // horizontal RenderFlex overflow) truncates the title instead of overflowing the row.
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Megrim',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+                  Text(kAppSubtitle,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.7))),
+                ],
+              ),
             ),
           ],
         ),
@@ -150,7 +156,11 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     );
   }
 
-  Widget _idleView() => Padding(
+  // Both the idle and active views are scrollable rather than a plain Column + Spacer — on a
+  // small screen or in landscape (found on a Nexus S / API 26 emulator), the fixed content plus
+  // the on-screen keyboard could overflow the viewport and clip instead of scrolling, at one point
+  // making the "MIGRAINE ENDED" button unreachable.
+  Widget _idleView() => SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
@@ -163,7 +173,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
                 return DaysSinceCard(summary: dash.summary);
               },
             ),
-            const Spacer(),
+            const SizedBox(height: 48),
             const Icon(Icons.self_improvement, size: 72),
             const SizedBox(height: 24),
             SizedBox(
@@ -178,18 +188,17 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
             const SizedBox(height: 12),
             Text('Tap to start. You can add details any time.',
                 style: Theme.of(context).textTheme.bodySmall),
-            const Spacer(),
+            const SizedBox(height: 24),
           ],
         ),
       );
 
   Widget _activeView() {
     final elapsed = DateTime.now().toUtc().difference(_active!.startedAt.toUtc());
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('Migraine in progress',
               textAlign: TextAlign.center,

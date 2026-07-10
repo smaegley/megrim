@@ -160,6 +160,26 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       body: FutureBuilder<(DashboardResult, CorrelationResult)>(
         future: _future,
         builder: (context, snap) {
+          // A failed load (e.g. a connectivity-check platform error) must not fall through to the
+          // loading branch below — !snap.hasData is also true on error, so without this check a
+          // failure showed a CircularProgressIndicator forever with no way to recover short of
+          // leaving the tab (found via a widget test: this tab is kept alive in the background by
+          // HomeShell's IndexedStack, so the stuck spinner isn't even visible until you switch to it).
+          if (snap.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Couldn\'t load analytics.'),
+                    const SizedBox(height: 12),
+                    FilledButton(onPressed: _reload, child: const Text('Retry')),
+                  ],
+                ),
+              ),
+            );
+          }
           if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
