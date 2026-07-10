@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -68,7 +69,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   return const Center(child: Text('No migraines logged yet.'));
                 }
                 return _view == _HistoryView.calendar
-                    ? _CalendarView(events: events)
+                    ? _CalendarView(events: events, onDayTap: _onCalendarDayTap)
                     : _listView(events);
               },
             ),
@@ -132,6 +133,80 @@ class _HistoryScreenState extends State<HistoryScreen> {
     ));
   }
 
+  /// Calendar day tap (backlog #9): exactly one entry that day opens it directly; several offer a
+  /// picker to choose which one; none starts a new past entry pre-dated to the tapped day (instead
+  /// of "now" — the whole point of tapping a specific day rather than using the FAB).
+  Future<void> _onCalendarDayTap(
+      DateTime localDay, List<MigraineEvent> dayEvents) async {
+    if (dayEvents.isEmpty) {
+      await _addManualForDate(localDay);
+      return;
+    }
+    if (dayEvents.length == 1) {
+      await _openEvent(dayEvents.single.id);
+      return;
+    }
+    final sorted = [...dayEvents]
+      ..sort((a, b) => a.startedAt.compareTo(b.startedAt));
+    final chosenId = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                '${dayEvents.length} entries on '
+                '${DateFormat('EEE d MMM yyyy').format(localDay)}',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+            for (final e in sorted)
+              ListTile(
+                leading: SeverityBadge(severity: e.severity),
+                title: Text(DateFormat('HH:mm').format(e.startedAt.toLocal())),
+                subtitle: Text([
+                  if (e.severity != null) 'Severity ${e.severity}/10',
+                  if (e.endedAt == null) 'ongoing',
+                ].join(' · ')),
+                onTap: () => Navigator.pop(context, e.id),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (chosenId != null) await _openEvent(chosenId);
+  }
+
+  Future<void> _addManualForDate(DateTime localDay) async {
+    final home = await widget.repo.homeLocation;
+    final id = await widget.repo.startEvent(
+      lat: home?.lat,
+      lon: home?.lon,
+      label: home?.label,
+    );
+    await widget.repo.endEvent(id);
+    // Pre-fill the tapped day (noon local, an arbitrary but unbiased time-of-day) instead of
+    // leaving it at "now" — saves the manual date edit the FAB's "Add past entry" still needs.
+    final at =
+        DateTime(localDay.year, localDay.month, localDay.day, 12).toUtc();
+    await widget.repo.updateEvent(MigraineEventsCompanion(
+      id: Value(id),
+      startedAt: Value(at),
+      endedAt: Value(at),
+    ));
+    await _openEvent(id);
+  }
+
+  Future<void> _openEvent(String id) async {
+    if (!mounted) return;
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => EventDetailScreen(repo: widget.repo, eventId: id),
+    ));
+  }
+
   Future<void> _delete(String id) async {
     final removed = await widget.repo.deleteEvent(id);
     if (removed == null || !mounted) return;
@@ -167,9 +242,23 @@ Map<String, int?> severityByLocalDay(Iterable<MigraineEvent> events) {
   return out;
 }
 
+/// Every event on each local day, keyed 'yyyy-MM-d' (same key shape as [severityByLocalDay]) —
+/// lets a Calendar day tap resolve back to the actual entry/entries on that day (backlog #9).
+@visibleForTesting
+Map<String, List<MigraineEvent>> eventsByLocalDay(Iterable<MigraineEvent> events) {
+  final out = <String, List<MigraineEvent>>{};
+  for (final e in events) {
+    final l = e.startedAt.toLocal();
+    final key = '${DateFormat('yyyy-MM').format(l)}-${l.day}';
+    (out[key] ??= []).add(e);
+  }
+  return out;
+}
+
 class _CalendarView extends StatelessWidget {
   final List<MigraineEvent> events;
-  const _CalendarView({required this.events});
+  final void Function(DateTime localDay, List<MigraineEvent> dayEvents) onDayTap;
+  const _CalendarView({required this.events, required this.onDayTap});
 
   @override
   Widget build(BuildContext context) {
@@ -181,6 +270,7 @@ class _CalendarView extends StatelessWidget {
       (byMonth[key] ??= {}).add(l.day);
     }
     final severityByDay = severityByLocalDay(events);
+    final eventsByDay = eventsByLocalDay(events);
     final months = byMonth.keys.toList()..sort((a, b) => b.compareTo(a));
     return ListView(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 88),
@@ -190,6 +280,8 @@ class _CalendarView extends StatelessWidget {
             month: m,
             days: byMonth[m]!,
             severityByDay: severityByDay,
+            eventsByDay: eventsByDay,
+            onDayTap: onDayTap,
           ),
       ],
     );
@@ -200,8 +292,15 @@ class _MonthGrid extends StatelessWidget {
   final String month; // yyyy-MM
   final Set<int> days;
   final Map<String, int?> severityByDay;
-  const _MonthGrid(
-      {required this.month, required this.days, required this.severityByDay});
+  final Map<String, List<MigraineEvent>> eventsByDay;
+  final void Function(DateTime localDay, List<MigraineEvent> dayEvents) onDayTap;
+  const _MonthGrid({
+    required this.month,
+    required this.days,
+    required this.severityByDay,
+    required this.eventsByDay,
+    required this.onDayTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +323,7 @@ class _MonthGrid extends StatelessWidget {
               runSpacing: 4,
               children: [
                 for (var d = 1; d <= daysInMonth; d++)
-                  _dayCell(context, d, days.contains(d)),
+                  _dayCell(context, year, mo, d, days.contains(d)),
               ],
             ),
           ],
@@ -233,25 +332,30 @@ class _MonthGrid extends StatelessWidget {
     );
   }
 
-  Widget _dayCell(BuildContext context, int day, bool hit) {
+  Widget _dayCell(BuildContext context, int year, int mo, int day, bool hit) {
     // Match the List view's severity badge scale (green→red buckets), not a saturation ramp.
     final sev = severityByDay['$month-$day'];
     final color = hit
         ? severityColor(sev)
         : Theme.of(context).colorScheme.surfaceContainerHighest;
-    return Container(
-      width: 30,
-      height: 30,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        '$day',
-        style: TextStyle(
-          fontSize: 11,
-          color: hit ? onStatusColor(color) : null,
+    return InkWell(
+      borderRadius: BorderRadius.circular(6),
+      onTap: () => onDayTap(
+          DateTime(year, mo, day), eventsByDay['$month-$day'] ?? const []),
+      child: Container(
+        width: 30,
+        height: 30,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          '$day',
+          style: TextStyle(
+            fontSize: 11,
+            color: hit ? onStatusColor(color) : null,
+          ),
         ),
       ),
     );

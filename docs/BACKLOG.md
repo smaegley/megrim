@@ -3,28 +3,23 @@
 Non-blocking improvements captured for later. Not committed to a release; groom as needed.
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
-> **Status (2026-07-10):** #1–8 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)
-> "Session-3"/"Session-4"), kept here as a record. **#9 is open — next batch.**
+> **Status (2026-07-10):** #1–9 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)
+> "Session-3"/"Session-4"), kept here as a record. Add new items as they come up.
 
-## UI / UX (open)
+## UI / UX
 
-### 9. History Calendar: tap a date to edit or start a past entry
-**Now:** the Calendar view's day cells (`_dayCell` in `history_screen.dart`) are static — tapping
-does nothing. Reaching an entry means switching to the List view; adding a past entry means the
+### 9. History Calendar: tap a date to edit or start a past entry — **DONE**
+**Was:** the Calendar view's day cells (`_dayCell` in `history_screen.dart`) were static — tapping
+did nothing. Reaching an entry meant switching to the List view; adding a past entry meant the
 FAB, which starts "now" and requires manually re-setting the date in Event Detail afterward.
-**Want:** tapping a date in the Calendar view should: if exactly one migraine entry exists on that
-date, open it directly in Event Detail (edit mode); if **multiple** entries exist that day,
-**show a picker to choose which one** (decided by Steve 2026-07-10 — e.g. a bottom sheet/dialog
-listing each entry's time + severity badge, tap one to open it); if none exists, create a new past
-entry pre-dated to that day and open it in Event Detail — logging or reviewing a specific day
-becomes a single tap (or tap + pick) from the calendar.
-**Notes:** the day cells already carry a severity lookup keyed by `'$month-$day'`
-(`severityByLocalDay`), so which dates are "hit" is already known — this mostly needs an `onTap`
-plus a way to resolve the day back to its event id(s) (the underlying `events` list `_CalendarView`
-already has is grouped by month/day for the hit-set; it'll need the same per-day grouping to also
-keep the actual event objects, not just counts). New entries should reuse the existing "Add past
-entry" plumbing (`_addManual` in `history_screen.dart`) but seeded with the tapped date instead of
-"now."
+**Done:** day cells are now wrapped in an `InkWell` calling `_onCalendarDayTap(date, dayEvents)`:
+zero entries that day starts a new past entry pre-dated to noon on the tapped day (via a new
+`_addManualForDate`, reusing `_addManual`'s create-then-edit pattern) and opens it in Event Detail;
+exactly one entry opens it directly; **multiple** entries show a bottom-sheet picker (severity
+badge + time per row, tap one to open it — decided 2026-07-10). A new `eventsByLocalDay` helper
+(alongside the existing `severityByLocalDay`) groups the actual event objects per local day, not
+just counts. Covered by `app/test/history_calendar_tap_test.dart` (all three tap outcomes) and unit
+tests for `eventsByLocalDay` in `history_calendar_severity_test.dart`.
 
 ## Bugs
 
