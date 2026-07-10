@@ -3,8 +3,25 @@
 Non-blocking improvements captured for later. Not committed to a release; groom as needed.
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
-> **Status: all items closed as of 2026-07-09** — #1–8 below are **DONE** and merged to `main`
-> (see [`SPEC.md` §12](SPEC.md) "Session-3"). Kept here as a record; add new items as they come up.
+> **Status (2026-07-10):** #1–8 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)
+> "Session-3"/"Session-4"), kept here as a record. **#9 is open — next batch.**
+
+## UI / UX (open)
+
+### 9. History Calendar: tap a date to edit or start a past entry
+**Now:** the Calendar view's day cells (`_dayCell` in `history_screen.dart`) are static — tapping
+does nothing. Reaching an entry means switching to the List view; adding a past entry means the
+FAB, which starts "now" and requires manually re-setting the date in Event Detail afterward.
+**Want:** tapping a date in the Calendar view should: if a migraine entry already exists on that
+date, open it directly in Event Detail (edit mode); if none exists, create a new past entry
+pre-dated to that day and open it in Event Detail — logging or reviewing a specific day becomes a
+single tap from the calendar.
+**Notes:** the day cells already carry a severity lookup keyed by `'$month-$day'`
+(`severityByLocalDay`), so which dates are "hit" is already known — this mostly needs an `onTap`
+plus a way to resolve the day back to an event id. **Open design question:** what happens on a day
+with *multiple* entries (the app supports more than one per day) — open a picker, or just the
+first/most severe one? New entries should reuse the existing "Add past entry" plumbing (`_addManual`
+in `history_screen.dart`) but seeded with the tapped date instead of "now."
 
 ## Bugs
 
