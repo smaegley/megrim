@@ -21,9 +21,25 @@ Color severityColor(int? severity) {
   return StatusColors.critical;
 }
 
-/// Readable text/foreground colour to place on top of a status fill.
-Color onStatusColor(Color fill) =>
-    fill.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
+/// Readable text/foreground colour to place on top of a status fill. Picks whichever of pure
+/// black or pure white has the higher WCAG contrast ratio against [fill], rather than a
+/// luminance-threshold heuristic — that used to pick white for some fills (e.g. `StatusColors
+/// .serious`, an orange) that don't actually clear the 4.5:1 text-contrast minimum against white
+/// (found by an accessibility-guideline test: it measured 2.64:1). Choosing the higher-contrast
+/// of the two extremes is provably always >= ~4.58:1 for any background, comfortably above 4.5:1.
+Color onStatusColor(Color fill) {
+  double contrastRatio(Color a, Color b) {
+    final la = a.computeLuminance();
+    final lb = b.computeLuminance();
+    final lighter = la > lb ? la : lb;
+    final darker = la > lb ? lb : la;
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+
+  final blackContrast = contrastRatio(Colors.black, fill);
+  final whiteContrast = contrastRatio(Colors.white, fill);
+  return blackContrast >= whiteContrast ? Colors.black : Colors.white;
+}
 
 /// A small coloured circle showing a migraine's severity number, scaled green→red.
 /// Shown at the leading edge of each History row (SPEC review item #2).

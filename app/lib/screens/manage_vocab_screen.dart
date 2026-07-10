@@ -73,6 +73,7 @@ class _ManageVocabScreenState extends State<ManageVocabScreen> {
       appBar: AppBar(title: Text('Manage ${widget.title.toLowerCase()}')),
       floatingActionButton: FloatingActionButton(
         onPressed: _add,
+        tooltip: 'Add ${widget.title.toLowerCase()}',
         child: const Icon(Icons.add),
       ),
       body: ListView(
@@ -84,9 +85,12 @@ class _ManageVocabScreenState extends State<ManageVocabScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                      icon: const Icon(Icons.edit), onPressed: () => _rename(v)),
+                      icon: const Icon(Icons.edit),
+                      tooltip: 'Rename',
+                      onPressed: () => _rename(v)),
                   IconButton(
                       icon: const Icon(Icons.delete_outline),
+                      tooltip: 'Delete',
                       onPressed: () => _delete(v)),
                 ],
               ),
