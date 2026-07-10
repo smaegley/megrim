@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:megrim/database/database.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
 import 'package:megrim/screens/event_detail_screen.dart';
@@ -92,6 +93,29 @@ void main() {
     expect(created.startedAt.toLocal().month, 6);
     expect(created.startedAt.toLocal().year, 2024);
     expect(created.endedAt, isNotNull); // pre-ended like the FAB's "Add past entry"
+    await disposeAndDrain(tester);
+  });
+
+  testWidgets(
+      'Calendar view with zero entries still shows the current month, tappable',
+      (tester) async {
+    await pumpCalendar(tester);
+
+    final now = DateTime.now();
+    expect(find.text('No migraines logged yet — tap a date below to add one.'),
+        findsOneWidget);
+    expect(find.text(DateFormat('MMMM yyyy').format(DateTime(now.year, now.month))),
+        findsOneWidget);
+
+    await tester.tap(find.widgetWithText(InkWell, '${now.day}'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(EventDetailScreen), findsOneWidget);
+    final events = await db.select(db.migraineEvents).get();
+    expect(events, hasLength(1));
+    expect(events.single.startedAt.toLocal().day, now.day);
+    expect(events.single.startedAt.toLocal().month, now.month);
+    expect(events.single.startedAt.toLocal().year, now.year);
     await disposeAndDrain(tester);
   });
 }

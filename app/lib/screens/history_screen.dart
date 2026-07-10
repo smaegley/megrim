@@ -65,7 +65,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (events.isEmpty) {
+                // List has nothing to show with zero events, but Calendar still shows the
+                // current month's grid (all grey) so a first entry can be created by tapping a
+                // date — the empty state shouldn't disable the tap-to-add flow just introduced.
+                if (events.isEmpty && _view == _HistoryView.list) {
                   return const Center(child: Text('No migraines logged yet.'));
                 }
                 return _view == _HistoryView.calendar
@@ -272,9 +275,25 @@ class _CalendarView extends StatelessWidget {
     final severityByDay = severityByLocalDay(events);
     final eventsByDay = eventsByLocalDay(events);
     final months = byMonth.keys.toList()..sort((a, b) => b.compareTo(a));
+    final today = DateTime.now();
+    if (months.isEmpty) {
+      // No entries yet — still show the current month (all grey) so a first entry can be
+      // created by tapping a date, rather than only via the "Add past entry" FAB.
+      final key = DateFormat('yyyy-MM').format(today);
+      byMonth[key] = {};
+      months.add(key);
+    }
     return ListView(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 88),
       children: [
+        if (events.isEmpty)
+          const Padding(
+            padding: EdgeInsets.fromLTRB(4, 0, 4, 12),
+            child: Text(
+              'No migraines logged yet — tap a date below to add one.',
+              textAlign: TextAlign.center,
+            ),
+          ),
         for (final m in months)
           _MonthGrid(
             month: m,
@@ -282,6 +301,7 @@ class _CalendarView extends StatelessWidget {
             severityByDay: severityByDay,
             eventsByDay: eventsByDay,
             onDayTap: onDayTap,
+            today: today,
           ),
       ],
     );
@@ -294,12 +314,14 @@ class _MonthGrid extends StatelessWidget {
   final Map<String, int?> severityByDay;
   final Map<String, List<MigraineEvent>> eventsByDay;
   final void Function(DateTime localDay, List<MigraineEvent> dayEvents) onDayTap;
+  final DateTime today;
   const _MonthGrid({
     required this.month,
     required this.days,
     required this.severityByDay,
     required this.eventsByDay,
     required this.onDayTap,
+    required this.today,
   });
 
   @override
@@ -338,6 +360,7 @@ class _MonthGrid extends StatelessWidget {
     final color = hit
         ? severityColor(sev)
         : Theme.of(context).colorScheme.surfaceContainerHighest;
+    final isToday = year == today.year && mo == today.month && day == today.day;
     return InkWell(
       borderRadius: BorderRadius.circular(6),
       onTap: () => onDayTap(
@@ -349,11 +372,17 @@ class _MonthGrid extends StatelessWidget {
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(6),
+          // Anchor "today" on the grid regardless of whether it has an entry — most useful in
+          // the empty-calendar state, where every cell is otherwise identical grey.
+          border: isToday
+              ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
+              : null,
         ),
         child: Text(
           '$day',
           style: TextStyle(
             fontSize: 11,
+            fontWeight: isToday ? FontWeight.bold : null,
             color: hit ? onStatusColor(color) : null,
           ),
         ),
