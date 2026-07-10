@@ -361,29 +361,38 @@ class _MonthGrid extends StatelessWidget {
         ? severityColor(sev)
         : Theme.of(context).colorScheme.surfaceContainerHighest;
     final isToday = year == today.year && mo == today.month && day == today.day;
-    return InkWell(
-      borderRadius: BorderRadius.circular(6),
-      onTap: () => onDayTap(
-          DateTime(year, mo, day), eventsByDay['$month-$day'] ?? const []),
-      child: Container(
-        width: 30,
-        height: 30,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(6),
-          // Anchor "today" on the grid regardless of whether it has an entry — most useful in
-          // the empty-calendar state, where every cell is otherwise identical grey.
-          border: isToday
-              ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
-              : null,
-        ),
-        child: Text(
-          '$day',
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: isToday ? FontWeight.bold : null,
-            color: hit ? onStatusColor(color) : null,
+    // The visual dot stays small (30x30, fits ~9 per row), but the *tappable* area is the full
+    // 48x48 Android minimum touch-target size (SizedBox forces InkWell to that size; Center then
+    // positions the smaller visual within it) — found via an accessibility-guideline test.
+    return SizedBox(
+      width: 48,
+      height: 48,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(6),
+        onTap: () => onDayTap(
+            DateTime(year, mo, day), eventsByDay['$month-$day'] ?? const []),
+        child: Center(
+          child: Container(
+            width: 30,
+            height: 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(6),
+              // Anchor "today" on the grid regardless of whether it has an entry — most useful in
+              // the empty-calendar state, where every cell is otherwise identical grey.
+              border: isToday
+                  ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
+                  : null,
+            ),
+            child: Text(
+              '$day',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: isToday ? FontWeight.bold : null,
+                color: hit ? onStatusColor(color) : null,
+              ),
+            ),
           ),
         ),
       ),
