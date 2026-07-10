@@ -10,7 +10,12 @@ import '../services/geocoder.dart';
 class LocationPickerField extends StatefulWidget {
   final ValueChanged<HomeLocation> onSelected;
   final HomeLocation? initial;
-  const LocationPickerField({super.key, required this.onSelected, this.initial});
+
+  /// Injectable for tests (same pattern as the app's other network services); defaults to a real
+  /// [Geocoder] when omitted.
+  final Geocoder? geocoder;
+  const LocationPickerField(
+      {super.key, required this.onSelected, this.initial, this.geocoder});
 
   @override
   State<LocationPickerField> createState() => _LocationPickerFieldState();
@@ -18,7 +23,7 @@ class LocationPickerField extends StatefulWidget {
 
 class _LocationPickerFieldState extends State<LocationPickerField> {
   final _controller = TextEditingController();
-  final _geocoder = Geocoder();
+  late final Geocoder _geocoder = widget.geocoder ?? Geocoder();
   Timer? _debounce;
   List<GeoResult> _results = const [];
   bool _loading = false;
