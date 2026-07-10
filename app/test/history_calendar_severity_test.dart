@@ -35,4 +35,26 @@ void main() {
       expect(severityByLocalDay([a])['2024-06-1'], isNull);
     });
   });
+
+  group('eventsByLocalDay', () {
+    test('groups multiple events on the same day together, in insertion order', () {
+      final day = DateTime.utc(2024, 6, 1, 9);
+      final a = _event('a', day, 3);
+      final b = _event('b', day.add(const Duration(hours: 4)), 7);
+      final grouped = eventsByLocalDay([a, b]);
+      expect(grouped['2024-06-1']!.map((e) => e.id), ['a', 'b']);
+    });
+
+    test('keeps different days separate', () {
+      final a = _event('a', DateTime.utc(2024, 6, 1, 9), 3);
+      final b = _event('b', DateTime.utc(2024, 6, 2, 9), 7);
+      final grouped = eventsByLocalDay([a, b]);
+      expect(grouped['2024-06-1']!.map((e) => e.id), ['a']);
+      expect(grouped['2024-06-2']!.map((e) => e.id), ['b']);
+    });
+
+    test('a day with no events has no entry', () {
+      expect(eventsByLocalDay(const []).containsKey('2024-06-1'), isFalse);
+    });
+  });
 }
