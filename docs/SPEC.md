@@ -596,11 +596,42 @@ merged only after Steve confirmed on-device), then landed on `main`. Test suite 
   `./gradlew :app:dependencies` after the debug build and greps the real resolved Maven
   coordinates. Verified on an actual PR + Actions run, not just locally.
 
+**Session-5: device/OS matrix findings + Calendar tap-to-edit, `v0.3.0` → `v0.4.0` (2026-07-10).**
+Steve ran the device/OS matrix (Nexus S/API 26 emulator, a Pixel emulator, and his own Pixel 10
+Fold/API 36 substituting for a tablet) and found three real bugs, all fixed:
+- **Onboarding + Quick Log overflow on small screens/landscape.** These were the only two screens
+  built with a plain, non-scrollable `Column` — every other screen already uses a `ListView`. On
+  a small screen, or in landscape where height shrinks a lot, content clipped instead of
+  scrolling, at one point making "MIGRAINE ENDED" hard or impossible to reach. Fixed with
+  `SingleChildScrollView` wrapping (`Expanded`+scrollview where a button must stay pinned,
+  matching the disclaimer step's existing pattern). Also caught and fixed a 12px horizontal
+  AppBar-title overflow via the stricter small-viewport tests this added.
+- **Onboarding could get stuck spinning after Finish** — reproduced across Nexus S, a Pixel, and
+  recalled on a Pixel 7 emulator previously (i.e. not tied to the overflow bug or any one device),
+  even though the home location had genuinely saved (force-closing and reopening landed correctly
+  on the main shell). Root mechanism: `app.dart`'s onboarding-complete callback re-fetched a fresh
+  `isOnboarded` Future and re-awaited `FutureBuilder` a second time, when the answer was already
+  known. Replaced with a plain bool set directly on completion — the transition no longer depends
+  on awaiting anything. `LocationPickerField`/`OnboardingScreen`/`MegrimApp` gained an injectable
+  `Geocoder` so the full flow could finally be tested end-to-end.
+- **Bonus find:** `AnalyticsScreen`'s `FutureBuilder` had no `snap.hasError` branch, so any load
+  failure fell through to the loading branch and spun forever with no way to recover. Fixed with
+  a Retry button.
+
+Also implemented **backlog #9 (History Calendar tap-to-edit)**: tapping a date opens that day's
+entry directly (one), offers a bottom-sheet picker — severity badge + time per row — to choose
+which (several), or starts a new past entry pre-dated to that day (none), removing the need to
+switch to List view or manually fix the date afterward. A follow-up fix (found by Steve
+immediately after) makes the Calendar grid show the current month (with "today" ring-marked) even
+before any entries exist, so a first entry can be added the same way rather than only via the FAB.
+
 **Remaining follow-ups (all post-`v0.1.0`, gated on cutting `v1.0.0`):** bump the drafted F-Droid
 recipe's version fields to the `v1.0.0` tag and open the `fdroiddata` MR (recipe + playbook already
-in [`fdroid/`](../fdroid/)). *(Done since first pass: generated licenses page; connectivity-triggered
-enrichment retry; barometric-pressure factor; daylight factor; the full Session-3 review backlog;
-F-Droid recipe drafted + store screenshots; the full Session-4 review + fix cycle above.)*
+in [`fdroid/`](../fdroid/)); an accessibility pass (TalkBack, contrast, touch targets); run
+`fdroid lint`/`fdroid build` against the prepared recipe. *(Done since first pass: generated
+licenses page; connectivity-triggered enrichment retry; barometric-pressure factor; daylight
+factor; the full Session-3 review backlog; F-Droid recipe drafted + store screenshots; the full
+Session-4 review + fix cycle; the Session-5 device-matrix fixes + Calendar tap-to-edit above.)*
 
 **Known-bug fixes worth noting:** a DST day-stepping bug in `computeCorrelations` dropped migraine
 days after a spring-forward in DST timezones (fixed 2026-07-08; CI now also runs under

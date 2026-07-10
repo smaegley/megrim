@@ -1,0 +1,7 @@
+v0.4.0 — improvements since v0.3.0:
+
+- History Calendar: tap any date to open that day's entry, choose between entries if there's more than one, or start a new past entry pre-dated to that day — no more switching to List view or manually fixing the date afterward.
+- The Calendar now shows the current month (with today marked) even before you've logged anything, so your very first entry can be added the same way.
+- Fixed onboarding getting stuck on a spinner after tapping Finish on some devices, even though the home location had actually saved.
+- Fixed Onboarding and Quick Log overflowing on small screens and in landscape, which could make the "migraine ended" button hard or impossible to reach.
+- Analytics now shows a retry option instead of spinning forever if a refresh fails.

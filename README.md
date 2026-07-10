@@ -24,16 +24,18 @@ plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v0.3.0`** — latest signed release (pre-release, dogfood phase). App id `org.maegley.megrim`.
+**`v0.4.0`** — latest signed release (pre-release, dogfood phase). App id `org.maegley.megrim`.
 Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
 definition and running implementation status.
 
 Since `v0.1.0`: **light/dark theme** following the system setting, a **Medications** section in
 Event Detail, a more visual **Analytics** tab (stat tiles + odds-ratio bars + labelled/shaded
-charts, plus a **By year** trend chart), **Ko-fi donations**, and a fix for the Source-code/Donate
-links on Android 11+. `v0.3.0` adds **Aura description** and **Foods notable** fields to Event
-Detail, a **"Save to device" export option** alongside sharing, and a round of data-accuracy fixes
-(import text encoding, weather-fetch edge cases, DST date-counting, CSV export hardening). An
+charts, plus a **By year** trend chart), **Ko-fi donations**, a fix for the Source-code/Donate
+links on Android 11+, **Aura description**/**Foods notable** fields, a **"Save to device" export
+option**, and a round of data-accuracy fixes (import text encoding, weather-fetch edge cases, DST
+date-counting, CSV export hardening). `v0.4.0` adds **tap-to-edit on the History Calendar** (tap a
+date to open, choose between, or start an entry for that day — including before you've logged
+anything at all) and fixes onboarding/Quick Log overflowing on small screens and landscape. An
 F-Droid `fdroiddata` recipe + store screenshots are **prepared** in [`fdroid/`](fdroid/), held for
 the `v1.0.0` debut.
 
