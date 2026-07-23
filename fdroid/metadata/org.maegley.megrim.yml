@@ -13,17 +13,26 @@ Repo: https://github.com/smaegley/megrim.git
 Builds:
   - versionName: 1.0.0
     versionCode: 5
-    commit: v1.0.0
+    commit: cda553a05a3c33e8d43d43820c64f6919bfcc189
     subdir: app
     output: build/app/outputs/flutter-apk/app-release.apk
     srclibs:
-      - flutter@3.44.1
+      - flutter@stable
+    prebuild:
+      - flutterVersion=$(sed -n -E "s/.*flutter-version:\ '(.*)'/\1/p" ../.github/workflows/release.yml)
+      - '[[ $flutterVersion ]]'
+      - git -C $$flutter$$ checkout -f $flutterVersion
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - $$flutter$$/bin/flutter config --no-analytics
+      - $$flutter$$/bin/flutter pub get --enforce-lockfile
+    scandelete:
+      - app/.pub-cache
     build:
-      - $$flutter$$/bin/flutter config --no-analytics --no-cli-animations
-      - $$flutter$$/bin/flutter pub get
+      - export PUB_CACHE=$(pwd)/.pub-cache
       - $$flutter$$/bin/flutter build apk --release
 
-AutoUpdateMode: Version v%v
-UpdateCheckMode: Tags ^v[0-9.]+$
+AutoUpdateMode: Version
+UpdateCheckMode: Tags ^v[\d.]+$
+UpdateCheckData: app/pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
 CurrentVersion: 1.0.0
 CurrentVersionCode: 5
