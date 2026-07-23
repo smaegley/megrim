@@ -1,0 +1,5 @@
+First stable release.
+
+• Accessibility: larger Calendar tap targets, higher-contrast severity colors, screen-reader labels throughout
+• The import format is now fully documented (with a JSON Schema) so you can migrate history from any other tracker — guide linked from Settings
+• Everything from the 0.x series: one-tap logging, offline weather/moon/daylight enrichment, on-device analytics with suspected-factor correlations, JSON/CSV export, full privacy (no accounts, no telemetry)

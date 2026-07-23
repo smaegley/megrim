@@ -630,13 +630,31 @@ switch to List view or manually fix the date afterward. A follow-up fix (found b
 immediately after) makes the Calendar grid show the current month (with "today" ring-marked) even
 before any entries exist, so a first entry can be added the same way rather than only via the FAB.
 
-**Remaining follow-ups (all post-`v0.1.0`, gated on cutting `v1.0.0`):** bump the drafted F-Droid
-recipe's version fields to the `v1.0.0` tag and open the `fdroiddata` MR (recipe + playbook already
-in [`fdroid/`](../fdroid/)); an accessibility pass (TalkBack, contrast, touch targets); run
-`fdroid lint`/`fdroid build` against the prepared recipe. *(Done since first pass: generated
-licenses page; connectivity-triggered enrichment retry; barometric-pressure factor; daylight
-factor; the full Session-3 review backlog; F-Droid recipe drafted + store screenshots; the full
-Session-4 review + fix cycle; the Session-5 device-matrix fixes + Calendar tap-to-edit above.)*
+**Session-6: accessibility pass + import-format docs, `v0.4.0` → `v1.0.0` (2026-07-10 →
+2026-07-17).** The two items closing out the pre-1.0 checklist:
+- **Accessibility pass (automated).** New `accessibility_test.dart` checks every pumpable screen
+  in both themes against Flutter's built-in guidelines (WCAG text contrast, 48dp Android tap
+  targets, tappable-widget labels). Three real fixes: History Calendar day cells got a 48×48 tap
+  area (visual dot unchanged); `onStatusColor` now picks black/white by actual WCAG contrast
+  ratio (the old luminance heuristic put white on the "serious" orange at 2.64:1); Manage Vocab's
+  icon buttons/FAB gained screen-reader tooltips. Reviewed in the emulator; decision recorded:
+  manual TalkBack passes happen on a real phone only (driving TalkBack by mouse in an emulator is
+  effectively unusable — Steve got stuck and had to be rescued via
+  `adb shell settings delete secure enabled_accessibility_services`). `AnalyticsScreen` remains
+  un-automatable (the `connectivity_plus` platform channel has no test mock).
+- **Import-format documentation** (`docs/IMPORT.md` + `docs/megrim-export.schema.json`): the full
+  megrim-export v1 contract for third-party ETL — see §7.3. A Settings tile ("Import format
+  guide") links the doc. Decision: **no in-app CSV mapper**; schema + an AI assistant (or a
+  hand-written script — reference converter in `tools/`) is the intended migration path.
+
+**`v1.0.0` (2026-07-17): first stable release.** Version `1.0.0+5`; F-Droid recipe bumped from
+its `v0.1.0` placeholder to the real `v1.0.0` pins. **Remaining follow-up — the F-Droid debut:**
+Steve opens the `fdroiddata` MR on GitLab (recipe + playbook in [`fdroid/`](../fdroid/)); expect
+1–3 rounds of build-recipe iteration on their CI. *(Done since first pass: generated licenses
+page; connectivity-triggered enrichment retry; barometric-pressure factor; daylight factor; the
+full Session-3 review backlog; F-Droid recipe drafted + store screenshots; the full Session-4
+review + fix cycle; the Session-5 device-matrix fixes + Calendar tap-to-edit; the Session-6
+accessibility + import-docs work above.)*
 
 **Known-bug fixes worth noting:** a DST day-stepping bug in `computeCorrelations` dropped migraine
 days after a spring-forward in DST timezones (fixed 2026-07-08; CI now also runs under
