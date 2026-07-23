@@ -191,6 +191,59 @@ void main() {
     await db.close();
   });
 
+  test('the documented minimal import contract holds (docs/IMPORT.md example)', () async {
+    // This is byte-for-byte the "Minimal working example" from docs/IMPORT.md. If this test
+    // breaks, the importer's contract changed and the doc + docs/megrim-export.schema.json must
+    // be updated in the same commit.
+    const doc = '''
+{
+  "format": "megrim-export",
+  "format_version": 1,
+  "events": [
+    {"id": "mig-2024-001", "started_at": "2024-06-01T09:00:00Z"},
+    {
+      "id": "mig-2024-002",
+      "started_at": "2024-06-10T22:15:00-06:00",
+      "ended_at": "2024-06-11T04:00:00-06:00",
+      "severity": 7,
+      "triggers_suspected": ["Stress"],
+      "meds_taken": [{"name": "Ibuprofen", "dose": "600 mg", "helped": false}],
+      "notes": "Woke up with it."
+    }
+  ]
+}
+''';
+    final db = freshDb();
+    final result = await ImportService(db).importJsonString(doc);
+    expect(result.imported, 2);
+
+    // An id + started_at is a complete event; everything else stays null, and with no
+    // `derived` block the event counts as enrichment-pending (no derived row).
+    final bare = await (db.select(db.migraineEvents)
+          ..where((t) => t.id.equals('mig-2024-001')))
+        .getSingle();
+    expect(bare.startedAt.toUtc(), DateTime.utc(2024, 6, 1, 9));
+    expect(bare.endedAt, isNull);
+    expect(bare.severity, isNull);
+    expect(await db.select(db.derivedFactors).get(), isEmpty);
+
+    // Timezone offsets are honored and normalized to UTC on the way in.
+    final full = await (db.select(db.migraineEvents)
+          ..where((t) => t.id.equals('mig-2024-002')))
+        .getSingle();
+    expect(full.startedAt.toUtc(), DateTime.utc(2024, 6, 11, 4, 15));
+    expect(full.endedAt!.toUtc(), DateTime.utc(2024, 6, 11, 10));
+    expect(full.severity, 7);
+    expect(decodeStringList(full.triggersSuspected), ['Stress']);
+    final meds = decodeMeds(full.medsTaken);
+    expect(meds, hasLength(1));
+    expect(meds.single.name, 'Ibuprofen');
+    expect(meds.single.dose, '600 mg');
+    expect(meds.single.helped, false);
+    expect(full.notes, 'Woke up with it.');
+    await db.close();
+  });
+
   test('CSV export has a header row and one row per event', () async {
     final db = freshDb();
     await seed(db);
