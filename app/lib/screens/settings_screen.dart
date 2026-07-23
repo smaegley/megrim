@@ -87,6 +87,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: const Text('Import (JSON)'),
             onTap: () => _import(context),
           ),
+          ListTile(
+            leading: const Icon(Icons.menu_book_outlined),
+            title: const Text('Import format guide'),
+            subtitle: const Text('Bring in data from another app'),
+            onTap: () => _launch(context, kImportDocUrl),
+          ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.favorite_outline),

@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smaegley/megrim/blob/main/docs/megrim-export.schema.json",
+  "title": "Megrim export (megrim-export v1)",
+  "description": "Import/export document for the Megrim migraine diary. See docs/IMPORT.md for semantics. This schema is slightly stricter than the app's importer (it also checks semantic ranges such as severity 1-10): a document that validates will both import successfully and make sense in the app.",
+  "type": "object",
+  "required": ["format", "format_version", "events"],
+  "properties": {
+    "format": { "const": "megrim-export" },
+    "format_version": { "const": 1 },
+    "exported_at": { "$ref": "#/$defs/isoTimestamp" },
+    "app_version": { "type": "string" },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "home_location": {
+          "type": "object",
+          "required": ["lat", "lon"],
+          "properties": {
+            "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+            "lon": { "type": "number", "minimum": -180, "maximum": 180 },
+            "label": { "type": "string" }
+          }
+        }
+      }
+    },
+    "vocabularies": {
+      "type": "object",
+      "properties": {
+        "trigger": { "$ref": "#/$defs/stringArray" },
+        "head_location": { "$ref": "#/$defs/stringArray" },
+        "medication": { "$ref": "#/$defs/stringArray" }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" }
+    }
+  },
+  "$defs": {
+    "isoTimestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt ]\\d{2}:\\d{2}",
+      "description": "ISO-8601 timestamp. Always include a timezone (Z or +/-hh:mm); bare local timestamps are interpreted in the importing phone's zone."
+    },
+    "isoTimestampOrNull": {
+      "anyOf": [{ "$ref": "#/$defs/isoTimestamp" }, { "type": "null" }]
+    },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "event": {
+      "type": "object",
+      "required": ["id", "started_at"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Any unique string; merge-dedup key. Keep stable across re-imports."
+        },
+        "started_at": { "$ref": "#/$defs/isoTimestamp" },
+        "ended_at": {
+          "$ref": "#/$defs/isoTimestampOrNull",
+          "description": "Null or omitted = ongoing."
+        },
+        "severity": {
+          "anyOf": [
+            { "type": "integer", "minimum": 1, "maximum": 10 },
+            { "type": "null" }
+          ],
+          "description": "10 = worst."
+        },
+        "location_head": { "$ref": "#/$defs/stringArray" },
+        "aura_present": { "type": ["boolean", "null"] },
+        "aura_description": { "type": ["string", "null"] },
+        "meds_taken": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/med" }
+        },
+        "triggers_suspected": { "$ref": "#/$defs/stringArray" },
+        "sleep_hours_prior": {
+          "anyOf": [
+            { "type": "number", "minimum": 0, "maximum": 24 },
+            { "type": "null" }
+          ]
+        },
+        "stress_level": {
+          "anyOf": [
+            { "type": "integer", "minimum": 1, "maximum": 10 },
+            { "type": "null" }
+          ]
+        },
+        "foods_notable": { "$ref": "#/$defs/stringArray" },
+        "notes": { "type": ["string", "null"] },
+        "geo_lat": {
+          "anyOf": [
+            { "type": "number", "minimum": -90, "maximum": 90 },
+            { "type": "null" }
+          ]
+        },
+        "geo_lon": {
+          "anyOf": [
+            { "type": "number", "minimum": -180, "maximum": 180 },
+            { "type": "null" }
+          ]
+        },
+        "geo_label": { "type": ["string", "null"] },
+        "created_at": { "$ref": "#/$defs/isoTimestamp" },
+        "updated_at": { "$ref": "#/$defs/isoTimestamp" },
+        "derived": {
+          "$ref": "#/$defs/derived",
+          "description": "Megrim-computed enrichment. Omit for external imports - the app recomputes it."
+        }
+      }
+    },
+    "med": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "dose": { "type": ["string", "null"] },
+        "time": {
+          "type": ["string", "null"],
+          "description": "ISO-8601 UTC preferred (lets the app's edit dialog prefill its time picker); any string is tolerated and displayed as-is."
+        },
+        "helped": {
+          "type": ["boolean", "null"],
+          "description": "true = helped, false = didn't; null or omitted = unknown."
+        }
+      }
+    },
+    "derived": {
+      "type": "object",
+      "properties": {
+        "day_of_week": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0, "maximum": 6 },
+            { "type": "null" }
+          ],
+          "description": "0 = Monday ... 6 = Sunday, in the event's local time."
+        },
+        "season": {
+          "enum": ["Winter", "Spring", "Summer", "Autumn", null]
+        },
+        "time_of_day_bucket": {
+          "enum": ["morning", "afternoon", "evening", "night", null]
+        },
+        "daylight_hours": {
+          "anyOf": [
+            { "type": "number", "minimum": 0, "maximum": 24 },
+            { "type": "null" }
+          ]
+        },
+        "sunrise_utc": { "$ref": "#/$defs/isoTimestampOrNull" },
+        "sunset_utc": { "$ref": "#/$defs/isoTimestampOrNull" },
+        "moon_phase": {
+          "enum": [
+            "New Moon",
+            "Waxing Crescent",
+            "First Quarter",
+            "Waxing Gibbous",
+            "Full Moon",
+            "Waning Gibbous",
+            "Last Quarter",
+            "Waning Crescent",
+            null
+          ]
+        },
+        "moon_illumination": {
+          "anyOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" }
+          ]
+        },
+        "temp_c": { "type": ["number", "null"] },
+        "humidity_pct": {
+          "anyOf": [
+            { "type": "number", "minimum": 0, "maximum": 100 },
+            { "type": "null" }
+          ]
+        },
+        "pressure_hpa": { "type": ["number", "null"] },
+        "precipitation_mm": { "type": ["number", "null"] },
+        "pressure_delta_24h": { "type": ["number", "null"] },
+        "pressure_delta_48h": { "type": ["number", "null"] },
+        "aqi": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "enriched_at": { "$ref": "#/$defs/isoTimestampOrNull" },
+        "enrich_error": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

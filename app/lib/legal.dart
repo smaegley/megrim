@@ -30,6 +30,10 @@ const List<String> kCorrelationCaveats = [
 const String kWeatherAttribution = 'Weather data by Open-Meteo.com';
 const String kSourceUrl = 'https://github.com/smaegley/megrim';
 
+/// The import-format guide (docs/IMPORT.md) — linked from Settings so someone migrating from
+/// another tracker can find the spec without hunting through the repo.
+const String kImportDocUrl = '$kSourceUrl/blob/main/docs/IMPORT.md';
+
 /// The single Dart-level source of truth for the displayed app version. There's no plugin-free
 /// way to read pubspec.yaml's `version:` at runtime, so keep this in sync with it by hand at each
 /// release (both are one-line edits).

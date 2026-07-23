@@ -319,6 +319,11 @@ One row per event, arrays joined with `;`, derived columns flattened. For spread
   double-confirm). Missing `derived` ⇒ rows enqueued for enrichment.
 - v1 imports **only** this JSON format. (Generic-CSV import and Migraine Buddy converters are
   explicitly v2 candidates.)
+- The format is fully documented for third-party converters in **`docs/IMPORT.md`**, with a
+  formal JSON Schema at **`docs/megrim-export.schema.json`** (only `id` + `started_at` are
+  required per event; the intended migration path is schema + an AI assistant or hand-written
+  script, not an in-app mapper). The doc's minimal example is pinned by a test in
+  `export_import_test.dart` so the contract can't drift silently.
 
 ### 7.4 Android Auto Backup
 Enable (`android:allowBackup` + full-backup content including the DB). Documented in the privacy

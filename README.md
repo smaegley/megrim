@@ -17,7 +17,9 @@ plus odds-ratio "suspected factors" correlations.
 - **No accounts, no server, no telemetry.** The app's only network traffic is to
   [Open-Meteo](https://open-meteo.com) to fetch weather for the approximate (~1 km rounded)
   location and date of entries you create.
-- **Your data stays yours.** On-device SQLite only; full export/import (JSON + CSV).
+- **Your data stays yours.** On-device SQLite only; full export/import (JSON + CSV). The
+  import format is [documented](docs/IMPORT.md) (with a [JSON Schema](docs/megrim-export.schema.json))
+  so you can migrate history in from any other tracker.
 - **Free and open source** (GPL-3.0-or-later), built for F-Droid.
 
 > *"Megrim"* is an archaic English word literally meaning *migraine*.
