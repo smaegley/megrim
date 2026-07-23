@@ -26,22 +26,19 @@ plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v0.4.0`** — latest signed release (pre-release, dogfood phase). App id `org.maegley.megrim`.
+**`v1.0.0`** — first stable release. App id `org.maegley.megrim`.
 Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
 definition and running implementation status.
 
-Since `v0.1.0`: **light/dark theme** following the system setting, a **Medications** section in
-Event Detail, a more visual **Analytics** tab (stat tiles + odds-ratio bars + labelled/shaded
-charts, plus a **By year** trend chart), **Ko-fi donations**, a fix for the Source-code/Donate
-links on Android 11+, **Aura description**/**Foods notable** fields, a **"Save to device" export
-option**, and a round of data-accuracy fixes (import text encoding, weather-fetch edge cases, DST
-date-counting, CSV export hardening). `v0.4.0` adds **tap-to-edit on the History Calendar** (tap a
-date to open, choose between, or start an entry for that day — including before you've logged
-anything at all) and fixes onboarding/Quick Log overflowing on small screens and landscape. An
-F-Droid `fdroiddata` recipe + store screenshots are **prepared** in [`fdroid/`](fdroid/), held for
-the `v1.0.0` debut.
+`v1.0.0` caps the 0.x series (one-tap logging, offline enrichment, on-device analytics with
+suspected-factor correlations, light/dark theme, Medications, tap-to-edit History Calendar,
+JSON/CSV export) with an **accessibility pass** (tap-target sizes, WCAG text contrast,
+screen-reader labels, verified by automated guideline tests in both themes) and a **fully
+documented import format** ([`docs/IMPORT.md`](docs/IMPORT.md) +
+[JSON Schema](docs/megrim-export.schema.json)) for migrating history from any other tracker.
 
-**Next milestones:** finish dogfooding → cut `v1.0.0` → open the F-Droid `fdroiddata` MR.
+**Next milestone:** the F-Droid [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) MR
+(recipe ready in [`fdroid/`](fdroid/)).
 
 ## Installing
 
@@ -54,11 +51,9 @@ Pick whichever suits you:
 - **Obtainium (recommended for auto-updates).** [Obtainium](https://github.com/ImranR98/Obtainium)
   installs and **auto-updates** apps straight from their GitHub releases. Add
   `https://github.com/smaegley/megrim` as an app in Obtainium and it will track new releases for you
-  — Play-store-style updates, no account or store required. **While Megrim is in its pre-release
-  (dogfood) phase, turn on _Include prereleases_ for it in Obtainium** so it picks up the latest
-  `0.x` tag; once `v1.0.0` ships as a stable release this is no longer needed.
-- **F-Droid (planned).** An [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) build recipe is
-  prepared (see [`fdroid/`](fdroid/)); the submission is held for the `v1.0.0` release. Once merged,
+  — Play-store-style updates, no account or store required.
+- **F-Droid (submission underway).** An [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) build
+  recipe is prepared (see [`fdroid/`](fdroid/)) and targets `v1.0.0`. Once the MR merges,
   Megrim will be installable and auto-updating through the F-Droid client. Note that the F-Droid
   build is signed with F-Droid's key, so it has a different signature than the GitHub-release APK —
   install from one source and stick with it.
