@@ -61,9 +61,24 @@ android {
                 // Fall back to debug keys so `flutter build apk --release` works without a keystore.
                 signingConfigs.getByName("debug")
             }
-            isMinifyEnabled = false
-            isShrinkResources = false
+            // Minification is required for F-Droid: R8 tree-shakes Flutter's unused
+            // deferred-components embedding classes, whose references to Google Play Core
+            // (a non-free library Megrim never uses) otherwise trip F-Droid's APK scanner.
+            // See proguard-rules.pro before adding any -keep rule for io.flutter.**.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
+    }
+
+    // Don't embed Google Play's encrypted dependency-metadata signing block (only readable by
+    // Google Play; flagged by F-Droid's scanner as an opaque blob).
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 }
 
