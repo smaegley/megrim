@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import java.util.Properties
 import java.io.FileInputStream
 
@@ -62,6 +63,21 @@ android {
             }
             isMinifyEnabled = false
             isShrinkResources = false
+        }
+    }
+}
+
+// Per-ABI versionCodes for `--split-per-abi` builds (required by F-Droid, which publishes one APK
+// per architecture and needs each to carry a distinct versionCode): base*10 + an ABI digit, e.g.
+// versionCode 5 -> 51/52/53. Universal builds (our own release CI) have no ABI filter, so their
+// versionCode stays the plain base value — the two release channels don't interfere.
+val abiCodes = mapOf("armeabi-v7a" to 1, "arm64-v8a" to 2, "x86_64" to 3)
+android.applicationVariants.configureEach {
+    val variant = this
+    variant.outputs.forEach { output ->
+        val abiVersionCode = abiCodes[output.filters.find { it.filterType == "ABI" }?.identifier]
+        if (abiVersionCode != null) {
+            (output as ApkVariantOutputImpl).versionCodeOverride = variant.versionCode * 10 + abiVersionCode
         }
     }
 }
