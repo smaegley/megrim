@@ -36,6 +36,16 @@ class MegrimRepository {
   Future<bool> get isOnboarded async =>
       (await disclaimerAccepted) && (await homeLocation) != null;
 
+  // ── Weather enrichment consent (F-Droid review: network use must be opt-in) ──
+  /// OFF unless the user explicitly enabled it (onboarding step or Settings toggle) — the app
+  /// makes no Open-Meteo requests until then. Local factors (calendar/moon/daylight) are
+  /// unaffected; they never touch the network.
+  Future<bool> get weatherEnrichmentEnabled async =>
+      (await db.getSetting('weather_enrichment')) == '1';
+
+  Future<void> setWeatherEnrichmentEnabled(bool enabled) =>
+      db.setSetting('weather_enrichment', enabled ? '1' : '0');
+
   // ── Events ──────────────────────────────────────────────────────────────
   Stream<List<MigraineEvent>> watchEvents() {
     return (db.select(db.migraineEvents)

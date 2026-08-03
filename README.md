@@ -14,7 +14,8 @@ enriches each logged migraine with weather, barometric-pressure, and astronomica
 computed and stored **entirely on your device** — and surfaces personal descriptive analytics
 plus odds-ratio "suspected factors" correlations.
 
-- **No accounts, no server, no telemetry.** The app's only network traffic is to
+- **No accounts, no server, no telemetry.** By default the app makes no network requests at
+  all. Weather enrichment is **opt-in**; when enabled, the only network traffic is to
   [Open-Meteo](https://open-meteo.com) to fetch weather for the approximate (~1 km rounded)
   location and date of entries you create.
 - **Your data stays yours.** On-device SQLite only; full export/import (JSON + CSV). The

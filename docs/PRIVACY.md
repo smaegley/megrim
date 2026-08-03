@@ -1,16 +1,20 @@
 # Megrim Privacy Policy
 
-_Last updated: 2026-07-07_
+_Last updated: 2026-08-03_
 
 **All data stays on your device.** We operate no servers and collect nothing — no accounts, no
 analytics, no identifiers, no crash reporting.
 
-## The only network traffic
+## The only network traffic — and it's opt-in
 
-The app's only network traffic is to **Open-Meteo.com**, to fetch weather, barometric pressure,
-and air-quality data for the **approximate (~1 km rounded)** location and date of entries you
-create. No other host is ever contacted. See
-[Open-Meteo's privacy policy](https://open-meteo.com/en/terms).
+Weather enrichment is **off by default**. Unless you explicitly enable it (during onboarding or
+in Settings › Weather enrichment), **the app makes no network requests at all**.
+
+If you enable it, the app's only network traffic is to **Open-Meteo.com**, to fetch weather,
+barometric pressure, and air-quality data for the **approximate (~1 km rounded)** location and
+date of entries you create. No other host is ever contacted. See
+[Open-Meteo's privacy policy](https://open-meteo.com/en/terms). You can turn it off again at any
+time; already-fetched weather stays stored locally with your entries.
 
 Location coordinates are **rounded to two decimal places (~1 km) before they ever leave the
 device**, and precise coordinates are never stored.

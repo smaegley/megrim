@@ -95,7 +95,11 @@ value — revisit later).
 **The entire backend of the private app is replaced by three on-device components:** the
 enrichment engine (§5), the analytics engine (§6), and export/import (§7). Network access is
 used **only** for Open-Meteo (geocoding, weather archive/forecast, air quality). No other host
-is ever contacted. This is a checkable, advertised property.
+is ever contacted. This is a checkable, advertised property. **Weather enrichment is opt-in
+(default OFF; onboarding step + Settings toggle, `weather_enrichment` setting) — an F-Droid
+inclusion-review requirement (MR !43692). Opted out, the app makes no network requests at all;
+local factors (calendar/astro) are always computed. The user-initiated home-location geocoder
+search is the one exception (explicitly consensual by action).**
 
 ### 2.1 Dependency policy (F-Droid constraint — enforce from day one)
 
@@ -646,6 +650,17 @@ before any entries exist, so a first entry can be added the same way rather than
   megrim-export v1 contract for third-party ETL — see §7.3. A Settings tile ("Import format
   guide") links the doc. Decision: **no in-app CSV mapper**; schema + an AI assistant (or a
   hand-written script — reference converter in `tools/`) is the intended migration path.
+
+**Session-7 (2026-08-03, F-Droid review): weather enrichment made OPT-IN (default off).**
+linsui required third-party network use be consented. New `weather_enrichment` setting; new
+onboarding step (default-off switch) before Finish; Settings toggle (enabling triggers
+`reEnrichAll` to backfill weather); `EnrichmentService` skips Open-Meteo when opted out but
+still computes local factors and marks rows complete (queue drains offline); Analytics gates
+the pressure-baseline fetch and — per Steve's request — **tags the blank weather-dependent
+surfaces with why**: the "Pressure change (24h)" chart's collapsed subtitle, a note in the
+correlations card, and an Event Detail note, all pointing at Settings › Weather enrichment.
+Bonus: with enrichment off, AnalyticsScreen's connectivity check short-circuits, so it finally
+settles in widget tests (the connectivity_plus mock gap only applies when opted in).
 
 **`v1.0.0` (2026-07-17): first stable release.** Version `1.0.0+5`; F-Droid recipe bumped from
 its `v0.1.0` placeholder to the real `v1.0.0` pins. **Remaining follow-up — the F-Droid debut:**

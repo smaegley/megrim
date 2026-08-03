@@ -76,8 +76,12 @@ Future<void> insertEvent(MegrimDatabase db, String id, DateTime started,
 void main() {
   late MegrimDatabase db;
 
-  setUp(() {
+  setUp(() async {
     db = MegrimDatabase.forTesting(NativeDatabase.memory());
+    // These tests exercise the opted-IN behavior; weather enrichment is opt-in (default off)
+    // since the F-Droid review, so consent is granted explicitly here. The opt-out behavior has
+    // its own group below.
+    await db.setSetting('weather_enrichment', '1');
   });
   tearDown(() => db.close());
 
@@ -196,5 +200,87 @@ void main() {
         throttle: false, onProgress: (done, total) => progress.add(done));
     expect(progress, [1, 2]);
     expect(await svc.pendingEventIds(), isEmpty);
+  });
+
+  group('opt-in gate (weather_enrichment setting)', () {
+    test('opted out (the default): no HTTP at all, row completes with local factors', () async {
+      await db.setSetting('weather_enrichment', '0');
+      await insertEvent(db, 'g1', DateTime.utc(2024, 7, 1, 0),
+          lat: 40.0, lon: -105.0);
+      var calls = 0;
+      final svc = EnrichmentService(
+        db: db,
+        weatherClient: OpenMeteoClient(
+          httpClient: MockClient((req) async {
+            calls++;
+            return http.Response('should never be called', 500);
+          }),
+          maxRetries: 1,
+        ),
+      );
+
+      // Returns false ("not fully enriched with weather") but the row is complete.
+      expect(await svc.enrichEvent('g1'), isFalse);
+      expect(calls, 0, reason: 'opt-out must mean zero network requests');
+
+      final d = await (db.select(db.derivedFactors)
+            ..where((t) => t.eventId.equals('g1')))
+          .getSingle();
+      expect(d.enrichedAt, isNotNull,
+          reason: 'row is complete — the queue must drain without network');
+      expect(d.enrichError, isNull);
+      expect(d.season, isNotNull); // local factors still computed
+      expect(d.moonPhase, isNotNull);
+      expect(d.daylightHours, isNotNull);
+      expect(d.pressureHpa, isNull); // no weather anywhere
+      expect(d.tempC, isNull);
+      expect(d.aqi, isNull);
+      expect(await svc.pendingEventIds(), isEmpty);
+    });
+
+    test('the setting missing entirely behaves as opted out', () async {
+      // A fresh database that never saw the setting (a brand-new install).
+      final fresh = MegrimDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(fresh.close);
+      await insertEvent(fresh, 'g2', DateTime.utc(2024, 7, 1, 0),
+          lat: 40.0, lon: -105.0);
+      var calls = 0;
+      final svc = EnrichmentService(
+        db: fresh,
+        weatherClient: OpenMeteoClient(
+          httpClient: MockClient((req) async {
+            calls++;
+            return http.Response('nope', 500);
+          }),
+          maxRetries: 1,
+        ),
+      );
+      await svc.enrichEvent('g2');
+      expect(calls, 0);
+    });
+
+    test('opting in later backfills weather on re-enrich', () async {
+      await db.setSetting('weather_enrichment', '0');
+      await insertEvent(db, 'g3', DateTime.utc(2024, 7, 1, 0),
+          lat: 40.0, lon: -105.0);
+      final svc = EnrichmentService(db: db, weatherClient: okWeatherClient());
+
+      await svc.enrichEvent('g3');
+      var d = await (db.select(db.derivedFactors)
+            ..where((t) => t.eventId.equals('g3')))
+          .getSingle();
+      expect(d.pressureHpa, isNull);
+
+      // The Settings toggle re-enqueues everything (reEnrichAll) after enabling.
+      await db.setSetting('weather_enrichment', '1');
+      await svc.enqueue('g3');
+      await svc.processQueue(throttle: false);
+
+      d = await (db.select(db.derivedFactors)
+            ..where((t) => t.eventId.equals('g3')))
+          .getSingle();
+      expect(d.pressureHpa, isNotNull, reason: 'weather backfilled after opt-in');
+      expect(d.enrichedAt, isNotNull);
+    });
   });
 }

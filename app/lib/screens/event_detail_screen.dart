@@ -26,6 +26,7 @@ class EventDetailScreen extends StatefulWidget {
 class _EventDetailScreenState extends State<EventDetailScreen> {
   MigraineEvent? _event;
   DerivedFactor? _derived;
+  bool _weatherEnrichmentOn = true;
   List<String> _triggerVocab = const [];
   List<String> _locationVocab = const [];
   List<String> _medVocab = const [];
@@ -63,6 +64,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Future<void> _load() async {
     final e = await widget.repo.getEvent(widget.eventId);
     final d = await widget.repo.getDerived(widget.eventId);
+    final weatherOn = await widget.repo.weatherEnrichmentEnabled;
     final triggers = await widget.repo.vocab(VocabKind.trigger);
     final locations = await widget.repo.vocab(VocabKind.headLocation);
     final meds = await widget.repo.vocab(VocabKind.medication);
@@ -70,6 +72,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     setState(() {
       _event = e;
       _derived = d;
+      _weatherEnrichmentOn = weatherOn;
       _triggerVocab = triggers;
       _locationVocab = locations;
       _medVocab = meds;
@@ -615,6 +618,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     children: [Text(entry.key), Text(entry.value!)],
                   ),
                 ),
+            // Weather rows absent by choice (opt-out), not by failure — say which it is.
+            if (!_weatherEnrichmentOn &&
+                d.tempC == null &&
+                d.pressureHpa == null &&
+                d.humidityPct == null &&
+                d.aqi == null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Weather not fetched — weather enrichment is off (Settings).',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
             if (d.enrichError != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8),

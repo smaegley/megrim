@@ -74,6 +74,10 @@ void main() {
       await setViewport(tester, const Size(480, 320));
       await pumpOnboarding(tester);
 
+      // The welcome copy grew with the weather-opt-in mention; at this tiny landscape height the
+      // button sits below the fold of the (correctly scrolling) step, so scroll it into view —
+      // exactly what a user does. takeException below still guards against real overflows.
+      await tester.ensureVisible(find.text('Get started'));
       await tester.tap(find.text('Get started'));
       await tester.pumpAndSettle();
       await tester.tap(find.byType(Checkbox));

@@ -105,7 +105,7 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
-  late Future<(DashboardResult, CorrelationResult)> _future;
+  late Future<(DashboardResult, CorrelationResult, bool)> _future;
 
   @override
   void initState() {
@@ -123,13 +123,17 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   void _reload() => setState(() => _future = _load());
 
-  Future<(DashboardResult, CorrelationResult)> _load() async {
+  Future<(DashboardResult, CorrelationResult, bool)> _load() async {
     final dash = await widget.repo.dashboard();
+    // Opt-in gate (F-Droid review): with weather enrichment off, the baseline fetch below must
+    // never fire — the tab then reads whatever is cached/stored, all local.
+    final weatherOn = await widget.repo.weatherEnrichmentEnabled;
     // The pressure "suspected factor" needs a one-time bulk fetch of daily pressure history at the
     // home location (cached after). Only allow that fetch when online, so the Analytics tab never
     // blocks on the network offline — it uses the cached baseline (or omits pressure) instead.
-    final online = ConnectivityMonitor.isOnlineResult(
-        await Connectivity().checkConnectivity());
+    final online = weatherOn &&
+        ConnectivityMonitor.isOnlineResult(
+            await Connectivity().checkConnectivity());
     // Own http.Client is created per load — close it afterwards so a tab-open/refresh/pull-to-
     // refresh cycle doesn't leak one client (and its connection pool) every time.
     final baselineService = PressureBaselineService(db: widget.repo.db);
@@ -138,7 +142,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         baselineService: baselineService,
         allowFetch: online,
       );
-      return (dash, corr);
+      return (dash, corr, weatherOn);
     } finally {
       baselineService.close();
     }
@@ -157,7 +161,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           ),
         ],
       ),
-      body: FutureBuilder<(DashboardResult, CorrelationResult)>(
+      body: FutureBuilder<(DashboardResult, CorrelationResult, bool)>(
         future: _future,
         builder: (context, snap) {
           // A failed load (e.g. a connectivity-check platform error) must not fall through to the
@@ -183,7 +187,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          final (dash, corr) = snap.data!;
+          final (dash, corr, weatherOn) = snap.data!;
           if (dash.isEmpty) {
             return const Center(child: Text('Log a few migraines to see analytics.'));
           }
@@ -196,7 +200,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 16),
                 _summaryCard(dash.summary),
                 const SizedBox(height: 16),
-                _CorrelationsCard(corr: corr),
+                _CorrelationsCard(corr: corr, weatherEnabled: weatherOn),
                 const SizedBox(height: 16),
                 _TriggerCard(dash: dash),
                 const SizedBox(height: 16),
@@ -234,6 +238,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   title: 'Pressure change (24h)',
                   data: dash.pressureDelta,
                   child: _barChart(dash.pressureDelta),
+                  emptyNotice: weatherOn
+                      ? null
+                      : 'Needs weather enrichment (off) — enable it in Settings',
                 ),
                 const SizedBox(height: 16),
                 _collapsibleChart(
@@ -314,10 +321,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     required String title,
     required List<LabeledCount> data,
     required Widget child,
+    // Why-this-is-blank tag for charts whose data source is an opt-in feature (weather).
+    String? emptyNotice,
   }) {
     final top = _topOf(data);
-    final summary =
-        top == null ? 'No data yet' : 'Most: ${top.label} (${top.count})';
+    final summary = top == null
+        ? (emptyNotice ?? 'No data yet')
+        : 'Most: ${top.label} (${top.count})';
     return Card(
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
@@ -540,7 +550,11 @@ class _MiniBars extends StatelessWidget {
 /// correlation caveats.
 class _CorrelationsCard extends StatefulWidget {
   final CorrelationResult corr;
-  const _CorrelationsCard({required this.corr});
+
+  /// When weather enrichment is opted out, the pressure factor can never appear — say so
+  /// instead of letting it silently be absent.
+  final bool weatherEnabled;
+  const _CorrelationsCard({required this.corr, this.weatherEnabled = true});
 
   @override
   State<_CorrelationsCard> createState() => _CorrelationsCardState();
@@ -600,6 +614,25 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
                   child: Text(_expanded
                       ? 'Show top factor per category'
                       : 'Show all ${corr.topFactors.length} factors'),
+                ),
+              ),
+            if (!widget.weatherEnabled)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.cloud_off_outlined,
+                        size: 16, color: Theme.of(context).colorScheme.outline),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        'Pressure isn\'t analysed — weather enrichment is off '
+                        '(Settings › Weather enrichment).',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             // Caveats appear on expansion (review item #6).
