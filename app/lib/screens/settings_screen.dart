@@ -39,10 +39,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
   HomeLocation? _home;
   bool _homeLoaded = false;
 
+  /// Displayed directly from state like [_home] (same backlog-#7 lesson: don't re-read the DB
+  /// through a FutureBuilder right after writing it).
+  bool _weatherEnrichment = false;
+
   @override
   void initState() {
     super.initState();
     _loadHome();
+    _loadWeatherEnrichment();
+  }
+
+  Future<void> _loadWeatherEnrichment() async {
+    final on = await repo.weatherEnrichmentEnabled;
+    if (mounted) setState(() => _weatherEnrichment = on);
+  }
+
+  Future<void> _setWeatherEnrichment(bool on) async {
+    setState(() => _weatherEnrichment = on);
+    await repo.setWeatherEnrichmentEnabled(on);
+    if (!mounted) return;
+    if (on) {
+      // Backfill weather for everything already logged; runs in the background like the
+      // home-location change path.
+      unawaited(repo.reEnrichAll());
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Weather enrichment on — fetching weather for your entries…')));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Weather enrichment off — no more automatic network requests.')));
+    }
   }
 
   Future<void> _loadHome() async {
@@ -66,6 +92,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: const Text('Home location'),
             subtitle: Text(_home?.label ?? (_homeLoaded ? '—' : '…')),
             onTap: () => _changeHome(context),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.cloud_outlined),
+            title: const Text('Weather enrichment'),
+            subtitle: Text(_weatherEnrichment
+                ? 'Fetches weather for entries from Open-Meteo (rounded location + date only)'
+                : 'Off — no automatic network use (only searches you type)'),
+            value: _weatherEnrichment,
+            onChanged: _setWeatherEnrichment,
           ),
           const Divider(),
           _vocabTile(context, 'Triggers', VocabKind.trigger),

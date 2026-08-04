@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:megrim/app.dart';
 import 'package:megrim/database/database.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
+import 'package:megrim/screens/onboarding_screen.dart';
 import 'package:megrim/services/geocoder.dart';
 
 /// A fake Geocoder returning one canned result instantly, so the full onboarding flow (including
@@ -49,10 +50,18 @@ void main() {
     await tester.tap(find.text('Boulder, Colorado, United States'));
     await tester.pumpAndSettle();
 
-    final finishButton =
-        tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Finish'));
-    expect(finishButton.onPressed, isNotNull,
-        reason: 'Finish should be enabled once a location is selected');
+    final continueButton =
+        tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Continue'));
+    expect(continueButton.onPressed, isNotNull,
+        reason: 'Continue should be enabled once a location is selected');
+    await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+    await tester.pumpAndSettle();
+
+    // The weather opt-in step (F-Droid review): switch defaults OFF; finishing without touching
+    // it must leave enrichment disabled.
+    expect(find.text('Weather enrichment'), findsOneWidget);
+    expect(tester.widget<Switch>(find.byType(Switch)).value, isFalse,
+        reason: 'weather enrichment must be opt-in, not opt-out');
 
     await tester.tap(find.widgetWithText(FilledButton, 'Finish'));
     // Bounded pumps, not pumpAndSettle: HomeShell's IndexedStack builds the Analytics tab
@@ -72,6 +81,55 @@ void main() {
 
     // The write really did happen (not just the UI transition).
     expect(await repo.isOnboarded, isTrue);
+    expect(await repo.weatherEnrichmentEnabled, isFalse,
+        reason: 'untouched opt-in switch means enrichment stays off');
+
+    await db.close();
+  });
+
+  testWidgets('turning the weather switch on during onboarding persists the opt-in',
+      (tester) async {
+    final db = MegrimDatabase.forTesting(NativeDatabase.memory());
+    final repo = MegrimRepository(db: db);
+    var completed = false;
+
+    // OnboardingScreen directly (not MegrimApp) so the run settles — the shell's Analytics tab
+    // can't (connectivity_plus platform channel, the documented pre-existing gap).
+    await tester.pumpWidget(MaterialApp(
+      home: OnboardingScreen(
+        repo: repo,
+        geocoder: _FakeGeocoder(),
+        onComplete: () => completed = true,
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Get started'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(Checkbox));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'Boulder');
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Boulder, Colorado, United States'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(Switch));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Finish'));
+    // Bounded pumps: unlike the real app, onComplete here doesn't replace the screen, so the
+    // Finish button's saving spinner keeps animating and pumpAndSettle would never settle.
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
+
+    expect(completed, isTrue);
+    expect(await repo.weatherEnrichmentEnabled, isTrue);
 
     await db.close();
   });

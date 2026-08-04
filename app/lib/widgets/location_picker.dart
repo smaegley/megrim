@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 
 import '../models/home_location.dart';
 import '../services/geocoder.dart';
+import '../services/location_input.dart';
 
-/// Search-as-you-type location picker backed by the Open-Meteo geocoder. Coordinates are rounded
-/// to 2 decimals when a result is chosen (privacy — SPEC §5.1).
+/// Search-as-you-type location picker backed by the Open-Meteo geocoder, with a fully-offline
+/// alternative: typing decimal GPS coordinates or a full Plus Code is recognised locally and
+/// offered as an instant result — no search request is sent (input that even *looks* like a
+/// manual entry suppresses the geocoder, so half-typed coordinates never leak as queries).
+/// Coordinates are rounded to 2 decimals when a result is chosen (privacy — SPEC §5.1).
 class LocationPickerField extends StatefulWidget {
   final ValueChanged<HomeLocation> onSelected;
   final HomeLocation? initial;
@@ -29,6 +33,9 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
   bool _loading = false;
   HomeLocation? _chosen;
 
+  /// Parsed offline entry (GPS pair / Plus Code) for the current input, if it is one.
+  HomeLocation? _manual;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +53,17 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
 
   void _onChanged(String value) {
     _debounce?.cancel();
+    if (looksLikeManualLocation(value)) {
+      // Manual entry in progress: never query the geocoder, offer the parsed result (if it
+      // parses yet) as an offline choice instead.
+      setState(() {
+        _manual = parseManualLocation(value);
+        _results = const [];
+        _loading = false;
+      });
+      return;
+    }
+    if (_manual != null) setState(() => _manual = null);
     _debounce = Timer(const Duration(milliseconds: 400), () => _search(value));
   }
 
@@ -63,6 +81,22 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  void _selectManual() {
+    final m = _manual;
+    if (m == null) return;
+    final loc = HomeLocation(
+      lat: (m.lat * 100).roundToDouble() / 100,
+      lon: (m.lon * 100).roundToDouble() / 100,
+      label: m.label,
+    );
+    setState(() {
+      _chosen = loc;
+      _controller.text = m.label;
+      _manual = null;
+    });
+    widget.onSelected(loc);
   }
 
   void _select(GeoResult r) {
@@ -88,7 +122,8 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
           controller: _controller,
           onChanged: _onChanged,
           decoration: InputDecoration(
-            labelText: 'Search for your city or town',
+            labelText: 'City search — or GPS / Plus Code',
+            helperText: 'e.g. Boulder · 40.01, -105.27 · 849VCWC8+R9',
             prefixIcon: const Icon(Icons.search),
             suffixIcon: _loading
                 ? const Padding(
@@ -100,6 +135,17 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
             border: const OutlineInputBorder(),
           ),
         ),
+        if (_manual != null)
+          Card(
+            margin: const EdgeInsets.only(top: 4),
+            child: ListTile(
+              dense: true,
+              leading: const Icon(Icons.pin_drop_outlined),
+              title: Text('Use ${_manual!.label}'),
+              subtitle: const Text('Entered directly — nothing sent online'),
+              onTap: _selectManual,
+            ),
+          ),
         if (_results.isNotEmpty)
           Card(
             margin: const EdgeInsets.only(top: 4),

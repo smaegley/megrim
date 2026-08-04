@@ -1,16 +1,25 @@
 # Megrim Privacy Policy
 
-_Last updated: 2026-07-07_
+_Last updated: 2026-08-03_
 
 **All data stays on your device.** We operate no servers and collect nothing — no accounts, no
 analytics, no identifiers, no crash reporting.
 
-## The only network traffic
+## The only network traffic — and it's opt-in
 
-The app's only network traffic is to **Open-Meteo.com**, to fetch weather, barometric pressure,
-and air-quality data for the **approximate (~1 km rounded)** location and date of entries you
-create. No other host is ever contacted. See
-[Open-Meteo's privacy policy](https://open-meteo.com/en/terms).
+Weather enrichment is **off by default**. Unless you explicitly enable it (during onboarding or
+in Settings › Weather enrichment), **the app makes no automatic network requests**. The one
+user-initiated exception: searching for your home location sends the place name you type to
+Open-Meteo's geocoding API to look up coordinates — it happens only when you actively search,
+and involves no GPS (the app never reads device location). You can avoid even that by typing
+GPS coordinates or a [Plus Code](https://maps.google.com/pluscodes/) directly — both are decoded
+entirely on-device.
+
+If you enable it, the app's only network traffic is to **Open-Meteo.com**, to fetch weather,
+barometric pressure, and air-quality data for the **approximate (~1 km rounded)** location and
+date of entries you create. No other host is ever contacted. See
+[Open-Meteo's privacy policy](https://open-meteo.com/en/terms). You can turn it off again at any
+time; already-fetched weather stays stored locally with your entries.
 
 Location coordinates are **rounded to two decimal places (~1 km) before they ever leave the
 device**, and precise coordinates are never stored.
@@ -20,9 +29,10 @@ device** with no network call.
 
 ## Location permission
 
-Location access is **optional** and used only to tag where a migraine happened as a convenience.
-The app is fully functional with the permission denied — it falls back to your configured home
-location. No background location is used.
+There isn't one. The app **declares no location permission at all** and never reads your
+device's location — it cannot, even in principle. Your home location is whatever you type
+during setup: a place-name search, GPS coordinates, or a Plus Code. (The APK's only permissions
+are INTERNET and the system's network-state check used to detect being offline.)
 
 ## Backups
 

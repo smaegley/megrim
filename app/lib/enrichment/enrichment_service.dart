@@ -9,10 +9,16 @@ import 'open_meteo_client.dart';
 /// Orchestrates on-device enrichment (SPEC §5). For each event it computes:
 ///   1. calendar factors (local, always)
 ///   2. astronomical factors (local math, always)
-///   3. weather (Open-Meteo, may fail → row stays queued with an error)
+///   3. weather (Open-Meteo, opt-in; may fail → row stays queued with an error)
 ///
 /// Calendar + astro are written even when weather fails, so partial enrichment is useful and the
 /// row is retried later (a null `enriched_at` marks it as pending — §3.2).
+///
+/// Weather is fetched ONLY when the user has opted in (`weather_enrichment` setting — F-Droid
+/// review requirement: third-party network use must be consented). When opted out, events are
+/// marked fully enriched with local factors only, so the queue drains without network; opting in
+/// later goes through [MegrimRepository.reEnrichAll], which re-enqueues everything and backfills
+/// the weather columns.
 class EnrichmentService {
   final MegrimDatabase db;
   final OpenMeteoClient weather;
@@ -59,14 +65,19 @@ class EnrichmentService {
     final cal = computeCalendarFactors(event.startedAt.toLocal(), coords.lat);
     final astro = computeAstro(startedUtc, coords.lat, coords.lon);
 
+    final weatherAllowed =
+        (await db.getSetting('weather_enrichment')) == '1';
+
     WeatherResult? w;
     String? error;
-    try {
-      w = await weather.fetchWeather(coords.lat, coords.lon, startedUtc);
-    } on EnrichmentException catch (e) {
-      error = e.message;
-    } catch (e) {
-      error = 'Weather error: $e';
+    if (weatherAllowed) {
+      try {
+        w = await weather.fetchWeather(coords.lat, coords.lon, startedUtc);
+      } on EnrichmentException catch (e) {
+        error = e.message;
+      } catch (e) {
+        error = 'Weather error: $e';
+      }
     }
 
     await _writeDerived(
@@ -74,8 +85,11 @@ class EnrichmentService {
       cal: cal,
       astro: astro,
       weather: w,
+      // Opted out ⇒ local factors are all there is to compute; mark the row complete so the
+      // queue drains without ever touching the network. Opted in ⇒ complete only once weather
+      // actually landed (a failed fetch stays pending for retry).
       error: error,
-      enriched: w != null,
+      enriched: weatherAllowed ? w != null : true,
     );
     return w != null;
   }
