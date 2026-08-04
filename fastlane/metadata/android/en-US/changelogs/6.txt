@@ -1,0 +1,7 @@
+Weather enrichment is now opt-in.
+
+• Weather, pressure and air-quality lookups only happen if you turn them on (during setup or in Settings). Left off, Megrim makes no automatic network requests at all.
+• IMPORTANT for existing users: this update leaves weather enrichment OFF until you enable it in Settings › Weather enrichment. Turning it on backfills weather for entries you already logged.
+• Charts that need weather now say so instead of just looking empty.
+• You can set your home location without any online search: type GPS coordinates or a Plus Code and Megrim decodes it on-device.
+• Removed unused location permissions — the app declares only INTERNET and never reads your device location.

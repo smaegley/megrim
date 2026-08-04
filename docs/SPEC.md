@@ -662,6 +662,18 @@ correlations card, and an Event Detail note, all pointing at Settings › Weathe
 Bonus: with enrichment off, AnalyticsScreen's connectivity check short-circuits, so it finally
 settles in widget tests (the connectivity_plus mock gap only applies when opted in).
 
+**`v1.0.1` (2026-08-04): the opt-in release.** Version `1.0.1+6`. Weather enrichment opt-in
+(Session-7 above), plus two things that came out of thinking through the review: **offline
+home-location entry** — a decimal GPS pair or a full Plus Code typed into the search box is
+decoded locally (`services/location_input.dart`, `open_location_code`), and any manual-looking
+input suppresses the geocoder so a half-typed coordinate never leaks as a query — and **removal
+of `ACCESS_COARSE/FINE_LOCATION`** from the manifest (dead since GPS tagging was deferred
+pre-0.1; the app now declares only INTERNET, verified with aapt). Store screenshots refreshed,
+incl. the first dark-mode shots. F-Droid recipe → versionCodes 61/62/63 at the `v1.0.1` tag.
+**Upgrade note:** existing installs have no `weather_enrichment` value stored, so enrichment
+starts OFF for them until enabled in Settings — deliberate (nobody previously consented), called
+out in the changelog.
+
 **`v1.0.0` (2026-07-17): first stable release.** Version `1.0.0+5`; F-Droid recipe bumped from
 its `v0.1.0` placeholder to the real `v1.0.0` pins. **Remaining follow-up — the F-Droid debut:**
 Steve opens the `fdroiddata` MR on GitLab (recipe + playbook in [`fdroid/`](../fdroid/)); expect

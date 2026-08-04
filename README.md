@@ -28,16 +28,23 @@ plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v1.0.0`** — first stable release. App id `org.maegley.megrim`.
+**`v1.0.1`** — latest stable release. App id `org.maegley.megrim`.
 Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
 definition and running implementation status.
 
-`v1.0.0` caps the 0.x series (one-tap logging, offline enrichment, on-device analytics with
+`v1.0.0` capped the 0.x series (one-tap logging, offline enrichment, on-device analytics with
 suspected-factor correlations, light/dark theme, Medications, tap-to-edit History Calendar,
 JSON/CSV export) with an **accessibility pass** (tap-target sizes, WCAG text contrast,
 screen-reader labels, verified by automated guideline tests in both themes) and a **fully
 documented import format** ([`docs/IMPORT.md`](docs/IMPORT.md) +
 [JSON Schema](docs/megrim-export.schema.json)) for migrating history from any other tracker.
+
+`v1.0.1` makes **weather enrichment opt-in** (default off — arising from the F-Droid inclusion
+review), tags weather-dependent charts with *why* they're blank when it's off, adds **offline
+home-location entry** (type GPS coordinates or a Plus Code; nothing sent online), and **removes
+the unused location permissions** — the app now declares only `INTERNET` and never reads device
+location. *Upgrading users: enrichment starts off; enable it in Settings › Weather enrichment to
+resume weather lookups and backfill past entries.*
 
 **Next milestone:** the F-Droid [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) MR
 (recipe ready in [`fdroid/`](fdroid/)).
@@ -55,7 +62,7 @@ Pick whichever suits you:
   `https://github.com/smaegley/megrim` as an app in Obtainium and it will track new releases for you
   — Play-store-style updates, no account or store required.
 - **F-Droid (submission underway).** An [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) build
-  recipe is prepared (see [`fdroid/`](fdroid/)) and targets `v1.0.0`. Once the MR merges,
+  recipe is prepared (see [`fdroid/`](fdroid/)) and targets `v1.0.1`. Once the MR merges,
   Megrim will be installable and auto-updating through the F-Droid client. Note that the F-Droid
   build is signed with F-Droid's key, so it has a different signature than the GitHub-release APK —
   install from one source and stick with it.
