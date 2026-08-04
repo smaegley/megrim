@@ -1,13 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Network: only ever used to reach Open-Meteo (weather/air-quality). See docs/PRIVACY.md. -->
+    <!-- The ONLY permission. Network is used solely to reach Open-Meteo, and only after the user
+         opts in to weather enrichment (or actively types a place-name search). See
+         docs/PRIVACY.md. Deliberately NO location permissions: the app never reads device
+         location — the home location is typed by the user (searched, GPS pair, or Plus Code). -->
     <uses-permission android:name="android.permission.INTERNET"/>
-
-    <!-- Location is an OPTIONAL convenience (tag where a migraine happened). The app is fully
-         functional with it denied, falling back to the configured home location. -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-feature android:name="android.hardware.location" android:required="false"/>
-    <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
 
     <application
         android:label="Megrim"

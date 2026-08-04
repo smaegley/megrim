@@ -29,9 +29,10 @@ device** with no network call.
 
 ## Location permission
 
-Location access is **optional** and used only to tag where a migraine happened as a convenience.
-The app is fully functional with the permission denied — it falls back to your configured home
-location. No background location is used.
+There isn't one. The app **declares no location permission at all** and never reads your
+device's location — it cannot, even in principle. Your home location is whatever you type
+during setup: a place-name search, GPS coordinates, or a Plus Code. (The APK's only permissions
+are INTERNET and the system's network-state check used to detect being offline.)
 
 ## Backups
 
