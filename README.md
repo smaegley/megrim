@@ -47,7 +47,9 @@ location. *Upgrading users: enrichment starts off; enable it in Settings › Wea
 resume weather lookups and backfill past entries.*
 
 **Next milestone:** the F-Droid [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) MR
-(recipe ready in [`fdroid/`](fdroid/)).
+([!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692), in review). For a
+resume-here snapshot of the project — what is shipped, what is in flight, known gaps — see
+[`docs/STATUS.md`](docs/STATUS.md).
 
 ## Installing
 
@@ -74,7 +76,7 @@ automatic updates).
 
 ```
 app/       Flutter application (single codebase, Android target)
-docs/      SPEC.md, PRIVACY.md, screenshots
+docs/      STATUS.md (start here), SPEC.md, PRIVACY.md, IMPORT.md
 fastlane/  F-Droid / Play listing metadata
 fdroid/    F-Droid build recipe + submission notes
 .github/   CI workflow, funding
