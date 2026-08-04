@@ -13,9 +13,9 @@ RepoType: git
 Repo: https://github.com/smaegley/megrim.git
 
 Builds:
-  - versionName: 1.0.0
-    versionCode: 51
-    commit: 114d11254938a64d75e6cfc9f1ebfb8e3d7cdf68
+  - versionName: 1.0.1
+    versionCode: 61
+    commit: 4618339957351f8a1a518a3dd723c551e5a33958
     subdir: app
     output: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
     srclibs:
@@ -33,9 +33,9 @@ Builds:
       - export PUB_CACHE=$(pwd)/.pub-cache
       - $$flutter$$/bin/flutter build apk --release --split-per-abi --target-platform=android-arm
 
-  - versionName: 1.0.0
-    versionCode: 52
-    commit: 114d11254938a64d75e6cfc9f1ebfb8e3d7cdf68
+  - versionName: 1.0.1
+    versionCode: 62
+    commit: 4618339957351f8a1a518a3dd723c551e5a33958
     subdir: app
     output: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
     srclibs:
@@ -53,9 +53,9 @@ Builds:
       - export PUB_CACHE=$(pwd)/.pub-cache
       - $$flutter$$/bin/flutter build apk --release --split-per-abi --target-platform=android-arm64
 
-  - versionName: 1.0.0
-    versionCode: 53
-    commit: 114d11254938a64d75e6cfc9f1ebfb8e3d7cdf68
+  - versionName: 1.0.1
+    versionCode: 63
+    commit: 4618339957351f8a1a518a3dd723c551e5a33958
     subdir: app
     output: build/app/outputs/flutter-apk/app-x86_64-release.apk
     srclibs:
@@ -80,5 +80,5 @@ VercodeOperation:
   - '%c * 10 + 2'
   - '%c * 10 + 3'
 UpdateCheckData: app/pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
-CurrentVersion: 1.0.0
-CurrentVersionCode: 53
+CurrentVersion: 1.0.1
+CurrentVersionCode: 63
