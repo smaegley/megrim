@@ -130,7 +130,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     'enable weather enrichment in the next step — to fetch weather for your '
                     'entries. Searching here sends the place name you type to Open-Meteo\'s '
                     'geocoder to find coordinates; after that, only rounded (~1 km) '
-                    'coordinates would ever be sent, and only for weather.',
+                    'coordinates would ever be sent, and only for weather. Prefer not to '
+                    'search online? Type GPS coordinates or a Plus Code instead — both are '
+                    'decoded on-device.',
                   ),
                   const SizedBox(height: 16),
                   LocationPickerField(

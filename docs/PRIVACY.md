@@ -11,7 +11,9 @@ Weather enrichment is **off by default**. Unless you explicitly enable it (durin
 in Settings › Weather enrichment), **the app makes no automatic network requests**. The one
 user-initiated exception: searching for your home location sends the place name you type to
 Open-Meteo's geocoding API to look up coordinates — it happens only when you actively search,
-and involves no GPS (the app never reads device location).
+and involves no GPS (the app never reads device location). You can avoid even that by typing
+GPS coordinates or a [Plus Code](https://maps.google.com/pluscodes/) directly — both are decoded
+entirely on-device.
 
 If you enable it, the app's only network traffic is to **Open-Meteo.com**, to fetch weather,
 barometric pressure, and air-quality data for the **approximate (~1 km rounded)** location and
