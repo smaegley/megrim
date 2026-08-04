@@ -128,8 +128,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const Text(
                     'Used on-device for daylight and season analytics, and — only if you '
                     'enable weather enrichment in the next step — to fetch weather for your '
-                    'entries. Only rounded (~1 km) coordinates would ever be sent to the '
-                    'weather service.',
+                    'entries. Searching here sends the place name you type to Open-Meteo\'s '
+                    'geocoder to find coordinates; after that, only rounded (~1 km) '
+                    'coordinates would ever be sent, and only for weather.',
                   ),
                   const SizedBox(height: 16),
                   LocationPickerField(

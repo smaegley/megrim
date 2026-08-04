@@ -52,7 +52,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(await repo.weatherEnrichmentEnabled, isFalse);
-    expect(find.text('Off — the app makes no network requests'), findsOneWidget);
+    expect(find.text('Off — no automatic network use (only searches you type)'),
+        findsOneWidget);
 
     await tester.tap(find.byType(SwitchListTile));
     await tester.pumpAndSettle();
@@ -70,7 +71,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(await repo.weatherEnrichmentEnabled, isFalse);
     expect(
-        find.text('Weather enrichment off — Megrim will make no network requests.'),
+        find.text('Weather enrichment off — no more automatic network requests.'),
         findsOneWidget);
   });
 

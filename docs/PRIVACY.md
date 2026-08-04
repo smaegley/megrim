@@ -8,7 +8,10 @@ analytics, no identifiers, no crash reporting.
 ## The only network traffic — and it's opt-in
 
 Weather enrichment is **off by default**. Unless you explicitly enable it (during onboarding or
-in Settings › Weather enrichment), **the app makes no network requests at all**.
+in Settings › Weather enrichment), **the app makes no automatic network requests**. The one
+user-initiated exception: searching for your home location sends the place name you type to
+Open-Meteo's geocoding API to look up coordinates — it happens only when you actively search,
+and involves no GPS (the app never reads device location).
 
 If you enable it, the app's only network traffic is to **Open-Meteo.com**, to fetch weather,
 barometric pressure, and air-quality data for the **approximate (~1 km rounded)** location and

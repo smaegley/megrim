@@ -67,7 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           content: Text('Weather enrichment on — fetching weather for your entries…')));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Weather enrichment off — Megrim will make no network requests.')));
+          content: Text('Weather enrichment off — no more automatic network requests.')));
     }
   }
 
@@ -98,7 +98,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: const Text('Weather enrichment'),
             subtitle: Text(_weatherEnrichment
                 ? 'Fetches weather for entries from Open-Meteo (rounded location + date only)'
-                : 'Off — the app makes no network requests'),
+                : 'Off — no automatic network use (only searches you type)'),
             value: _weatherEnrichment,
             onChanged: _setWeatherEnrichment,
           ),
