@@ -28,8 +28,13 @@ format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out
 - The recipe in [`fdroid/metadata/org.maegley.megrim.yml`](../fdroid/metadata/org.maegley.megrim.yml)
   is the source of truth and is mirrored byte-for-byte onto the MR branch. It targets the
   `v1.0.1` tag commit with per-ABI versionCodes **61/62/63**.
-- **State: waiting on linsui's re-review.** Every review point so far has been addressed and the
-  last upstream CI run (2026-07-29) passed every job, including `fdroid build` and `check apk`.
+- **State (2026-08-14): queued for a volunteer tester.** Labels are `New App` +
+  `review-requested`. linsui's maintainer review is finished and passed; on 2026-08-07 they said
+  the MR is "mostly ready", that they will test it later and merge if it works, and that the
+  queue is long (~99 MRs carry `review-requested`, oldest from February; Megrim sits around #62).
+  The last upstream CI run (2026-08-05, after linsui rebased the branch onto current master)
+  passed **every** job. Standing instruction from linsui: **only update this MR when a new
+  version is released.**
 
 ### Review rounds so far
 
@@ -43,6 +48,34 @@ format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out
    wanted `AutoName`.
 4. "Why does it require INTERNET permission?" → answered. Then: **"Please make this feature
    opt-in."** → built and shipped as `v1.0.1`.
+
+### Deferred: pin Flutter by commit, not tag
+
+An outside commenter (`andrewpozdnakov7`, **not** an F-Droid member — see the note below)
+suggested selecting the Flutter srclib by immutable commit rather than by tag. It is a fair
+point and matches F-Droid's own reasoning for requiring a full commit hash on `commit:`.
+
+Actionable whenever the recipe is next touched: `app/.metadata` is tracked and holds
+`revision: "924134a44c189315be2148659913dda1671cbe99"` (the exact 3.44.1 engine commit), so the
+prebuild could read that instead of extracting `flutter-version` from `.github/workflows/release.yml`,
+matching the merged `com.sidhant.watersort` recipe:
+
+```
+- git -C $$flutter$$ checkout -f $(sed -n -E "s/.*revision:\ \"(.*)\"/\1/p" .metadata)
+```
+
+**Deliberately not done yet:** the MR is in a known-good, fully CI-green state that a maintainer
+has blessed, and linsui asked for updates only on new releases. Bundle this with the recipe
+update that accompanies the next release.
+
+### Unsolicited third-party "reviews"
+
+`andrewpozdnakov7` posted a "PASS WITH NOTES" static review on 2026-08-13. It is **not** the
+F-Droid tester review and does not advance the MR: they are not a member of `fdroiddata`, the
+comment itself states no build or device/network test was performed (which is the whole substance
+of a Tester Review), and they were posting the same templated format across 15+ new-app MRs in a
+couple of days. Harmless, and its findings happen to corroborate the privacy claims, but it
+changed no labels and carries no procedural weight. Do not mistake it for a passed test.
 
 ### Reading the CI emails
 
