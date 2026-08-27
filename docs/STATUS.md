@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-08-04, after releasing `v1.0.1`._
+_Last updated: 2026-08-27, after releasing `v1.0.2`._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -9,16 +9,16 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
 
 | | |
 |---|---|
-| Latest release | **`v1.0.1`** (versionCode 6), tagged on `4618339`, signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.1) |
+| Latest release | **`v1.0.2`** (versionCode 7), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.2) |
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
-| Distribution today | GitHub Releases; Obtainium tracks the repo for auto-updates |
+| Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
 | Permissions | `INTERNET` only (plus `ACCESS_NETWORK_STATE` from connectivity_plus). No location permission at all |
-| Verification bar | `flutter analyze` clean, **144 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
+| Verification bar | `flutter analyze` clean, **147 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
 
 Everything in the original spec is implemented, plus the accessibility pass, documented import
 format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out.
 
-## In flight: F-Droid inclusion
+## Done: F-Droid inclusion
 
 **Merge request: [fdroiddata!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692)**
 ("New app: Megrim"). Reviewer: **linsui**.
@@ -28,13 +28,17 @@ format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out
 - The recipe in [`fdroid/metadata/org.maegley.megrim.yml`](../fdroid/metadata/org.maegley.megrim.yml)
   is the source of truth and is mirrored byte-for-byte onto the MR branch. It targets the
   `v1.0.1` tag commit with per-ABI versionCodes **61/62/63**.
-- **State (2026-08-14): queued for a volunteer tester.** Labels are `New App` +
-  `review-requested`. linsui's maintainer review is finished and passed; on 2026-08-07 they said
-  the MR is "mostly ready", that they will test it later and merge if it works, and that the
-  queue is long (~99 MRs carry `review-requested`, oldest from February; Megrim sits around #62).
-  The last upstream CI run (2026-08-05, after linsui rebased the branch onto current master)
-  passed **every** job. Standing instruction from linsui: **only update this MR when a new
-  version is released.**
+- **MERGED 2026-08-23** after four maintainer review rounds (linsui) and a volunteer tester pass.
+  Megrim is in the F-Droid catalogue.
+- **Routine releases no longer need a merge request.** The merged recipe carries
+  `AutoUpdateMode: Version`, `UpdateCheckMode: Tags ^v[\d.]+$`, `VercodeOperation` (×10+1/2/3) and
+  `UpdateCheckData` reading `app/pubspec.yaml`, so F-Droid's bot picks up each new `v*` tag and
+  generates the per-ABI build entries itself. **Tagging is the whole job.** Remember each release
+  needs both `<code>.txt` and the per-ABI changelog copies (e.g. `7.txt` plus `71/72/73.txt`).
+- The canonical recipe now lives in `fdroiddata`; the copy under `fdroid/` is a historical
+  reference and will drift as the bot appends entries.
+- The GitLab PAT expired on ~2026-08-06 and was not renewed — public MR data is still readable
+  unauthenticated, but posting comments needs a fresh token.
 
 ### Review rounds so far
 
