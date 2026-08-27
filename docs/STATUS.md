@@ -25,9 +25,6 @@ format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out
 
 - Fork: `steve518/fdroiddata`, branch `org.maegley.megrim`. GitLab username is **`steve518`**
   (`smaegley` was taken).
-- The recipe in [`fdroid/metadata/org.maegley.megrim.yml`](../fdroid/metadata/org.maegley.megrim.yml)
-  is the source of truth and is mirrored byte-for-byte onto the MR branch. It targets the
-  `v1.0.1` tag commit with per-ABI versionCodes **61/62/63**.
 - **MERGED 2026-08-23** after four maintainer review rounds (linsui) and a volunteer tester pass.
   Megrim is in the F-Droid catalogue.
 - **Routine releases no longer need a merge request.** The merged recipe carries
@@ -52,6 +49,8 @@ format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out
    wanted `AutoName`.
 4. "Why does it require INTERNET permission?" → answered. Then: **"Please make this feature
    opt-in."** → built and shipped as `v1.0.1`.
+5. Volunteer tester pass → one finding: the Event Detail Enrichment card showed unrounded
+   daylight and pressure-change values. Fixed and shipped as `v1.0.2`.
 
 ### Deferred: pin Flutter by commit, not tag
 
@@ -68,33 +67,18 @@ matching the merged `com.sidhant.watersort` recipe:
 - git -C $$flutter$$ checkout -f $(sed -n -E "s/.*revision:\ \"(.*)\"/\1/p" .metadata)
 ```
 
-**Deliberately not done yet:** the MR is in a known-good, fully CI-green state that a maintainer
-has blessed, and linsui asked for updates only on new releases. Bundle this with the recipe
-update that accompanies the next release.
+**Still not done, and now lower priority:** the MR is merged and the bot maintains the recipe, so
+this would need its own small follow-up MR to `fdroiddata` rather than riding along with a
+release. Worth doing only if the recipe is being touched for some other reason.
 
-### Unsolicited third-party "reviews"
+### Two things to remember about the F-Droid build
 
-`andrewpozdnakov7` posted a "PASS WITH NOTES" static review on 2026-08-13. It is **not** the
-F-Droid tester review and does not advance the MR: they are not a member of `fdroiddata`, the
-comment itself states no build or device/network test was performed (which is the whole substance
-of a Tester Review), and they were posting the same templated format across 15+ new-app MRs in a
-couple of days. Harmless, and its findings happen to corroborate the privacy claims, but it
-changed no labels and carries no procedural weight. Do not mistake it for a passed test.
-
-### Reading the CI emails
-
-Pipelines belonging to the **fork** (`steve518/fdroiddata`) always fail instantly with **0 jobs** —
-a new GitLab account has no shared-runner access, and per F-Droid's own MR template we did not
-give GitLab payment/phone verification. **Ignore any failure notice that says "0 failed jobs" or
-names the fork.** A real signal is either a comment from a maintainer or a pipeline under
-`fdroid/fdroiddata` with named jobs (`fdroid build`, `check apk`, `checkupdates`, …).
-
-### When the MR merges
-
-Steve revokes the GitLab personal access token, and the copy on the dev VM (`~/.gitlab_pat`) gets
-deleted. Megrim then appears in the F-Droid client within their next index cycle. Note the
-F-Droid build is signed with **F-Droid's** key, so it is a separate install lineage from the
-GitHub APK — users pick one source and stay with it.
+- It is signed with **F-Droid's** key, so it is a separate install lineage from the GitHub APK.
+  Users pick one source and stay with it; switching means uninstall/reinstall (export first).
+- During the review, one commenter (`andrewpozdnakov7`) posted a templated "PASS WITH NOTES"
+  static review across many new-app MRs. It was not the tester review and carried no procedural
+  weight. If similar comments appear on future MRs, judge them on whether an actual build and
+  device/network test was performed.
 
 ## What `v1.0.1` changed (the opt-in release)
 
