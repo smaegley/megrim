@@ -28,7 +28,7 @@ plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v1.0.1`** — latest stable release. App id `org.maegley.megrim`.
+**`v1.0.2`** — latest stable release. App id `org.maegley.megrim`.
 Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
 definition and running implementation status.
 
@@ -46,9 +46,11 @@ the unused location permissions** — the app now declares only `INTERNET` and n
 location. *Upgrading users: enrichment starts off; enable it in Settings › Weather enrichment to
 resume weather lookups and backfill past entries.*
 
-**Next milestone:** the F-Droid [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) MR
-([!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692), in review). For a
-resume-here snapshot of the project — what is shipped, what is in flight, known gaps — see
+`v1.0.2` fixes unrounded values in an entry's Enrichment section (daylight and pressure change
+showed full float precision), reported by an F-Droid reviewer.
+
+**Accepted into F-Droid** — [!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692)
+merged 2026-08-23. For a resume-here snapshot of the project — what is shipped, what is in flight, known gaps — see
 [`docs/STATUS.md`](docs/STATUS.md).
 
 ## Installing
@@ -63,11 +65,11 @@ Pick whichever suits you:
   installs and **auto-updates** apps straight from their GitHub releases. Add
   `https://github.com/smaegley/megrim` as an app in Obtainium and it will track new releases for you
   — Play-store-style updates, no account or store required.
-- **F-Droid (submission underway).** An [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) build
-  recipe is prepared (see [`fdroid/`](fdroid/)) and targets `v1.0.1`. Once the MR merges,
-  Megrim will be installable and auto-updating through the F-Droid client. Note that the F-Droid
-  build is signed with F-Droid's key, so it has a different signature than the GitHub-release APK —
-  install from one source and stick with it.
+- **F-Droid.** The [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata) build
+  **recipe was merged on 2026-08-23**, so Megrim is in the F-Droid catalogue and new `v*` tags
+  are picked up automatically. Note that the F-Droid build is signed with F-Droid's key, so it
+  has a different signature than the GitHub-release APK — install from one source and stick with
+  it.
 
 There is no Google Play listing (and it isn't required — the options above cover installation and
 automatic updates).

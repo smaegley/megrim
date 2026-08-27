@@ -662,6 +662,21 @@ correlations card, and an Event Detail note, all pointing at Settings › Weathe
 Bonus: with enrichment off, AnalyticsScreen's connectivity check short-circuits, so it finally
 settles in widget tests (the connectivity_plus mock gap only applies when opted in).
 
+**ACCEPTED INTO F-DROID 2026-08-23** — `fdroiddata!43692` merged after four maintainer review
+rounds (linsui) plus a volunteer tester pass. New `v*` tags are now picked up automatically by
+F-Droid's bot (`AutoUpdateMode: Version`, `UpdateCheckMode: Tags`, `VercodeOperation` ×10+1/2/3
+reading `app/pubspec.yaml`), so routine releases need **no** further merge request. The canonical
+recipe now lives in `fdroiddata`; the copy under `fdroid/` is a historical reference.
+
+**`v1.0.2` (2026-08-23): tester-reported display fix.** Version `1.0.2+7`. The Event Detail
+Enrichment card interpolated stored doubles directly, so it showed e.g. `14.81900883878691 h` of
+daylight and `-6.199999999999932 hPa` of pressure change (the NOAA sun math and a subtraction of
+two pressure readings respectively), plus `50.0 %` humidity. Display now rounds — 1 decimal for
+daylight/temp/pressure/delta, 0 for humidity, AQI untouched — and a rising delta gets an explicit
+`+`. **Export deliberately unchanged:** JSON and CSV keep full precision, which is correct for a
+data export. Analytics unaffected (it labels by bucket). Pinned by
+`app/test/enrichment_card_format_test.dart`, verified failing without the fix.
+
 **`v1.0.1` (2026-08-04): the opt-in release.** Version `1.0.1+6`. Weather enrichment opt-in
 (Session-7 above), plus two things that came out of thinking through the review: **offline
 home-location entry** — a decimal GPS pair or a full Plus Code typed into the search box is

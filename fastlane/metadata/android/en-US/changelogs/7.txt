@@ -1,0 +1,3 @@
+• Fixed: the Enrichment section on an entry's detail page showed unrounded values, e.g. a daylight length of "14.81900883878691 h" and a pressure change of "-6.199999999999932 hPa". These now read "14.8 h" and "-6.2 hPa". Reported by an F-Droid reviewer.
+• Pressure change now shows an explicit + sign when pressure rose.
+• Exports are unchanged and still carry full precision.
