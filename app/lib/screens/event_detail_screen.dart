@@ -589,16 +589,26 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         ),
       );
     }
-    String? f(num? v, String unit) => v == null ? null : '$v$unit';
+    // Round for display. The stored values carry full double precision — daylight comes from the
+    // NOAA sun math (14.81900883878691 h) and the pressure deltas are a subtraction of two
+    // readings, so they arrive with float artefacts (-6.199999999999932 hPa). Reported by an
+    // F-Droid tester. Export (JSON/CSV) deliberately keeps full precision; only the display rounds.
+    String? f(num? v, String unit, {int decimals = 1, bool signed = false}) {
+      if (v == null) return null;
+      final s = v.toStringAsFixed(decimals);
+      return '${signed && v > 0 ? '+' : ''}$s$unit';
+    }
+
     final rows = <String, String?>{
       'Season': d.season,
       'Time of day': d.timeOfDayBucket,
       'Daylight': f(d.daylightHours, ' h'),
       'Moon': d.moonPhase,
       'Temp': f(d.tempC, ' °C'),
-      'Humidity': f(d.humidityPct, ' %'),
+      'Humidity': f(d.humidityPct, ' %', decimals: 0),
       'Pressure': f(d.pressureHpa, ' hPa'),
-      'Pressure Δ 24h': f(d.pressureDelta24h, ' hPa'),
+      // A change value reads ambiguously without an explicit sign.
+      'Pressure Δ 24h': f(d.pressureDelta24h, ' hPa', signed: true),
       'AQI': d.aqi?.toString(),
     };
     return Card(
