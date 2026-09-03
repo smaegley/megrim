@@ -135,4 +135,31 @@ void main() {
       expect(grouped['2024-07-2']!.single.id, 'a');
     });
   });
+
+  group('monthKeysBetween', () {
+    test('covers every month in the range, newest first, gaps included', () {
+      expect(monthKeysBetween(DateTime(2024, 11, 20), DateTime(2025, 2, 3)),
+          ['2025-02', '2025-01', '2024-12', '2024-11']);
+    });
+
+    test('same month collapses to a single key', () {
+      expect(monthKeysBetween(DateTime(2024, 6, 1), DateTime(2024, 6, 30)),
+          ['2024-06']);
+    });
+  });
+
+  group('spanLinkKeys', () {
+    test('a multi-day span links each day to its successor, but not the last', () {
+      final e = _event('a', DateTime(2024, 6, 5, 12).toUtc(), 4,
+          endedAt: DateTime(2024, 6, 7, 9).toUtc());
+      expect(spanLinkKeys([e]), {'2024-06-5', '2024-06-6'});
+    });
+
+    test('single-day and ongoing events produce no links', () {
+      final single = _event('s', DateTime(2024, 6, 5, 9).toUtc(), 4,
+          endedAt: DateTime(2024, 6, 5, 21).toUtc());
+      final ongoing = _event('o', DateTime(2024, 6, 8, 9).toUtc(), 4);
+      expect(spanLinkKeys([single, ongoing]), isEmpty);
+    });
+  });
 }

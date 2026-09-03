@@ -37,8 +37,14 @@ void main() {
     return id;
   }
 
-  Future<void> pumpCalendar(WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: HistoryScreen(repo: repo)));
+  // "Today" is pinned near the seeded entries (see history_calendar_tap_test.dart) — the
+  // calendar renders every month back from today, so an unpinned clock would bury the seeded
+  // month and duplicate day-number finders across visible months.
+  Future<void> pumpCalendar(WidgetTester tester,
+      {DateTime? today}) async {
+    await tester.pumpWidget(MaterialApp(
+        home: HistoryScreen(
+            repo: repo, todayOverride: today ?? DateTime(2024, 6, 15))));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Calendar'));
     await tester.pumpAndSettle();
@@ -84,10 +90,48 @@ void main() {
   testWidgets('a span crossing a month boundary renders both month cards',
       (tester) async {
     await seedSpan(DateTime(2024, 6, 30, 20), DateTime(2024, 7, 2, 4));
-    await pumpCalendar(tester);
+    await pumpCalendar(tester, today: DateTime(2024, 7, 15));
 
     expect(find.text('June 2024'), findsOneWidget);
     expect(find.text('July 2024'), findsOneWidget);
+    // The span links across the month cards too: June 30 reaches toward July, and July 1
+    // reaches back — the severity-colored halves that tie the migraine together visually.
+    expect(find.byKey(const ValueKey('link-right-2024-06-30')), findsOneWidget);
+    expect(find.byKey(const ValueKey('link-left-2024-07-1')), findsOneWidget);
+    await disposeAndDrain(tester);
+  });
+
+  testWidgets('multi-day migraines draw connector bars between their days',
+      (tester) async {
+    await seedSpan(DateTime(2024, 6, 5, 12), DateTime(2024, 6, 7, 9));
+    await pumpCalendar(tester);
+
+    // Day 5 reaches right, day 6 links both ways, day 7 only back — and the run has clean ends.
+    expect(find.byKey(const ValueKey('link-right-2024-06-5')), findsOneWidget);
+    expect(find.byKey(const ValueKey('link-left-2024-06-6')), findsOneWidget);
+    expect(find.byKey(const ValueKey('link-right-2024-06-6')), findsOneWidget);
+    expect(find.byKey(const ValueKey('link-left-2024-06-7')), findsOneWidget);
+    expect(find.byKey(const ValueKey('link-left-2024-06-5')), findsNothing);
+    expect(find.byKey(const ValueKey('link-right-2024-06-7')), findsNothing);
+    // A single-day entry draws no links at all.
+    await seedSpan(DateTime(2024, 6, 20, 9), DateTime(2024, 6, 20, 11));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('link-right-2024-06-20')), findsNothing);
+    expect(find.byKey(const ValueKey('link-left-2024-06-20')), findsNothing);
+    await disposeAndDrain(tester);
+  });
+
+  testWidgets('migraine-free months still render, keeping gaps honest',
+      (tester) async {
+    // One migraine in June, "today" in September: July and August have no entries but must
+    // appear anyway — skipping them made gaps between migraines look shorter than they were.
+    await seedSpan(DateTime(2024, 6, 5, 12), DateTime(2024, 6, 5, 13));
+    await pumpCalendar(tester, today: DateTime(2024, 9, 10));
+
+    expect(find.text('September 2024'), findsOneWidget);
+    expect(find.text('August 2024'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('June 2024'), 400);
+    expect(find.text('June 2024'), findsOneWidget);
     await disposeAndDrain(tester);
   });
 

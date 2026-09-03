@@ -96,6 +96,13 @@ List view:
 
 * Show that an entry is a multi-day migraine (e.g. a date range instead of a single date).
 
+Follow-ups (Steve, after testing the first cut):
+
+* Tie a multi-day migraine's days together with a connecting line in the severity color.
+* Render every month back to the first entry, including migraine-free ones — skipping empty
+  months compressed the gaps and gave a false impression of how long it's been between
+  migraines.
+
 ### 11. Analytics: donut chart colors *(added by Steve 2026-09-03)*
 
 * Update the colors on the donut charts to fit the theme a bit more. Purple shades, or purple and
