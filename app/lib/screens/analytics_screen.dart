@@ -118,7 +118,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     }
   }
 
-  void _reload() => setState(() => _future = _load());
+  // Block body on purpose: with an arrow body (`=> _future = _load()`) the setState callback
+  // *returns* the assigned Future, and Flutter's debug assert throws "setState() callback
+  // argument returned a Future" on every reload — release builds skipped the assert, which is
+  // why this stayed hidden until a debug-mode session toggled the tab/theme (found by Steve on
+  // the simulator, 2026-09-03).
+  void _reload() => setState(() {
+        _future = _load();
+      });
 
   Future<(DashboardResult, CorrelationResult, bool)> _load() async {
     final dash = await widget.repo.dashboard();
