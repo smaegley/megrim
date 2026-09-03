@@ -79,6 +79,9 @@ with enrichment, Settings/export.
   device, no diagnosis/treatment claims.
 - Weather enrichment is opt-in; sole network endpoint is api.open-meteo.com (documented in
   docs/PRIVACY.md).
+- The statistical methodology behind "Suspected Factors" is publicly documented in plain
+  language: https://github.com/smaegley/megrim/blob/main/docs/METHODS.md (retrospective
+  descriptive statistics only — no diagnosis, no prediction).
 
 ## Post-approval loose ends
 
