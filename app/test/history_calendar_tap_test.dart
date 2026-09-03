@@ -39,8 +39,13 @@ void main() {
     return id;
   }
 
-  Future<void> pumpCalendar(WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: HistoryScreen(repo: repo)));
+  // Pins the calendar's "today" near the seeded June-2024 entries: with every month rendered
+  // back from today (backlog #10 follow-up), an unpinned clock would put the seeded month many
+  // cards down the list and make day-number finders ambiguous across visible months.
+  Future<void> pumpCalendar(WidgetTester tester, {DateTime? today}) async {
+    await tester.pumpWidget(MaterialApp(
+        home: HistoryScreen(
+            repo: repo, todayOverride: today ?? DateTime(2024, 6, 15))));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Calendar'));
     await tester.pumpAndSettle();
@@ -99,23 +104,23 @@ void main() {
   testWidgets(
       'Calendar view with zero entries still shows the current month, tappable',
       (tester) async {
+    // "Today" pinned to 15 Jun 2024 by pumpCalendar's default override.
     await pumpCalendar(tester);
 
-    final now = DateTime.now();
     expect(find.text('No migraines logged yet — tap a date below to add one.'),
         findsOneWidget);
-    expect(find.text(DateFormat('MMMM yyyy').format(DateTime(now.year, now.month))),
+    expect(find.text(DateFormat('MMMM yyyy').format(DateTime(2024, 6))),
         findsOneWidget);
 
-    await tester.tap(find.widgetWithText(InkWell, '${now.day}'));
+    await tester.tap(find.widgetWithText(InkWell, '15'));
     await tester.pumpAndSettle();
 
     expect(find.byType(EventDetailScreen), findsOneWidget);
     final events = await db.select(db.migraineEvents).get();
     expect(events, hasLength(1));
-    expect(events.single.startedAt.toLocal().day, now.day);
-    expect(events.single.startedAt.toLocal().month, now.month);
-    expect(events.single.startedAt.toLocal().year, now.year);
+    expect(events.single.startedAt.toLocal().day, 15);
+    expect(events.single.startedAt.toLocal().month, 6);
+    expect(events.single.startedAt.toLocal().year, 2024);
     await disposeAndDrain(tester);
   });
 }
