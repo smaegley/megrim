@@ -1,9 +1,35 @@
 # Megrim — where things stand
 
-_Last updated: 2026-08-27, after releasing `v1.0.2`._
+_Last updated: 2026-09-03, after submitting the iOS app to App Store review._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
+
+## In flight: iOS App Store submission (2026-09-03)
+
+**Megrim is now a two-platform Flutter app.** The iOS port (`app/ios/`, merged same day it was
+scaffolded) runs the identical Dart codebase; the only iOS-specific code is the iPadOS share-sheet
+anchor. Build **1.0.2 (8)** was submitted to App Review 2026-09-03 5:52 PM — status **Waiting for
+Review** (submission ID `ed4d3f5e-d1d3-4f5a-bf36-d06655246296`). The full release runbook and
+listing content live in `docs/APP_STORE.md`; the operational facts:
+
+- **Listing name `Megrim: Migraine Diary`** (bare "Megrim" is taken on the App Store); home-screen
+  name stays Megrim. **US-only availability, free** — chosen deliberately so the Ko-fi tile stays
+  policy-clean under the post-Epic US guideline 3.1.1. Expanding countries later requires first
+  shipping a build that removes/gates the donate tile.
+- Apple Developer **individual** membership ($99/yr, enrolled + approved 2026-09-03), team ID
+  `96Q4Y32NC5`. Privacy label: **Data Not Collected**. Age rating 12+ (Medical/Treatment:
+  Infrequent). Declared not-a-regulated-medical-device. DSA setup skipped (US-only).
+- **Signing is MANUAL for Release** (team has no registered devices, so automatic signing cannot
+  archive): Apple Distribution cert + "Megrim App Store" provisioning profile, selected in the
+  Runner target. Profile expires ~2027-09 — regenerate at developer.apple.com → Profiles.
+  Simulator/debug workflows are unaffected.
+- Build numbers: iOS build 8 ≠ Android versionCode 7 for the same 1.0.2 (build 7 was rejected at
+  ingestion for missing purpose strings — ITMS-90683; fixed by adding NSCamera/NSPhotoLibrary/
+  NSLocation usage strings that truthfully say the app doesn't use those APIs, which file_picker's
+  bundled media components reference). Passed via `flutter build ipa --build-number=N`.
+- Google Play remains **deferred** (12-tester requirement + donation-link removal made it a worse
+  deal than Apple for this app; see the memory notes / `docs/APP_STORE.md`).
 
 ## Shipped
 
