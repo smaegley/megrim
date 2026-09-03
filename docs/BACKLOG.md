@@ -83,31 +83,34 @@ dark, ignoring the phone's light/dark preference.
 **Was:** the schema (`meds_taken` = `[{name, dose, time, helped}]`), the `medication` vocab (managed in Settings), and export/import **all supported meds — but there was no screen to add them to an event.** Event Detail only had Head-location and Suspected-trigger chip sections.
 **Done:** Event Detail now has a Medications section (below Suspected triggers). Each entry is a card showing name + optional dose/time and a thumb-up/down/? "helped" glyph, with tap-to-edit and a remove button. "Add medication" opens a sub-form dialog: name (Autocomplete over the `medication` vocab, or free text — new names are learned into the vocab), optional dose, optional time (time picker anchored to the event's date, stored ISO-8601 UTC), and a Yes/No/Unknown "helped?" tri-state. Writes the `meds_taken` JSON that export/CSV already emit. Quick Log reaches this via its existing "Add more details" → Event Detail link. Covered by `app/test/event_detail_meds_test.dart` (add/learn, remove, encode round-trip).
 
-### 10. History: weekday-aligned calendar grid + multi-day migraines *(added by Steve 2026-09-03)*
+### 10. History: weekday-aligned calendar grid + multi-day migraines — **DONE** *(Steve 2026-09-03)*
 
-Calendar view:
+**Was:** month grids were a plain `Wrap` of day dots with no weekday alignment; a multi-day
+migraine only marked its start day; only months containing events rendered, which compressed the
+gaps between migraines.
+**Done** (merged 2026-09-03, tested by Steve on the iOS simulator):
 
-* Organize each month into a real day-of-week grid (weekday header row, days aligned to columns).
-* First day of week (Sunday-first vs Monday-first): derive from the device's locale/system setting
-  rather than adding an in-app setting, if possible.
-* Show a multi-day migraine across every day it spans, not just its start day.
+* Each month renders as a real day-of-week grid (weekday header row, leading/trailing blanks).
+  First day of week derives from the device locale via `MaterialLocalizations.firstDayOfWeekIndex`
+  — no in-app setting; English-only today resolves Sunday-first.
+* A multi-day migraine colors every day it spans (`localDaysSpanned`, DST-safe constructor-
+  normalised day stepping); tapping any covered day resolves to it; severity-colored **connector
+  bars** tie the run together, meeting at cell edges and linking across row wraps and month
+  boundaries (`spanLinkKeys`).
+* **Every month back to the first entry renders**, migraine-free ones included, so gaps read at
+  true length; built lazily (`ListView.builder`, ~190 cards for 15 years). List rows label
+  multi-day entries with their day count. `HistoryScreen.todayOverride` test seam pins the clock
+  in widget tests. Covered in `history_multiday_grid_test.dart` + expanded unit tests.
 
-List view:
+### 11. Analytics: donut chart colors — **DONE** *(Steve 2026-09-03)*
 
-* Show that an entry is a multi-day migraine (e.g. a date range instead of a single date).
-
-Follow-ups (Steve, after testing the first cut):
-
-* Tie a multi-day migraine's days together with a connecting line in the severity color.
-* Render every month back to the first entry, including migraine-free ones — skipping empty
-  months compressed the gaps and gave a false impression of how long it's been between
-  migraines.
-
-### 11. Analytics: donut chart colors *(added by Steve 2026-09-03)*
-
-* Update the colors on the donut charts to fit the theme a bit more. Purple shades, or purple and
-  grey? (Constraint: donut slices encode identity, so adjacent slices need to stay easily
-  distinguishable.)
+**Was:** donuts used the 8-hue rainbow categorical palette — felt off-theme.
+**Done** (merged 2026-09-03, tested by Steve in both themes): purple-led 4-slot palette — violet +
+magenta lead, deep teal + amber keep slices apart. Purple-only and purple+grey sets were tried
+first and **fail the dataviz distinguishability floors** (violet↔blue collapses under protanopia,
+magenta↔green under deuteranopia, true grey fails the chroma floor), so this is the closest
+theme fit that stays readable. Both modes validated all-pairs against their card surfaces
+(donuts wrap, so every slice pair is adjacent).
 
 ## Release / infra
 
