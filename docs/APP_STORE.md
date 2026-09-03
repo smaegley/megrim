@@ -16,13 +16,17 @@ membership (enrolled 2026-09-03, individual, steve@maegley.com Apple ID) is appr
 
 ## Listing content (draft — paste into App Store Connect)
 
-- **Name** (30 chars max): `Megrim`
-- **Subtitle** (30 chars max): `Private migraine diary`
+- **Name** (30 chars max): `Megrim: Migraine Diary` — plain "Megrim" is already taken on the
+  App Store (name is globally unique per store; discovered at app creation, 2026-09-03). The
+  home-screen name stays "Megrim" via CFBundleDisplayName; only the listing carries the long form.
+- **Subtitle** (30 chars max): `Private, offline, open source` (the name now says what it is, so
+  the subtitle carries the differentiators instead)
 - **Category**: Primary **Health & Fitness**, Secondary **Medical**
 - **Privacy policy URL**: `https://github.com/smaegley/megrim/blob/main/docs/PRIVACY.md`
 - **Support URL**: `https://github.com/smaegley/megrim`
-- **Keywords** (100 chars max, comma-separated, no spaces needed):
-  `migraine,headache,diary,tracker,log,trigger,aura,barometric,pressure,weather,private,offline`
+- **Keywords** (100 chars max, comma-separated; "migraine"/"diary" omitted — words already in
+  the name are indexed, duplicating them wastes characters):
+  `headache,tracker,log,trigger,aura,barometric,pressure,weather,private,offline,journal,health`
 - **Age rating questionnaire**: everything "None" except **Medical/Treatment Information →
   Infrequent/Mild** (the app records medications taken). Expect a 12+ rating from that answer.
 - **Description**: reuse `fastlane/metadata/android/en-US/full_description.txt` nearly verbatim —
