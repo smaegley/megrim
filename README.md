@@ -102,6 +102,13 @@ flutter build apk --release
 See [`docs/PRIVACY.md`](docs/PRIVACY.md). Short version: all data stays on your device; we operate
 no servers and collect nothing.
 
+## How the analytics work
+
+See [`docs/METHODS.md`](docs/METHODS.md) for a plain-language explanation of every number on the
+Analytics tab — what an odds ratio means here, exactly how "Top Suspected Factors" is computed
+(2×2 contingency per factor with a Haldane–Anscombe correction), which thresholds gate what gets
+shown, and the limits of what the analysis can tell you.
+
 ## Medical disclaimer
 
 Megrim is a personal diary and is **not a medical device**. It does not diagnose, treat, cure, or
