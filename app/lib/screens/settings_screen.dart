@@ -259,10 +259,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _shareText(String content, String filename) async {
+    // iPadOS presents the share sheet as a popover, which needs an explicit source rect —
+    // without one share_plus throws there. Anchoring to this screen's bounds is enough;
+    // Android and iPhone ignore it. Computed before the first await, while context is fresh.
+    final box = context.findRenderObject() as RenderBox?;
+    final origin =
+        box == null ? null : box.localToGlobal(Offset.zero) & box.size;
     final dir = await getTemporaryDirectory();
     final file = File(p.join(dir.path, filename));
     await file.writeAsString(content);
-    await Share.shareXFiles([XFile(file.path)], subject: filename);
+    await Share.shareXFiles([XFile(file.path)],
+        subject: filename, sharePositionOrigin: origin);
     // shareXFiles() resolves once the user picks a target, not once that app has finished reading
     // the file over its content:// URI — so delete after a delay (best-effort) rather than
     // immediately, to avoid a race with a slow receiving app. Worst case it lingers in the
