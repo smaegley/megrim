@@ -66,7 +66,9 @@ flutter:
 # Launcher icon generation (run: dart run flutter_launcher_icons).
 flutter_launcher_icons:
   android: true
-  ios: false
+  ios: true
+  # App Store rejects icons with an alpha channel; flatten it during generation.
+  remove_alpha_ios: true
   image_path: "assets/icon.png"
   min_sdk_android: 26
   adaptive_icon_background: "#15101F"
