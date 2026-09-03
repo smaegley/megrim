@@ -91,6 +91,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (context, i) {
         final e = events[i];
+        // Calendar days covered, so a migraine that runs overnight or longer is visible as
+        // multi-day right in the list (backlog #10).
+        final spanDays = localDaysSpanned(e).length;
         return Dismissible(
           key: ValueKey(e.id),
           direction: DismissDirection.endToStart,
@@ -107,6 +110,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             title: Text(df.format(e.startedAt.toLocal())),
             subtitle: Text([
               if (e.severity != null) 'Severity ${e.severity}/10',
+              if (spanDays > 1) '$spanDays days',
               if (e.endedAt == null) 'ongoing',
             ].join(' · ')),
             trailing: const Icon(Icons.chevron_right),
@@ -225,35 +229,63 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 }
 
+/// Every local calendar day [e] covers, start date through end date inclusive (backlog #10 — a
+/// multi-day migraine shows on each day it spans, not just its start day). An ongoing event (no
+/// end yet) or a malformed end-before-start covers only its start day. Days are built with
+/// constructor normalisation (`day + i`) rather than `.add(Duration(days: 1))` so a DST shift
+/// inside the span can't drift the date (the `cb6671c` bug class).
+@visibleForTesting
+List<DateTime> localDaysSpanned(MigraineEvent e) {
+  final s = e.startedAt.toLocal();
+  final start = DateTime(s.year, s.month, s.day);
+  final end = e.endedAt?.toLocal();
+  if (end == null) return [start];
+  final endDay = DateTime(end.year, end.month, end.day);
+  if (endDay.isBefore(start)) return [start];
+  final out = <DateTime>[];
+  for (var i = 0;; i++) {
+    final d = DateTime(start.year, start.month, start.day + i);
+    if (d.isAfter(endDay)) break;
+    out.add(d);
+  }
+  return out;
+}
+
+String _dayKey(DateTime localDay) =>
+    '${DateFormat('yyyy-MM').format(localDay)}-${localDay.day}';
+
 /// Max recorded severity per local day, keyed 'yyyy-MM-d' (matches _CalendarView's grouping key).
 /// A day with multiple events keeps its most severe entry rather than whichever event was
-/// iterated last (which could overwrite a real severity with null and grey out the day).
+/// iterated last (which could overwrite a real severity with null and grey out the day). A
+/// multi-day event applies its severity to every day it spans.
 @visibleForTesting
 Map<String, int?> severityByLocalDay(Iterable<MigraineEvent> events) {
   final out = <String, int?>{};
   for (final e in events) {
-    final l = e.startedAt.toLocal();
-    final key = '${DateFormat('yyyy-MM').format(l)}-${l.day}';
-    final sev = e.severity;
-    final prev = out[key];
-    if (sev != null && (prev == null || sev > prev)) {
-      out[key] = sev;
-    } else {
-      out.putIfAbsent(key, () => null);
+    for (final day in localDaysSpanned(e)) {
+      final key = _dayKey(day);
+      final sev = e.severity;
+      final prev = out[key];
+      if (sev != null && (prev == null || sev > prev)) {
+        out[key] = sev;
+      } else {
+        out.putIfAbsent(key, () => null);
+      }
     }
   }
   return out;
 }
 
-/// Every event on each local day, keyed 'yyyy-MM-d' (same key shape as [severityByLocalDay]) —
-/// lets a Calendar day tap resolve back to the actual entry/entries on that day (backlog #9).
+/// Every event on each local day it spans, keyed 'yyyy-MM-d' (same key shape as
+/// [severityByLocalDay]) — lets a Calendar day tap resolve back to the actual entry/entries
+/// covering that day (backlog #9), including the middle of a multi-day migraine (backlog #10).
 @visibleForTesting
 Map<String, List<MigraineEvent>> eventsByLocalDay(Iterable<MigraineEvent> events) {
   final out = <String, List<MigraineEvent>>{};
   for (final e in events) {
-    final l = e.startedAt.toLocal();
-    final key = '${DateFormat('yyyy-MM').format(l)}-${l.day}';
-    (out[key] ??= []).add(e);
+    for (final day in localDaysSpanned(e)) {
+      (out[_dayKey(day)] ??= []).add(e);
+    }
   }
   return out;
 }
@@ -265,12 +297,14 @@ class _CalendarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Group by month; render a simple heat grid per month with events.
+    // Group by month; render a weekday-aligned heat grid per month with events. Spanned days
+    // (not just start days) decide both which months render and which cells are hits, so a
+    // migraine crossing a month boundary surfaces the later month too.
     final byMonth = <String, Set<int>>{};
     for (final e in events) {
-      final l = e.startedAt.toLocal();
-      final key = DateFormat('yyyy-MM').format(l);
-      (byMonth[key] ??= {}).add(l.day);
+      for (final d in localDaysSpanned(e)) {
+        (byMonth[DateFormat('yyyy-MM').format(d)] ??= {}).add(d.day);
+      }
     }
     final severityByDay = severityByLocalDay(events);
     final eventsByDay = eventsByLocalDay(events);
@@ -330,6 +364,22 @@ class _MonthGrid extends StatelessWidget {
     final year = int.parse(parts[0]);
     final mo = int.parse(parts[1]);
     final daysInMonth = DateTime(year, mo + 1, 0).day;
+    // Weekday alignment (backlog #10). First day of week comes from the device locale via
+    // MaterialLocalizations (0 = Sunday) — no in-app setting; with the app English-only today
+    // this resolves Sunday-first, and picks up Monday-first locales automatically if/when
+    // localisation is added. narrowWeekdays is indexed Sunday-first, same convention.
+    final loc = MaterialLocalizations.of(context);
+    final firstDow = loc.firstDayOfWeekIndex;
+    // Column of the month's 1st: Dart weekday is 1=Mon..7=Sun; `% 7` re-bases to Sunday-first.
+    final lead = (DateTime(year, mo, 1).weekday % 7 - firstDow + 7) % 7;
+    final cells = <Widget>[
+      for (var i = 0; i < lead; i++) const Expanded(child: SizedBox(height: 48)),
+      for (var d = 1; d <= daysInMonth; d++)
+        Expanded(child: _dayCell(context, year, mo, d, days.contains(d))),
+    ];
+    while (cells.length % 7 != 0) {
+      cells.add(const Expanded(child: SizedBox(height: 48)));
+    }
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -340,14 +390,26 @@ class _MonthGrid extends StatelessWidget {
             Text(DateFormat('MMMM yyyy').format(DateTime(year, mo)),
                 style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 4,
-              runSpacing: 4,
+            Row(
               children: [
-                for (var d = 1; d <= daysInMonth; d++)
-                  _dayCell(context, year, mo, d, days.contains(d)),
+                for (var i = 0; i < 7; i++)
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        loc.narrowWeekdays[(firstDow + i) % 7],
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                      ),
+                    ),
+                  ),
               ],
             ),
+            const SizedBox(height: 4),
+            for (var row = 0; row < cells.length ~/ 7; row++)
+              Row(children: cells.sublist(row * 7, row * 7 + 7)),
           ],
         ),
       ),
@@ -361,11 +423,11 @@ class _MonthGrid extends StatelessWidget {
         ? severityColor(sev)
         : Theme.of(context).colorScheme.surfaceContainerHighest;
     final isToday = year == today.year && mo == today.month && day == today.day;
-    // The visual dot stays small (30x30, fits ~9 per row), but the *tappable* area is the full
-    // 48x48 Android minimum touch-target size (SizedBox forces InkWell to that size; Center then
-    // positions the smaller visual within it) — found via an accessibility-guideline test.
+    // The visual dot stays small (30x30), but the *tappable* area is the whole grid cell: height
+    // is pinned to the 48px Android minimum touch-target size and width is 1/7 of the card (≥44px
+    // on a typical 360dp phone) — the original fixed 48x48 cells came from an
+    // accessibility-guideline test; a 7-column grid trades a few px of width on narrow screens.
     return SizedBox(
-      width: 48,
       height: 48,
       child: InkWell(
         borderRadius: BorderRadius.circular(6),
