@@ -28,6 +28,12 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Megrim does not use the camera. A file-picker component references this permission, but the app never requests camera access.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Megrim does not use device location. Weather and astronomy enrichment use only the home location you type in yourself.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Megrim does not use your photo library. Import and export open only the document files you choose.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
