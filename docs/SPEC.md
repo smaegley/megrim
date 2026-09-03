@@ -276,10 +276,11 @@ counts by year, month-of-year, day-of-week, time-of-day, season, pressure-delta 
 
 ### 6.2 Correlations (Top Suspected Factors)
 Port the exact algorithm:
-- Study window = first event date → today. Migraine-days = distinct local dates with ≥1 event.
+- Study window = first event date → **last event date** (matches the reference Python; an earlier
+  draft said "today"). Migraine-days = distinct local dates with ≥1 event.
 - Per factor bucket build the 2×2 contingency (migraine-days vs non-migraine-days, in-bucket vs
-  not) and compute the odds ratio with **Haldane–Anscombe correction** (+0.5 to all cells when
-  any cell is 0).
+  not) and compute the odds ratio with the **Haldane–Anscombe correction** (+0.5 added to all
+  four cells of every table, unconditionally — matches the reference Python).
 - Baselines for non-migraine days: **calendar factors analytically** (every date has a known
   dow/season/month); **moon phase analytically** (uniform over the synodic cycle);
   **pressure buckets need real history** → one bulk fetch of daily-level pressure stats for the
@@ -287,9 +288,11 @@ Port the exact algorithm:
   chunked by year), bucketed and cached in `app_settings.pressure_baseline`; refresh only when
   the window grows by >30 days or home location changes. Show a one-time "computing baseline…"
   progress state.
-- Output: factors sorted by OR, filtered (n_days ≥ 3 in bucket, OR ≥ 1.5), with
-  migraine_days/total_days/rate per bucket + the caveats list (small sample, multiple
-  comparisons, correlation ≠ causation) — same card UI as private app.
+- Output: factors sorted by OR, filtered (n_days ≥ 3 in bucket, **OR > 1.0**; an earlier draft
+  said "≥ 1.5"), top 8 shown, with migraine_days/total_days/rate per bucket + the caveats list
+  (small sample, multiple comparisons, correlation ≠ causation) — same card UI as private app.
+- User-facing methodology disclosure lives in [`METHODS.md`](METHODS.md) — keep it in sync with
+  this section and the code.
 - **Golden tests:** run the Python implementation on 3 synthetic datasets (tiny/sparse/dense) and
   on an anonymized copy of the real 39-event dataset; store outputs as JSON fixtures; assert the
   Dart port matches (OR within 0.01).
@@ -530,11 +533,11 @@ Obtainium already provide install *and* auto-update.
    (file_picker's metadata check fails). Revisit when Flutter's default compileSdk reaches 36.
 3. **`compileSdk = 36`** pinned in `app/android/app/build.gradle.kts` (some transitive plugins
    require it); `minSdk 26`, `targetSdk` from Flutter, per §8.
-4. **Correlations match the reference Python, not the §6.2 prose**, in two places (documented in
-   `lib/analytics/correlations.dart`): the study window ends at the **last event** (prose says
-   "today"), and the Top-Factors filter is **OR > 1.0** (prose says "≥ 1.5"). Chosen so the golden
-   tests validate against the actual `correlations.py`. Reconcile deliberately if the prose is the
-   intended behaviour.
+4. **Correlations match the reference Python** (documented in `lib/analytics/correlations.dart`):
+   the study window ends at the **last event** and the Top-Factors filter is **OR > 1.0**. §6.2's
+   prose originally said "today" and "≥ 1.5"; reconciled 2026-09-03 in the code's favour — the
+   golden tests validate against the actual `correlations.py`, and the public methodology page
+   (`METHODS.md`) documents the same behaviour.
 5. **Application id finalized as `org.maegley.megrim`** (was a placeholder; see §1.2). Shipped in
    `v0.1.0`; immutable from here.
 6. **Golden fixtures hand-computed.** The spec calls for generating fixtures from the private
