@@ -23,32 +23,29 @@ const Map<String, String> _moonGlyphs = {
   'Waning Crescent': '🌘',
 };
 
-/// Categorical series palette (from the data-viz reference palette). Colour follows the entity by
-/// fixed index — never cycled — so a season/bucket keeps its colour regardless of which buckets are
-/// present. Used for *identity* encodings (donuts). Each mode's steps are validated for that mode's
-/// card surface (dark `#1E1E1E`, light `#FCFCFB`); use [_seriesColorsFor].
-const List<Color> _seriesColorsDark = [
-  Color(0xFF3987E5), // blue
-  Color(0xFF199E70), // aqua
-  Color(0xFFC98500), // yellow
-  Color(0xFF008300), // green
+/// Categorical palette for *identity* encodings — the donuts, whose only users are the two fixed
+/// 4-bucket factors (season, time-of-day). Colour follows the entity by fixed index — never cycled.
+/// Purple-led to sit with the app theme (backlog #11): violet + magenta lead, deep teal + amber
+/// keep slices apart — a purple-only or purple+grey set cannot pass the distinguishability floors
+/// (violet↔blue collapses under protanopia, magenta↔green under deuteranopia, true grey fails the
+/// chroma floor). Each mode's 4 steps are dataviz-validated ALL-PAIRS (a donut wraps, so every
+/// slice is adjacent to two others) against that mode's card surface (dark `#1E1E1E`: worst-pair
+/// CVD ΔE 8.4, normal 19.3; light `#FCFCFB`: CVD 12.5, normal 19.6). Light magenta/amber sit
+/// below 3:1 surface contrast — relief is the in-slice direct labels the donut already draws.
+const List<Color> _donutColorsDark = [
   Color(0xFF9085E9), // violet
-  Color(0xFFE66767), // red
   Color(0xFFD55181), // magenta
-  Color(0xFFD95926), // orange
+  Color(0xFF12855C), // teal
+  Color(0xFFC98500), // amber
 ];
-const List<Color> _seriesColorsLight = [
-  Color(0xFF2A78D6), // blue
-  Color(0xFF1BAF7A), // aqua
-  Color(0xFFEDA100), // yellow
-  Color(0xFF008300), // green
+const List<Color> _donutColorsLight = [
   Color(0xFF4A3AA7), // violet
-  Color(0xFFE34948), // red
   Color(0xFFE87BA4), // magenta
-  Color(0xFFEB6834), // orange
+  Color(0xFF0E7F58), // teal
+  Color(0xFFEDA100), // amber
 ];
-List<Color> _seriesColorsFor(Brightness b) =>
-    b == Brightness.dark ? _seriesColorsDark : _seriesColorsLight;
+List<Color> _donutColorsFor(Brightness b) =>
+    b == Brightness.dark ? _donutColorsDark : _donutColorsLight;
 
 /// Sequential single-hue purple ramp for *magnitude* encodings (the descriptive count bars and the
 /// suspected-factor bars — backlog #1b/#2/#3). Low→high magnitude runs from the step nearest the
@@ -366,7 +363,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   // ── Donut (review items #9, #10) ───────────────────────────────────────────
   Widget _donut(List<LabeledCount> data) {
-    final colors = _seriesColorsFor(Theme.of(context).brightness);
+    final colors = _donutColorsFor(Theme.of(context).brightness);
     final present = <int>[]; // indices into data with count > 0
     for (var i = 0; i < data.length; i++) {
       if (data[i].count > 0) present.add(i);
