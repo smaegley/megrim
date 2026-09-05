@@ -9,8 +9,15 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
 
 **Megrim is now a two-platform Flutter app.** The iOS port (`app/ios/`, merged same day it was
 scaffolded) runs the identical Dart codebase; the only iOS-specific code is the iPadOS share-sheet
-anchor. Build **1.0.2 (8)** was submitted to App Review 2026-09-03 5:52 PM — status **Waiting for
-Review** (submission ID `ed4d3f5e-d1d3-4f5a-bf36-d06655246296`). The full release runbook and
+anchor. Build **1.0.2 (8)** was submitted to App Review 2026-09-03 5:52 PM (submission ID
+`ed4d3f5e-d1d3-4f5a-bf36-d06655246296`). First response (2026-09-05) was a **Guideline 2.1
+"Information Needed"** hold — the standard new-developer questionnaire, not an app rejection.
+Replied 2026-09-06 14:05 with the six written answers (kept below in `docs/APP_STORE.md`) plus a
+screen recording captured on a physical iPhone via TestFlight internal testing (the app's
+first-ever run on real Apple hardware), same text mirrored into the Notes field; **resubmitted,
+status Waiting for Review**. TestFlight gotcha for next time: an internal tester added before a
+build reaches "Testing" state never receives an invite email, and group re-add didn't resend —
+adding the same address as an *individual tester on the build* did. The full release runbook and
 listing content live in `docs/APP_STORE.md`; the operational facts:
 
 - **Listing name `Megrim: Migraine Diary`** (bare "Megrim" is taken on the App Store); home-screen
