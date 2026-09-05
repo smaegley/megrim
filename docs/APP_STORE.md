@@ -87,6 +87,53 @@ with enrichment, Settings/export.
   language: https://github.com/smaegley/megrim/blob/main/docs/METHODS.md (retrospective
   descriptive statistics only — no diagnosis, no prediction).
 
+## Guideline 2.1 "Information Needed" reply (submitted 2026-09-05)
+
+First review response (2026-09-05) was the standard new-developer information request, not an
+app rejection. The reply below goes in the App Review conversation AND (per their instruction)
+into the Notes field of App Review Information. The screen recording is attached to the
+conversation reply — captured on a physical iPhone via TestFlight internal testing.
+
+> **1. Screen recording:** attached — captured on a physical iPhone running the current iOS,
+> from app launch through the typical flow: onboarding (home location), logging a migraine with
+> Quick Log, editing details (severity, triggers, medications), History list and calendar,
+> Analytics, and data export/import. The app has no account registration or login (nothing to
+> create or delete), no user-generated content shared between users (all data is a private local
+> diary on the device), and no paid content or in-app purchases.
+>
+> **2. Purpose and audience:** Megrim is a free, open-source (GPL-3.0) migraine diary for people
+> who live with migraines and want to spot personal patterns. It solves two problems: logging
+> attacks with minimal effort (one-tap start/stop plus automatic on-device context such as
+> season, daylight, moon phase, and — opt-in — local weather and barometric pressure), and
+> showing retrospective statistics over the user's own log ("suspected factors") to discuss with
+> their clinician. Its distinguishing value is privacy: no accounts, no servers, no analytics,
+> no data collection of any kind — everything stays on the device.
+>
+> **3. Setup and access:** no login or credentials exist. Launch the app, optionally type a home
+> town during onboarding (used for weather lookups), and log migraines via the Log tab or
+> History → Add past entry. All features are immediately accessible. To populate the app quickly
+> for evaluation, a sample dataset can be imported via Settings → Import (JSON):
+> https://github.com/smaegley/megrim/blob/main/app/test/fixtures/sample-data.json
+>
+> **4. External services:** the only external service is Open-Meteo (open-meteo.com), an open
+> weather-data provider, used for (a) the place-name search during onboarding
+> (geocoding-api.open-meteo.com) and (b) opt-in historical weather/pressure for logged entries
+> (api.open-meteo.com), fetched anonymously with an approximate (~1 km rounded) location. No
+> authentication services, no payment processors, no AI services, no SDKs that phone home. The
+> Settings screen contains a link to the developer's Ko-fi page that opens in the external
+> browser. Full network behavior is documented at
+> https://github.com/smaegley/megrim/blob/main/docs/PRIVACY.md
+>
+> **5. Regional differences:** none — the app functions identically everywhere. Distribution is
+> currently limited to the United States storefront by choice.
+>
+> **6. Regulated industry / protected material:** not applicable. Megrim is a personal wellness
+> diary, not a regulated medical device: it provides no diagnosis, treatment, prevention, or
+> clinical recommendations, and states this in the app, the store description, and its public
+> methodology document (https://github.com/smaegley/megrim/blob/main/docs/METHODS.md). The only
+> third-party material is Open-Meteo weather data, openly licensed (CC-BY 4.0) and attributed
+> in-app on the Analytics screen.
+
 ## Post-approval loose ends
 
 - README.md line 12 still says "migraine diary for Android" — update once the iOS release is
