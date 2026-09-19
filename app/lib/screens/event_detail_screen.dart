@@ -11,20 +11,47 @@ import '../widgets/location_picker.dart';
 import '../widgets/severity_badge.dart' show StatusColors;
 import 'manage_vocab_screen.dart';
 
+/// Seed for an entry that does not exist yet (issue #12). Event Detail opens on it and inserts the
+/// row only when the user taps Save, so backing out of "Add past entry" or an empty Calendar day
+/// leaves nothing behind. Previously the row (and its enrichment fetch) was created before the
+/// editor even opened, so every abandoned editor left an empty entry.
+class EventDraft {
+  /// Local time.
+  final DateTime startedAt;
+  final DateTime? endedAt;
+  final double? geoLat;
+  final double? geoLon;
+  final String? geoLabel;
+  const EventDraft({
+    required this.startedAt,
+    this.endedAt,
+    this.geoLat,
+    this.geoLon,
+    this.geoLabel,
+  });
+}
+
 /// Event Detail (SPEC §4.4): edit all fields; chips from user vocab; shows the computed
 /// enrichment. Start/end time and the recorded location are editable so an entry can be recreated
 /// after the fact (review item #4). Saving re-enqueues enrichment (date/location may have changed).
 class EventDetailScreen extends StatefulWidget {
   final MegrimRepository repo;
-  final String eventId;
-  const EventDetailScreen({super.key, required this.repo, required this.eventId});
+
+  /// The existing entry to edit, or null when editing a [draft].
+  final String? eventId;
+
+  /// A not-yet-saved entry (issue #12); exactly one of this and [eventId] is set.
+  final EventDraft? draft;
+  const EventDetailScreen({super.key, required this.repo, this.eventId, this.draft})
+      : assert((eventId == null) != (draft == null),
+            'EventDetailScreen needs exactly one of eventId or draft');
 
   @override
   State<EventDetailScreen> createState() => _EventDetailScreenState();
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
-  MigraineEvent? _event;
+  bool _loaded = false;
   DerivedFactor? _derived;
   bool _weatherEnrichmentOn = true;
   List<String> _triggerVocab = const [];
@@ -62,20 +89,29 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Future<void> _load() async {
-    final e = await widget.repo.getEvent(widget.eventId);
-    final d = await widget.repo.getDerived(widget.eventId);
+    await _loadVocab();
     final weatherOn = await widget.repo.weatherEnrichmentEnabled;
-    final triggers = await widget.repo.vocab(VocabKind.trigger);
-    final locations = await widget.repo.vocab(VocabKind.headLocation);
-    final meds = await widget.repo.vocab(VocabKind.medication);
+    final draft = widget.draft;
+    if (draft != null) {
+      if (!mounted) return;
+      setState(() {
+        _loaded = true;
+        _weatherEnrichmentOn = weatherOn;
+        _startedAt = draft.startedAt;
+        _endedAt = draft.endedAt;
+        _geoLat = draft.geoLat;
+        _geoLon = draft.geoLon;
+        _geoLabel = draft.geoLabel;
+      });
+      return;
+    }
+    final e = await widget.repo.getEvent(widget.eventId!);
+    final d = await widget.repo.getDerived(widget.eventId!);
     if (!mounted || e == null) return;
     setState(() {
-      _event = e;
+      _loaded = true;
       _derived = d;
       _weatherEnrichmentOn = weatherOn;
-      _triggerVocab = triggers;
-      _locationVocab = locations;
-      _medVocab = meds;
       _startedAt = e.startedAt.toLocal();
       _endedAt = e.endedAt?.toLocal();
       _geoLat = e.geoLat;
@@ -102,6 +138,21 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     });
   }
 
+  /// Vocab lists only. Re-run after the Manage screen so new chips appear without touching the
+  /// fields being edited: re-running the full load would silently discard unsaved edits, and for
+  /// a draft would reset it to its seed.
+  Future<void> _loadVocab() async {
+    final triggers = await widget.repo.vocab(VocabKind.trigger);
+    final locations = await widget.repo.vocab(VocabKind.headLocation);
+    final meds = await widget.repo.vocab(VocabKind.medication);
+    if (!mounted) return;
+    setState(() {
+      _triggerVocab = triggers;
+      _locationVocab = locations;
+      _medVocab = meds;
+    });
+  }
+
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
     if (_endedAt != null && _endedAt!.isBefore(_startedAt)) {
@@ -109,8 +160,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           const SnackBar(content: Text('End time must be after the start time.')));
       return;
     }
-    await widget.repo.updateEvent(MigraineEventsCompanion(
-      id: Value(widget.eventId),
+    final fields = MigraineEventsCompanion(
       startedAt: Value(_startedAt.toUtc()),
       endedAt: Value(_endedAt?.toUtc()),
       severity: Value(_severity),
@@ -127,14 +177,26 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       geoLat: Value(_geoLat),
       geoLon: Value(_geoLon),
       geoLabel: Value(_geoLabel),
-    ));
-    // Date and/or location may change enrichment inputs — re-enqueue (local, not an API POST).
-    await widget.repo.enrichment.enqueue(widget.eventId);
+    );
+    if (widget.draft != null) {
+      // Draft mode: this is the first and only write for a new entry (issue #12). insertEvent
+      // enqueues enrichment itself.
+      await widget.repo.insertEvent(fields);
+    } else {
+      await widget.repo.updateEvent(fields.copyWith(id: Value(widget.eventId!)));
+      // Date and/or location may change enrichment inputs — re-enqueue (local, not an API POST).
+      await widget.repo.enrichment.enqueue(widget.eventId!);
+    }
     widget.repo.processEnrichmentQueue().catchError((_) {});
     if (mounted) Navigator.of(context).pop();
   }
 
   Future<void> _delete() async {
+    if (widget.draft != null) {
+      // Nothing has been written yet — discarding a draft is just leaving.
+      Navigator.of(context).pop();
+      return;
+    }
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -153,7 +215,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       ),
     );
     if (confirmed != true) return;
-    final removed = await widget.repo.deleteEvent(widget.eventId);
+    final removed = await widget.repo.deleteEvent(widget.eventId!);
     if (!mounted) return;
     Navigator.of(context).pop();
     if (removed != null) {
@@ -235,16 +297,17 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_event == null) {
+    if (!_loaded) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
+    final isDraft = widget.draft != null;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Event detail'),
+        title: Text(isDraft ? 'New past entry' : 'Event detail'),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            tooltip: 'Delete entry',
+            tooltip: isDraft ? 'Discard' : 'Delete entry',
             onPressed: _delete,
           ),
           IconButton(
@@ -405,7 +468,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   builder: (_) =>
                       ManageVocabScreen(repo: widget.repo, kind: kind, title: title),
                 ));
-                await _load();
+                await _loadVocab();
               },
               child: const Text('Manage'),
             ),

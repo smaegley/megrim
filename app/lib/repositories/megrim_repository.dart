@@ -79,6 +79,21 @@ class MegrimRepository {
     return id;
   }
 
+  /// Insert a fully-specified event (issue #12: Event Detail's draft mode writes the row only on
+  /// Save). Assigns the id and both timestamps; [fields] must carry at least `startedAt`.
+  /// Enqueues enrichment like [startEvent]. Returns the new id.
+  Future<String> insertEvent(MigraineEventsCompanion fields) async {
+    final id = _uuid.v4();
+    final now = DateTime.now().toUtc();
+    await db.into(db.migraineEvents).insert(fields.copyWith(
+          id: Value(id),
+          createdAt: Value(now),
+          updatedAt: Value(now),
+        ));
+    await enrichment.enqueue(id);
+    return id;
+  }
+
   Future<void> updateEvent(MigraineEventsCompanion patch) async {
     await (db.update(db.migraineEvents)
           ..where((t) => t.id.equals(patch.id.value)))
