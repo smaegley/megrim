@@ -83,7 +83,7 @@ void main() {
     await disposeAndDrain(tester);
   });
 
-  testWidgets('tapping an empty day starts a new past entry pre-dated to that day',
+  testWidgets('tapping an empty day opens a draft pre-dated to that day, saved only on Save',
       (tester) async {
     // Any event so June's grid actually renders; day 20 itself stays empty.
     await seedEvent(DateTime(2024, 6, 5), 3);
@@ -93,11 +93,76 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(EventDetailScreen), findsOneWidget);
+    expect(find.text('New past entry'), findsOneWidget);
+    // Issue #12: opening the editor must not create a row.
+    expect(await db.select(db.migraineEvents).get(), hasLength(1));
+
+    await tester.tap(find.byTooltip('Save'));
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsNothing);
+
     final events = await db.select(db.migraineEvents).get();
+    expect(events, hasLength(2));
     final created = events.firstWhere((e) => e.startedAt.toLocal().day == 20);
     expect(created.startedAt.toLocal().month, 6);
     expect(created.startedAt.toLocal().year, 2024);
     expect(created.endedAt, isNotNull); // pre-ended like the FAB's "Add past entry"
+    await disposeAndDrain(tester);
+  });
+
+  testWidgets('backing out of an empty-day draft leaves no record behind (#12)',
+      (tester) async {
+    await seedEvent(DateTime(2024, 6, 5), 3);
+    await pumpCalendar(tester);
+
+    await tester.tap(find.widgetWithText(InkWell, '20'));
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsNothing);
+    expect(await db.select(db.migraineEvents).get(), hasLength(1),
+        reason: 'only the seeded entry should exist');
+    await disposeAndDrain(tester);
+  });
+
+  testWidgets('the Discard action on a draft leaves no record behind (#12)',
+      (tester) async {
+    await seedEvent(DateTime(2024, 6, 5), 3);
+    await pumpCalendar(tester);
+
+    await tester.tap(find.widgetWithText(InkWell, '20'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Discard'));
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsNothing);
+    expect(await db.select(db.migraineEvents).get(), hasLength(1));
+    await disposeAndDrain(tester);
+  });
+
+  testWidgets('the FAB "Add past entry" is a draft too: nothing until Save (#12)',
+      (tester) async {
+    await tester.pumpWidget(MaterialApp(
+        home: HistoryScreen(repo: repo, todayOverride: DateTime(2024, 6, 15))));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Add past entry'));
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsOneWidget);
+    expect(await db.select(db.migraineEvents).get(), isEmpty);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(await db.select(db.migraineEvents).get(), isEmpty);
+
+    await tester.tap(find.text('Add past entry'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Save'));
+    await tester.pumpAndSettle();
+    final events = await db.select(db.migraineEvents).get();
+    expect(events, hasLength(1));
+    expect(events.single.endedAt, isNotNull, reason: 'a past entry must not look ongoing');
     await disposeAndDrain(tester);
   });
 
@@ -116,6 +181,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(EventDetailScreen), findsOneWidget);
+    expect(await db.select(db.migraineEvents).get(), isEmpty); // draft: nothing yet (#12)
+    await tester.tap(find.byTooltip('Save'));
+    await tester.pumpAndSettle();
     final events = await db.select(db.migraineEvents).get();
     expect(events, hasLength(1));
     expect(events.single.startedAt.toLocal().day, 15);

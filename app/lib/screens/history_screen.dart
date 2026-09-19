@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -154,21 +153,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Future<void> _addManual() async {
     final home = await widget.repo.homeLocation;
-    final id = await widget.repo.startEvent(
-      lat: home?.lat,
-      lon: home?.lon,
-      label: home?.label,
-    );
-    // End it immediately so a past entry isn't picked up as the live "in-progress" migraine by
-    // Quick Log; the user then sets the real start/end in the editor.
-    await widget.repo.endEvent(id);
-    if (!mounted) return;
-    // Open the detail editor so the user can set the real start/end time and details.
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => EventDetailScreen(repo: widget.repo, eventId: id),
-      ),
-    );
+    // Opened as a draft: nothing is written until Save (issue #12). Start and end both seed to
+    // "now" so a past entry is never picked up as the live in-progress migraine by Quick Log; the
+    // user sets the real start/end in the editor.
+    final now = DateTime.now();
+    await _openDraft(EventDraft(
+      startedAt: now,
+      endedAt: now,
+      geoLat: home?.lat,
+      geoLon: home?.lon,
+      geoLabel: home?.label,
+    ));
   }
 
   /// Calendar day tap (backlog #9): exactly one entry that day opens it directly; several offer a
@@ -224,28 +219,26 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Future<void> _addManualForDate(DateTime localDay) async {
     final home = await widget.repo.homeLocation;
-    final id = await widget.repo.startEvent(
-      lat: home?.lat,
-      lon: home?.lon,
-      label: home?.label,
-    );
-    await widget.repo.endEvent(id);
     // Pre-fill the tapped day (noon local, an arbitrary but unbiased time-of-day) instead of
     // leaving it at "now" — saves the manual date edit the FAB's "Add past entry" still needs.
-    final at = DateTime(
-      localDay.year,
-      localDay.month,
-      localDay.day,
-      12,
-    ).toUtc();
-    await widget.repo.updateEvent(
-      MigraineEventsCompanion(
-        id: Value(id),
-        startedAt: Value(at),
-        endedAt: Value(at),
+    // A draft, like _addManual: no row exists until the user taps Save (issue #12).
+    final at = DateTime(localDay.year, localDay.month, localDay.day, 12);
+    await _openDraft(EventDraft(
+      startedAt: at,
+      endedAt: at,
+      geoLat: home?.lat,
+      geoLon: home?.lon,
+      geoLabel: home?.label,
+    ));
+  }
+
+  Future<void> _openDraft(EventDraft draft) async {
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => EventDetailScreen(repo: widget.repo, draft: draft),
       ),
     );
-    await _openEvent(id);
   }
 
   Future<void> _openEvent(String id) async {
