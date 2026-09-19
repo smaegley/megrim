@@ -54,7 +54,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Debug builds install BESIDE the store app rather than over it. Without this a
+            // `flutter run` on a phone carrying the F-Droid/Play build fails to install (different
+            // signing key, lower version code), and the Flutter tool then UNINSTALLS the store app
+            // — taking its data with it (happened 2026-09-19). The suffix makes them different
+            // apps to Android; the label keeps them apart on the home screen.
+            applicationIdSuffix = ".debug"
+            manifestPlaceholders["appLabel"] = "Megrim dev"
+        }
         release {
+            manifestPlaceholders["appLabel"] = "Megrim"
             signingConfig = if (hasReleaseSigning) {
                 signingConfigs.getByName("release")
             } else {
