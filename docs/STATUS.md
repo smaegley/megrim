@@ -86,7 +86,8 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
 **`v1.0.3` released 2026-09-19:** tag pushed, `release.yml` green (6m41s), APK/AAB published, not
 draft/prerelease. **iOS 1.0.3 (build 9) submitted to App Review 2026-09-19, Waiting for Review** — archived with
 `flutter build ipa --build-number=9`, opened via `open build/ios/archive/Runner.xcarchive`, uploaded from Xcode's
-Organizer, version added in App Store Connect with the changelog as What's New. The manual path was: `flutter build ipa --build-number=9` (build 8 was
+Organizer, version added in App Store Connect with the changelog as What's New. Steve exercised build 9 on
+his iPhone via TestFlight the same day — looks good. The manual path was: `flutter build ipa --build-number=9` (build 8 was
 1.0.2), upload via Xcode/Transporter, submit 1.0.3 in App Store Connect with the changelog as
 "What's New".
 
