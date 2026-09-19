@@ -1,0 +1,3 @@
+• Fixed: the History calendar jumped back to the top after opening an entry, and after switching List/Calendar. It now keeps your place.
+• Fixed: tapping an empty calendar day (or "Add past entry") and then backing out left an empty entry behind. Nothing is saved until you tap Save.
+• Fixed: returning from "Manage" (triggers, head locations, medications) no longer discards unsaved edits on an entry.

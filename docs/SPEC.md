@@ -671,6 +671,23 @@ F-Droid's bot (`AutoUpdateMode: Version`, `UpdateCheckMode: Tags`, `VercodeOpera
 reading `app/pubspec.yaml`), so routine releases need **no** further merge request. The canonical
 recipe now lives in `fdroiddata`; the copy under `fdroid/` is a historical reference.
 
+**`v1.0.3` (2026-09-19): first community-reported bugs.** Version `1.0.3+8`. Two GitHub issues
+from an F-Droid user (istudyatuni), both fixed with regression tests. **#13, Calendar scroll
+reset:** `HistoryScreen` created a brand-new Drift stream on every `build`, so any rebuild made the
+`StreamBuilder` resubscribe, flash the spinner, and remount the list at the top; neither list had a
+`PageStorageKey` either, so a genuine remount (List ↔ Calendar) had nothing to restore from. Stream
+now created once in `initState`, both lists keyed. Steve only saw it with the Android swipe-back
+gesture — this Flutter defaults Android to `PredictiveBackPageTransitionsBuilder` and Android 16+
+enables predictive back for targetSdk 36, a different path from the app-bar arrow. **#12, empty
+record on back-out:** the Calendar tap and the FAB inserted a row (and enqueued an enrichment fetch)
+*before* opening the editor; only the checkmark wrote. Event Detail now has a **draft mode**
+(`EventDraft`, `eventId` nullable, exactly one of the two): nothing is written until Save
+(`MegrimRepository.insertEvent`), and Back / system back / Discard leave nothing. Also split
+`_loadVocab()` out of `_load()`: returning from "Manage" re-ran the full load and silently discarded
+unsaved edits on any entry. **Dev-only:** debug builds now use `org.maegley.megrim.debug` / "Megrim
+dev" so `flutter run` installs beside the store app — before this, the Flutter tool *uninstalled*
+the F-Droid build (signing/versionCode mismatch) and took its data with it. 172 tests.
+
 **`v1.0.2` (2026-08-23): tester-reported display fix.** Version `1.0.2+7`. The Event Detail
 Enrichment card interpolated stored doubles directly, so it showed e.g. `14.81900883878691 h` of
 daylight and `-6.199999999999932 hPa` of pressure change (the NOAA sun math and a subtraction of

@@ -28,7 +28,7 @@ analytics plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v1.0.2`** — latest stable release. App id `org.maegley.megrim`.
+**`v1.0.3`** — latest stable release. App id `org.maegley.megrim`.
 Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
 definition and running implementation status.
 
@@ -46,8 +46,10 @@ the unused location permissions** — the app now declares only `INTERNET` and n
 location. *Upgrading users: enrichment starts off; enable it in Settings › Weather enrichment to
 resume weather lookups and backfill past entries.*
 
-`v1.0.2` fixes unrounded values in an entry's Enrichment section (daylight and pressure change
-showed full float precision), reported by an F-Droid reviewer.
+`v1.0.3` fixes the first two user-reported issues from F-Droid users: the History calendar losing
+its scroll position after opening an entry ([#13](https://github.com/smaegley/megrim/issues/13)),
+and an empty entry being left behind when backing out of an empty calendar day or "Add past entry"
+([#12](https://github.com/smaegley/megrim/issues/12)) — nothing is saved now until you tap Save.
 
 **Accepted into F-Droid** — [!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692)
 merged 2026-08-23. **Live on the Apple App Store** —
@@ -106,6 +108,10 @@ flutter analyze
 flutter test
 flutter build apk --release
 ```
+
+Debug builds (`flutter run`, `flutter build apk --debug`) use the application id
+`org.maegley.megrim.debug` and the launcher name **Megrim dev**, so they install beside the
+store/F-Droid app with their own data instead of replacing it.
 
 ## Privacy
 

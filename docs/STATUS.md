@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-03, after submitting the iOS app to App Store review._
+_Last updated: 2026-09-19, v1.0.3 prepared on `main` (tag pending)._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -52,14 +52,41 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 
 | | |
 |---|---|
-| Latest release | **`v1.0.2`** (versionCode 7), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.2) |
+| Latest release | **`v1.0.2`** (versionCode 7), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.2). **`v1.0.3` (versionCode 8) is prepared on `main` and awaits its tag** — see "Community" below |
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
 | Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
 | Permissions | `INTERNET` only (plus `ACCESS_NETWORK_STATE` from connectivity_plus). No location permission at all |
-| Verification bar | `flutter analyze` clean, **147 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
+| Verification bar | `flutter analyze` clean, **172 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
 
 Everything in the original spec is implemented, plus the accessibility pass, documented import
 format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out.
+
+## Community: first outside issues and PRs (2026-09)
+
+Two issues and two pull requests arrived from F-Droid users in mid-September.
+
+- **Issues [#12](https://github.com/smaegley/megrim/issues/12) and
+  [#13](https://github.com/smaegley/megrim/issues/13) (istudyatuni) — FIXED on `main`, shipping
+  as `v1.0.3`.** #13: the Calendar lost its scroll position after opening an entry (a per-build
+  Drift stream plus no `PageStorageKey`). #12: backing out of an empty calendar day or "Add past
+  entry" left an empty record (the row was inserted before the editor opened; Event Detail now has
+  a draft mode and writes only on Save). Details in `SPEC.md` §12.
+- **[PR #14](https://github.com/smaegley/megrim/pull/14) (zatteo)** auto-sets the end date when
+  the start date changes. Review posted 2026-09-19 requesting changes: as written it also fires on
+  *existing* entries and collapses their duration to zero; asked for shift-end-by-the-same-delta.
+- **[PR #11](https://github.com/smaegley/megrim/pull/11) (nfd9001)** adds a model-written offline
+  HTML report (`tools/report.html`). Review posted 2026-09-19 requesting changes: its factor
+  analysis counts every day a migraine spans as a migraine-day where the app counts start days only
+  (55 vs 73 on the sample export, so "computed exactly like the app" is false), and six CSS classes
+  are used but never defined. Whether to take on the maintenance surface is still open.
+- **Dev safety:** debug builds now install as a separate app (`org.maegley.megrim.debug`, "Megrim
+  dev"). Running a branch on a phone that carried the F-Droid build used to make the Flutter tool
+  uninstall it, data included.
+
+**Release steps for `v1.0.3`:** tag `v1.0.3` on `main` → `release.yml` publishes the signed APK/AAB
+and F-Droid's bot picks the tag up. iOS is manual: `flutter build ipa --build-number=9` (build 8 was
+1.0.2), upload via Xcode/Transporter, submit 1.0.3 in App Store Connect with the changelog as
+"What's New".
 
 ## Done: F-Droid inclusion
 
