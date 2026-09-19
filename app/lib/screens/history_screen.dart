@@ -28,6 +28,17 @@ enum _HistoryView { list, calendar }
 class _HistoryScreenState extends State<HistoryScreen> {
   _HistoryView _view = _HistoryView.list;
 
+  /// Created once, not in build(): a fresh Drift stream per build made the StreamBuilder
+  /// resubscribe on every rebuild of this screen, briefly show the spinner, and remount the
+  /// list at the top — the Calendar lost its scroll position after any rebuild (issue #13).
+  late final Stream<List<MigraineEvent>> _events;
+
+  @override
+  void initState() {
+    super.initState();
+    _events = widget.repo.watchEvents();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +75,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
           Expanded(
             child: StreamBuilder<List<MigraineEvent>>(
-              stream: widget.repo.watchEvents(),
+              stream: _events,
               builder: (context, snap) {
                 final events = snap.data ?? const [];
                 if (snap.connectionState == ConnectionState.waiting) {
@@ -94,6 +105,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _listView(List<MigraineEvent> events) {
     final df = DateFormat('EEE d MMM yyyy, HH:mm');
     return ListView.separated(
+      // Scroll offset survives a remount (List <-> Calendar toggle) via the route's PageStorage.
+      key: const PageStorageKey('history-list'),
       // Room so the FAB doesn't cover the last row.
       padding: const EdgeInsets.only(bottom: 88),
       itemCount: events.length,
@@ -388,6 +401,9 @@ class _CalendarView extends StatelessWidget {
     // Built lazily: 15+ years of history is ~190 month cards, so the empty in-between months
     // must not all be constructed up front.
     return ListView.builder(
+      // Without a PageStorageKey a remounted list has nothing to restore its offset from; with
+      // one, the route's PageStorage hands the saved offset back (issue #13).
+      key: const PageStorageKey('history-calendar'),
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 88),
       itemCount: months.length + (events.isEmpty ? 1 : 0),
       itemBuilder: (context, i) {
