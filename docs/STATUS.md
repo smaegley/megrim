@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-19, after releasing v1.0.3 (Android); iOS 1.0.3 submission is Steve's next step._
+_Last updated: 2026-09-19, v1.0.3 released on Android and submitted to App Review (build 9)._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -84,7 +84,9 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   uninstall it, data included.
 
 **`v1.0.3` released 2026-09-19:** tag pushed, `release.yml` green (6m41s), APK/AAB published, not
-draft/prerelease. **iOS 1.0.3 still to do**, manually: `flutter build ipa --build-number=9` (build 8 was
+draft/prerelease. **iOS 1.0.3 (build 9) submitted to App Review 2026-09-19, Waiting for Review** — archived with
+`flutter build ipa --build-number=9`, opened via `open build/ios/archive/Runner.xcarchive`, uploaded from Xcode's
+Organizer, version added in App Store Connect with the changelog as What's New. The manual path was: `flutter build ipa --build-number=9` (build 8 was
 1.0.2), upload via Xcode/Transporter, submit 1.0.3 in App Store Connect with the changelog as
 "What's New".
 
