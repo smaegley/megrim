@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-19, v1.0.3 released on Android and submitted to App Review (build 9)._
+_Last updated: 2026-09-20: PR #14 merged; iOS 1.0.3 (build 9) still Waiting for Review._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -71,14 +71,24 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   Drift stream plus no `PageStorageKey`). #12: backing out of an empty calendar day or "Add past
   entry" left an empty record (the row was inserted before the editor opened; Event Detail now has
   a draft mode and writes only on Save). Details in `SPEC.md` §12.
-- **[PR #14](https://github.com/smaegley/megrim/pull/14) (zatteo)** auto-sets the end date when
-  the start date changes. Review posted 2026-09-19 requesting changes: as written it also fires on
-  *existing* entries and collapses their duration to zero; asked for shift-end-by-the-same-delta.
+- **[PR #14](https://github.com/smaegley/megrim/pull/14) (zatteo) — MERGED 2026-09-20** (`ec4f158`).
+  Moving an entry's start now shifts its end by the same delta unless the end was edited, so a
+  backdated past entry needs one date pick instead of two and existing entries keep their
+  duration. First round had it snapping the end to the start (collapsed real entries to zero
+  duration); the author reworked it to the delta rule. Unreleased — goes out in the next patch.
+- **[Issue #15](https://github.com/smaegley/megrim/issues/15) (zatteo)** — show the 3 most recent
+  distinct past-entry locations in the Recorded-location dialog, hidden once the user types.
+  Assessed as ~150 lines + tests, no schema/permission change; the author was invited to PR it.
 - **[PR #11](https://github.com/smaegley/megrim/pull/11) (nfd9001)** adds a model-written offline
   HTML report (`tools/report.html`). Review posted 2026-09-19 requesting changes: its factor
   analysis counts every day a migraine spans as a migraine-day where the app counts start days only
   (55 vs 73 on the sample export, so "computed exactly like the app" is false), and six CSS classes
-  are used but never defined. Whether to take on the maintenance surface is still open.
+  are used but never defined. Round 2 (2026-09-20): both fixed; a side-by-side against the app's
+  own `computeCorrelations` then showed the **daylight** rows still differ (simplified formula vs
+  the app's NOAA 90.833° zenith: 121 vs 76 days under 9.5 h on the sample export) — asked for a
+  port of `sunTimes()`, code supplied. **Decision: add the app's computed analytics to the JSON
+  export as an `analytics` block** so renderers stop reimplementing the math (issue to be opened);
+  an in-app PDF report is a v1.1 candidate.
 - **Dev safety:** debug builds now install as a separate app (`org.maegley.megrim.debug`, "Megrim
   dev"). Running a branch on a phone that carried the F-Droid build used to make the Flutter tool
   uninstall it, data included.
