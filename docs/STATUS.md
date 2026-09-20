@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-20: PR #14 and the analytics-export block (#16) merged, unreleased; iOS 1.0.3 (build 9) still Waiting for Review._
+_Last updated: 2026-09-20: v1.0.3 live on BOTH stores (Apple approved 1.0.3 build 9 today); PR #14 and the analytics-export block (#16) merged on `main`, unreleased._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -10,7 +10,9 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
 **APPROVED and LIVE** —
 [Megrim: Migraine Diary](https://apps.apple.com/us/app/megrim-migraine-diary/id6808385548)
 (Apple ID `6808385548`), approved the week of 2026-09-07 after one Guideline 2.1
-information-request round (details below). US storefront only, free, build 1.0.2 (8).
+information-request round (details below). US storefront only, free. **Current store build: 1.0.3 (9),
+approved and released 2026-09-20** — a bug-fix update to an approved app cleared in about a day with no
+questions.
 Post-launch note (2026-09-11): App Store *search* takes days to index a new app, and "Megrim"
 fuzzy-matches "Megillah" until real installs teach the brand term — seeding installs/ratings via
 the direct link is the fix; README now carries the store link so web search picks it up too.
@@ -86,7 +88,7 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   are used but never defined. Round 2 (2026-09-20): both fixed; a side-by-side against the app's
   own `computeCorrelations` then showed the **daylight** rows still differ (simplified formula vs
   the app's NOAA 90.833° zenith: 121 vs 76 days under 9.5 h on the sample export) — asked for a
-  port of `sunTimes()`, code supplied. **Decision: add the app's computed analytics to the JSON
+  port of `sunTimes()`, code supplied (posted 2026-09-20; awaiting the author). **Decision: add the app's computed analytics to the JSON
   export as an `analytics` block** so renderers stop reimplementing the math
   ([#16](https://github.com/smaegley/megrim/issues/16) — **built and MERGED 2026-09-20**, `54812ab`, Steve verified
   export → re-import and an older file's import on his Pixel; ships in v1.0.4; renderers see `docs/IMPORT.md`
@@ -97,7 +99,7 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   uninstall it, data included.
 
 **`v1.0.3` released 2026-09-19:** tag pushed, `release.yml` green (6m41s), APK/AAB published, not
-draft/prerelease. **iOS 1.0.3 (build 9) submitted to App Review 2026-09-19, Waiting for Review** — archived with
+draft/prerelease. **iOS 1.0.3 (build 9): submitted 2026-09-19, APPROVED and released 2026-09-20.** Archived with
 `flutter build ipa --build-number=9`, opened via `open build/ios/archive/Runner.xcarchive`, uploaded from Xcode's
 Organizer, version added in App Store Connect with the changelog as What's New. Steve exercised build 9 on
 his iPhone via TestFlight the same day — looks good. The manual path was: `flutter build ipa --build-number=9` (build 8 was
