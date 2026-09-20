@@ -35,9 +35,95 @@
     "events": {
       "type": "array",
       "items": { "$ref": "#/$defs/event" }
+    },
+    "analytics": {
+      "type": "object",
+      "description": "Written by Megrim's exports: the app's computed dashboard and odds-ratio results at export time, for renderers. Ignored on import. See docs/IMPORT.md, 'The analytics block'.",
+      "properties": {
+        "computed_at": { "$ref": "#/$defs/isoTimestamp" },
+        "timezone": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "offset_minutes": { "type": "integer" }
+          }
+        },
+        "home_location": {
+          "type": ["object", "null"],
+          "properties": {
+            "lat": { "type": "number" },
+            "lon": { "type": "number" },
+            "label": { "type": "string" }
+          }
+        },
+        "method": { "type": "string" },
+        "dashboard": {
+          "type": "object",
+          "properties": {
+            "summary": { "type": "object" },
+            "by_year": { "type": "array", "items": { "type": "object" } },
+            "by_day_of_week": { "$ref": "#/$defs/labeledCounts" },
+            "by_time_of_day": { "$ref": "#/$defs/labeledCounts" },
+            "by_season": { "$ref": "#/$defs/labeledCounts" },
+            "by_moon_phase": { "$ref": "#/$defs/labeledCounts" },
+            "by_daylight": { "$ref": "#/$defs/labeledCounts" },
+            "pressure_delta": { "$ref": "#/$defs/labeledCounts" },
+            "trigger_frequency": { "$ref": "#/$defs/labeledCounts" }
+          }
+        },
+        "correlations": {
+          "type": "object",
+          "required": ["available"],
+          "properties": {
+            "available": { "type": "boolean" },
+            "reason": { "type": ["string", "null"] },
+            "total_events": { "type": "integer" },
+            "total_migraine_days": { "type": "integer" },
+            "total_days_in_range": { "type": "integer" },
+            "base_rate_pct": { "type": "number" },
+            "top_factors": { "type": "array", "items": { "$ref": "#/$defs/topFactor" } },
+            "factors": {
+              "type": "object",
+              "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/factorRow" } }
+            },
+            "caveats": { "$ref": "#/$defs/stringArray" }
+          }
+        }
+      }
     }
   },
   "$defs": {
+    "labeledCounts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "count"],
+        "properties": { "label": { "type": "string" }, "count": { "type": "integer" } }
+      }
+    },
+    "factorRow": {
+      "type": "object",
+      "required": ["bucket", "migraine_days", "total_days", "migraine_rate_pct", "odds_ratio"],
+      "properties": {
+        "bucket": { "type": "string" },
+        "migraine_days": { "type": "integer" },
+        "total_days": { "type": "integer" },
+        "migraine_rate_pct": { "type": "number" },
+        "odds_ratio": { "type": "number" }
+      }
+    },
+    "topFactor": {
+      "type": "object",
+      "required": ["factor", "condition", "odds_ratio", "migraine_days", "total_days", "migraine_rate_pct"],
+      "properties": {
+        "factor": { "type": "string" },
+        "condition": { "type": "string" },
+        "odds_ratio": { "type": "number" },
+        "migraine_days": { "type": "integer" },
+        "total_days": { "type": "integer" },
+        "migraine_rate_pct": { "type": "number" }
+      }
+    },
     "isoTimestamp": {
       "type": "string",
       "format": "date-time",

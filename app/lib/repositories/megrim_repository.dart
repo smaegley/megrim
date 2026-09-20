@@ -8,6 +8,7 @@ import '../database/database.dart';
 import '../enrichment/enrichment_service.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
+import '../services/analytics_export.dart';
 import '../services/export_service.dart';
 import '../services/import_service.dart';
 
@@ -201,6 +202,33 @@ class MegrimRepository {
 
   // ── Export / import ──────────────────────────────────────────────────────
   ExportService get exporter => ExportService(db: db);
+
+  /// The `analytics` block for an export (issue #16): what the Analytics tab computes right now.
+  /// Never touches the network — the pressure factor is included only if a pressure baseline is
+  /// already cached (built by an earlier online Analytics load), which is also the tab's own
+  /// offline behaviour.
+  Future<Map<String, dynamic>> analyticsForExport({DateTime? now}) async {
+    final baselineService = PressureBaselineService(db: db);
+    try {
+      final dash = await dashboard();
+      final corr =
+          await correlations(baselineService: baselineService, allowFetch: false);
+      return analyticsBlock(
+        dashboard: dash,
+        correlations: corr,
+        homeLocation: await homeLocation,
+        now: now ?? DateTime.now(),
+      );
+    } finally {
+      baselineService.close();
+    }
+  }
+
+  /// The full JSON export, analytics block included. This is what Settings → Export (JSON) writes.
+  Future<String> exportJson({DateTime? now}) async => exporter.toJsonString(
+        now: now,
+        analytics: await analyticsForExport(now: now),
+      );
   ImportService get importer => ImportService(db);
 
   // ── Enrichment ───────────────────────────────────────────────────────────
