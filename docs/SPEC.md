@@ -671,6 +671,19 @@ F-Droid's bot (`AutoUpdateMode: Version`, `UpdateCheckMode: Tags`, `VercodeOpera
 reading `app/pubspec.yaml`), so routine releases need **no** further merge request. The canonical
 recipe now lives in `fdroiddata`; the copy under `fdroid/` is a historical reference.
 
+**Unreleased on `main` (2026-09-20), for `v1.0.4`.** PR #14 (zatteo): moving an entry's start shifts
+its end by the same delta unless the end was edited, so a backdated past entry needs one date pick
+instead of two. **#16, the `analytics` export block:** reviewing the community HTML report (PR #11)
+twice found its re-implementation of the analytics diverging from the app (span-days vs start-days;
+a refraction-free daylight formula moving ~45 days across a bucket). Rather than police ports, the
+export now carries what the Analytics tab computed — `analytics_export.dart` serializes
+`DashboardResult` + `CorrelationResult`; `MegrimRepository.analyticsForExport` runs the pipeline with
+the pressure-baseline fetch disabled (export never touches the network; the pressure factor is
+present only when a baseline is cached, as on the tab offline); the phone's timezone is recorded
+because day bucketing is local-calendar. Import ignores the block. A UTC-defined reference
+(`sample-data.analytics.json`) is checked in for renderers to diff against; the golden test skips
+in the Denver run. 180 tests.
+
 **`v1.0.3` (2026-09-19): first community-reported bugs.** Version `1.0.3+8`. Two GitHub issues
 from an F-Droid user (istudyatuni), both fixed with regression tests. **#13, Calendar scroll
 reset:** `HistoryScreen` created a brand-new Drift stream on every `build`, so any rebuild made the

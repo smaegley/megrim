@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-20: PR #14 merged; iOS 1.0.3 (build 9) still Waiting for Review._
+_Last updated: 2026-09-20: PR #14 and the analytics-export block (#16) merged, unreleased; iOS 1.0.3 (build 9) still Waiting for Review._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -56,7 +56,7 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
 | Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
 | Permissions | `INTERNET` only (plus `ACCESS_NETWORK_STATE` from connectivity_plus). No location permission at all |
-| Verification bar | `flutter analyze` clean, **172 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
+| Verification bar | `flutter analyze` clean, **180 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
 
 Everything in the original spec is implemented, plus the accessibility pass, documented import
 format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out.
@@ -88,7 +88,9 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   the app's NOAA 90.833° zenith: 121 vs 76 days under 9.5 h on the sample export) — asked for a
   port of `sunTimes()`, code supplied. **Decision: add the app's computed analytics to the JSON
   export as an `analytics` block** so renderers stop reimplementing the math
-  ([#16](https://github.com/smaegley/megrim/issues/16), opened 2026-09-20);
+  ([#16](https://github.com/smaegley/megrim/issues/16) — **built and MERGED 2026-09-20**, `54812ab`, Steve verified
+  export → re-import and an older file's import on his Pixel; ships in v1.0.4; renderers see `docs/IMPORT.md`
+  "The analytics block" and the reference `app/test/fixtures/sample-data.analytics.json`);
   an in-app PDF report is a v1.1 candidate.
 - **Dev safety:** debug builds now install as a separate app (`org.maegley.megrim.debug`, "Megrim
   dev"). Running a branch on a phone that carried the F-Droid build used to make the Flutter tool
