@@ -31,6 +31,18 @@ class EventDraft {
   });
 }
 
+DateTime? buildEndedAt({
+  required DateTime? currentEnd,
+  required bool endTouched,
+  required DateTime oldStart,
+  required DateTime newStart,
+}) {
+  if (currentEnd != null && !endTouched) {
+    return currentEnd.add(newStart.difference(oldStart));
+  }
+  return currentEnd;
+}
+
 /// Event Detail (SPEC §4.4): edit all fields; chips from user vocab; shows the computed
 /// enrichment. Start/end time and the recorded location are editable so an entry can be recreated
 /// after the fact (review item #4). Saving re-enqueues enrichment (date/location may have changed).
@@ -60,6 +72,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   DateTime _startedAt = DateTime.now();
   DateTime? _endedAt;
+  bool _endTouched = false;
   double? _geoLat;
   double? _geoLon;
   String? _geoLabel;
@@ -254,9 +267,16 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
     setState(() {
       if (isStart) {
+        _endedAt = buildEndedAt(
+          currentEnd: _endedAt,
+          endTouched: _endTouched,
+          oldStart: _startedAt,
+          newStart: picked,
+        );
         _startedAt = picked;
       } else {
         _endedAt = picked;
+        _endTouched = true;
       }
     });
   }
@@ -329,7 +349,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             label: 'Ended',
             value: _endedAt,
             onTap: () => _pickDateTime(isStart: false),
-            onClear: _endedAt == null ? null : () => setState(() => _endedAt = null),
+            onClear: _endedAt == null ? null : () => setState(() { _endedAt = null; _endTouched = true; }),
             emptyHint: 'ongoing — tap to set',
           ),
           _locationTile(),
