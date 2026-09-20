@@ -87,7 +87,8 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   own `computeCorrelations` then showed the **daylight** rows still differ (simplified formula vs
   the app's NOAA 90.833° zenith: 121 vs 76 days under 9.5 h on the sample export) — asked for a
   port of `sunTimes()`, code supplied. **Decision: add the app's computed analytics to the JSON
-  export as an `analytics` block** so renderers stop reimplementing the math (issue to be opened);
+  export as an `analytics` block** so renderers stop reimplementing the math
+  ([#16](https://github.com/smaegley/megrim/issues/16), opened 2026-09-20);
   an in-app PDF report is a v1.1 candidate.
 - **Dev safety:** debug builds now install as a separate app (`org.maegley.megrim.debug`, "Megrim
   dev"). Running a branch on a phone that carried the F-Droid build used to make the Flutter tool
