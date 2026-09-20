@@ -192,7 +192,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _exportJson(BuildContext context) async {
-    final json = await repo.exporter.toJsonString();
+    final json = await repo.exportJson();
     if (!context.mounted) return;
     final name = ExportServiceFilename.json();
     await _exportContent(context, json, name);

@@ -12,8 +12,11 @@ class ExportService {
 
   ExportService({required this.db, this.appVersion = kAppVersion});
 
-  /// The complete export document as a map.
-  Future<Map<String, dynamic>> buildExport({DateTime? now}) async {
+  /// The complete export document as a map. [analytics] is the optional computed-analytics block
+  /// (see `analytics_export.dart`); it is supplied by the repository, which owns the analytics
+  /// pipeline, so this class stays a pure DB → JSON serializer.
+  Future<Map<String, dynamic>> buildExport(
+      {DateTime? now, Map<String, dynamic>? analytics}) async {
     final events = await db.select(db.migraineEvents).get();
     final derived = await db.select(db.derivedFactors).get();
     final derivedById = {for (final d in derived) d.eventId: d};
@@ -36,11 +39,14 @@ class ExportService {
       'events': [
         for (final e in events) eventToJson(e, derivedById[e.id]),
       ],
+      'analytics': ?analytics,
     };
   }
 
-  Future<String> toJsonString({DateTime? now}) async =>
-      const JsonEncoder.withIndent('  ').convert(await buildExport(now: now));
+  Future<String> toJsonString(
+          {DateTime? now, Map<String, dynamic>? analytics}) async =>
+      const JsonEncoder.withIndent('  ')
+          .convert(await buildExport(now: now, analytics: analytics));
 
   /// Suggested filename: megrim-export-YYYYMMDD.json
   static String jsonFilename(DateTime now) =>

@@ -34,6 +34,7 @@ automatically after import. A converter only has to carry over what a human actu
 | `settings` | no | `{"home_location": {"lat": …, "lon": …, "label": "…"}}`. Applied only on a **Replace** import, or when the app has no home location yet. |
 | `vocabularies` | no | `{"trigger": [...], "head_location": [...], "medication": [...]}` — string arrays that seed the autocomplete suggestion lists. Merged; duplicates ignored. |
 | `exported_at`, `app_version` | no | Written by Megrim's own exports; ignored on import. |
+| `analytics` | no | Written by Megrim's own exports: the app's **computed** dashboard and odds-ratio results, for renderers. Ignored on import. See [The `analytics` block](#the-analytics-block-megrim-computed--ignored-on-import). |
 
 Unknown keys anywhere in the document are ignored, and the file must be UTF-8.
 
@@ -100,6 +101,60 @@ populate it (e.g. migrating enrichment from another system), the fields are:
 `pressure_delta_48h` (numbers), `aqi` (integer), `enriched_at` (ISO-8601),
 `enrich_error` (string). All nullable. A partial or inconsistent `derived` block is worse than
 none — when in doubt, leave it out.
+
+### The `analytics` block (Megrim-computed — ignored on import)
+
+Written by Megrim's exports since `v1.0.4` so that anything that renders an export — a printable
+report, a PDF, a spreadsheet — can **format** the app's numbers instead of re-implementing the
+analytics. It is exactly what the Analytics tab computed at export time; the app recomputes from
+`events` on import and never reads this block. Method details: [`METHODS.md`](METHODS.md). A
+reference produced from the sample data lives at
+[`app/test/fixtures/sample-data.analytics.json`](../app/test/fixtures/sample-data.analytics.json).
+
+```json
+"analytics": {
+  "computed_at": "2026-09-20T18:00:00.000Z",
+  "timezone": { "name": "MDT", "offset_minutes": -360 },
+  "home_location": { "lat": 39.96, "lon": -105.05, "label": "Boulder, Colorado, United States" },
+  "method": "docs/METHODS.md",
+  "dashboard": {
+    "summary": { "total_events": 55, "first_event": "…", "last_event": "…", "years_tracked": 2.4,
+                 "avg_severity": 6.2, "avg_duration_hours": 8.4, "avg_interval_days": 15.7,
+                 "interval_std_dev_days": 15.7, "events_per_year": 22.9 },
+    "by_year":         [ { "year": 2024, "count": 26, "avg_severity": 5.7 }, … ],
+    "by_day_of_week":  [ { "label": "Mon", "count": 13 }, … ],
+    "by_time_of_day":  [ … ], "by_season": [ … ], "by_moon_phase": [ … ],
+    "by_daylight":     [ … ], "pressure_delta": [ … ],
+    "trigger_frequency": [ { "label": "Food", "count": 14 }, … ]
+  },
+  "correlations": {
+    "available": true, "reason": null,
+    "total_events": 55, "total_migraine_days": 55, "total_days_in_range": 879, "base_rate_pct": 6.26,
+    "top_factors": [ { "factor": "Month", "condition": "Jul", "odds_ratio": 2.95,
+                       "migraine_days": 9, "total_days": 62, "migraine_rate_pct": 14.52 }, … ],
+    "factors": { "Day of week": [ { "bucket": "Mon", "migraine_days": 9, "total_days": 126,
+                                    "migraine_rate_pct": 7.14, "odds_ratio": 1.23 }, … ],
+                 "Season": [ … ], "Month": [ … ], "Moon phase": [ … ], "Daylight hours": [ … ],
+                 "Pressure Δ 24h (hPa)": [ … ] },
+    "caveats": [ "…" ]
+  }
+}
+```
+
+Notes for renderers:
+
+- **Day bucketing is local-calendar** (day of week, season, migraine-days, the study window), so
+  `timezone` records the phone's zone at export time. Re-deriving buckets from `started_at` in a
+  different zone can legitimately give different counts.
+- `correlations.factors` carries **every** bucket row for every factor; `top_factors` is the app's
+  gated view (≥ 3 migraine-days and OR > 1, strongest 8). Use the former to reproduce the tab's
+  detail tables and the latter for its headline list.
+- The **pressure factor** (`Pressure Δ 24h (hPa)`) appears only when the app has a cached pressure
+  baseline — built the first time Analytics is opened online with weather enrichment on. It cannot
+  be computed from the export alone (the daily pressure history is not exported), so treat its
+  absence as "not available", not zero.
+- `dashboard` has no per-event calendar: that is the `events` array.
+- `available: false` (with a `reason`) means fewer than 5 events; `dashboard` is still present.
 
 ## Minimal working example
 
