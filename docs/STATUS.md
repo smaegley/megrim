@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-20: v1.0.3 live on BOTH stores (Apple approved 1.0.3 build 9 today); PR #14 and the analytics-export block (#16) merged on `main`, unreleased._
+_Last updated: 2026-09-21: v1.0.3 live on both stores; PR #14, the analytics-export block (#16) and the community HTML report (PR #11) merged on `main`, unreleased; next work is #17._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -88,7 +88,10 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   are used but never defined. Round 2 (2026-09-20): both fixed; a side-by-side against the app's
   own `computeCorrelations` then showed the **daylight** rows still differ (simplified formula vs
   the app's NOAA 90.833° zenith: 121 vs 76 days under 9.5 h on the sample export) — asked for a
-  port of `sunTimes()`, code supplied (posted 2026-09-20; awaiting the author). **Decision: add the app's computed analytics to the JSON
+  port of `sunTimes()`, code supplied (posted 2026-09-20). Round 3 (2026-09-21): ported exactly; **MERGED**
+  (`65c5d8f`) after verifying all 36 factor rows match `sample-data.analytics.json` on both its own compute
+  path and its new block-first path (reads the #16 block when present). Adds `tools/report.html`,
+  `docs/REPORT.md` and the fixture `sample-data.with-analytics.json`. **Decision: add the app's computed analytics to the JSON
   export as an `analytics` block** so renderers stop reimplementing the math
   ([#16](https://github.com/smaegley/megrim/issues/16) — **built and MERGED 2026-09-20**, `54812ab`, Steve verified
   export → re-import and an older file's import on his Pixel; ships in v1.0.4; renderers see `docs/IMPORT.md`
@@ -97,6 +100,12 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
 - **Dev safety:** debug builds now install as a separate app (`org.maegley.megrim.debug`, "Megrim
   dev"). Running a branch on a phone that carried the F-Droid build used to make the Flutter tool
   uninstall it, data included.
+- **[Issue #17](https://github.com/smaegley/megrim/issues/17) — NEXT.** Raised by the #11 author: events are
+  UTC and local-calendar buckets use `toLocal()` at *compute* time (correlations, by-month) but at
+  *enrichment* time (stored weekday/time-of-day), so a traveller's analytics depend on where the phone is
+  when Analytics runs. Plan: per-event UTC offset column, one bucketing helper used everywhere, exports
+  carry real offsets. Travel as an odds-ratio factor is not feasible (no daily location baseline); an
+  "away from home" descriptive share + default "Travel" trigger is the honest alternative (separate issue).
 
 **`v1.0.3` released 2026-09-19:** tag pushed, `release.yml` green (6m41s), APK/AAB published, not
 draft/prerelease. **iOS 1.0.3 (build 9): submitted 2026-09-19, APPROVED and released 2026-09-20.** Archived with
