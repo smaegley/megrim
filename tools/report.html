@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<!--
+  Megrim export report — a fully offline, single-file static webapp.
+
+  Load this file in any browser (file:// is fine), open your megrim-export v1 JSON
+  export, and get a printable report you can hand to a clinician or specialist.
+
+  Privacy: this page makes ZERO network requests. There are no CDN scripts, no web
+  fonts, no analytics, no storage — your file is parsed in memory and never leaves
+  the tab. Verify with your browser's network inspector, or run it with networking
+  disabled. Close the tab and the data is gone.
+
+  PDF: use the "Print / Save as PDF" button (or Ctrl/Cmd-P). The print stylesheet
+  paginates the report cleanly; choose "Save as PDF" as the destination.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Megrim report</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #1c2733; --muted: #64748b;
+    --line: #e2e8f0; --accent: #4f5fb5; --accent-soft: #eef0fa; --bar: #b9c4ee;
+    --warn-bg: #fef3c7; --warn-ink: #92400e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10151b; --card: #1a212a; --ink: #e5eaf0; --muted: #93a1b1;
+      --line: #2c3542; --accent: #9aa8ee; --accent-soft: #232a3d; --bar: #3d5091;
+      --warn-bg: #3d3117; --warn-ink: #fbd38d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 16px 64px; }
+  header.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 20px; }
+  header.masthead h1 { margin: 0; font-size: 26px; letter-spacing: .2px; }
+  header.masthead .meta { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  h2 { font-size: 19px; margin: 34px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .card .num { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .card .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .panel + .panel { margin-top: 14px; }
+  .panel svg { width: 100%; height: auto; display: block; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .barcell { position: relative; min-width: 90px; }
+  /* Border as well as background: borders print even when the PDF export strips
+     background graphics (the default in most print dialogs). */
+  .barcell .fill { position: absolute; top: 2px; bottom: 2px; left: 0; background: var(--bar); border: 1px solid var(--bar); border-radius: 3px; }
+  .barcell .val { position: relative; padding-left: 4px; }
+  .pill {
+    display: inline-block; border: 1px solid var(--line); border-radius: 999px;
+    padding: 1px 9px; margin: 1px 2px 1px 0; font-size: 12px; background: var(--accent-soft);
+  }
+  .sev { display:inline-block; min-width: 1.7em; text-align:center; border-radius: 5px; color:#fff; font-weight:600; font-size:12px; padding:1px 4px; }
+  .note { color: var(--muted); font-size: 13px; }
+  .caveat {
+    background: var(--warn-bg); color: var(--warn-ink); border-radius: 8px;
+    padding: 10px 12px; font-size: 13.5px; margin: 10px 0;
+  }
+  .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 0 0 6px; }
+  .toolbar .spacer { flex: 1; }
+  .drop {
+    border: 2px dashed var(--accent); border-radius: 12px; background: var(--card);
+    padding: 42px 20px; text-align: center; cursor: pointer; margin-top: 18px;
+  }
+  .drop.over { background: var(--accent-soft); }
+  .drop .big { font-size: 17px; font-weight: 600; }
+  .drop .sub { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .banner {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; margin: 10px 0; font-size: 13.5px;
+  }
+  .banner.bad { border-color: #dc2626; }
+  footer { margin-top: 44px; border-top: 1px solid var(--line); padding-top: 14px; color: var(--muted); font-size: 12.5px; }
+  .hidden { display: none !important; }
+
+  /* ---------- print / PDF ---------- */
+  @media print {
+    :root {
+      --bg: #fff; --card: #fff; --ink: #111; --muted: #555;
+      --line: #bbb; --accent: #444; --accent-soft: #e8e8e8; --bar: #cfcfcf;
+      --warn-bg: #f3f3f3; --warn-ink: #333;
+    }
+    body { font-size: 11px; line-height: 1.4; }
+    .wrap { max-width: none; padding: 0; }
+    .noprint { display: none !important; }
+    .panel { border: none; padding: 0; break-inside: avoid; }
+    .panel + .panel { margin-top: 10px; }
+    .card { border: 1px solid #ccc; break-inside: avoid; }
+    h2 { break-after: avoid; margin-top: 20px; font-size: 15px; }
+    .grid2 { grid-template-columns: 1fr 1fr; gap: 10px; }
+    table { font-size: 10px; }
+    thead { display: table-header-group; }
+    tr { break-inside: avoid; }
+    /* severity chips set color/background inline — override so they stay legible
+       when the PDF export strips background graphics */
+    .sev { border: 1px solid #999; background: none !important; color: #111 !important; }
+    #factors-section, #events-section { break-before: page; }
+    a { color: inherit; text-decoration: none; }
+  }
+  @page { margin: 14mm 12mm; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <h1>Megrim report</h1>
+    <div class="meta" id="meta-line">Generated locally in your browser &middot; no network requests</div>
+  </header>
+
+  <div class="toolbar noprint">
+    <button id="btn-open" class="hidden">Open export…</button>
+    <button id="btn-print" class="hidden">Print / Save as PDF</button>
+    <button id="btn-clear" class="hidden">Clear data</button>
+    <span class="spacer"></span>
+    <span class="note">Data is processed in this tab only — never uploaded, never stored.</span>
+  </div>
+  <input type="file" id="file-input" accept=".json,application/json" class="hidden">
+
+  <div id="loader">
+    <div class="drop" id="drop">
+      <div class="big">Drop your <code>megrim-export</code> JSON here</div>
+      <div class="sub">or click to choose a file &middot; exported from Megrim via Settings &rarr; Export</div>
+      <div class="sub" style="margin-top:10px">Nothing is uploaded. This page works fully offline — try it with Wi-Fi off.</div>
+    </div>
+  </div>
+
+  <div id="warnings"></div>
+
+  <div id="report" class="hidden">
+    <h2 id="s-summary">Summary</h2>
+    <div class="cards" id="summary-cards"></div>
+
+    <h2 id="s-timeline">Migraines over time</h2>
+    <div class="panel" id="panel-timeline"></div>
+    <div class="panel" id="panel-sevtime"></div>
+
+    <h2 id="s-patterns">Patterns</h2>
+    <div class="grid2" id="pattern-panels"></div>
+
+    <h2 id="s-meds">Medications &amp; treatments</h2>
+    <div class="grid2" id="med-panels"></div>
+
+    <h2 id="factors-section">Suspected factors (odds ratios)</h2>
+    <div class="caveat">
+      <strong>Read this first.</strong> These are associations within your own log, computed the
+      same way as the Megrim app: an odds ratio over migraine-<em>days</em> (2&times;2 table,
+      Haldane&ndash;Anscombe correction, study window = first to last migraine day).
+      <strong>Association is not causation.</strong> Small samples are noisy, and with many
+      factors tested some will look elevated purely by chance. Treat these as hypotheses to
+      discuss with a clinician — not conclusions. Weather/pressure-change factors are omitted
+      here because full daily pressure history only exists inside the app.
+    </div>
+    <div id="factor-tables"></div>
+
+    <h2 id="events-section">Full event log</h2>
+    <div class="panel">
+      <table id="events-table"><thead>
+        <tr><th>Date</th><th>Time</th><th class="n">Sev.</th><th class="n">Dur.</th><th>Aura</th>
+            <th>Head location</th><th>Triggers</th><th>Meds</th><th>Notes</th></tr>
+      </thead><tbody></tbody></table>
+    </div>
+
+    <footer>
+      <p><strong>Methods.</strong> Descriptive charts are plain counts of logged entries — a tall
+      bar means "more migraines were logged there," nothing more. Suspected factors use the unit
+      of a migraine-<em>day</em>: each event counts once, on its start day — multi-day migraines
+      contribute a single day, exactly as the app does; every day in the
+      study window is a baseline day. For each bucket a 2&times;2 table is built and a
+      Haldane&ndash;Anscombe-corrected odds ratio computed (0.5 added to every cell). A factor is
+      shown only if its bucket covers at least 3 migraine-days and its OR exceeds 1.0; the
+      strongest 8 are listed, matching the Megrim app (<code>correlations.dart</code>). Moon
+      phase and daylight use the same astronomy as the app (NOAA algorithm, 90.833° zenith),
+      computed from your home location; season is hemisphere-corrected. Migraine rates are
+      rounded to two decimals like the app. When the export carries the app's
+      <code>analytics</code> block (v1.0.4+), this page formats those figures directly —
+      including the pressure factor — and only computes from raw events for older exports and
+      external files; the masthead says which path was used.</p>
+      <p><strong>Privacy:</strong> this page made no network requests and stored nothing.
+      Reload or close the tab to erase the data from memory.</p>
+      <p><strong>Disclaimer:</strong> Megrim is a personal diary, not a medical device. It does
+      not diagnose, treat, cure, or prevent any condition. Always consult a qualified healthcare
+      professional about your migraines and before making treatment decisions.</p>
+    </footer>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* =========================================================================
+ * Pure compute layer — no DOM. Mirrors app/lib/analytics/correlations.dart.
+ * ========================================================================= */
+
+const WEEKDAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const SEASON_ORDER = ["Spring","Summer","Autumn","Winter"];
+const TOD_ORDER = ["morning","afternoon","evening","night"];
+const MOON_ORDER = ["New Moon","Waxing Crescent","First Quarter","Waxing Gibbous",
+                    "Full Moon","Waning Gibbous","Last Quarter","Waning Crescent"];
+const DAYLIGHT_BUCKETS = ["< 9.5 h","9.5–11 h","11–12.5 h","12.5–14 h","≥ 14 h"];
+const MIN_EVENTS_FOR_CORRELATIONS = 5;   // kMinEventsForCorrelations in correlations.dart
+const MIN_MIGRAINE_DAYS_PER_BUCKET = 3;
+const TOP_N_FACTORS = 8;
+
+const EPOCH_NEW_MOON = Date.UTC(2000, 0, 6, 18, 14); // known new moon, UTC
+const SYNODIC = 29.530588853;
+
+function parseTs(s) {          // bare local stamps parse in viewer's zone (matches importer)
+  if (typeof s !== "string" || !s) return null;
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+function pad2(n) { return String(n).padStart(2, "0"); }
+function fmtDate(d) { return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate()); }
+function fmtTime(d) { return pad2(d.getHours()) + ":" + pad2(d.getMinutes()); }
+function localDayKey(d) { return fmtDate(d); }
+function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function monthKey(d) { return d.getFullYear() + "-" + pad2(d.getMonth()+1); }
+function seasonOf(d, southern) {
+  const m = d.getMonth() + 1;
+  let s = (m === 12 || m <= 2) ? "Winter" : m <= 5 ? "Spring" : m <= 8 ? "Summer" : "Autumn";
+  if (southern) s = { Winter:"Summer", Spring:"Autumn", Summer:"Winter", Autumn:"Spring" }[s];
+  return s;
+}
+function todBucket(d) {
+  const h = d.getHours();
+  return h >= 5 && h <= 11 ? "morning" : h >= 12 && h <= 16 ? "afternoon"
+       : h >= 17 && h <= 20 ? "evening" : "night";
+}
+function moonAt(dateUtcMs) {
+  const f = (((dateUtcMs - EPOCH_NEW_MOON) / 86400000) % SYNODIC + SYNODIC) % SYNODIC / SYNODIC;
+  const name = f < 0.0625 || f >= 0.9375 ? "New Moon"
+    : f < 0.1875 ? "Waxing Crescent" : f < 0.3125 ? "First Quarter"
+    : f < 0.4375 ? "Waxing Gibbous"  : f < 0.5625 ? "Full Moon"
+    : f < 0.6875 ? "Waning Gibbous"  : f < 0.8125 ? "Last Quarter" : "Waning Crescent";
+  return { name, illumination: (1 - Math.cos(2 * Math.PI * f)) / 2 };
+}
+// Port of app/lib/enrichment/astro.dart sunTimes(): NOAA algorithm, zenith 90.833°
+// (atmospheric refraction + solar disc), so daylight buckets match the app exactly.
+function daylightHours(date, lat, lon) {
+  lon = (typeof lon === "number") ? lon : 0;
+  const localApprox = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12)
+                               + Math.round(lon / 15 * 60) * 60000);
+  const y = localApprox.getUTCFullYear(), m = localApprox.getUTCMonth(), d = localApprox.getUTCDate();
+  const doy = Math.round((Date.UTC(y, m, d) - Date.UTC(y, 0, 1)) / 86400000) + 1;
+  const daysInYear = ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) ? 366 : 365;
+  const g = (2 * Math.PI / daysInYear) * (doy - 1 + 0.5);
+  const decl = 0.006918 - 0.399912*Math.cos(g) + 0.070257*Math.sin(g) - 0.006758*Math.cos(2*g)
+             + 0.000907*Math.sin(2*g) - 0.002697*Math.cos(3*g) + 0.00148*Math.sin(3*g);
+  const latR = lat * Math.PI / 180, zen = 90.833 * Math.PI / 180;
+  const cosHa = Math.cos(zen) / (Math.cos(latR) * Math.cos(decl)) - Math.tan(latR) * Math.tan(decl);
+  if (cosHa > 1) return 0;    // polar night
+  if (cosHa < -1) return 24;  // polar day
+  return 2 * (Math.acos(cosHa) * 180 / Math.PI) * 4 / 60;  // 2 × hour angle, 4 min per degree
+}
+function daylightBucket(h) {
+  return h < 9.5 ? DAYLIGHT_BUCKETS[0] : h < 11 ? DAYLIGHT_BUCKETS[1]
+       : h < 12.5 ? DAYLIGHT_BUCKETS[2] : h < 14 ? DAYLIGHT_BUCKETS[3] : DAYLIGHT_BUCKETS[4];
+}
+function haldaneAnscombeOR(a, b, c, d) {
+  return ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5));
+}
+function median(arr) {
+  if (!arr.length) return null;
+  const a = arr.slice().sort((x, y) => x - y);
+  const m = Math.floor(a.length / 2);
+  return a.length % 2 ? a[m] : (a[m-1] + a[m]) / 2;
+}
+function tally(arrs) {
+  const t = new Map();
+  arrs.forEach(a => (a || []).forEach(x => t.set(x, (t.get(x) || 0) + 1)));
+  return [...t.entries()].sort((p, q) => q[1] - p[1]);
+}
+
+/* ---- document validation ---- */
+function validateDoc(doc) {
+  const warns = [];
+  if (typeof doc !== "object" || doc === null || Array.isArray(doc))
+    return { warns: ["File is not a JSON object."], events: [] };
+  if (doc.format !== "megrim-export")
+    warns.push(`"format" is ${JSON.stringify(doc.format)}, expected "megrim-export" — continuing anyway.`);
+  if (doc.format_version !== 1)
+    warns.push(`"format_version" is ${JSON.stringify(doc.format_version)}, expected 1.`);
+  if (!Array.isArray(doc.events)) {
+    warns.push('"events" is not an array — treating as empty.');
+    doc.events = [];
+  }
+  const ids = new Set();
+  doc.events.forEach((e, i) => {
+    if (!e || typeof e !== "object") { warns.push(`Event #${i+1} is not an object — skipped.`); return; }
+    if (!e.id) warns.push(`Event #${i+1} has no "id".`);
+    else if (ids.has(e.id)) warns.push(`Duplicate event id "${e.id}" — later duplicates still counted (the app would dedupe on import).`);
+    else ids.add(e.id);
+    if (!parseTs(e.started_at)) warns.push(`Event #${i+1} (${e.id || "?"}) has an unreadable "started_at" — skipped.`);
+  });
+  return { warns, events: doc.events.filter(e => e && typeof e === "object" && parseTs(e.started_at)) };
+}
+
+/* ---- main analysis ---- */
+function analyze(doc) {
+  const events = doc.events.slice().sort((a, b) => parseTs(a.started_at) - parseTs(b.started_at));
+
+  // home latitude: settings.home_location, else median of per-event geo
+  const lats = (doc.settings && doc.settings.home_location && Number.isFinite(doc.settings.home_location.lat))
+    ? [doc.settings.home_location.lat]
+    : events.map(e => e.geo_lat).filter(v => typeof v === "number");
+  const lons = (doc.settings && doc.settings.home_location && Number.isFinite(doc.settings.home_location.lon))
+    ? [doc.settings.home_location.lon]
+    : events.map(e => e.geo_lon).filter(v => typeof v === "number");
+  const homeLat = lats.length ? median(lats) : null;
+  const homeLon = lons.length ? median(lons) : null;
+  const southern = homeLat !== null && homeLat < 0;
+  const homeLabel = (doc.settings && doc.settings.home_location && doc.settings.home_location.label) || null;
+
+  // migraine-days: the local start date of each event, counted once per day —
+  // matches the app (correlations.dart builds `migraineDaySet` from event start days only;
+  // multi-day migraines contribute one day, not their full span)
+  const migDays = new Set();
+  for (const e of events) {
+    migDays.add(localDayKey(parseTs(e.started_at)));
+  }
+  const migDayList = [...migDays].sort();
+  const totalMigraineDays = migDayList.length;
+
+  // study window: first -> last migraine day inclusive
+  const windowDays = [];
+  if (totalMigraineDays > 0) {
+    const [sy, sm, sd] = migDayList[0].split("-").map(Number);
+    const [ey, em, ed] = migDayList[migDayList.length - 1].split("-").map(Number);
+    for (let d = new Date(sy, sm - 1, sd); d <= new Date(ey, em - 1, ed); d = addDays(d, 1))
+      windowDays.push(new Date(d));
+  }
+  const totalWindowDays = windowDays.length;
+
+  // severity
+  const sevVals = events.map(e => e.severity).filter(v => Number.isFinite(v));
+  const sevCounts = {}; for (let i = 1; i <= 10; i++) sevCounts[i] = 0;
+  sevVals.forEach(v => { const r = Math.min(10, Math.max(1, Math.round(v))); sevCounts[r]++; });
+
+  // duration (hours) where ended_at present
+  const durHours = [];
+  events.forEach(e => {
+    const s = parseTs(e.started_at), en = parseTs(e.ended_at);
+    if (s && en && en >= s) durHours.push((en - s) / 3600000);
+  });
+
+  // self-reported tallies
+  const triggerFreq = tally(events.map(e => e.triggers_suspected));
+  const headFreq = tally(events.map(e => e.location_head));
+  const foodFreq = tally(events.map(e => e.foods_notable));
+
+  // medications
+  const meds = new Map();
+  events.forEach(e => (e.meds_taken || []).forEach(m => {
+    if (!m || !m.name) return;
+    if (!meds.has(m.name)) meds.set(m.name, { taken: 0, helped: 0, notHelped: 0, unknown: 0 });
+    const r = meds.get(m.name); r.taken++;
+    if (m.helped === true) r.helped++; else if (m.helped === false) r.notHelped++; else r.unknown++;
+  }));
+  const medRows = [...meds.entries()].map(([name, r]) => ({ name, ...r,
+    helpedPct: (r.helped + r.notHelped) ? Math.round(100 * r.helped / (r.helped + r.notHelped)) : null }))
+    .sort((a, b) => b.taken - a.taken);
+
+  // aura
+  let auraTrue = 0, auraFalse = 0, auraUnknown = 0;
+  events.forEach(e => {
+    if (e.aura_present === true) auraTrue++;
+    else if (e.aura_present === false) auraFalse++;
+    else auraUnknown++;
+  });
+
+  const sleepVals = events.map(e => e.sleep_hours_prior).filter(v => Number.isFinite(v));
+  const stressVals = events.map(e => e.stress_level).filter(v => Number.isFinite(v));
+
+  // monthly timeline
+  const monthMap = new Map();
+  events.forEach(e => {
+    const k = monthKey(parseTs(e.started_at));
+    if (!monthMap.has(k)) monthMap.set(k, { count: 0, sevSum: 0, sevN: 0 });
+    const m = monthMap.get(k); m.count++;
+    if (Number.isFinite(e.severity)) { m.sevSum += e.severity; m.sevN++; }
+  });
+  const timeline = [...monthMap.entries()].sort((x, y) => x[0] < y[0] ? -1 : 1)
+    .map(([k, v]) => ({ key: k, label: MONTHS[+k.slice(5, 7) - 1] + " " + k.slice(0, 4), count: v.count,
+                       avgSev: v.sevN ? v.sevSum / v.sevN : null }));
+  // months spanned by the timeline, inclusive (e.g. Jan 2024 → Mar 2024 = 3)
+  const ym = k => (+k.slice(0, 4)) * 12 + (+k.slice(5, 7));
+  const monthsCovered = timeline.length
+    ? (ym(timeline[timeline.length - 1].key) - ym(timeline[0].key) + 1) : 0;
+
+  // descriptive event counts per bucket
+  const countBy = fn => { const m = new Map(); events.forEach(e => { const b = fn(e); m.set(b, (m.get(b) || 0) + 1); }); return m; };
+  const byWeekday = countBy(e => WEEKDAYS[(parseTs(e.started_at).getDay() + 6) % 7]);
+  const byTod = countBy(e => todBucket(parseTs(e.started_at)));
+  const bySeason = countBy(e => seasonOf(parseTs(e.started_at), southern));
+  const byMoon = countBy(e => moonAt(parseTs(e.started_at).getTime()).name);
+
+  // ---- odds-ratio factors (per migraine-day; app algorithm) ----
+  const factorGroups = [];
+  function orRows(name, buckets, dayBucketFn) {
+    const base = new Map(buckets.map(b => [b, 0]));
+    const mig = new Map(buckets.map(b => [b, 0]));
+    for (const d of windowDays) {
+      const b = dayBucketFn(d);
+      if (base.has(b)) base.set(b, base.get(b) + 1);
+      if (migDays.has(localDayKey(d))) mig.set(b, mig.get(b) + 1);
+    }
+    const rows = buckets.map(b => {
+      const a = mig.get(b) || 0;
+      const c = (base.get(b) || 0) - a;
+      const bb = totalMigraineDays - a;
+      const d = (totalWindowDays - totalMigraineDays) - c;
+      return { bucket: b, migDays: a, totalDays: base.get(b) || 0,
+               rate: base.get(b) ? Math.round(100 * a / base.get(b) * 100) / 100 : null,
+               or: haldaneAnscombeOR(a, bb, c, d) };
+    });
+    factorGroups.push({ name, rows });
+  }
+  if (totalMigraineDays > 0 && events.length >= MIN_EVENTS_FOR_CORRELATIONS && homeLat !== null) {
+    orRows("Day of week", WEEKDAYS, d => WEEKDAYS[(d.getDay() + 6) % 7]);
+    orRows("Month", MONTHS, d => MONTHS[d.getMonth()]);
+    orRows("Season", SEASON_ORDER, d => seasonOf(d, southern));
+    orRows("Moon phase", MOON_ORDER, d => moonAt(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 12)).name);
+    orRows("Daylight length", DAYLIGHT_BUCKETS, d => daylightBucket(daylightHours(d, homeLat, homeLon)));
+  } else if (totalMigraineDays > 0 && events.length >= MIN_EVENTS_FOR_CORRELATIONS) {
+    orRows("Day of week", WEEKDAYS, d => WEEKDAYS[(d.getDay() + 6) % 7]);
+    orRows("Month", MONTHS, d => MONTHS[d.getMonth()]);
+    // no latitude available: moon/daylight buckets would be wrong, season is calendar-exact
+    orRows("Season", SEASON_ORDER, d => seasonOf(d, false));
+  }
+
+  // gate: bucket covers >= 3 migraine-days and OR > 1; top 8 overall by OR
+  let eligible = [];
+  factorGroups.forEach(g => g.rows.forEach(r => {
+    if (r.migDays >= MIN_MIGRAINE_DAYS_PER_BUCKET && r.or > 1.0) eligible.push({ group: g.name, ...r });
+  }));
+  eligible.sort((a, b) => b.or - a.or);
+  const chosen = eligible.slice(0, TOP_N_FACTORS);
+  const maxOr = chosen.length ? chosen[0].or : null;
+  const factors = [];
+  chosen.forEach(r => {
+    let g = factors.find(x => x.name === r.group);
+    if (!g) { g = { name: r.group, rows: [] }; factors.push(g); }
+    g.rows.push(r);
+  });
+  const headlineSet = new Set(chosen.map(r => r.group + "|" + r.bucket));
+  const factorsFull = factorGroups.map(g => ({ name: g.name, rows: g.rows }));
+
+  const result = {
+    doc, events, homeLat, homeLon, southern, homeLabel,
+    totalEvents: events.length, totalMigraineDays, totalWindowDays,
+    windowStart: migDayList[0] || null, windowEnd: migDayList[migDayList.length - 1] || null,
+    monthsCovered,
+    sevCounts, medianSev: median(sevVals), medianDur: median(durHours),
+    auraTrue, auraFalse, auraUnknown,
+    sleepVals, stressVals, durHours,
+    timeline, byWeekday, byTod, bySeason, byMoon,
+    triggerFreq, headFreq, foodFreq, medRows, factors, maxOr, headlineSet, factorsFull,
+    source: "computed",
+  };
+  return applyAnalyticsBlock(result, doc.analytics);
+}
+
+/* ---- app-computed analytics block (megrim-export v1.0.4+) ----
+ * When the export carries the app's `analytics` block, its figures are authoritative
+ * (docs/IMPORT.md, "The analytics block"): they include the pressure factor and were
+ * computed in the phone's timezone, which a renderer cannot reproduce from raw events.
+ * We format them directly and keep the computed path for older exports / external files.
+ */
+function applyAnalyticsBlock(a, block) {
+  if (!block || typeof block !== "object" || !block.dashboard) return a;
+  a.source = "block";
+  a.block = block;
+  const d = block.dashboard;
+  const toMap = rows => new Map((rows || []).map(r => [r.label, r.count]));
+  if (d.by_day_of_week) a.byWeekday = toMap(d.by_day_of_week);
+  if (d.by_time_of_day) a.byTod = toMap(d.by_time_of_day);
+  if (d.by_season) a.bySeason = toMap(d.by_season);
+  if (d.by_moon_phase) a.byMoon = toMap(d.by_moon_phase);
+  if (d.by_daylight) a.byDaylight = toMap(d.by_daylight);
+  if (Array.isArray(d.trigger_frequency)) a.triggerFreq = d.trigger_frequency.map(r => [r.label, r.count]);
+  a.blockSummary = d.summary || {};
+  if (block.correlations && typeof block.correlations === "object") {
+    const c = block.correlations;
+    a.blockCorr = c;
+    if (Number.isFinite(c.total_migraine_days)) a.totalMigraineDays = c.total_migraine_days;
+    if (Number.isFinite(c.total_days_in_range)) a.totalWindowDays = c.total_days_in_range;
+    if (c.available && Array.isArray(c.top_factors)) {
+      // compare the block against what this browser just computed — a mismatch is almost
+      // always the compute-timezone difference (the app buckets days in the phone's zone)
+      const sig = rows => rows.map(r => r.factor + "|" + r.condition + "|" + Math.round(r.odds_ratio * 100)).sort().join(";");
+      const mine = a.factors.flatMap(g => g.rows.map(r => g.name + "|" + r.bucket + "|" + Math.round(r.or * 100))).sort().join(";");
+      a.divergence = sig(c.top_factors) !== mine;
+      const groups = [];
+      c.top_factors.forEach(r => {
+        let g = groups.find(x => x.name === r.factor);
+        if (!g) { g = { name: r.factor, rows: [] }; groups.push(g); }
+        g.rows.push({ bucket: r.condition, migDays: r.migraine_days, totalDays: r.total_days,
+                      rate: r.migraine_rate_pct, or: r.odds_ratio });
+      });
+      a.factors = groups;
+      const ors = groups.flatMap(g => g.rows.map(r => r.or));
+      a.maxOr = ors.length ? Math.max(...ors) : null;
+      a.headlineSet = new Set(c.top_factors.map(r => r.factor + "|" + r.condition));
+    } else {
+      a.factors = [];
+      a.maxOr = null;
+      a.headlineSet = new Set();
+    }
+    a.blockCaveats = Array.isArray(c.caveats) ? c.caveats : [];
+    a.factorsFull = (c.factors && typeof c.factors === "object" && Object.keys(c.factors).length)
+      ? Object.entries(c.factors).map(([name, rows]) => ({ name,
+          rows: (rows || []).map(r => ({ bucket: r.bucket, migDays: r.migraine_days,
+            totalDays: r.total_days, rate: r.migraine_rate_pct, or: r.odds_ratio })) }))
+      : null;
+  }
+  return a;
+}
+</script>
+<script>
+"use strict";
+/* =========================================================================
+ * Rendering layer (DOM) — separate so the compute layer stays testable.
+ * ========================================================================= */
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g,
+    c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+function sevColor(v) { // 1 (light) -> 10 (dark red)
+  const t = (Math.min(10, Math.max(1, v)) - 1) / 9;
+  const hue = 40 - 40 * t;         // orange -> red
+  const sat = 55 + 35 * t, light = 68 - 28 * t;
+  return `hsl(${hue} ${sat}% ${light}%)`;
+}
+function svgBarChart(items, opts) {
+  // items: [{label, value, color?}], opts: {height, color, valFmt}
+  const o = Object.assign({ height: 190, color: "var(--accent)", fmt: v => String(v) }, opts);
+  const W = 560, padL = 8, padT = 18, basePadB = 34;
+  const iw = W - padL * 2, ih = o.height - basePadB - padT;
+  const max = Math.max(1, ...items.map(i => i.value));
+  const n = Math.max(1, items.length);
+  const bw = iw / n;
+  // When a label is wider than one bar column (long date strings), rotate every label
+  // vertically under its own bar — every bar stays individually labeled and unambiguous.
+  // Estimate ~6.2px per char horizontally, ~5.9px per char when rotated 90°.
+  const labelW = Math.max(0, ...items.map(i => i.label.length * 6.2));
+  const rotate = labelW + 8 > bw;
+  const rotSpace = rotate ? Math.max(0, ...items.map(i => i.label.length)) * 5.9 + 10 : 0;
+  const padB = basePadB + rotSpace;
+  const H = padT + ih + padB;
+  const axisY = padT + ih;
+  const skip = rotate && bw < 7 ? 2 : 1; // extremely dense: every other label
+  let bars = "", labels = "", ticks = "";
+  items.forEach((it, i) => {
+    const h = it.value / max * ih;
+    const x = padL + i * bw + bw * 0.08, y = axisY - h;
+    const w = bw * 0.84;
+    const cx = x + w / 2;
+    if (it.value > 0)
+      bars += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(1, h).toFixed(1)}" rx="3" fill="${it.color || o.color}"/>`;
+    if ((it.value > 0 || n <= 16) && (bw >= 12 || n <= 16))
+      bars += `<text x="${cx.toFixed(1)}" y="${(y - 4).toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="600">${esc(o.fmt(it.value))}</text>`;
+    if (rotate) {
+      if (i % skip === 0) {
+        ticks += `<line x1="${cx.toFixed(1)}" y1="${axisY + 1}" x2="${cx.toFixed(1)}" y2="${axisY + 5}" stroke="var(--muted)"/>`;
+        labels += `<text transform="rotate(-90 ${(cx + 3.5).toFixed(1)} ${(axisY + 9).toFixed(1)})" x="${(cx + 3.5).toFixed(1)}" y="${(axisY + 9).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${esc(it.label)}</text>`;
+      }
+    } else {
+      labels += `<text x="${cx.toFixed(1)}" y="${axisY + 16}" text-anchor="middle" font-size="10.5" fill="var(--muted)">${esc(it.label)}</text>`;
+    }
+  });
+  const axis = `<line x1="${padL}" y1="${axisY}" x2="${W - padL}" y2="${axisY}" stroke="var(--line)"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${bars}${axis}${ticks}${labels}</svg>`;
+}
+function barTable(items, fmt) {
+  const max = Math.max(1, ...items.map(i => i[1]));
+  return `<table><thead><tr><th></th><th class="n" style="width:52%">Count</th></tr></thead><tbody>` +
+    items.map(([label, v]) =>
+      `<tr><td>${esc(label)}</td><td class="n barcell"><span class="fill" style="width:${(100 * v / max).toFixed(1)}%"></span><span class="val">${v}</span></td></tr>`
+    ).join("") + `</tbody></table>`;
+}
+function fmtDur(h) {
+  if (h == null) return "—";
+  return h >= 24 ? `${Math.floor(h/24)}d ${Math.round(h%24)}h` : `${h < 1 ? Math.round(h*60)+"m" : (Math.round(h*10)/10)+"h"}`;
+}
+function mapInOrder(m, order) {
+  return order.map(k => [k, m.get(k) || 0]).filter(([, v]) => v > 0 || order.length <= 12);
+}
+
+function render(a, warns) {
+  const $ = id => document.getElementById(id);
+  const warnBox = $("warnings");
+  warnBox.innerHTML = warns.map(w => `<div class="caveat">${esc(w)}</div>`).join("");
+  if (a.totalEvents === 0) {
+    warnBox.innerHTML += `<div class="banner bad">No valid events found in this file.</div>`;
+    return;
+  }
+
+  // masthead meta
+  const exportedAt = a.doc.exported_at ? new Date(a.doc.exported_at) : null;
+  const srcNote = a.source === "block"
+    ? ` · figures: app-computed analytics${a.block.computed_at ? " (" + esc(String(a.block.computed_at).slice(0, 10)) + ")" : ""}`
+    : " · figures computed by this page";
+  $("meta-line").innerHTML =
+    `${esc(a.totalEvents)} events${a.homeLabel ? " · " + esc(a.homeLabel) : ""}` +
+    (a.doc.app_version ? ` · app v${esc(a.doc.app_version)}` : "") +
+    (exportedAt && !isNaN(exportedAt) ? ` · exported ${esc(exportedAt.toISOString().slice(0, 10))}` : "") +
+    ` · report generated ${esc(new Date().toISOString().slice(0, 10))}` + srcNote;
+
+  // ---- summary cards ----
+  if (a.source === "block") {
+    const s = a.blockSummary, c = a.blockCorr || {};
+    const n1 = v => (Number.isFinite(v) ? String(Math.round(v * 10) / 10) : "—");
+    $("summary-cards").innerHTML = [
+      [Number.isFinite(s.total_events) ? s.total_events : a.totalEvents, "Events logged"],
+      [c.total_migraine_days != null ? c.total_migraine_days : a.totalMigraineDays, "Migraine-days"],
+      [c.total_days_in_range != null ? `${c.total_days_in_range} d` : "—", "Study window"],
+      [n1(s.events_per_year), "Events / year (avg)"],
+      [s.avg_severity != null ? `${s.avg_severity}/10` : "—", "Avg severity"],
+      [s.avg_duration_hours != null ? fmtDur(s.avg_duration_hours) : "—", "Avg duration"],
+      [s.avg_interval_days != null ? `${s.avg_interval_days} d` : "—", "Avg interval between"],
+      [c.base_rate_pct != null ? `${c.base_rate_pct}%` : "—", "Migraine-day base rate"],
+    ].map(([v, l]) => `<div class="card"><div class="num">${esc(v)}</div><div class="lbl">${l}</div></div>`).join("");
+  } else {
+    const trigTop = a.triggerFreq[0] ? `${a.triggerFreq[0][0]}` : "—";
+    const spanDays = a.totalWindowDays;
+    const perMonth = a.monthsCovered ? (a.totalEvents / a.monthsCovered) : null;
+    $("summary-cards").innerHTML = [
+      [a.totalEvents, "Events logged"],
+      [a.totalMigraineDays, "Migraine-days"],
+      [spanDays ? `${spanDays} d` : "—", "Study window"],
+      [perMonth != null ? (Math.round(perMonth * 10) / 10).toFixed(1) : "—", "Events / month (avg)"],
+      [a.medianSev != null ? `${a.medianSev}/10` : "—", "Median severity"],
+      [a.medianDur != null ? fmtDur(a.medianDur) : "—", "Median duration"],
+      [esc(trigTop), "Most-reported trigger"],
+      [a.auraTrue, "Events with aura"],
+    ].map(([v, l]) => `<div class="card"><div class="num">${v}</div><div class="lbl">${l}</div></div>`).join("");
+  }
+
+  // ---- timeline: monthly counts, bar color by avg severity ----
+  const evNote = a.source === "block" ? " · computed from events (not part of the analytics block)" : "";
+  $("panel-timeline").innerHTML =
+    `<h3>Events per month <span class="note">· bar color = average severity that month${evNote}</span></h3>` +
+    (a.timeline.length
+      ? svgBarChart(a.timeline.map(m => ({
+          label: m.label, value: m.count,
+          color: m.avgSev ? sevColor(m.avgSev) : "var(--accent)",
+        })), { fmt: v => v })
+      : `<p class="note">No events.</p>`);
+  $("panel-sevtime").innerHTML =
+    `<h3>Severity distribution <span class="note">· 1 = mild, 10 = worst${evNote}</span></h3>` +
+    svgBarChart(Array.from({ length: 10 }, (_, i) => ({
+      label: String(i + 1), value: a.sevCounts[i + 1], color: sevColor(i + 1),
+    })), { fmt: v => v });
+
+  // ---- patterns ----
+  const panels = [];
+  if (a.source === "block") {
+    // app-computed dashboard counts, in the app's own order and labels
+    const fromRows = (rows, title, sub) => {
+      if (!rows || !rows.length) return;
+      panels.push(`<div class="panel"><h3>${title} <span class="note">${sub}</span></h3>` +
+        svgBarChart(rows.map(r => ({ label: String(r.label), value: r.count })), { height: 150 }) + `</div>`);
+    };
+    if (a.block.dashboard.by_year && a.block.dashboard.by_year.length) {
+      const rows = a.block.dashboard.by_year;
+      panels.push(`<div class="panel"><h3>By year <span class="note">· app-computed${rows[0].avg_severity != null ? " · avg severity shown per year" : ""}</span></h3>` +
+        svgBarChart(rows.map(r => ({ label: String(r.year), value: r.count,
+          color: r.avg_severity != null ? sevColor(r.avg_severity) : undefined })), { height: 150 }) + `</div>`);
+    }
+    fromRows(a.block.dashboard.by_day_of_week, "By weekday", "· app-computed");
+    fromRows(a.block.dashboard.by_time_of_day, "By time of day", "· app-computed");
+    fromRows(a.block.dashboard.by_season, "By season", "· app-computed");
+    fromRows(a.block.dashboard.by_moon_phase, "By moon phase", "· app-computed");
+    fromRows(a.block.dashboard.by_daylight, "By daylight length", "· app-computed");
+    if (a.block.dashboard.pressure_delta && a.block.dashboard.pressure_delta.length)
+      fromRows(a.block.dashboard.pressure_delta, "By pressure change", "· app-computed · needs the app's cached pressure baseline");
+  } else {
+    const withOrder = (m, order, title, sub) => {
+      const items = order.map(k => [k, m.get(k) || 0]);
+      if (items.every(([, v]) => v === 0)) return;
+      panels.push(`<div class="panel"><h3>${title} <span class="note">${sub}</span></h3>` + svgBarChart(items.map(([l, v]) => ({ label: l, value: v })), { height: 150 }) + `</div>`);
+    };
+    withOrder(a.byWeekday, WEEKDAYS, "By weekday", "· count of events");
+    withOrder(a.byTod, TOD_ORDER, "By time of day", "· morning 5–11 · afternoon 12–16 · evening 17–20 · night else");
+    withOrder(a.bySeason, SEASON_ORDER, "By season", a.southern ? "· southern hemisphere" : "");
+    withOrder(a.byMoon, MOON_ORDER, "By moon phase", "· computed astronomically at event time");
+    // daylight needs enough spread; show histogram over events
+    if (a.homeLat !== null && a.events.length) {
+      const dl = new Map(DAYLIGHT_BUCKETS.map(b => [b, 0]));
+      a.events.forEach(e => { const d = parseTs(e.started_at);
+        const b = daylightBucket(daylightHours(d, a.homeLat, a.homeLon)); dl.set(b, dl.get(b) + 1); });
+      const items = DAYLIGHT_BUCKETS.map(b => [b, dl.get(b)]);
+      if (items.some(([, v]) => v > 0))
+        panels.push(`<div class="panel"><h3>By daylight length <span class="note">· photoperiod at event date</span></h3>` + svgBarChart(items.map(([l, v]) => ({ label: l, value: v })), { height: 150 }) + `</div>`);
+    }
+  }
+  if (a.triggerFreq.length)
+    panels.push(`<div class="panel"><h3>Reported triggers <span class="note">· self-reported, may repeat per event</span></h3>` + barTable(a.triggerFreq.slice(0, 12)) + `</div>`);
+  if (a.headFreq.length)
+    panels.push(`<div class="panel"><h3>Head locations</h3>` + barTable(a.headFreq.slice(0, 12)) + `</div>`);
+  if (a.foodFreq.length)
+    panels.push(`<div class="panel"><h3>Notable foods</h3>` + barTable(a.foodFreq.slice(0, 12)) + `</div>`);
+  // sleep / stress summaries
+  const statLine = (vals, unit) => vals.length
+    ? `<p>Median <strong>${median(vals)}</strong>${unit} · range ${Math.min(...vals)}–${Math.max(...vals)}${unit} · recorded on ${vals.length} of ${a.totalEvents} events</p>`
+    : `<p class="note">Not recorded.</p>`;
+  panels.push(`<div class="panel"><h3>Sleep (hours prior)</h3>${statLine(a.sleepVals, "")}</div>`);
+  panels.push(`<div class="panel"><h3>Stress level (1–10)</h3>${statLine(a.stressVals, "")}</div>`);
+  panels.push(`<div class="panel"><h3>Aura</h3><p>` +
+    `<span class="pill">Present: ${a.auraTrue}</span> <span class="pill">Absent: ${a.auraFalse}</span> ` +
+    `<span class="pill">Not recorded: ${a.auraUnknown}</span></p>` +
+    (a.events.some(e => e.aura_description) ? `<p class="note">Descriptions recorded on some events — see event log.</p>` : "") + `</div>`);
+  if (a.durHours.length) {
+    const buckets = [[0,3,"<3h"],[3,6,"3–6h"],[6,9,"6–9h"],[9,12,"9–12h"],[12,18,"12–18h"],[18,24,"18–24h"],[24,Infinity,"24h+"]];
+    const items = buckets.map(([lo, hi, label]) => [label, a.durHours.filter(h => h >= lo && h < hi).length]);
+    panels.push(`<div class="panel"><h3>Duration (events with an end time)</h3>` + svgBarChart(items.map(([l, v]) => ({ label: l, value: v })), { height: 150 }) + `</div>`);
+  }
+  $("pattern-panels").innerHTML = panels.join("");
+
+  // ---- medications ----
+  const medHtml = [];
+  if (a.medRows.length) {
+    medHtml.push(`<div class="panel"><h3>Medications taken</h3><table><thead><tr>` +
+      `<th>Medication</th><th class="n">Taken</th><th class="n">Helped</th><th class="n">Didn't</th><th class="n">Unknown</th><th class="n">Helped %</th>` +
+      `</tr></thead><tbody>` + a.medRows.map(r =>
+        `<tr><td>${esc(r.name)}</td><td class="n">${r.taken}</td><td class="n">${r.helped}</td>` +
+        `<td class="n">${r.notHelped}</td><td class="n">${r.unknown}</td>` +
+        `<td class="n">${r.helpedPct == null ? '<span class="note">n/a</span>' : r.helpedPct + "%"}</td></tr>`
+      ).join("") + `</tbody></table>` +
+      `<p class="note">"Helped %" excludes unknowns — it is the share of recorded outcomes where the med helped. Personal observation, not a clinical trial.</p></div>`);
+  } else {
+    medHtml.push(`<div class="panel"><h3>Medications taken</h3><p class="note">No medications recorded.</p></div>`);
+  }
+  medHtml.push(`<div class="panel"><h3>Where it hurts</h3>${
+    a.headFreq.length ? barTable(a.headFreq) : '<p class="note">Not recorded.</p>'}</div>`);
+  $("med-panels").innerHTML = medHtml.join("");
+
+  // ---- factors ----
+  const ft = $("factor-tables");
+  let factorHtml = "";
+  if (a.source === "block") {
+    if (a.blockCaveats && a.blockCaveats.length)
+      factorHtml += `<div class="caveat">${a.blockCaveats.map(esc).join(" ")}</div>`;
+    if (a.blockCorr && a.blockCorr.available === false) {
+      factorHtml += `<div class="banner">The app's analytics block reports correlations unavailable: ` +
+        `${esc(a.blockCorr.reason || "not enough events")}.</div>`;
+    } else if (a.divergence) {
+      let tz = "";
+      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
+      factorHtml += `<div class="caveat"><strong>Note:</strong> recomputing in this browser produced different buckets ` +
+        `than the app's analytics block — almost certainly a timezone difference in day bucketing ` +
+        `(the app buckets days in the phone's zone${tz ? ", this page is running in " + esc(tz) : ""}). ` +
+        `The app-computed figures below are authoritative.</div>`;
+    }
+  }
+  const hasDetail = Array.isArray(a.factorsFull) && a.factorsFull.length;
+  if (!hasDetail && !(a.source === "block" && a.blockCorr && a.blockCorr.available === false)) {
+    factorHtml += `<div class="banner">Not enough data yet — factor analysis needs at least ` +
+      `${MIN_EVENTS_FOR_CORRELATIONS} events and a bucket covering at least ` +
+      `${MIN_MIGRAINE_DAYS_PER_BUCKET} migraine-days, plus a home location for moon/daylight/season buckets. ` +
+      `Keep logging; this fills in as your log grows.</div>`;
+  }
+  const factorTable = rows => rows.map(r => {
+    const starred = a.headlineSet && a.headlineSet.has(r.factorKey);
+    return `<tr><td>${esc(r.bucket)}${starred ? ' <span class="note">\u2605</span>' : ""}</td>` +
+      `<td class="n">${r.migDays}</td><td class="n">${r.totalDays}</td>` +
+      `<td class="n">${r.rate == null ? "—" : r.rate + "%"}</td>` +
+      `<td class="n"><strong>${(Math.round(r.or * 100) / 100).toFixed(2)}</strong>${a.maxOr && r.or === a.maxOr ? ' <span class="note">\u2190 strongest</span>' : ""}</td></tr>`;
+  }).join("");
+  if (hasDetail) {
+    factorHtml += a.factorsFull.map(g => {
+      const rows = g.rows.map(r => ({ ...r, factorKey: g.name + "|" + r.bucket }));
+      const sub = a.source === "block" ? "· all buckets, app-computed" : "· all buckets, computed in this browser";
+      return `<div class="panel" style="margin-top:10px"><h3>${esc(g.name)} <span class="note">${sub}</span></h3>` +
+        `<table><thead><tr><th>Bucket</th><th class="n">Migraine-days</th><th class="n">All days</th><th class="n">Migraine rate</th><th class="n">Odds ratio</th>` +
+        `</tr></thead><tbody>${factorTable(rows)}</tbody></table></div>`;
+    }).join("");
+    factorHtml += `<p class="note" style="margin-top:10px">\u2605 = one of the app's headline factors ` +
+      `(top 8 by odds ratio among buckets covering \u2265 3 migraine-days with OR &gt; 1).` +
+      (a.source === "block" && !a.factorsFull.some(g => /Pressure/.test(g.name))
+        ? ` The pressure-change factor appears only when the app has a cached daily pressure baseline ` +
+          `(built the first time Analytics is opened online with weather enrichment on) — it cannot be computed ` +
+          `from the export alone, so its absence here means "not available", not zero.` : "") +
+      `</p>`;
+  }
+  ft.innerHTML = factorHtml;
+
+  // ---- event log ----
+  const tb = $("events-table").tBodies[0];
+  tb.innerHTML = a.events.slice().reverse().map(e => {
+    const s = parseTs(e.started_at), en = parseTs(e.ended_at);
+    const dur = s && en && en >= s ? (en - s) / 3600000 : null;
+    const aura = e.aura_present === true ? "yes" : e.aura_present === false ? "no" : '<span class="note">—</span>';
+    const meds = (e.meds_taken || []).map(m =>
+      `<span class="pill">${esc(m.name)}${m.dose ? " " + esc(m.dose) : ""}${m.helped === true ? " ✓" : m.helped === false ? " ✗" : ""}</span>`).join("");
+    const notes = (e.notes || "").length > 140 ? esc(e.notes.slice(0, 140)) + "…" : esc(e.notes);
+    return `<tr><td style="white-space:nowrap">${esc(fmtDate(s))}</td><td style="white-space:nowrap">${esc(fmtTime(s))}</td>` +
+      `<td class="n">${e.severity ? `<span class="sev" style="background:${sevColor(e.severity)}">${e.severity}</span>` : '<span class="note">—</span>'}</td>` +
+      `<td class="n">${dur != null ? fmtDur(dur) : '<span class="note">—</span>'}</td>` +
+      `<td>${aura}</td>` +
+      `<td>${(e.location_head || []).map(esc).join(", ") || '<span class="note">—</span>'}</td>` +
+      `<td>${(e.triggers_suspected || []).map(esc).join(", ") || '<span class="note">—</span>'}</td>` +
+      `<td>${meds || '<span class="note">—</span>'}</td><td>${notes || ""}</td></tr>`;
+  }).join("");
+}
+
+/* ---- wiring ---- */
+function boot() {
+  const $ = id => document.getElementById(id);
+  const input = $("file-input"), drop = $("drop"), loader = $("loader");
+
+  $("btn-open").classList.remove("hidden");
+  $("btn-open").onclick = () => input.click();
+  drop.onclick = () => input.click();
+  input.onchange = () => { if (input.files[0]) load(input.files[0]); };
+
+  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => {
+    e.preventDefault(); drop.classList.add("over");
+  }));
+  ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => {
+    e.preventDefault(); drop.classList.remove("over");
+  }));
+  drop.addEventListener("drop", e => {
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) load(f);
+  });
+
+  $("btn-print").onclick = () => window.print();
+  $("btn-clear").onclick = () => location.reload();
+
+  function load(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      let doc;
+      try { doc = JSON.parse(reader.result); }
+      catch (err) {
+        $("warnings").innerHTML = `<div class="banner bad">Could not parse JSON: ${esc(err.message)}</div>`;
+        return;
+      }
+      if (doc && typeof doc === "object" && !Array.isArray(doc.events) &&
+          (doc.dashboard || doc.correlations || doc.analytics)) {
+        $("warnings").innerHTML = `<div class="banner">This looks like a Megrim <em>analytics companion</em> file — ` +
+          `the app-computed numbers without the event log. Open your full <code>megrim-export</code> JSON instead ` +
+          `(app Settings → Export): from app v1.0.4 the analytics block is embedded in it, and this page uses ` +
+          `those figures directly.</div>`;
+        return;
+      }
+      const { warns, events } = validateDoc(doc);
+      const a = analyze({ ...doc, events });
+      render(a, warns);
+      loader.classList.add("hidden");
+      $("report").classList.remove("hidden");
+      $("btn-print").classList.remove("hidden");
+      $("btn-clear").classList.remove("hidden");
+      $("btn-open").classList.add("hidden");
+      window.scrollTo(0, 0);
+    };
+    reader.readAsText(file);
+  }
+}
+if (typeof document !== "undefined" && document.getElementById("file-input")) boot();
+</script>
+</body>
+</html>

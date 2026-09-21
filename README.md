@@ -90,7 +90,8 @@ automatic updates).
 
 ```
 app/       Flutter application (single codebase, Android target)
-docs/      STATUS.md (start here), SPEC.md, PRIVACY.md, IMPORT.md
+docs/      STATUS.md (start here), SPEC.md, PRIVACY.md, IMPORT.md, REPORT.md
+tools/     offline export→report webapp (report.html), sample data + converter scripts
 fastlane/  F-Droid / Play listing metadata
 fdroid/    F-Droid build recipe + submission notes
 .github/   CI workflow, funding
