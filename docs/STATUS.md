@@ -61,7 +61,8 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 | Verification bar | `flutter analyze` clean, **191 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
 
 Everything in the original spec is implemented, plus the accessibility pass, documented import
-format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out.
+format, and the opt-in privacy work below. `docs/BACKLOG.md` holds one open item: **#12, an
+in-app "Export report (PDF)"** — a v1.1 feature, written up and ready to pick up, not started.
 
 ## Community: first outside issues and PRs (2026-09)
 

@@ -4,8 +4,9 @@
 Non-blocking improvements captured for later. Not committed to a release; groom as needed.
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
-> **Status (2026-07-10):** #1–9 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)
-> "Session-3"/"Session-4"), kept here as a record. Add new items as they come up.
+> **Status (2026-09-22):** #1–11 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)),
+> kept here as a record. **#12 is OPEN** — the only live item on this list. Add new items as they
+> come up.
 
 ## UI / UX
 
@@ -111,6 +112,58 @@ first and **fail the dataviz distinguishability floors** (violet↔blue collapse
 magenta↔green under deuteranopia, true grey fails the chroma floor), so this is the closest
 theme fit that stays readable. Both modes validated all-pairs against their card surfaces
 (donuts wrap, so every slice pair is adjacent).
+
+### 12. In-app "Export report (PDF)" — **OPEN** *(raised by Steve 2026-09-22)*
+
+**Want:** a printable, clinician-ready report generated **on the phone**, offered next to
+Export (JSON) and Export (CSV) in Settings.
+
+**Why:** `tools/report.html` (PR #11, shipped in `v1.0.4`) renders exactly this, but only on a
+computer — the user must export JSON, move the file to a desktop, and open the page in a browser.
+Steve hit the friction himself while trying to check the report from the iOS TestFlight build: the
+only route was AirDrop to the Mac. Every ordinary user's workflow is phone-only, so today there is
+no way to hand a doctor a PDF from the app.
+
+**Shape:**
+
+- A third action in the Settings export group, reusing the **Share vs Save-to-device** choice the
+  other two already have (SPEC §7.1; `_exportContent`/`_saveToFile` in `settings_screen.dart`).
+  Nothing leaves the device except by the user's own share action. The iPadOS share-sheet anchor
+  is already handled there — it is the app's one piece of iOS-specific code.
+- Build the document from `DashboardResult` + `CorrelationResult` **directly** — the same objects
+  that feed the Analytics tab and the `analytics` export block (#16). No re-derivation, so the
+  PDF, the tab, and the block can never disagree. A `ReportModel` (pure, testable) between the
+  analytics results and the layout keeps the page code dumb.
+- Content: take the layout decisions already reviewed in `tools/report.html` rather than
+  re-litigating them — summary cards, the descriptive charts as plain drawn bars (rectangles;
+  no dependency on the on-screen chart widgets), the medication table with helped/didn't/unknown,
+  the suspected-factor tables **with the caveat block**, the full event log, and the medical
+  disclaimer.
+
+**Costs / gotchas:**
+
+- **New dependency:** the `pdf` package — pure Dart, BSD-licensed, no native code and no Google
+  libraries, so F-Droid and the CI `dependency-ban` job are unaffected. Confirm both before
+  committing to it.
+- **A bundled font is required.** The built-in PDF base-14 fonts have no glyphs for characters the
+  app's own labels use — `≥` in the daylight buckets (`≥ 14 h`), `Δ` in `Pressure Δ 24h (hPa)`,
+  the `·` separators. Bundle a Noto/Roboto TTF (a few hundred KB) and **add its license to the
+  generated licenses page**.
+- **Pressure factor may be absent.** It only exists when a pressure baseline is cached (built the
+  first time Analytics runs online with weather enrichment on). A report generated on a phone that
+  has never built one should say so in a footnote rather than silently omit the row — the same
+  honesty rule `docs/IMPORT.md` states for the export block.
+- Page-break behaviour is the fiddly part: tables must repeat their headers, and the factor and
+  event-log sections should start on fresh pages (what the HTML page's print stylesheet does).
+
+**Verification:** unit tests on `ReportModel` (it is pure); for the document itself, assert page
+count and extracted text rather than golden bytes; then a real check on both platforms — Android
+share + Save-to-device, iOS share sheet — since this is the first binary the app hands out.
+
+**Does not replace `tools/report.html`.** That stays the desktop path for anyone holding an export
+without the phone, and it keeps reading the #16 block, so the two agree by construction.
+
+**Estimate:** ~2–3 days. A feature, not a fix — ship as **v1.1**, not a patch.
 
 ## Release / infra
 
