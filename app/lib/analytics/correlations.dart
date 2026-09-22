@@ -1,5 +1,6 @@
 import '../enrichment/astro.dart' show moonPhaseName, sunTimes;
 import '../enrichment/calendar_factors.dart' show seasonForMonth;
+import '../models/event_time.dart' show wallClock;
 
 /// Port of the private app's `correlations.py` (SPEC §6.2) — "Top Suspected Factors".
 ///
@@ -159,7 +160,9 @@ List<FactorRow> factorRows(
 
 /// Compute correlations.
 ///
-/// [eventStarts] are the event start instants (any tz; reduced to local calendar dates).
+/// [eventStarts] are the event start instants (any tz; reduced to calendar dates in the zone each
+/// event was logged in via [startOffsets] — a parallel list of UTC offsets in minutes, null entries
+/// falling back to the phone's zone; omit the list for the all-phone-zone behaviour).
 /// [migrainePressureDeltas] is one non-null `pressure_delta_24h` value per migraine *day* (not
 /// per event — a day with multiple enriched events contributes only one delta), so its units
 /// match the day-based baseline. [pressureBaseline] is the cached all-days delta histogram
@@ -167,6 +170,7 @@ List<FactorRow> factorRows(
 /// season labels.
 CorrelationResult computeCorrelations({
   required List<DateTime> eventStarts,
+  List<int?>? startOffsets,
   List<double> migrainePressureDeltas = const [],
   Map<String, int>? pressureBaseline,
   double homeLat = 40.0,
@@ -180,11 +184,14 @@ CorrelationResult computeCorrelations({
     );
   }
 
-  final eventDates = eventStarts.map((t) {
-    final l = t.toLocal();
-    return DateTime(l.year, l.month, l.day);
-  }).toList()
-    ..sort();
+  assert(startOffsets == null || startOffsets.length == eventStarts.length);
+  final eventDates = <DateTime>[
+    for (var i = 0; i < eventStarts.length; i++)
+      () {
+        final l = wallClock(eventStarts[i], startOffsets?[i]);
+        return DateTime(l.year, l.month, l.day);
+      }(),
+  ]..sort();
 
   final start = eventDates.first;
   final end = eventDates.last;

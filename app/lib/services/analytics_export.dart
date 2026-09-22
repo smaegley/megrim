@@ -90,6 +90,9 @@ Map<String, dynamic> analyticsBlock({
 }) =>
     {
       'computed_at': now.toUtc().toIso8601String(),
+      // Since schema v2 (#17) day buckets come from each event's own stored offset; `timezone` is
+      // the zone used only for rows without one (pre-v2 rows, imports without an offset).
+      'bucketing': 'event-offset',
       'timezone': {
         'name': now.timeZoneName,
         'offset_minutes': now.timeZoneOffset.inMinutes,

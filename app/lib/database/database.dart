@@ -50,18 +50,28 @@ class MegrimDatabase extends _$MegrimDatabase {
   MegrimDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {
           await m.createAll();
         },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            // v2 (issue #17): per-event UTC offsets. Additive and nullable — existing rows keep
+            // null and are bucketed in the phone's zone exactly as before.
+            await m.addColumn(migraineEvents, migraineEvents.startedAtOffsetMin);
+            await m.addColumn(migraineEvents, migraineEvents.endedAtOffsetMin);
+          }
+        },
         beforeOpen: (details) async {
           await customStatement('PRAGMA foreign_keys = ON');
           if (details.wasCreated) {
             await _seedVocabularies();
-            await setSetting('schema_version', '1');
+          }
+          if (details.wasCreated || details.hadUpgrade) {
+            await setSetting('schema_version', '$schemaVersion');
           }
         },
       );

@@ -1,4 +1,5 @@
 import 'dart:math' show sqrt;
+import '../models/event_time.dart' show wallClock, wallDate;
 
 import 'correlations.dart'
     show
@@ -17,8 +18,12 @@ const List<String> kSeasonDisplayOrder = ['Spring', 'Summer', 'Autumn', 'Winter'
 
 /// One event's fields needed for statistics (event columns + its derived factors).
 class EventStat {
-  final DateTime startedAt; // UTC; reduced to local for date bucketing
+  final DateTime startedAt; // UTC; reduced to the event's own calendar date for bucketing (#17)
   final DateTime? endedAt;
+
+  /// UTC offsets (minutes) of the zone the event was logged in; null = phone's current zone.
+  final int? startOffsetMin;
+  final int? endOffsetMin;
   final int? severity;
   final int? dayOfWeek; // 0=Mon..6=Sun
   final String? season;
@@ -41,6 +46,8 @@ class EventStat {
     this.pressureDelta24h,
     this.daylightHours,
     this.triggers = const [],
+    this.startOffsetMin,
+    this.endOffsetMin,
   });
 }
 
@@ -170,8 +177,8 @@ DashboardResult computeDashboard(List<EventStat> events) {
 
   final summary = Summary(
     totalEvents: n,
-    firstEvent: _localDate(first),
-    lastEvent: _localDate(last),
+    firstEvent: wallDate(sorted.first.startedAt, sorted.first.startOffsetMin),
+    lastEvent: wallDate(sorted.last.startedAt, sorted.last.startOffsetMin),
     yearsTracked: yearsTracked,
     avgSeverity: avgSev,
     avgDurationHours: avgDur,
@@ -185,7 +192,7 @@ DashboardResult computeDashboard(List<EventStat> events) {
   final yearSevSum = <int, int>{};
   final yearSevN = <int, int>{};
   for (final e in sorted) {
-    final y = e.startedAt.toLocal().year;
+    final y = wallClock(e.startedAt, e.startOffsetMin).year;
     yearCounts[y] = (yearCounts[y] ?? 0) + 1;
     if (e.severity != null) {
       yearSevSum[y] = (yearSevSum[y] ?? 0) + e.severity!;
@@ -256,7 +263,7 @@ DashboardResult computeDashboard(List<EventStat> events) {
     });
 
   final calendar = sorted
-      .map((e) => CalendarEntry(_localDate(e.startedAt), e.severity))
+      .map((e) => CalendarEntry(wallDate(e.startedAt, e.startOffsetMin), e.severity))
       .toList();
 
   return DashboardResult(
@@ -281,7 +288,3 @@ List<LabeledCount> _labeledFrom(List<String> order, Iterable<String?> values) {
   return order.map((k) => LabeledCount(k, counts[k] ?? 0)).toList();
 }
 
-DateTime _localDate(DateTime utc) {
-  final l = utc.toLocal();
-  return DateTime(l.year, l.month, l.day);
-}

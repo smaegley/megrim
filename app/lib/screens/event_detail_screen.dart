@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../database/database.dart';
+import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
 import '../models/med_entry.dart';
@@ -70,8 +71,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   List<String> _locationVocab = const [];
   List<String> _medVocab = const [];
 
+  // Wall-clock times in the zone the entry belongs to (issue #17): an entry keeps the zone it was
+  // logged in, so editing it abroad adjusts its wall clock there rather than re-basing it on the
+  // phone's current zone. _startedAt/_endedAt are naive local DateTimes for the pickers; the
+  // offsets say which zone they are read in when saving.
   DateTime _startedAt = DateTime.now();
   DateTime? _endedAt;
+  int _startOffset = offsetMinutesOf();
+  int? _endOffset;
   bool _endTouched = false;
   double? _geoLat;
   double? _geoLon;
@@ -112,6 +119,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         _weatherEnrichmentOn = weatherOn;
         _startedAt = draft.startedAt;
         _endedAt = draft.endedAt;
+        _startOffset = offsetMinutesOf(draft.startedAt);
+        _endOffset =
+            draft.endedAt == null ? null : offsetMinutesOf(draft.endedAt!);
         _geoLat = draft.geoLat;
         _geoLon = draft.geoLon;
         _geoLabel = draft.geoLabel;
@@ -125,8 +135,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       _loaded = true;
       _derived = d;
       _weatherEnrichmentOn = weatherOn;
-      _startedAt = e.startedAt.toLocal();
-      _endedAt = e.endedAt?.toLocal();
+      _startedAt = wallClockNaive(e.startedAt, e.startedAtOffsetMin);
+      _endedAt = e.endedAt == null
+          ? null
+          : wallClockNaive(e.endedAt!, e.endedAtOffsetMin ?? e.startedAtOffsetMin);
+      // A pre-v2 row (no stored offset) is read in the phone's zone — saving it then records
+      // that zone, so the row is pinned from the first edit on.
+      _startOffset =
+          e.startedAtOffsetMin ?? offsetMinutesOf(e.startedAt.toLocal());
+      _endOffset = e.endedAt == null
+          ? null
+          : e.endedAtOffsetMin ??
+              e.startedAtOffsetMin ??
+              offsetMinutesOf(e.endedAt!.toLocal());
       _geoLat = e.geoLat;
       _geoLon = e.geoLon;
       _geoLabel = e.geoLabel;
@@ -168,14 +189,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
-    if (_endedAt != null && _endedAt!.isBefore(_startedAt)) {
+    final startInstant = instantOf(_startedAt, _startOffset);
+    final endInstant =
+        _endedAt == null ? null : instantOf(_endedAt!, _endOffset ?? _startOffset);
+    if (endInstant != null && endInstant.isBefore(startInstant)) {
       messenger.showSnackBar(
           const SnackBar(content: Text('End time must be after the start time.')));
       return;
     }
     final fields = MigraineEventsCompanion(
-      startedAt: Value(_startedAt.toUtc()),
-      endedAt: Value(_endedAt?.toUtc()),
+      startedAt: Value(startInstant),
+      endedAt: Value(endInstant),
+      startedAtOffsetMin: Value(_startOffset),
+      endedAtOffsetMin: Value(_endedAt == null ? null : _endOffset ?? _startOffset),
       severity: Value(_severity),
       auraPresent: Value(_aura),
       auraDescription:

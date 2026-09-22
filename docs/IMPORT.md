@@ -61,6 +61,8 @@ the app.
 | `id` | string, **required** | Any unique string. Megrim's own exports use UUIDs. Merge-dedup key — keep it stable across re-imports. |
 | `started_at` | string, **required** | ISO-8601 timestamp. **Always include a timezone** (`Z` or `±hh:mm`); a bare local timestamp is interpreted in the *importing phone's* current zone, which silently shifts times if the data was recorded elsewhere. |
 | `ended_at` | string or null | ISO-8601, same timezone rule. Null/omitted = ongoing. |
+| `started_at_offset_minutes` | no | Integer, minutes east of UTC of the zone the event was **logged in** (e.g. `540` for UTC+9, `-360` for UTC−6). Since app v1.0.5 every local-calendar bucket (weekday, migraine-day, time of day, season, the History calendar) uses this, so an entry stays on the day it happened even when Analytics runs in another zone. If omitted, an explicit `+hh:mm`/`-hh:mm` suffix on `started_at` is used; if that is `Z` or absent, the phone's current zone applies (the pre-v1.0.5 behaviour). |
+| `ended_at_offset_minutes` | no | Same for `ended_at`; falls back to the start offset. |
 | `severity` | integer 1–10 or null | 10 = worst. |
 | `location_head` | array of strings | Where on the head, e.g. `["Left temple", "Forehead"]`. Free text. |
 | `aura_present` | boolean or null | Null = not recorded (distinct from `false`). |
@@ -114,6 +116,7 @@ reference produced from the sample data lives at
 ```json
 "analytics": {
   "computed_at": "2026-09-20T18:00:00.000Z",
+  "bucketing": "event-offset",
   "timezone": { "name": "MDT", "offset_minutes": -360 },
   "home_location": { "lat": 39.96, "lon": -105.05, "label": "Boulder, Colorado, United States" },
   "method": "docs/METHODS.md",
@@ -143,9 +146,11 @@ reference produced from the sample data lives at
 
 Notes for renderers:
 
-- **Day bucketing is local-calendar** (day of week, season, migraine-days, the study window), so
-  `timezone` records the phone's zone at export time. Re-deriving buckets from `started_at` in a
-  different zone can legitimately give different counts.
+- **Day bucketing is local-calendar** (day of week, season, migraine-days, the study window).
+  `bucketing: "event-offset"` (app v1.0.5+) means each event was bucketed in the zone it was logged
+  in (its `started_at_offset_minutes`); `timezone` is the phone's zone at export time and applies
+  only to events without a stored offset. Re-deriving buckets from `started_at` in a different zone
+  can legitimately give different counts for those.
 - `correlations.factors` carries **every** bucket row for every factor; `top_factors` is the app's
   gated view (≥ 3 migraine-days and OR > 1, strongest 8). Use the former to reproduce the tab's
   detail tables and the latter for its headline list.

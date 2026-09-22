@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../database/database.dart';
+import '../models/event_time.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/severity_badge.dart';
 import 'event_detail_screen.dart';
@@ -130,7 +131,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           onDismissed: (_) => _delete(e.id),
           child: ListTile(
             leading: SeverityBadge(severity: e.severity),
-            title: Text(df.format(e.startedAt.toLocal())),
+            title: Text(df.format(e.startedWall)),
             subtitle: Text(
               [
                 if (e.severity != null) 'Severity ${e.severity}/10',
@@ -201,7 +202,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             for (final e in sorted)
               ListTile(
                 leading: SeverityBadge(severity: e.severity),
-                title: Text(DateFormat('HH:mm').format(e.startedAt.toLocal())),
+                title: Text(DateFormat('HH:mm').format(e.startedWall)),
                 subtitle: Text(
                   [
                     if (e.severity != null) 'Severity ${e.severity}/10',
@@ -274,9 +275,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
 /// inside the span can't drift the date (the `cb6671c` bug class).
 @visibleForTesting
 List<DateTime> localDaysSpanned(MigraineEvent e) {
-  final s = e.startedAt.toLocal();
+  final s = e.startedWall;
   final start = DateTime(s.year, s.month, s.day);
-  final end = e.endedAt?.toLocal();
+  final end = e.endedWall;
   if (end == null) return [start];
   final endDay = DateTime(end.year, end.month, end.day);
   if (endDay.isBefore(start)) return [start];
