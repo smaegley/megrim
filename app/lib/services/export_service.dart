@@ -60,7 +60,8 @@ class ExportService {
     'stress_level', 'foods_notable', 'notes', 'geo_lat', 'geo_lon', 'geo_label',
     'day_of_week', 'season', 'time_of_day_bucket', 'daylight_hours', 'moon_phase',
     'moon_illumination', 'temp_c', 'humidity_pct', 'pressure_hpa',
-    'precipitation_mm', 'pressure_delta_24h', 'pressure_delta_48h', 'aqi' //
+    'precipitation_mm', 'pressure_delta_24h', 'pressure_delta_48h', 'aqi',
+    'started_at_offset_minutes', 'ended_at_offset_minutes' //
   ];
 
   /// One row per event; arrays joined with ';'; derived columns flattened (SPEC §7.2).
@@ -109,6 +110,8 @@ class ExportService {
         _csv(d?.pressureDelta24h?.toString() ?? ''),
         _csv(d?.pressureDelta48h?.toString() ?? ''),
         _csv(d?.aqi?.toString() ?? ''),
+        _csv(e.startedAtOffsetMin?.toString() ?? ''),
+        _csv(e.endedAtOffsetMin?.toString() ?? ''),
       ];
       buf.writeln(row.join(','));
     }

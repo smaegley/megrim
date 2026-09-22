@@ -15,6 +15,22 @@ String? _iso(DateTime? t) => t?.toUtc().toIso8601String();
 DateTime? _parseIso(dynamic v) =>
     (v is String && v.isNotEmpty) ? DateTime.parse(v).toUtc() : null;
 
+/// UTC offset carried by an ISO-8601 string's own `+hh:mm`/`-hh:mm` suffix, or null for `Z` /
+/// bare local stamps. Lets an external file's explicit offsets survive import (issue #17).
+int? _offsetFromIso(dynamic v) {
+  if (v is! String) return null;
+  final m = RegExp(r'([+-])(\d{2}):?(\d{2})$').firstMatch(v.trim());
+  if (m == null) return null;
+  final sign = m.group(1) == '-' ? -1 : 1;
+  return sign * (int.parse(m.group(2)!) * 60 + int.parse(m.group(3)!));
+}
+
+int? _offsetField(Map<String, dynamic> j, String key, String isoKey) {
+  final v = j[key];
+  if (v is num) return v.toInt();
+  return _offsetFromIso(j[isoKey]);
+}
+
 /// Serialize an event and its derived factors to a JSON-ready map. Array/object columns are
 /// emitted as real JSON arrays/objects rather than the stringified DB form.
 Map<String, dynamic> eventToJson(MigraineEvent e, DerivedFactor? d) {
@@ -22,6 +38,8 @@ Map<String, dynamic> eventToJson(MigraineEvent e, DerivedFactor? d) {
     'id': e.id,
     'started_at': _iso(e.startedAt),
     'ended_at': _iso(e.endedAt),
+    'started_at_offset_minutes': e.startedAtOffsetMin,
+    'ended_at_offset_minutes': e.endedAtOffsetMin,
     'severity': e.severity,
     'location_head': decodeStringList(e.locationHead),
     'aura_present': e.auraPresent,
@@ -69,6 +87,9 @@ Map<String, dynamic> _derivedToJson(DerivedFactor d) => {
     id: id,
     startedAt: _parseIso(j['started_at'])!,
     endedAt: Value(_parseIso(j['ended_at'])),
+    startedAtOffsetMin:
+        Value(_offsetField(j, 'started_at_offset_minutes', 'started_at')),
+    endedAtOffsetMin: Value(_offsetField(j, 'ended_at_offset_minutes', 'ended_at')),
     severity: Value(j['severity'] as int?),
     locationHead: Value(encodeStringList(_strList(j['location_head']))),
     auraPresent: Value(j['aura_present'] as bool?),

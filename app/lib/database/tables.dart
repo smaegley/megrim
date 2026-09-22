@@ -44,6 +44,14 @@ class MigraineEvents extends Table {
   RealColumn get geoLon => real().nullable()();
   TextColumn get geoLabel => text().nullable()();
 
+  /// UTC offset (minutes east of UTC) of the zone the event was logged in — issue #17. Every
+  /// local-calendar bucket (weekday, migraine-day, time of day, season, the History calendar) is
+  /// taken from this, so an entry stays on the day it actually happened even when Analytics runs
+  /// in another zone. Null on rows from before schema v2 and on imports that carry no offset;
+  /// those fall back to the phone's current zone (the pre-v2 behaviour).
+  IntColumn get startedAtOffsetMin => integer().nullable()();
+  IntColumn get endedAtOffsetMin => integer().nullable()();
+
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 

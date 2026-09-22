@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../database/database.dart';
+import '../models/event_time.dart';
 import '../models/home_location.dart';
 import 'astro.dart';
 import 'calendar_factors.dart';
@@ -62,7 +63,10 @@ class EnrichmentService {
     }
 
     final startedUtc = event.startedAt.toUtc();
-    final cal = computeCalendarFactors(event.startedAt.toLocal(), coords.lat);
+    // The event's own zone (issue #17), so the stored weekday/time-of-day agree with the
+    // correlation tables and don't depend on where the phone is when enrichment runs.
+    final cal = computeCalendarFactors(
+        wallClock(event.startedAt, event.startedAtOffsetMin), coords.lat);
     final astro = computeAstro(startedUtc, coords.lat, coords.lon);
 
     final weatherAllowed =

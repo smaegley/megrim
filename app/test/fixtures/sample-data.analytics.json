@@ -1,4 +1,5 @@
 {
+  "bucketing": "event-offset",
   "home_location": {
     "lat": 39.96,
     "lon": -105.05,

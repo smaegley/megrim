@@ -181,6 +181,27 @@ class $MigraineEventsTable extends MigraineEvents
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _startedAtOffsetMinMeta =
+      const VerificationMeta('startedAtOffsetMin');
+  @override
+  late final GeneratedColumn<int> startedAtOffsetMin = GeneratedColumn<int>(
+    'started_at_offset_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endedAtOffsetMinMeta = const VerificationMeta(
+    'endedAtOffsetMin',
+  );
+  @override
+  late final GeneratedColumn<int> endedAtOffsetMin = GeneratedColumn<int>(
+    'ended_at_offset_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -221,6 +242,8 @@ class $MigraineEventsTable extends MigraineEvents
     geoLat,
     geoLon,
     geoLabel,
+    startedAtOffsetMin,
+    endedAtOffsetMin,
     createdAt,
     updatedAt,
   ];
@@ -354,6 +377,24 @@ class $MigraineEventsTable extends MigraineEvents
         geoLabel.isAcceptableOrUnknown(data['geo_label']!, _geoLabelMeta),
       );
     }
+    if (data.containsKey('started_at_offset_min')) {
+      context.handle(
+        _startedAtOffsetMinMeta,
+        startedAtOffsetMin.isAcceptableOrUnknown(
+          data['started_at_offset_min']!,
+          _startedAtOffsetMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ended_at_offset_min')) {
+      context.handle(
+        _endedAtOffsetMinMeta,
+        endedAtOffsetMin.isAcceptableOrUnknown(
+          data['ended_at_offset_min']!,
+          _endedAtOffsetMinMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -443,6 +484,14 @@ class $MigraineEventsTable extends MigraineEvents
         DriftSqlType.string,
         data['${effectivePrefix}geo_label'],
       ),
+      startedAtOffsetMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}started_at_offset_min'],
+      ),
+      endedAtOffsetMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ended_at_offset_min'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -496,6 +545,14 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
   final double? geoLat;
   final double? geoLon;
   final String? geoLabel;
+
+  /// UTC offset (minutes east of UTC) of the zone the event was logged in — issue #17. Every
+  /// local-calendar bucket (weekday, migraine-day, time of day, season, the History calendar) is
+  /// taken from this, so an entry stays on the day it actually happened even when Analytics runs
+  /// in another zone. Null on rows from before schema v2 and on imports that carry no offset;
+  /// those fall back to the phone's current zone (the pre-v2 behaviour).
+  final int? startedAtOffsetMin;
+  final int? endedAtOffsetMin;
   final DateTime createdAt;
   final DateTime updatedAt;
   const MigraineEvent({
@@ -515,6 +572,8 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     this.geoLat,
     this.geoLon,
     this.geoLabel,
+    this.startedAtOffsetMin,
+    this.endedAtOffsetMin,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -564,6 +623,12 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     }
     if (!nullToAbsent || geoLabel != null) {
       map['geo_label'] = Variable<String>(geoLabel);
+    }
+    if (!nullToAbsent || startedAtOffsetMin != null) {
+      map['started_at_offset_min'] = Variable<int>(startedAtOffsetMin);
+    }
+    if (!nullToAbsent || endedAtOffsetMin != null) {
+      map['ended_at_offset_min'] = Variable<int>(endedAtOffsetMin);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -616,6 +681,12 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       geoLabel: geoLabel == null && nullToAbsent
           ? const Value.absent()
           : Value(geoLabel),
+      startedAtOffsetMin: startedAtOffsetMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startedAtOffsetMin),
+      endedAtOffsetMin: endedAtOffsetMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endedAtOffsetMin),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -645,6 +716,8 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       geoLat: serializer.fromJson<double?>(json['geoLat']),
       geoLon: serializer.fromJson<double?>(json['geoLon']),
       geoLabel: serializer.fromJson<String?>(json['geoLabel']),
+      startedAtOffsetMin: serializer.fromJson<int?>(json['startedAtOffsetMin']),
+      endedAtOffsetMin: serializer.fromJson<int?>(json['endedAtOffsetMin']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -669,6 +742,8 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       'geoLat': serializer.toJson<double?>(geoLat),
       'geoLon': serializer.toJson<double?>(geoLon),
       'geoLabel': serializer.toJson<String?>(geoLabel),
+      'startedAtOffsetMin': serializer.toJson<int?>(startedAtOffsetMin),
+      'endedAtOffsetMin': serializer.toJson<int?>(endedAtOffsetMin),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -691,6 +766,8 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     Value<double?> geoLat = const Value.absent(),
     Value<double?> geoLon = const Value.absent(),
     Value<String?> geoLabel = const Value.absent(),
+    Value<int?> startedAtOffsetMin = const Value.absent(),
+    Value<int?> endedAtOffsetMin = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => MigraineEvent(
@@ -716,6 +793,12 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     geoLat: geoLat.present ? geoLat.value : this.geoLat,
     geoLon: geoLon.present ? geoLon.value : this.geoLon,
     geoLabel: geoLabel.present ? geoLabel.value : this.geoLabel,
+    startedAtOffsetMin: startedAtOffsetMin.present
+        ? startedAtOffsetMin.value
+        : this.startedAtOffsetMin,
+    endedAtOffsetMin: endedAtOffsetMin.present
+        ? endedAtOffsetMin.value
+        : this.endedAtOffsetMin,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -751,6 +834,12 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       geoLat: data.geoLat.present ? data.geoLat.value : this.geoLat,
       geoLon: data.geoLon.present ? data.geoLon.value : this.geoLon,
       geoLabel: data.geoLabel.present ? data.geoLabel.value : this.geoLabel,
+      startedAtOffsetMin: data.startedAtOffsetMin.present
+          ? data.startedAtOffsetMin.value
+          : this.startedAtOffsetMin,
+      endedAtOffsetMin: data.endedAtOffsetMin.present
+          ? data.endedAtOffsetMin.value
+          : this.endedAtOffsetMin,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -775,6 +864,8 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
           ..write('geoLat: $geoLat, ')
           ..write('geoLon: $geoLon, ')
           ..write('geoLabel: $geoLabel, ')
+          ..write('startedAtOffsetMin: $startedAtOffsetMin, ')
+          ..write('endedAtOffsetMin: $endedAtOffsetMin, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -799,6 +890,8 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     geoLat,
     geoLon,
     geoLabel,
+    startedAtOffsetMin,
+    endedAtOffsetMin,
     createdAt,
     updatedAt,
   );
@@ -822,6 +915,8 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
           other.geoLat == this.geoLat &&
           other.geoLon == this.geoLon &&
           other.geoLabel == this.geoLabel &&
+          other.startedAtOffsetMin == this.startedAtOffsetMin &&
+          other.endedAtOffsetMin == this.endedAtOffsetMin &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -843,6 +938,8 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
   final Value<double?> geoLat;
   final Value<double?> geoLon;
   final Value<String?> geoLabel;
+  final Value<int?> startedAtOffsetMin;
+  final Value<int?> endedAtOffsetMin;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -863,6 +960,8 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     this.geoLat = const Value.absent(),
     this.geoLon = const Value.absent(),
     this.geoLabel = const Value.absent(),
+    this.startedAtOffsetMin = const Value.absent(),
+    this.endedAtOffsetMin = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -884,6 +983,8 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     this.geoLat = const Value.absent(),
     this.geoLon = const Value.absent(),
     this.geoLabel = const Value.absent(),
+    this.startedAtOffsetMin = const Value.absent(),
+    this.endedAtOffsetMin = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -908,6 +1009,8 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     Expression<double>? geoLat,
     Expression<double>? geoLon,
     Expression<String>? geoLabel,
+    Expression<int>? startedAtOffsetMin,
+    Expression<int>? endedAtOffsetMin,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -929,6 +1032,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
       if (geoLat != null) 'geo_lat': geoLat,
       if (geoLon != null) 'geo_lon': geoLon,
       if (geoLabel != null) 'geo_label': geoLabel,
+      if (startedAtOffsetMin != null)
+        'started_at_offset_min': startedAtOffsetMin,
+      if (endedAtOffsetMin != null) 'ended_at_offset_min': endedAtOffsetMin,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -952,6 +1058,8 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     Value<double?>? geoLat,
     Value<double?>? geoLon,
     Value<String?>? geoLabel,
+    Value<int?>? startedAtOffsetMin,
+    Value<int?>? endedAtOffsetMin,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -973,6 +1081,8 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
       geoLat: geoLat ?? this.geoLat,
       geoLon: geoLon ?? this.geoLon,
       geoLabel: geoLabel ?? this.geoLabel,
+      startedAtOffsetMin: startedAtOffsetMin ?? this.startedAtOffsetMin,
+      endedAtOffsetMin: endedAtOffsetMin ?? this.endedAtOffsetMin,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1030,6 +1140,12 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     if (geoLabel.present) {
       map['geo_label'] = Variable<String>(geoLabel.value);
     }
+    if (startedAtOffsetMin.present) {
+      map['started_at_offset_min'] = Variable<int>(startedAtOffsetMin.value);
+    }
+    if (endedAtOffsetMin.present) {
+      map['ended_at_offset_min'] = Variable<int>(endedAtOffsetMin.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1061,6 +1177,8 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
           ..write('geoLat: $geoLat, ')
           ..write('geoLon: $geoLon, ')
           ..write('geoLabel: $geoLabel, ')
+          ..write('startedAtOffsetMin: $startedAtOffsetMin, ')
+          ..write('endedAtOffsetMin: $endedAtOffsetMin, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -2665,6 +2783,8 @@ typedef $$MigraineEventsTableCreateCompanionBuilder =
       Value<double?> geoLat,
       Value<double?> geoLon,
       Value<String?> geoLabel,
+      Value<int?> startedAtOffsetMin,
+      Value<int?> endedAtOffsetMin,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -2687,6 +2807,8 @@ typedef $$MigraineEventsTableUpdateCompanionBuilder =
       Value<double?> geoLat,
       Value<double?> geoLon,
       Value<String?> geoLabel,
+      Value<int?> startedAtOffsetMin,
+      Value<int?> endedAtOffsetMin,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -2807,6 +2929,16 @@ class $$MigraineEventsTableFilterComposer
 
   ColumnFilters<String> get geoLabel => $composableBuilder(
     column: $table.geoLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get startedAtOffsetMin => $composableBuilder(
+    column: $table.startedAtOffsetMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get endedAtOffsetMin => $composableBuilder(
+    column: $table.endedAtOffsetMin,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2935,6 +3067,16 @@ class $$MigraineEventsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get startedAtOffsetMin => $composableBuilder(
+    column: $table.startedAtOffsetMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get endedAtOffsetMin => $composableBuilder(
+    column: $table.endedAtOffsetMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -3017,6 +3159,16 @@ class $$MigraineEventsTableAnnotationComposer
   GeneratedColumn<String> get geoLabel =>
       $composableBuilder(column: $table.geoLabel, builder: (column) => column);
 
+  GeneratedColumn<int> get startedAtOffsetMin => $composableBuilder(
+    column: $table.startedAtOffsetMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get endedAtOffsetMin => $composableBuilder(
+    column: $table.endedAtOffsetMin,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -3095,6 +3247,8 @@ class $$MigraineEventsTableTableManager
                 Value<double?> geoLat = const Value.absent(),
                 Value<double?> geoLon = const Value.absent(),
                 Value<String?> geoLabel = const Value.absent(),
+                Value<int?> startedAtOffsetMin = const Value.absent(),
+                Value<int?> endedAtOffsetMin = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3115,6 +3269,8 @@ class $$MigraineEventsTableTableManager
                 geoLat: geoLat,
                 geoLon: geoLon,
                 geoLabel: geoLabel,
+                startedAtOffsetMin: startedAtOffsetMin,
+                endedAtOffsetMin: endedAtOffsetMin,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -3137,6 +3293,8 @@ class $$MigraineEventsTableTableManager
                 Value<double?> geoLat = const Value.absent(),
                 Value<double?> geoLon = const Value.absent(),
                 Value<String?> geoLabel = const Value.absent(),
+                Value<int?> startedAtOffsetMin = const Value.absent(),
+                Value<int?> endedAtOffsetMin = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -3157,6 +3315,8 @@ class $$MigraineEventsTableTableManager
                 geoLat: geoLat,
                 geoLon: geoLon,
                 geoLabel: geoLabel,
+                startedAtOffsetMin: startedAtOffsetMin,
+                endedAtOffsetMin: endedAtOffsetMin,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,

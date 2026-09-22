@@ -6,6 +6,7 @@ import '../analytics/dashboard.dart';
 import '../analytics/pressure_baseline.dart';
 import '../database/database.dart';
 import '../enrichment/enrichment_service.dart';
+import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
 import '../services/analytics_export.dart';
@@ -69,6 +70,7 @@ class MegrimRepository {
     await db.into(db.migraineEvents).insert(MigraineEventsCompanion.insert(
           id: id,
           startedAt: now,
+          startedAtOffsetMin: Value(offsetMinutesOf()),
           severity: Value(severity),
           geoLat: Value(lat),
           geoLon: Value(lon),
@@ -105,6 +107,7 @@ class MegrimRepository {
     await (db.update(db.migraineEvents)..where((t) => t.id.equals(id))).write(
       MigraineEventsCompanion(
         endedAt: Value(DateTime.now().toUtc()),
+        endedAtOffsetMin: Value(offsetMinutesOf()),
         updatedAt: Value(DateTime.now().toUtc()),
       ),
     );
@@ -136,6 +139,8 @@ class MegrimRepository {
         .map((e) => EventStat(
               startedAt: e.startedAt,
               endedAt: e.endedAt,
+              startOffsetMin: e.startedAtOffsetMin,
+              endOffsetMin: e.endedAtOffsetMin,
               severity: e.severity,
               dayOfWeek: dById[e.id]?.dayOfWeek,
               season: dById[e.id]?.season,
@@ -153,7 +158,10 @@ class MegrimRepository {
       {PressureBaselineService? baselineService, bool allowFetch = true}) async {
     final events = await db.select(db.migraineEvents).get();
     if (events.length < kMinEventsForCorrelations) {
-      return computeCorrelations(eventStarts: events.map((e) => e.startedAt).toList());
+      return computeCorrelations(
+        eventStarts: events.map((e) => e.startedAt).toList(),
+        startOffsets: events.map((e) => e.startedAtOffsetMin).toList(),
+      );
     }
     final derived = await db.select(db.derivedFactors).get();
     final derivedById = {for (final d in derived) d.eventId: d};
@@ -166,12 +174,11 @@ class MegrimRepository {
     for (final e in byStart) {
       final delta = derivedById[e.id]?.pressureDelta24h;
       if (delta == null) continue;
-      final l = e.startedAt.toLocal();
-      deltaByDay.putIfAbsent(DateTime(l.year, l.month, l.day), () => delta);
+      deltaByDay.putIfAbsent(e.startedWallDate, () => delta);
     }
     final deltas = deltaByDay.values.toList();
 
-    final dates = events.map((e) => e.startedAt.toLocal()).toList()..sort();
+    final dates = events.map((e) => e.startedWallDate).toList()..sort();
     final home = await homeLocation;
     Map<String, int>? baseline;
     if (baselineService != null && home != null) {
@@ -185,6 +192,7 @@ class MegrimRepository {
 
     return computeCorrelations(
       eventStarts: events.map((e) => e.startedAt).toList(),
+      startOffsets: events.map((e) => e.startedAtOffsetMin).toList(),
       migrainePressureDeltas: deltas,
       pressureBaseline: baseline,
       homeLat: home?.lat ?? 40.0,
