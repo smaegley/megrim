@@ -1,0 +1,4 @@
+• Fixed: entries no longer shift to another day or hour when you travel across time zones — each entry remembers the zone it was logged in.
+• Editing a start time now moves the end time with it, so a backdated entry needs one date pick, not two (thanks @zatteo).
+• JSON exports include the app's computed analytics, so reports built from an export match the Analytics tab.
+• New offline report page (tools/report.html) turns an export into a printable summary or PDF (thanks @nfd9001).

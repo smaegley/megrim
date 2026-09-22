@@ -41,7 +41,7 @@
       "description": "Written by Megrim's exports: the app's computed dashboard and odds-ratio results at export time, for renderers. Ignored on import. See docs/IMPORT.md, 'The analytics block'.",
       "properties": {
         "computed_at": { "$ref": "#/$defs/isoTimestamp" },
-        "bucketing": { "type": "string", "enum": ["event-offset"], "description": "How local-calendar day buckets were derived: per-event stored offsets (app v1.0.5+); timezone then applies only to events without one." },
+        "bucketing": { "type": "string", "enum": ["event-offset"], "description": "How local-calendar day buckets were derived: per-event stored offsets (app v1.0.4+); timezone then applies only to events without one." },
         "timezone": {
           "type": "object",
           "properties": {
@@ -156,7 +156,7 @@
           "type": ["integer", "null"],
           "minimum": -900,
           "maximum": 900,
-          "description": "Minutes east of UTC of the zone the event was logged in; local-calendar buckets use it (app v1.0.5+). Null/absent: an explicit offset on started_at is used, else the phone's zone."
+          "description": "Minutes east of UTC of the zone the event was logged in; local-calendar buckets use it (app v1.0.4+). Null/absent: an explicit offset on started_at is used, else the phone's zone."
         },
         "ended_at_offset_minutes": {
           "type": ["integer", "null"],

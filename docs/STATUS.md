@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-21: v1.0.3 live on both stores; PR #14, the analytics-export block (#16) and the community HTML report (PR #11) merged on `main`, unreleased; next work is #17._
+_Last updated: 2026-09-22: v1.0.4 prepared on `main` (#14, #16, #11, #17), tag pending; v1.0.3 live on both stores._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -54,11 +54,11 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 
 | | |
 |---|---|
-| Latest release | **`v1.0.3`** (versionCode 8, tagged 2026-09-19), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.3); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). F-Droid picks the tag up automatically |
+| Latest release | **`v1.0.3`** (versionCode 8, 2026-09-19) on [GitHub](https://github.com/smaegley/megrim/releases/tag/v1.0.3), F-Droid and the App Store. **`v1.0.4` (versionCode 9) is prepared on `main` and awaits its tag** — #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive) |
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
 | Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
 | Permissions | `INTERNET` only (plus `ACCESS_NETWORK_STATE` from connectivity_plus). No location permission at all |
-| Verification bar | `flutter analyze` clean, **180 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
+| Verification bar | `flutter analyze` clean, **191 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
 
 Everything in the original spec is implemented, plus the accessibility pass, documented import
 format, and the opt-in privacy work below. `docs/BACKLOG.md` is fully closed out.
@@ -100,12 +100,16 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
 - **Dev safety:** debug builds now install as a separate app (`org.maegley.megrim.debug`, "Megrim
   dev"). Running a branch on a phone that carried the F-Droid build used to make the Flutter tool
   uninstall it, data included.
-- **[Issue #17](https://github.com/smaegley/megrim/issues/17) — NEXT.** Raised by the #11 author: events are
+- **[Issue #17](https://github.com/smaegley/megrim/issues/17) — BUILT and MERGED 2026-09-22** (`3d83bab`), Steve ran the
+  19-step emulator script (migration from a v1 DB, Tokyo zone switch, editor, export/import) — all passed. Was: events are
   UTC and local-calendar buckets use `toLocal()` at *compute* time (correlations, by-month) but at
   *enrichment* time (stored weekday/time-of-day), so a traveller's analytics depend on where the phone is
   when Analytics runs. Plan: per-event UTC offset column, one bucketing helper used everywhere, exports
   carry real offsets. Travel as an odds-ratio factor is not feasible (no daily location baseline); an
   "away from home" descriptive share + default "Travel" trigger is the honest alternative (separate issue).
+- **Release plan:** v1.0.4 = #14 + #16 + #11 + #17 (Steve chose to bundle #17 rather than pay a second
+  App Review cycle; the migration is additive and was exercised on the emulator). #15 was still open
+  with no PR, so it moves to v1.0.5. iOS build for 1.0.4 must be **10** (`flutter build ipa --build-number=10`).
 
 **`v1.0.3` released 2026-09-19:** tag pushed, `release.yml` green (6m41s), APK/AAB published, not
 draft/prerelease. **iOS 1.0.3 (build 9): submitted 2026-09-19, APPROVED and released 2026-09-20.** Archived with

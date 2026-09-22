@@ -671,7 +671,7 @@ F-Droid's bot (`AutoUpdateMode: Version`, `UpdateCheckMode: Tags`, `VercodeOpera
 reading `app/pubspec.yaml`), so routine releases need **no** further merge request. The canonical
 recipe now lives in `fdroiddata`; the copy under `fdroid/` is a historical reference.
 
-**Unreleased on `main` (2026-09-20), for `v1.0.4`.** PR #14 (zatteo): moving an entry's start shifts
+**`v1.0.4` (2026-09-22): the first community release.** Version `1.0.4+9`. PR #14 (zatteo): moving an entry's start shifts
 its end by the same delta unless the end was edited, so a backdated past entry needs one date pick
 instead of two. **#16, the `analytics` export block:** reviewing the community HTML report (PR #11)
 twice found its re-implementation of the analytics diverging from the app (span-days vs start-days;
@@ -682,7 +682,22 @@ the pressure-baseline fetch disabled (export never touches the network; the pres
 present only when a baseline is cached, as on the tab offline); the phone's timezone is recorded
 because day bucketing is local-calendar. Import ignores the block. A UTC-defined reference
 (`sample-data.analytics.json`) is checked in for renderers to diff against; the golden test skips
-in the Denver run. 180 tests.
+in the Denver run. **PR #11 (nfd9001), `tools/report.html`:** a single-file offline HTML/PDF
+report of an export, merged after three review rounds (span-days → start-days; six lost CSS rules;
+a refraction-free daylight formula that moved ~45 days across a bucket → ported the app's NOAA
+`sunTimes()`); it now renders the #16 block when present and recomputes only as a fallback, and all
+36 factor rows match the reference on both paths. **#17, event time zones** (raised by the #11
+author): events are UTC instants and every local-calendar bucket used `toLocal()` — at compute
+time for correlations/by-month, at enrichment time for the stored weekday/time-of-day — so a
+traveller's Analytics changed with the phone's location and the two views could disagree. Schema
+v2 adds nullable `started_at_offset_min`/`ended_at_offset_min` (captured live and from the
+editor's picked time); `models/event_time.dart` (`wallClock`/`wallDate`/`instantOf`) replaces every
+`toLocal()`; null offsets fall back to the old behaviour, so the migration is additive. Event
+Detail keeps an entry in its logged zone (a pre-v2 row is pinned on first edit). Exports carry the
+offsets (JSON + two CSV columns), import honours an explicit `+hh:mm` on external timestamps, and
+the analytics block says `bucketing: event-offset`. Verified on the emulator with a Tokyo zone
+switch (19-step script, all passed) and by tests that must agree under `TZ=UTC` and Denver. 191
+tests.
 
 **`v1.0.3` (2026-09-19): first community-reported bugs.** Version `1.0.3+8`. Two GitHub issues
 from an F-Droid user (istudyatuni), both fixed with regression tests. **#13, Calendar scroll

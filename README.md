@@ -28,7 +28,7 @@ analytics plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v1.0.3`** — latest stable release. App id `org.maegley.megrim`.
+**`v1.0.4`** — latest stable release. App id `org.maegley.megrim`.
 Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
 definition and running implementation status.
 
@@ -46,10 +46,13 @@ the unused location permissions** — the app now declares only `INTERNET` and n
 location. *Upgrading users: enrichment starts off; enable it in Settings › Weather enrichment to
 resume weather lookups and backfill past entries.*
 
-`v1.0.3` fixes the first two user-reported issues from F-Droid users: the History calendar losing
-its scroll position after opening an entry ([#13](https://github.com/smaegley/megrim/issues/13)),
-and an empty entry being left behind when backing out of an empty calendar day or "Add past entry"
-([#12](https://github.com/smaegley/megrim/issues/12)) — nothing is saved now until you tap Save.
+`v1.0.4` is the first release with community contributions. Entries now remember the time zone
+they were logged in, so travelling no longer shifts them to another day in Analytics or History
+([#17](https://github.com/smaegley/megrim/issues/17)); editing a start time moves the end with it
+([#14](https://github.com/smaegley/megrim/pull/14), zatteo); JSON exports carry the app's computed
+analytics ([#16](https://github.com/smaegley/megrim/issues/16)); and a new offline report page,
+[`tools/report.html`](tools/report.html), turns an export into a printable summary or PDF
+([#11](https://github.com/smaegley/megrim/pull/11), nfd9001 — see [`docs/REPORT.md`](docs/REPORT.md)).
 
 **Accepted into F-Droid** — [!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692)
 merged 2026-08-23. **Live on the Apple App Store** —
