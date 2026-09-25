@@ -18,8 +18,15 @@ class LocationPickerField extends StatefulWidget {
   /// Injectable for tests (same pattern as the app's other network services); defaults to a real
   /// [Geocoder] when omitted.
   final Geocoder? geocoder;
-  const LocationPickerField(
-      {super.key, required this.onSelected, this.initial, this.geocoder});
+
+  final List<HomeLocation> recentLocations;
+  const LocationPickerField({
+    super.key,
+    required this.onSelected,
+    this.initial,
+    this.geocoder,
+    this.recentLocations = const [],
+  });
 
   @override
   State<LocationPickerField> createState() => _LocationPickerFieldState();
@@ -86,29 +93,31 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
   void _selectManual() {
     final m = _manual;
     if (m == null) return;
-    final loc = HomeLocation(
+    _choose(HomeLocation(
       lat: (m.lat * 100).roundToDouble() / 100,
       lon: (m.lon * 100).roundToDouble() / 100,
       label: m.label,
-    );
-    setState(() {
-      _chosen = loc;
-      _controller.text = m.label;
-      _manual = null;
-    });
-    widget.onSelected(loc);
+    ));
   }
 
   void _select(GeoResult r) {
-    final loc = HomeLocation(
+    _choose(HomeLocation(
       lat: (r.lat * 100).roundToDouble() / 100,
       lon: (r.lon * 100).roundToDouble() / 100,
       label: r.label,
-    );
+    ));
+  }
+
+  bool get _showRecent =>
+      widget.recentLocations.isNotEmpty &&
+      (_controller.text.isEmpty || _controller.text == widget.initial?.label);
+
+  void _choose(HomeLocation loc) {
     setState(() {
       _chosen = loc;
-      _controller.text = r.label;
+      _controller.text = loc.label;
       _results = const [];
+      _manual = null;
     });
     widget.onSelected(loc);
   }
@@ -144,6 +153,31 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
               title: Text('Use ${_manual!.label}'),
               subtitle: const Text('Entered directly — nothing sent online'),
               onTap: _selectManual,
+            ),
+          ),
+        if (_showRecent)
+          Card(
+            margin: const EdgeInsets.only(top: 4),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Recent',
+                        style: Theme.of(context).textTheme.labelMedium),
+                  ),
+                ),
+                for (final loc in widget.recentLocations)
+                  ListTile(
+                    dense: true,
+                    leading: const Icon(Icons.history),
+                    title: Text(loc.label),
+                    subtitle: Text(
+                        '${loc.lat.toStringAsFixed(2)}, ${loc.lon.toStringAsFixed(2)}'),
+                    onTap: () => _choose(loc),
+                  ),
+              ],
             ),
           ),
         if (_results.isNotEmpty)
