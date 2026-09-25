@@ -130,6 +130,28 @@ class MegrimRepository {
     }
   }
 
+  // ── Locations ────────────────────────────────────────────────────────────
+  Future<List<HomeLocation>> recentLocations({int limit = 3}) async {
+    final rows = await (db.select(db.migraineEvents)
+          ..where((t) => t.geoLat.isNotNull() & t.geoLon.isNotNull())
+          ..orderBy([(t) => OrderingTerm.desc(t.startedAt)]))
+        .get();
+    final seen = <String>{};
+    final out = <HomeLocation>[];
+    for (final e in rows) {
+      if (!seen.add('${e.geoLat},${e.geoLon}')) continue;
+      final label = e.geoLabel?.trim() ?? '';
+      out.add(HomeLocation(
+          lat: e.geoLat!,
+          lon: e.geoLon!,
+          label: label.isNotEmpty
+              ? label
+              : '${e.geoLat!.toStringAsFixed(2)}, ${e.geoLon!.toStringAsFixed(2)}'));
+      if (out.length >= limit) break;
+    }
+    return out;
+  }
+
   // ── Analytics ────────────────────────────────────────────────────────────
   Future<DashboardResult> dashboard() async {
     final events = await db.select(db.migraineEvents).get();
