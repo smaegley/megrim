@@ -5,8 +5,7 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
 > **Status (2026-09-22):** #1–11 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)),
-> kept here as a record. **#12 is OPEN** — the only live item on this list. Add new items as they
-> come up.
+> kept here as a record. **#12 and #13 are OPEN.** Add new items as they come up.
 
 ## UI / UX
 
@@ -164,6 +163,55 @@ share + Save-to-device, iOS share sheet — since this is the first binary the a
 without the phone, and it keeps reading the #16 block, so the two agree by construction.
 
 **Estimate:** ~2–3 days. A feature, not a fix — ship as **v1.1**, not a patch.
+
+### 13. Make travel visible: an away-from-home share + a default "Travel" trigger — **OPEN** *(from the #17 discussion, 2026-09-21)*
+
+**Want:** two small, honest additions that let a traveller see travel in their own data.
+
+1. A descriptive **"Away from home"** card on Analytics: how many entries were logged more than
+   ~100 km from the home location, as a count and a share, with the away places listed.
+2. **"Travel"** added to the default trigger vocabulary, so it can be self-reported like any
+   other trigger.
+
+**Why:** `@nfd9001` raised it while reviewing PR #11 — travel plausibly associates with several
+real triggers at once (sleep change, pressure change, dehydration, skipped meals) and it is
+exactly the situation #17's per-event time zones now record properly. The data is already in the
+events (`geo_lat`/`geo_lon` + `settings.home_location`); nothing new is collected.
+
+**Explicitly NOT an odds ratio.** A suspected-factor row needs to know where the user was on
+**non-migraine** days too, and the app deliberately never collects location in the background.
+So this belongs with `triggerFrequency` as descriptive-only — same rule, same caveat wording:
+a tall bar means "more migraines were logged there", nothing more. Do not put it in the
+`Suspected factors` card.
+
+**Depends on / pairs with #15 (PR #18).** Every entry defaults to the home location, so today the
+away count is 0 for almost everyone. The recent-locations picker is what makes recording a
+different location practical, which is what gives this card anything to show. Ship them together.
+
+**Shape:**
+
+- `distanceKm()` (haversine, pure) — no such helper exists yet; `astro.dart` has `_deg2rad` to
+  match style against. Coordinates are stored rounded to 2 decimals (~1 km), which is far below a
+  100 km threshold, so rounding is a non-issue.
+- `EventStat` gains `geoLat`/`geoLon`; `computeDashboard` gains `homeLat`/`homeLon` (optional,
+  same as `computeCorrelations` already takes) and returns an `AwayFromHome?` — null when there is
+  no home location or no located events, so the card simply doesn't render.
+- Report **located** entries as the denominator, not all entries, and say so: entries with no
+  coordinates are in neither the numerator nor the denominator. Showing `0 of N` is a fine,
+  informative answer — don't hide the card just because the user doesn't travel.
+- The `analytics` export block (#16) must carry it too, or the block stops being "what the tab
+  computes"; document it in `docs/IMPORT.md`. Additive, so `tools/report.html` ignores it until
+  someone chooses to render it.
+- The **"Travel" trigger needs a schema bump (v3)** to reach existing users: `_seedVocabularies`
+  only runs on `wasCreated`. A one-time `onUpgrade` insert with `InsertMode.insertOrIgnore` is
+  right — it can't duplicate a "Travel" the user already made, and it can't resurrect a deleted
+  one later (which seeding on every open would).
+
+**Verification:** unit tests for `distanceKm` against known city pairs and the antimeridian; the
+`AwayFromHome` computation including the null cases; the v2→v3 migration adding "Travel" exactly
+once and leaving a user-renamed vocabulary alone.
+
+**Estimate:** ~half a day. Small enough to ride along with **v1.0.5**.
 
 ## Release / infra
 
