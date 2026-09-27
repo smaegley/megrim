@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-22: v1.0.4 released on Android (tag, CI, signature verified) and submitted to App Review (build 10, Waiting for Review)._
+_Last updated: 2026-09-27: v1.0.4 is live on both stores. PR #18 (issue #15) is under review, targeting v1.0.5._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -10,7 +10,9 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
 **APPROVED and LIVE** —
 [Megrim: Migraine Diary](https://apps.apple.com/us/app/megrim-migraine-diary/id6808385548)
 (Apple ID `6808385548`), approved the week of 2026-09-07 after one Guideline 2.1
-information-request round (details below). US storefront only, free. **Current store build: 1.0.3 (9),
+information-request round (details below). US storefront only, free. **Current store build: 1.0.4 (10),
+approved and released 2026-09-27** (submitted 2026-09-22 — a bug-fix update to an approved app, no
+questions asked). Previous: **1.0.3 (9),
 approved and released 2026-09-20** — a bug-fix update to an approved app cleared in about a day with no
 questions.
 Post-launch note (2026-09-11): App Store *search* takes days to index a new app, and "Megrim"
@@ -111,7 +113,7 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
 - **Release plan:** v1.0.4 = #14 + #16 + #11 + #17 (Steve chose to bundle #17 rather than pay a second
   App Review cycle; the migration is additive and was exercised on the emulator). #15 was still open
   with no PR, so it moves to v1.0.5. **Android released 2026-09-22** (`release.yml` green, APK/AAB published, not
-  draft/prerelease). **iOS 1.0.4 (build 10) submitted to App Review 2026-09-22, Waiting for Review** — archived from
+  draft/prerelease). **iOS 1.0.4 (build 10): submitted 2026-09-22, APPROVED and released 2026-09-27** — archived from
   `app/` with `--build-number=10`, uploaded via the Xcode Organizer; What's New = the changelog with the
   `tools/report.html` mention trimmed for store readers.
 
