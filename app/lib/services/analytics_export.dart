@@ -40,6 +40,16 @@ Map<String, dynamic> dashboardToJson(DashboardResult d) => {
       'by_daylight': d.byDaylight.map(_labeled).toList(),
       'pressure_delta': d.pressureDelta.map(_labeled).toList(),
       'trigger_frequency': d.triggerFrequency.map(_labeled).toList(),
+      'away_from_home': d.awayFromHome == null
+          ? null
+          : {
+              'located_events': d.awayFromHome!.locatedEvents,
+              'away_events': d.awayFromHome!.awayEvents,
+              'away_pct': d.awayFromHome!.awayPct,
+              'threshold_km': d.awayFromHome!.thresholdKm,
+              'farthest_km': d.awayFromHome!.farthestKm,
+              'away_places': d.awayFromHome!.awayPlaces.map(_labeled).toList(),
+            },
     };
 
 /// `correlations` sub-block: the full odds-ratio result, every factor's per-bucket rows plus the

@@ -228,7 +228,15 @@
         "label": "Stress",
         "count": 8
       }
-    ]
+    ],
+    "away_from_home": {
+      "located_events": 55,
+      "away_events": 0,
+      "away_pct": 0.0,
+      "threshold_km": 100.0,
+      "farthest_km": 0.0,
+      "away_places": []
+    }
   },
   "correlations": {
     "available": true,

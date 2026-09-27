@@ -1,5 +1,6 @@
 import 'dart:math' show sqrt;
 import '../models/event_time.dart' show wallClock, wallDate;
+import 'geo_distance.dart';
 
 import 'correlations.dart'
     show
@@ -15,6 +16,10 @@ import 'correlations.dart'
 
 const List<String> kTimeOfDayOrder = ['morning', 'afternoon', 'evening', 'night'];
 const List<String> kSeasonDisplayOrder = ['Spring', 'Summer', 'Autumn', 'Winter'];
+
+/// Distance from the home location beyond which an entry counts as "away" (backlog #13). Chosen
+/// so that ordinary movement around a home city never registers, but a different city does.
+const double kAwayFromHomeThresholdKm = 100.0;
 
 /// One event's fields needed for statistics (event columns + its derived factors).
 class EventStat {
@@ -35,6 +40,11 @@ class EventStat {
   /// Self-reported triggers tagged on this event (descriptive only — not correlated).
   final List<String> triggers;
 
+  /// The event's recorded location, if any (rounded to 2 decimals at capture — SPEC §3.1).
+  final double? geoLat;
+  final double? geoLon;
+  final String? geoLabel;
+
   const EventStat({
     required this.startedAt,
     this.endedAt,
@@ -48,6 +58,9 @@ class EventStat {
     this.triggers = const [],
     this.startOffsetMin,
     this.endOffsetMin,
+    this.geoLat,
+    this.geoLon,
+    this.geoLabel,
   });
 }
 
@@ -98,6 +111,40 @@ class CalendarEntry {
   const CalendarEntry(this.date, this.severity);
 }
 
+/// How many entries were logged away from the home location (backlog #13).
+///
+/// Descriptive only, exactly like [DashboardResult.triggerFrequency]: it says where migraines were
+/// logged, not that travel causes them. It is deliberately NOT a suspected factor — an odds ratio
+/// needs the location of **non-migraine** days too, and the app never collects that.
+class AwayFromHome {
+  /// Entries carrying coordinates. The denominator: entries without a location are in neither
+  /// this nor [awayEvents], and the UI says so.
+  final int locatedEvents;
+
+  /// Of those, the ones more than [thresholdKm] from home.
+  final int awayEvents;
+  final double thresholdKm;
+
+  /// Distance from home of the farthest entry (km), or null when nothing is located.
+  final double? farthestKm;
+
+  /// The away places by recorded label, most-logged first. Entries whose label is blank are
+  /// grouped under their rounded coordinates.
+  final List<LabeledCount> awayPlaces;
+
+  const AwayFromHome({
+    required this.locatedEvents,
+    required this.awayEvents,
+    required this.thresholdKm,
+    this.farthestKm,
+    this.awayPlaces = const [],
+  });
+
+  /// Share of located entries logged away from home, 0–100, rounded to 1 decimal.
+  double get awayPct =>
+      locatedEvents == 0 ? 0 : _round1(awayEvents / locatedEvents * 100);
+}
+
 class DashboardResult {
   final Summary summary;
   final List<YearCount> byYear;
@@ -114,6 +161,10 @@ class DashboardResult {
 
   final List<CalendarEntry> calendar;
 
+  /// Null when there is no home location set, or when no entry carries coordinates — the card
+  /// simply doesn't render (backlog #13).
+  final AwayFromHome? awayFromHome;
+
   const DashboardResult({
     required this.summary,
     this.byYear = const [],
@@ -125,6 +176,7 @@ class DashboardResult {
     this.byDaylight = const [],
     this.triggerFrequency = const [],
     this.calendar = const [],
+    this.awayFromHome,
   });
 
   bool get isEmpty => summary.totalEvents == 0;
@@ -132,7 +184,13 @@ class DashboardResult {
 
 double _round1(double v) => (v * 10).round() / 10;
 
-DashboardResult computeDashboard(List<EventStat> events) {
+/// [homeLat]/[homeLon] are the user's home location, used only for the away-from-home share
+/// (backlog #13); omit them and [DashboardResult.awayFromHome] is null.
+DashboardResult computeDashboard(
+  List<EventStat> events, {
+  double? homeLat,
+  double? homeLon,
+}) {
   if (events.isEmpty) {
     return const DashboardResult(summary: Summary(totalEvents: 0));
   }
@@ -266,6 +324,43 @@ DashboardResult computeDashboard(List<EventStat> events) {
       .map((e) => CalendarEntry(wallDate(e.startedAt, e.startOffsetMin), e.severity))
       .toList();
 
+  // Away from home (backlog #13) — descriptive only; see [AwayFromHome].
+  AwayFromHome? away;
+  if (homeLat != null && homeLon != null) {
+    final located =
+        sorted.where((e) => e.geoLat != null && e.geoLon != null).toList();
+    if (located.isNotEmpty) {
+      final placeCounts = <String, int>{};
+      var awayCount = 0;
+      double? farthest;
+      for (final e in located) {
+        final d = distanceKm(homeLat, homeLon, e.geoLat!, e.geoLon!);
+        if (farthest == null || d > farthest) farthest = d;
+        if (d <= kAwayFromHomeThresholdKm) continue;
+        awayCount++;
+        final label = e.geoLabel?.trim() ?? '';
+        final key = label.isNotEmpty
+            ? label
+            : '${e.geoLat!.toStringAsFixed(2)}, ${e.geoLon!.toStringAsFixed(2)}';
+        placeCounts[key] = (placeCounts[key] ?? 0) + 1;
+      }
+      final places = placeCounts.entries
+          .map((e) => LabeledCount(e.key, e.value))
+          .toList()
+        ..sort((a, b) {
+          final byCount = b.count.compareTo(a.count);
+          return byCount != 0 ? byCount : a.label.compareTo(b.label);
+        });
+      away = AwayFromHome(
+        locatedEvents: located.length,
+        awayEvents: awayCount,
+        thresholdKm: kAwayFromHomeThresholdKm,
+        farthestKm: farthest == null ? null : _round1(farthest),
+        awayPlaces: places,
+      );
+    }
+  }
+
   return DashboardResult(
     summary: summary,
     byYear: byYear,
@@ -277,6 +372,7 @@ DashboardResult computeDashboard(List<EventStat> events) {
     byDaylight: byDaylight,
     triggerFrequency: triggerFrequency,
     calendar: calendar,
+    awayFromHome: away,
   );
 }
 

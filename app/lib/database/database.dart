@@ -14,6 +14,11 @@ class VocabKind {
 
 /// Default seed vocabularies, carried over from the private app (SPEC §3.4).
 /// `medication` starts empty and is learned from entries.
+/// Added to the default triggers in schema v3 (backlog #13) so travel can be self-reported like
+/// any other trigger. Appended, never inserted mid-list: existing installs already have sort
+/// values 0..n for the others, and an upgraded vocabulary should order the same as a fresh one.
+const String kTravelTrigger = 'Travel';
+
 const List<String> kDefaultTriggers = [
   'Stress',
   'Sleep change',
@@ -26,6 +31,7 @@ const List<String> kDefaultTriggers = [
   'Hormonal',
   'Strong smell',
   'Screen time',
+  kTravelTrigger,
 ];
 
 const List<String> kDefaultHeadLocations = [
@@ -50,7 +56,7 @@ class MegrimDatabase extends _$MegrimDatabase {
   MegrimDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -63,6 +69,20 @@ class MegrimDatabase extends _$MegrimDatabase {
             // null and are bucketed in the phone's zone exactly as before.
             await m.addColumn(migraineEvents, migraineEvents.startedAtOffsetMin);
             await m.addColumn(migraineEvents, migraineEvents.endedAtOffsetMin);
+          }
+          if (from < 3) {
+            // v3 (backlog #13): "Travel" joins the default triggers. _seedVocabularies only runs
+            // on create, so existing installs need this one-time insert. insertOrIgnore can't
+            // duplicate a "Travel" the user already added themselves, and because this runs once
+            // it can't resurrect one they later delete (which seeding on every open would).
+            await into(vocabularies).insert(
+              VocabulariesCompanion.insert(
+                kind: VocabKind.trigger,
+                value: kTravelTrigger,
+                sort: Value(kDefaultTriggers.indexOf(kTravelTrigger)),
+              ),
+              mode: InsertMode.insertOrIgnore,
+            );
           }
         },
         beforeOpen: (details) async {
