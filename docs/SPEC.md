@@ -671,6 +671,26 @@ F-Droid's bot (`AutoUpdateMode: Version`, `UpdateCheckMode: Tags`, `VercodeOpera
 reading `app/pubspec.yaml`), so routine releases need **no** further merge request. The canonical
 recipe now lives in `fdroiddata`; the copy under `fdroid/` is a historical reference.
 
+**`v1.0.5` (2026-09-29): travel.** Version `1.0.5+10`. Two halves of one idea, from the #11
+reviewer's observation that travel plausibly bundles several triggers at once. **PR #18 (zatteo,
+issue #15):** the Recorded-location dialog lists the last 3 distinct locations from past entries,
+hidden the moment the user types. Review found two things and both were fixed: a location taken
+from that list bypassed the 2-decimal rounding `_select`/`_selectManual` do (reachable because the
+importer doesn't round, so an external file's full-precision coords would have been *stored* — not
+transmitted: `open_meteo_client.roundCoord()` guards every request independently), now centralised
+in `_choose`; and the card only hid 400 ms after the last keystroke because `_onChanged` rebuilt
+via the debounce, now immediate. **Backlog #13:** `distanceKm()` (haversine, new), an
+`AwayFromHome` result on `DashboardResult`, and an Analytics card reporting entries beyond 100 km
+from home. **Located entries are the denominator** — entries without coordinates are in neither
+numerator nor denominator and the card says how many were skipped; a null result (no home
+location, or nothing located) is deliberately distinct from `away_events: 0`. It sits with
+`triggerFrequency` as **descriptive only and is deliberately NOT a suspected factor**: an odds
+ratio needs the user's location on non-migraine days, which the app never collects. The `analytics`
+export block carries it (documented in IMPORT.md + schema). Schema **v3** appends "Travel" to the
+default triggers via a one-time `onUpgrade` insert, because `_seedVocabularies` only runs on
+create; `insertOrIgnore` can't duplicate a user's own "Travel" and running once can't resurrect a
+deleted one. 212 tests.
+
 **`v1.0.4` (2026-09-22): the first community release.** Version `1.0.4+9`. PR #14 (zatteo): moving an entry's start shifts
 its end by the same delta unless the end was edited, so a backdated past entry needs one date pick
 instead of two. **#16, the `analytics` export block:** reviewing the community HTML report (PR #11)

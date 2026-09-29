@@ -5,7 +5,7 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
 > **Status (2026-09-22):** #1–11 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)),
-> kept here as a record. **#12 and #13 are OPEN.** Add new items as they come up.
+> kept here as a record. **#12 is OPEN**; #13 shipped in `v1.0.5`. Add new items as they come up.
 
 ## UI / UX
 
@@ -164,7 +164,7 @@ without the phone, and it keeps reading the #16 block, so the two agree by const
 
 **Estimate:** ~2–3 days. A feature, not a fix — ship as **v1.1**, not a patch.
 
-### 13. Make travel visible: an away-from-home share + a default "Travel" trigger — **OPEN** *(from the #17 discussion, 2026-09-21)*
+### 13. Make travel visible: an away-from-home share + a default "Travel" trigger — **DONE** *(shipped in `v1.0.5`)*
 
 **Want:** two small, honest additions that let a traveller see travel in their own data.
 
@@ -211,7 +211,14 @@ different location practical, which is what gives this card anything to show. Sh
 `AwayFromHome` computation including the null cases; the v2→v3 migration adding "Travel" exactly
 once and leaving a user-renamed vocabulary alone.
 
-**Estimate:** ~half a day. Small enough to ride along with **v1.0.5**.
+**Done** (2026-09-29): built as planned — `analytics/geo_distance.dart`, `AwayFromHome` on
+`DashboardResult`, the Analytics card, `away_from_home` in the export block, and schema v3 for the
+"Travel" trigger. Shipped alongside PR #18, which is what gives the card anything to show. Two
+things learned while building it, worth remembering: a guessed haversine reference distance in a
+test was wrong (Boulder→Paris is 7854 km, not 7737 — verify reference values against an independent
+implementation), and asserting an *exact* distance threshold is unstable in floating point
+(100 km expressed in degrees comes back as 100.00000000000038), so the test asserts either side of
+it instead.
 
 ## Release / infra
 

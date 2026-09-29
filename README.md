@@ -28,7 +28,7 @@ analytics plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v1.0.4`** — latest stable release. App id `org.maegley.megrim`.
+**`v1.0.5`** — latest stable release. App id `org.maegley.megrim`.
 Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
 definition and running implementation status.
 
@@ -46,7 +46,13 @@ the unused location permissions** — the app now declares only `INTERNET` and n
 location. *Upgrading users: enrichment starts off; enable it in Settings › Weather enrichment to
 resume weather lookups and backfill past entries.*
 
-`v1.0.4` is the first release with community contributions. Entries now remember the time zone
+`v1.0.5` makes travel visible. The Recorded-location picker offers your last three locations
+([#15](https://github.com/smaegley/megrim/issues/15) /
+[#18](https://github.com/smaegley/megrim/pull/18), zatteo), Analytics gains an **Away from home**
+share — how many entries you recorded more than 100 km from home, and where — and "Travel" joins
+the default suspected triggers.
+
+`v1.0.4` was the first release with community contributions. Entries now remember the time zone
 they were logged in, so travelling no longer shifts them to another day in Analytics or History
 ([#17](https://github.com/smaegley/megrim/issues/17)); editing a start time moves the end with it
 ([#14](https://github.com/smaegley/megrim/pull/14), zatteo); JSON exports carry the app's computed

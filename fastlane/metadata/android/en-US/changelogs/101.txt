@@ -1,0 +1,3 @@
+• The Recorded location picker now offers your last 3 locations, so logging an entry away from home is one tap (thanks @zatteo).
+• New on Analytics: "Away from home" — how many entries you recorded more than 100 km from your home location, and where.
+• "Travel" is now one of the default suspected triggers.

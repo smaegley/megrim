@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-27: v1.0.4 is live on both stores. PR #18 (issue #15) is under review, targeting v1.0.5._
+_Last updated: 2026-09-29: v1.0.5 prepared on `main` (#15/PR #18 + backlog #13), tag pending; v1.0.4 live on both stores._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -56,11 +56,11 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 
 | | |
 |---|---|
-| Latest release | **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
+| Latest release | **`v1.0.5`** (versionCode 10) is **prepared on `main` and awaits its tag** — the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
 | Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
 | Permissions | `INTERNET` only (plus `ACCESS_NETWORK_STATE` from connectivity_plus). No location permission at all |
-| Verification bar | `flutter analyze` clean, **191 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
+| Verification bar | `flutter analyze` clean, **212 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
 
 Everything in the original spec is implemented, plus the accessibility pass, documented import
 format, and the opt-in privacy work below. `docs/BACKLOG.md` holds one open item: **#12, an
@@ -110,7 +110,17 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   when Analytics runs. Plan: per-event UTC offset column, one bucketing helper used everywhere, exports
   carry real offsets. Travel as an odds-ratio factor is not feasible (no daily location baseline); an
   "away from home" descriptive share + default "Travel" trigger is the honest alternative (separate issue).
-- **Release plan:** v1.0.4 = #14 + #16 + #11 + #17 (Steve chose to bundle #17 rather than pay a second
+- **[Issue #15](https://github.com/smaegley/megrim/issues/15) / [PR #18](https://github.com/smaegley/megrim/pull/18)
+  (zatteo) — MERGED 2026-09-29** (`f4a3fee`) after two review rounds: a location taken from the new
+  "Recent" list bypassed the 2-decimal coordinate rounding (stored, never transmitted — the
+  Open-Meteo client rounds independently), and the card only hid 400 ms after the last keystroke.
+  Both fixed and verified.
+- **Backlog #13 — MERGED 2026-09-29** (`ab29137`): the away-from-home share, plus "Travel" in the
+  default triggers (schema v3). Steve ran the 18-step emulator script covering the v3 upgrade, the
+  picker, the card and the export — all passed. Deliberately descriptive-only, not a suspected
+  factor.
+- **Release plan:** v1.0.5 = PR #18 + backlog #13; iOS build for 1.0.5 must be **11**
+  (`flutter build ipa --build-number=11` from `app/`). v1.0.4 = #14 + #16 + #11 + #17 (Steve chose to bundle #17 rather than pay a second
   App Review cycle; the migration is additive and was exercised on the emulator). #15 was still open
   with no PR, so it moves to v1.0.5. **Android released 2026-09-22** (`release.yml` green, APK/AAB published, not
   draft/prerelease). **iOS 1.0.4 (build 10): submitted 2026-09-22, APPROVED and released 2026-09-27** — archived from
