@@ -309,6 +309,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   Future<void> _editLocation() async {
     HomeLocation? picked;
+    final recent = await widget.repo.recentLocations();
+    if (!mounted) return;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -319,6 +321,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             initial: (_geoLat != null && _geoLon != null)
                 ? HomeLocation(lat: _geoLat!, lon: _geoLon!, label: _geoLabel ?? '')
                 : null,
+            recentLocations: recent,
             onSelected: (loc) => picked = loc,
           ),
         ),
