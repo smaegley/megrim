@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-29: v1.0.5 released on Android (tag, CI, signature verified); iOS build 11 is Steve's next step._
+_Last updated: 2026-09-29: v1.0.5 released on Android and submitted to App Review (build 11, Waiting for Review)._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -120,9 +120,8 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   picker, the card and the export — all passed. Deliberately descriptive-only, not a suspected
   factor.
 - **Release plan:** v1.0.5 = PR #18 + backlog #13. **Android released 2026-09-29** (`release.yml`
-  green, APK/AAB published, not draft/prerelease, signature verified). **iOS 1.0.5 pending:** build
-  **11** (`flutter build ipa --build-number=11` from `~/megrim/app`), upload via the Xcode Organizer,
-  submit with the changelog as What's New. v1.0.4 = #14 + #16 + #11 + #17 (Steve chose to bundle #17 rather than pay a second
+  green, APK/AAB published, not draft/prerelease, signature verified). **iOS 1.0.5 (build 11) submitted to App Review 2026-09-29, Waiting for Review** —
+  archived from `~/megrim/app` with `--build-number=11`, uploaded via the Xcode Organizer. v1.0.4 = #14 + #16 + #11 + #17 (Steve chose to bundle #17 rather than pay a second
   App Review cycle; the migration is additive and was exercised on the emulator). #15 was still open
   with no PR, so it moves to v1.0.5. **Android released 2026-09-22** (`release.yml` green, APK/AAB published, not
   draft/prerelease). **iOS 1.0.4 (build 10): submitted 2026-09-22, APPROVED and released 2026-09-27** — archived from
