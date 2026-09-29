@@ -177,9 +177,13 @@ class MegrimRepository {
               pressureDelta24h: dById[e.id]?.pressureDelta24h,
               daylightHours: dById[e.id]?.daylightHours,
               triggers: decodeStringList(e.triggersSuspected),
+              geoLat: e.geoLat,
+              geoLon: e.geoLon,
+              geoLabel: e.geoLabel,
             ))
         .toList();
-    return computeDashboard(stats);
+    final home = await homeLocation;
+    return computeDashboard(stats, homeLat: home?.lat, homeLon: home?.lon);
   }
 
   Future<CorrelationResult> correlations(

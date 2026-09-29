@@ -139,10 +139,10 @@ void main() {
     });
   });
 
-  test('schema v1 → v2 migration adds the columns and keeps rows', () async {
+  test('migrating a v1 database adds the offset columns and keeps rows', () async {
     final dir = Directory.systemTemp.createTempSync('megrim-mig');
     final file = File('${dir.path}/v1.sqlite');
-    // Build a v2 database, then demote it to v1 by hand (SQLite ≥ 3.35 DROP COLUMN).
+    // Build a current-schema database, then demote it to v1 by hand (SQLite ≥ 3.35 DROP COLUMN).
     final v2 = MegrimDatabase.forTesting(NativeDatabase(file));
     await v2.into(v2.migraineEvents).insert(MigraineEventsCompanion.insert(
         id: 'old', startedAt: tokyo, createdAt: tokyo, updatedAt: tokyo));
@@ -158,7 +158,10 @@ void main() {
     expect(old.startedAtOffsetMin, isNull, reason: 'pre-v2 rows stay unpinned');
     await upgraded.into(upgraded.migraineEvents).insert(MigraineEventsCompanion.insert(
         id: 'new', startedAt: tokyo, startedAtOffsetMin: const Value(tokyoOffset), createdAt: tokyo, updatedAt: tokyo));
-    expect((await upgraded.getSetting('schema_version')), '2');
+    // Asserts against the database's own version rather than a literal, so a later schema bump
+    // (v3 added the "Travel" trigger) doesn't break this test again.
+    expect(await upgraded.getSetting('schema_version'),
+        '${upgraded.schemaVersion}');
     await upgraded.close();
     dir.deleteSync(recursive: true);
   });

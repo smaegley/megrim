@@ -208,6 +208,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 16),
                 _TriggerCard(dash: dash),
                 const SizedBox(height: 16),
+                _AwayFromHomeCard(dash: dash),
                 _collapsibleChart(
                   title: 'By year',
                   data: _yearCounts(dash.byYear),
@@ -779,6 +780,111 @@ class _TriggerCardState extends State<_TriggerCard> {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// "Away from home" (backlog #13): where migraines were logged, as a share of the entries that
+/// carry a location. Descriptive only — deliberately not in the Suspected-factors card, because an
+/// odds ratio would need the location of non-migraine days too, which the app never collects.
+/// Renders nothing when there is no home location or no located entry.
+class _AwayFromHomeCard extends StatelessWidget {
+  final DashboardResult dash;
+  const _AwayFromHomeCard({required this.dash});
+
+  @override
+  Widget build(BuildContext context) {
+    final away = dash.awayFromHome;
+    if (away == null) return const SizedBox.shrink();
+    final km = away.thresholdKm.round();
+    final unlocated = dash.summary.totalEvents - away.locatedEvents;
+    final maxCount =
+        away.awayPlaces.isEmpty ? 0 : away.awayPlaces.first.count;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Away from home',
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 4),
+              Text(
+                'Entries recorded more than $km km from your home location. '
+                'Descriptive only — it shows where you logged migraines, not that '
+                'travel caused them.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 12),
+              if (away.awayEvents == 0)
+                Text(
+                  'All ${away.locatedEvents} located '
+                  '${away.locatedEvents == 1 ? 'entry was' : 'entries were'} '
+                  'within $km km of home.',
+                )
+              else ...[
+                Text(
+                  '${away.awayEvents} of ${away.locatedEvents} located entries '
+                  '(${away.awayPct}%)',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                if (away.farthestKm != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      'Farthest: ${away.farthestKm!.round()} km from home.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                const SizedBox(height: 12),
+                for (final p in away.awayPlaces.take(5))
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(child: Text(p.label)),
+                            Text('${p.count}'),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: maxCount == 0 ? 0 : p.count / maxCount,
+                            minHeight: 6,
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
+                            // Matches the trigger card's tertiary bars: both are frequency
+                            // counts, not the purple correlation bars.
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+              if (unlocated > 0)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    '$unlocated ${unlocated == 1 ? 'entry has' : 'entries have'} '
+                    'no recorded location and ${unlocated == 1 ? 'is' : 'are'} '
+                    'not counted here.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

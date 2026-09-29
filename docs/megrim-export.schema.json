@@ -69,7 +69,19 @@
             "by_moon_phase": { "$ref": "#/$defs/labeledCounts" },
             "by_daylight": { "$ref": "#/$defs/labeledCounts" },
             "pressure_delta": { "$ref": "#/$defs/labeledCounts" },
-            "trigger_frequency": { "$ref": "#/$defs/labeledCounts" }
+            "trigger_frequency": { "$ref": "#/$defs/labeledCounts" },
+            "away_from_home": {
+              "type": ["object", "null"],
+              "description": "Entries recorded more than threshold_km from the home location (app v1.0.5+). Null when no home location is set or no entry has coordinates; away_events 0 means the user stayed near home. Descriptive only — deliberately not a correlation factor.",
+              "properties": {
+                "located_events": { "type": "integer" },
+                "away_events": { "type": "integer" },
+                "away_pct": { "type": "number" },
+                "threshold_km": { "type": "number" },
+                "farthest_km": { "type": ["number", "null"] },
+                "away_places": { "$ref": "#/$defs/labeledCounts" }
+              }
+            }
           }
         },
         "correlations": {

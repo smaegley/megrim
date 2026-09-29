@@ -128,7 +128,10 @@ reference produced from the sample data lives at
     "by_day_of_week":  [ { "label": "Mon", "count": 13 }, … ],
     "by_time_of_day":  [ … ], "by_season": [ … ], "by_moon_phase": [ … ],
     "by_daylight":     [ … ], "pressure_delta": [ … ],
-    "trigger_frequency": [ { "label": "Food", "count": 14 }, … ]
+    "trigger_frequency": [ { "label": "Food", "count": 14 }, … ],
+    "away_from_home": { "located_events": 55, "away_events": 3, "away_pct": 5.5,
+                        "threshold_km": 100.0, "farthest_km": 7853.8,
+                        "away_places": [ { "label": "Paris", "count": 2 }, … ] }
   },
   "correlations": {
     "available": true, "reason": null,
@@ -159,6 +162,13 @@ Notes for renderers:
   be computed from the export alone (the daily pressure history is not exported), so treat its
   absence as "not available", not zero.
 - `dashboard` has no per-event calendar: that is the `events` array.
+- **`away_from_home`** (app v1.0.5+) counts entries recorded more than `threshold_km` from the
+  home location. `located_events` is the denominator — entries with no `geo_lat`/`geo_lon` are in
+  neither it nor `away_events`, so it is usually smaller than `summary.total_events`. The whole
+  object is **null** when no home location is set or no entry carries coordinates; `away_events: 0`
+  means the user genuinely stayed near home, which is a different statement. It is **descriptive
+  only**, the same standing as `trigger_frequency` — it is not a correlation factor because an odds
+  ratio would need the user's location on non-migraine days, which the app never collects.
 - `available: false` (with a `reason`) means fewer than 5 events; `dashboard` is still present.
 
 ## Minimal working example
