@@ -115,13 +115,13 @@ void main() {
       expect(find.text('Recent'), findsOneWidget);
 
       await tester.enterText(find.byType(TextField), 'Denv');
-      await tester.pump(const Duration(milliseconds: 600)); // past the debounce
+      await tester.pump(); // single frame — the card must hide immediately, not after the debounce
       expect(find.text('Recent'), findsNothing);
       expect(find.text('Denver'), findsNothing);
       expect(selected, isNull);
 
       await tester.enterText(find.byType(TextField), '');
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump();
       expect(find.text('Recent'), findsOneWidget);
       expect(find.text('Denver'), findsOneWidget);
     });

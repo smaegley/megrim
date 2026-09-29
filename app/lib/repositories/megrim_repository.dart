@@ -132,21 +132,27 @@ class MegrimRepository {
 
   // ── Locations ────────────────────────────────────────────────────────────
   Future<List<HomeLocation>> recentLocations({int limit = 3}) async {
-    final rows = await (db.select(db.migraineEvents)
-          ..where((t) => t.geoLat.isNotNull() & t.geoLon.isNotNull())
-          ..orderBy([(t) => OrderingTerm.desc(t.startedAt)]))
-        .get();
+    final lat = db.migraineEvents.geoLat;
+    final lon = db.migraineEvents.geoLon;
+    final label = db.migraineEvents.geoLabel;
+    final query = db.selectOnly(db.migraineEvents)
+      ..where(lat.isNotNull() & lon.isNotNull())
+      ..addColumns([lat, lon, label])
+      ..orderBy([OrderingTerm.desc(db.migraineEvents.startedAt)]);
+    final rows = await query.get();
     final seen = <String>{};
     final out = <HomeLocation>[];
-    for (final e in rows) {
-      if (!seen.add('${e.geoLat},${e.geoLon}')) continue;
-      final label = e.geoLabel?.trim() ?? '';
+    for (final row in rows) {
+      final rLat = row.read(lat)!;
+      final rLon = row.read(lon)!;
+      if (!seen.add('$rLat,$rLon')) continue;
+      final rLabel = row.read(label)?.trim() ?? '';
       out.add(HomeLocation(
-          lat: e.geoLat!,
-          lon: e.geoLon!,
-          label: label.isNotEmpty
-              ? label
-              : '${e.geoLat!.toStringAsFixed(2)}, ${e.geoLon!.toStringAsFixed(2)}'));
+          lat: rLat,
+          lon: rLon,
+          label: rLabel.isNotEmpty
+              ? rLabel
+              : '${rLat.toStringAsFixed(2)}, ${rLon.toStringAsFixed(2)}'));
       if (out.length >= limit) break;
     }
     return out;

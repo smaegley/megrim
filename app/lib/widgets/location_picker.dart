@@ -59,6 +59,7 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
   }
 
   void _onChanged(String value) {
+    setState(() {});
     _debounce?.cancel();
     if (looksLikeManualLocation(value)) {
       // Manual entry in progress: never query the geocoder, offer the parsed result (if it
@@ -93,19 +94,11 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
   void _selectManual() {
     final m = _manual;
     if (m == null) return;
-    _choose(HomeLocation(
-      lat: (m.lat * 100).roundToDouble() / 100,
-      lon: (m.lon * 100).roundToDouble() / 100,
-      label: m.label,
-    ));
+    _choose(HomeLocation(lat: m.lat, lon: m.lon, label: m.label));
   }
 
   void _select(GeoResult r) {
-    _choose(HomeLocation(
-      lat: (r.lat * 100).roundToDouble() / 100,
-      lon: (r.lon * 100).roundToDouble() / 100,
-      label: r.label,
-    ));
+    _choose(HomeLocation(lat: r.lat, lon: r.lon, label: r.label));
   }
 
   bool get _showRecent =>
@@ -113,13 +106,18 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
       (_controller.text.isEmpty || _controller.text == widget.initial?.label);
 
   void _choose(HomeLocation loc) {
+    final rounded = HomeLocation(
+      lat: (loc.lat * 100).roundToDouble() / 100,
+      lon: (loc.lon * 100).roundToDouble() / 100,
+      label: loc.label,
+    );
     setState(() {
-      _chosen = loc;
-      _controller.text = loc.label;
+      _chosen = rounded;
+      _controller.text = rounded.label;
       _results = const [];
       _manual = null;
     });
-    widget.onSelected(loc);
+    widget.onSelected(rounded);
   }
 
   @override
