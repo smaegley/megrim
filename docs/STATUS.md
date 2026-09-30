@@ -166,12 +166,19 @@ his iPhone via TestFlight the same day — looks good. The manual path was: `flu
   curl -s https://f-droid.org/repo/status/build.json
   ```
 
-- **A client showing an older version is usually a stale index, not a publishing problem** — the
-  F-Droid app caches the repo index and refreshes on its own schedule; pull down on Latest/Updates
-  to force it. The other cause is an install that did not come from F-Droid: the GitHub-release APK
-  is signed with Steve's key, so F-Droid cannot update over it (it would need an uninstall and
-  reinstall, which wipes data — export first). `adb shell pm list packages -i | grep megrim` names
-  the installer (`org.fdroid.fdroid`, `dev.imranr.obtainium`, or none for a sideload).
+- **A client showing an older version has two causes, and the F-Droid app tells you which.** A
+  stale index (pull down on Latest/Updates to refresh) — or a signature mismatch, which refreshing
+  can never fix. Every F-Droid build of Megrim is *built and signed by F-Droid*, so an install that
+  came from the GitHub-release APK (directly or via Obtainium) carries Steve's key instead and
+  F-Droid cannot update over it. The tell is **"No versions with compatible signer"** at the bottom
+  of the app's page; the version shown beside the name in search results is then the *installed*
+  one, not what the repo offers. **This happened to Steve's own phone** (diagnosed 2026-09-30): it
+  sat at 1.0.2 while the repo served 1.0.4, because the 2026-09-19 reinstall — after the debug
+  build uninstalled the F-Droid copy — came from the GitHub APK.
+- **Recovering means export → uninstall → reinstall from one source → import.** The uninstall wipes
+  the database, so the export is not optional (see the 2026-09-19 incident). Pick a lane and stay
+  in it: **GitHub + Obtainium** gets each release minutes after the tag (the same APK CI signs and
+  we verify), **F-Droid** lags by roughly a week. They cannot be mixed on one device.
 - The GitLab PAT expired on ~2026-08-06 and was not renewed — public MR data is still readable
   unauthenticated, but posting comments needs a fresh token.
 
