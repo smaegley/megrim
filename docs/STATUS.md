@@ -152,6 +152,26 @@ his iPhone via TestFlight the same day — looks good. The manual path was: `flu
   needs both `<code>.txt` and the per-ABI changelog copies (e.g. `7.txt` plus `71/72/73.txt`).
 - The canonical recipe now lives in `fdroiddata`; the copy under `fdroid/` is a historical
   reference and will drift as the bot appends entries.
+- **Publication lags the tag by days, in two stages.** The bot appends the build entries (pinned to
+  the tagged commit) within hours; F-Droid's build server then compiles each ABI on its own
+  schedule and publishes. `v1.0.4` was tagged 2026-09-22 and served by 2026-09-30. To check where a
+  release is without guessing:
+
+  ```bash
+  # what the repo actually SERVES right now
+  curl -s https://f-droid.org/api/v1/packages/org.maegley.megrim
+  # whether the bot has picked the tag up yet (CurrentVersion + the per-ABI entries)
+  curl -s "https://gitlab.com/api/v4/projects/fdroid%2Ffdroiddata/repository/files/metadata%2Forg.maegley.megrim.yml/raw?ref=master"
+  # did a build run fail? (megrim in failedBuilds)
+  curl -s https://f-droid.org/repo/status/build.json
+  ```
+
+- **A client showing an older version is usually a stale index, not a publishing problem** — the
+  F-Droid app caches the repo index and refreshes on its own schedule; pull down on Latest/Updates
+  to force it. The other cause is an install that did not come from F-Droid: the GitHub-release APK
+  is signed with Steve's key, so F-Droid cannot update over it (it would need an uninstall and
+  reinstall, which wipes data — export first). `adb shell pm list packages -i | grep megrim` names
+  the installer (`org.fdroid.fdroid`, `dev.imranr.obtainium`, or none for a sideload).
 - The GitLab PAT expired on ~2026-08-06 and was not renewed — public MR data is still readable
   unauthenticated, but posting comments needs a fresh token.
 
