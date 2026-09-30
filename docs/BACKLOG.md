@@ -5,7 +5,8 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
 > **Status (2026-09-22):** #1–11 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)),
-> kept here as a record. **#12 is OPEN**; #13 shipped in `v1.0.5`. Add new items as they come up.
+> kept here as a record. **#12, #14 and #15 are OPEN**; #13 shipped in `v1.0.5`. Add new items
+> as they come up.
 
 ## UI / UX
 
@@ -219,6 +220,69 @@ test was wrong (Boulder→Paris is 7854 km, not 7737 — verify reference values
 implementation), and asserting an *exact* distance threshold is unstable in floating point
 (100 km expressed in degrees comes back as 100.00000000000038), so the test asserts either side of
 it instead.
+
+### 14. Backup reminder — **OPEN** *(built on `feat/backup-reminder`, awaiting device test)*
+
+**Want:** tell the user how long it has been since their last backup, and let them opt in to being
+warned when it has been too long.
+
+**Why:** nothing in the app has ever said "you have never exported". Steve asked for scheduled
+automatic backups (2026-09-30); this is the deliberately cheap half of that — see #15 for what was
+deferred and why.
+
+**Decisions taken (Steve, 2026-09-30):**
+
+- **Opt-in, and the opt-in *is* the interval.** One Settings row cycling Off / 7 / 14 / 30 / 90
+  days, defaulting to **Off**, so an upgrade changes nothing for anyone. The last-backup *date*
+  shows regardless — stating a fact is not nagging; only the warning state and the Log-screen line
+  are gated on opting in.
+- **A quiet line at the bottom of Quick Log**, only when opted in: a small filled dot, green inside
+  the interval and orange past it, with "Last backup: 12 days ago" beside it. Tapping switches to
+  the Settings tab. Deliberately a dot rather than the `DaysSinceCard` ring — this is the least
+  important thing on that screen.
+- **JSON only.** A CSV export cannot be imported back, so it is not a backup.
+- **Any completed JSON export counts** — saved to a file, or shared where the sheet reports
+  success. A dismissed share does not.
+- **No history is invented.** Anyone who exported before this shipped reads "Never" until their
+  next one, which is true, rather than being seeded with a made-up date.
+
+**Shape:** `models/backup_status.dart` is pure (no clock, no I/O) and holds all the logic; two
+settings keys (`last_backup_at`, `backup_reminder_days`); the Settings row and picker; the Quick
+Log line. `HomeShell` bumps a `refreshToken` when the Log tab is opened, because `IndexedStack`
+never disposes that page and it would otherwise keep the date it first read.
+
+**No new dependencies and no new permissions** — that was the point of choosing this over #15.
+
+### 15. Remember the export / import location, and back up automatically — **DEFERRED** *(not a small job; see below)*
+
+**Want:** the export and import pickers should reopen where the user last chose, and ideally the
+app should write a backup there on a schedule without being asked.
+
+**Why deferred (investigated 2026-09-30):** both need the same thing — *persistent* access to a
+user-chosen folder — and `file_picker` does not provide it.
+
+- **The save location cannot even be captured today.** `file_picker`'s Android `saveFile()` runs
+  `ACTION_CREATE_DOCUMENT` and then **throws the real destination away**: it returns a fabricated
+  `Environment.DIRECTORY_DOWNLOADS + "/" + filename` string regardless of where the user actually
+  saved (`FilePickerDelegate.onActivityResult`, `SAVE_FILE_CODE`). Import is no better — it
+  returns the path of a private cached *copy*. So there is no valid value to feed back as
+  `initialDirectory` next time, even though the plugin does accept one and maps it to
+  `DocumentsContract.EXTRA_INITIAL_URI` correctly.
+- **Folder access is never persisted.** `getDirectoryPath()` uses `ACTION_OPEN_DOCUMENT_TREE` but
+  never calls `takePersistableUriPermission`, so the grant dies with the process — fine for a
+  one-shot picker, useless for writing later.
+
+**What it would take:** a fork/PR to `file_picker` to return the real URI, a different plugin, or
+our own small platform channel taking a persistable tree permission (plus a security-scoped
+bookmark on iOS).
+
+**And the automatic half costs more than that.** A true background schedule means WorkManager on
+Android, which merges in manifest permissions beyond `INTERNET` — a guarantee the README, PRIVACY
+and the F-Droid listing all make — and iOS cannot do reliable background file writes at all, so it
+would be a different feature per platform. A middle option exists: write the backup **on app open
+when one is due**, which needs the persistent folder access but no scheduler and no new
+permissions. **Steve chose the reminder (#14) for now**; revisit this if reminding proves not to
+be enough.
 
 ## Release / infra
 

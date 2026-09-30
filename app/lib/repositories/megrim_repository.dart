@@ -6,6 +6,7 @@ import '../analytics/dashboard.dart';
 import '../analytics/pressure_baseline.dart';
 import '../database/database.dart';
 import '../enrichment/enrichment_service.dart';
+import '../models/backup_status.dart';
 import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
@@ -42,6 +43,32 @@ class MegrimRepository {
   /// OFF unless the user explicitly enabled it (onboarding step or Settings toggle) — the app
   /// makes no Open-Meteo requests until then. Local factors (calendar/moon/daylight) are
   /// unaffected; they never touch the network.
+  // ── Backup reminder (backlog #14) ────────────────────────────────────────
+  /// When the user last completed a JSON export. Null until they do one — including everyone who
+  /// exported before this feature shipped.
+  Future<DateTime?> get lastBackupAt async {
+    final raw = await db.getSetting('last_backup_at');
+    if (raw == null || raw.isEmpty) return null;
+    return DateTime.tryParse(raw)?.toUtc();
+  }
+
+  Future<void> markBackedUp([DateTime? at]) =>
+      db.setSetting('last_backup_at', (at ?? DateTime.now().toUtc()).toIso8601String());
+
+  /// Reminder interval in days; [kBackupReminderOff] (the default) means never remind.
+  Future<int> get backupReminderDays async =>
+      int.tryParse(await db.getSetting('backup_reminder_days') ?? '') ??
+      kBackupReminderOff;
+
+  Future<void> setBackupReminderDays(int days) =>
+      db.setSetting('backup_reminder_days', '$days');
+
+  Future<BackupStatus> backupStatus({DateTime? now}) async => BackupStatus.from(
+        lastBackupAt: await lastBackupAt,
+        reminderDays: await backupReminderDays,
+        now: now ?? DateTime.now(),
+      );
+
   Future<bool> get weatherEnrichmentEnabled async =>
       (await db.getSetting('weather_enrichment')) == '1';
 
