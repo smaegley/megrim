@@ -173,8 +173,12 @@ his iPhone via TestFlight the same day — looks good. The manual path was: `flu
   F-Droid cannot update over it. The tell is **"No versions with compatible signer"** at the bottom
   of the app's page; the version shown beside the name in search results is then the *installed*
   one, not what the repo offers. **This happened to Steve's own phone** (diagnosed 2026-09-30): it
-  sat at 1.0.2 while the repo served 1.0.4, because the 2026-09-19 reinstall — after the debug
-  build uninstalled the F-Droid copy — came from the GitHub APK.
+  sat at 1.0.2 while the repo served 1.0.4. The cause was the 2026-09-19 session, *before* debug
+  builds got their own application id: `flutter run` uninstalled the F-Droid copy and installed the
+  **debug APK** in its place under the same id (`org.maegley.megrim`, versionName 1.0.2,
+  versionCode 7, signed with the debug key). He then restored his data into it, so his daily driver
+  was a debug build for 11 days. The `.debug` suffix added later that day is what makes this
+  impossible to repeat.
 - **Recovering means export → uninstall → reinstall from one source → import.** The uninstall wipes
   the database, so the export is not optional (see the 2026-09-19 incident). Pick a lane and stay
   in it: **GitHub + Obtainium** gets each release minutes after the tag (the same APK CI signs and
