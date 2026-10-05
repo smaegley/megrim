@@ -5,8 +5,8 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
 > **Status (2026-09-22):** #1–11 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)),
-> kept here as a record. **#12 is OPEN and #15 is DEFERRED**; #13 shipped in `v1.0.5` and #14 is
-> merged on `main`, unreleased. Add new items as they come up.
+> kept here as a record. **#15 is DEFERRED**; everything else is done. #13 shipped in `v1.0.5`;
+> #12 and #14 are merged on `main`, unreleased. Add new items as they come up.
 
 ## UI / UX
 
@@ -113,7 +113,7 @@ magenta↔green under deuteranopia, true grey fails the chroma floor), so this i
 theme fit that stays readable. Both modes validated all-pairs against their card surfaces
 (donuts wrap, so every slice pair is adjacent).
 
-### 12. In-app "Export report (PDF)" — **OPEN** *(raised by Steve 2026-09-22)*
+### 12. In-app "Export report (PDF)" — **DONE** *(built 2026-10-05, unreleased)*
 
 **Want:** a printable, clinician-ready report generated **on the phone**, offered next to
 Export (JSON) and Export (CSV) in Settings.
@@ -163,7 +163,25 @@ share + Save-to-device, iOS share sheet — since this is the first binary the a
 **Does not replace `tools/report.html`.** That stays the desktop path for anyone holding an export
 without the phone, and it keeps reading the #16 block, so the two agree by construction.
 
-**Estimate:** ~2–3 days. A feature, not a fix — ship as **v1.1**, not a patch.
+**Done** (2026-10-05). Built as planned: `report_content.dart` is pure and decides every string,
+`report_pdf.dart` only draws. Notes from doing it, worth keeping:
+
+- **The `pdf` package is Apache-2.0 and pure Dart** — no plugin section, so no native code, no
+  Gradle change, no new permissions, and the CI dependency-ban job is unaffected.
+- **The bundled font does not cover `≥`.** Noto Sans (Latin/Greek/Cyrillic) has `Δ`, `·`, `–` and
+  every European accent, but not U+2265, which the app's own "≥ 14 h" daylight bucket uses. So
+  `kFontTransliterations` maps a few symbols to readable stand-ins (`>=`, `<=`) *before* the "?"
+  fallback, and only the fallback counts as a lost character. A test pins this.
+- **Unsupported runes render as nothing, silently** — the library maps them to glyph 0 with zero
+  width, so a Japanese note would simply vanish. Hence the substitution plus a footnote saying it
+  happened, rather than a quietly incomplete report.
+- **Size:** the arm64 release APK goes from ~22 MB to 23.5 MB, of which 1.2 MB is the two fonts.
+  (The universal APK's larger jump is three ABIs' worth of the same code.)
+- **Column widths were tuned against the rendered output**, not guessed: at 8pt the `Duration` and
+  `Aura` headers wrap if their columns are any narrower. Verified by extracting a generated
+  report's text with `pypdf`; a Dart test can't catch that, so the layout comment says so.
+- **It is not a backup.** A PDF cannot be imported back, so it does not touch the #14 reminder —
+  the same rule as CSV.
 
 ### 13. Make travel visible: an away-from-home share + a default "Travel" trigger — **DONE** *(shipped in `v1.0.5`)*
 
