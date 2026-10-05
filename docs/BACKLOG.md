@@ -5,8 +5,8 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
 > **Status (2026-09-22):** #1–11 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)),
-> kept here as a record. **#12, #14 and #15 are OPEN**; #13 shipped in `v1.0.5`. Add new items
-> as they come up.
+> kept here as a record. **#12 is OPEN and #15 is DEFERRED**; #13 shipped in `v1.0.5` and #14 is
+> merged on `main`, unreleased. Add new items as they come up.
 
 ## UI / UX
 
@@ -221,7 +221,7 @@ implementation), and asserting an *exact* distance threshold is unstable in floa
 (100 km expressed in degrees comes back as 100.00000000000038), so the test asserts either side of
 it instead.
 
-### 14. Backup reminder — **OPEN** *(built on `feat/backup-reminder`, awaiting device test)*
+### 14. Backup reminder — **DONE** *(merged 2026-10-05, unreleased)*
 
 **Want:** tell the user how long it has been since their last backup, and let them opt in to being
 warned when it has been too long.
@@ -251,7 +251,11 @@ settings keys (`last_backup_at`, `backup_reminder_days`); the Settings row and p
 Log line. `HomeShell` bumps a `refreshToken` when the Log tab is opened, because `IndexedStack`
 never disposes that page and it would otherwise keep the date it first read.
 
-**No new dependencies and no new permissions** — that was the point of choosing this over #15.
+**No new dependencies and no new permissions** — that was the point of choosing this over #15;
+the release APK's permission list is unchanged.
+
+**Done** (2026-10-05): built as described and verified on the emulator — the opt-in, the orange/green
+dot, the Settings row, and that CSV and a dismissed share correctly record nothing. 222 tests.
 
 ### 15. Remember the export / import location, and back up automatically — **DEFERRED** *(not a small job; see below)*
 

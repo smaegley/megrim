@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-09-30: v1.0.5 live on GitHub and the App Store; the F-Droid build is queued._
+_Last updated: 2026-10-05: v1.0.5 live on all three channels. The backup reminder (backlog #14) is merged on `main`, unreleased._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -64,8 +64,10 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 | Verification bar | `flutter analyze` clean, **212 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
 
 Everything in the original spec is implemented, plus the accessibility pass, documented import
-format, and the opt-in privacy work below. `docs/BACKLOG.md` holds one open item: **#12, an
-in-app "Export report (PDF)"** — a v1.1 feature, written up and ready to pick up, not started.
+format, and the opt-in privacy work below. `docs/BACKLOG.md` holds **#12, an in-app "Export report
+(PDF)"** (a v1.1 feature, written up, not started) and **#15, remembering the export location /
+automatic backups** (deferred — `file_picker` discards the real save destination, and the automatic
+half would cost permissions beyond INTERNET). **#14, the backup reminder, is merged and unreleased.**
 
 ## Community: first outside issues and PRs (2026-09)
 
@@ -123,9 +125,7 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
 - **Release plan:** v1.0.5 = PR #18 + backlog #13. **Android released 2026-09-29** (`release.yml`
   green, APK/AAB published, not draft/prerelease, signature verified). **iOS 1.0.5 (build 11): submitted 2026-09-29, APPROVED and released 2026-09-30.**
   Archived from `~/megrim/app` with `--build-number=11`, uploaded via the Xcode Organizer.
-  **F-Droid 1.0.5 still building** as of 2026-09-30: the bot committed the entries at 08:36 UTC,
-  ~1.5 h after that day's build run had already started, so it lands in the next run. Observed
-  bot-commit → published lag on the previous two releases was 0–1 days. v1.0.4 = #14 + #16 + #11 + #17 (Steve chose to bundle #17 rather than pay a second
+  **F-Droid published 1.0.5 by 2026-10-05**, completing the release on all three channels. v1.0.4 = #14 + #16 + #11 + #17 (Steve chose to bundle #17 rather than pay a second
   App Review cycle; the migration is additive and was exercised on the emulator). #15 was still open
   with no PR, so it moves to v1.0.5. **Android released 2026-09-22** (`release.yml` green, APK/AAB published, not
   draft/prerelease). **iOS 1.0.4 (build 10): submitted 2026-09-22, APPROVED and released 2026-09-27** — archived from
