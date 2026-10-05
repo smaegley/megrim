@@ -28,7 +28,7 @@ analytics plus odds-ratio "suspected factors" correlations.
 
 ## Status
 
-**`v1.0.5`** — latest stable release. App id `org.maegley.megrim`.
+**`v1.0.6`** — latest stable release. App id `org.maegley.megrim`.
 Built against [`docs/SPEC.md`](docs/SPEC.md); see that document (§12) for the full product
 definition and running implementation status.
 
@@ -46,7 +46,11 @@ the unused location permissions** — the app now declares only `INTERNET` and n
 location. *Upgrading users: enrichment starts off; enable it in Settings › Weather enrichment to
 resume weather lookups and backfill past entries.*
 
-`v1.0.5` makes travel visible. The Recorded-location picker offers your last three locations
+`v1.0.6` adds an **in-app printable report**: Settings → Export report (PDF) builds a summary you
+can hand to a clinician, entirely on the device. It also adds an optional **backup reminder** that
+shows when you last exported and warns you after an interval you choose.
+
+`v1.0.5` made travel visible. The Recorded-location picker offers your last three locations
 ([#15](https://github.com/smaegley/megrim/issues/15) /
 [#18](https://github.com/smaegley/megrim/pull/18), zatteo), Analytics gains an **Away from home**
 share — how many entries you recorded more than 100 km from home, and where — and "Travel" joins

@@ -671,6 +671,30 @@ F-Droid's bot (`AutoUpdateMode: Version`, `UpdateCheckMode: Tags`, `VercodeOpera
 reading `app/pubspec.yaml`), so routine releases need **no** further merge request. The canonical
 recipe now lives in `fdroiddata`; the copy under `fdroid/` is a historical reference.
 
+**`v1.0.6` (2026-10-05): the report, and a nudge to back up.** Version `1.0.6+11`.
+**Backlog #12, the in-app PDF report.** `tools/report.html` (v1.0.4) only worked on a desktop —
+Steve hit that checking it from the iOS build, where the only route was exporting JSON and
+AirDropping it to a Mac. Settings → Export report (PDF) now builds one on the device, reusing the
+Share vs Save-to-device choice. `report_content.dart` is pure and decides every string;
+`report_pdf.dart` only draws, and both read the same `DashboardResult`/`CorrelationResult` as the
+Analytics tab and the #16 export block, so the three cannot disagree. New dependency `pdf`
+(Apache-2.0, **pure Dart** — no native code, no Gradle change, no new permissions, dependency-ban
+unaffected) plus bundled Noto Sans Regular+Bold (SIL OFL, unmodified upstream, registered on the
+licences page): the PDF built-in fonts are Latin-1 only and would break for Polish, Turkish,
+Czech, Greek or Cyrillic notes. Two findings worth keeping: Noto Sans **has no `≥` (U+2265)**,
+which the app's own "≥ 14 h" bucket uses, so `kFontTransliterations` maps a few symbols to
+readable stand-ins before the "?" fallback; and the library renders an unknown rune as **glyph 0
+with zero width**, i.e. silently invisible, so a Japanese note would have vanished rather than
+being visibly substituted and footnoted. arm64 APK ~22 → 23.5 MB, 1.2 MB of it fonts.
+**Backlog #14, the backup reminder.** Steve asked for scheduled automatic backups; that needs
+persistent access to a user-chosen folder, which `file_picker` cannot give (its Android
+`saveFile()` discards the real destination and returns a fabricated Downloads path), plus a
+background scheduler that would add manifest permissions beyond `INTERNET` on Android and is not
+reliably possible on iOS. He chose the reminder; the rest is written up as backlog #15. It is
+**opt-in and the opt-in is the interval** (Off/7/14/30/90, default Off, so an upgrade changes
+nothing), records **JSON exports only** (CSV and the new PDF can't be imported back, so neither is
+a backup), and shows a muted green/orange line at the bottom of Quick Log once enabled. 239 tests.
+
 **`v1.0.5` (2026-09-29): travel.** Version `1.0.5+10`. Two halves of one idea, from the #11
 reviewer's observation that travel plausibly bundles several triggers at once. **PR #18 (zatteo,
 issue #15):** the Recorded-location dialog lists the last 3 distinct locations from past entries,
