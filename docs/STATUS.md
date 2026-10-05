@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-05: v1.0.6 prepared on `main` (backlog #12 + #14), tag pending; v1.0.5 live on all three channels._
+_Last updated: 2026-10-05: v1.0.6 released on Android and submitted to App Review; v1.0.5 live on all three channels._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -57,7 +57,7 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 
 | | |
 |---|---|
-| Latest release | **`v1.0.6`** (versionCode 11) is **prepared on `main` and awaits its tag** — the in-app PDF report (backlog #12) and the opt-in backup reminder (#14). No schema change. Previous: **`v1.0.5`** (versionCode 10, tagged 2026-09-29), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.5); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
+| Latest release | **`v1.0.6`** (versionCode 11, tagged 2026-10-05), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.6); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`) with the permission list unchanged. Contents: the in-app PDF report (backlog #12) and the opt-in backup reminder (#14). No schema change. Previous: **`v1.0.5`** (versionCode 10, tagged 2026-09-29), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.5); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
 | Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
 | Permissions | `INTERNET` only (plus `ACCESS_NETWORK_STATE` from connectivity_plus). No location permission at all |
@@ -122,8 +122,10 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   default triggers (schema v3). Steve ran the 18-step emulator script covering the v3 upgrade, the
   picker, the card and the export — all passed. Deliberately descriptive-only, not a suspected
   factor.
-- **Release plan:** v1.0.6 = backlog #12 + #14; no schema change; iOS build for 1.0.6 must be **12**
-  (`flutter build ipa --build-number=12` from `~/megrim/app`). Note the APK grows ~22 → 23.5 MB
+- **Release plan:** v1.0.6 = backlog #12 + #14; no schema change. **Android released 2026-10-05**
+  (`release.yml` green, APK/AAB published, signature and permissions verified); **iOS build 12
+  submitted to App Review 2026-10-05.** The generated-changelog CI check ran green on its first
+  real release. Note the APK grows ~22 → 23.5 MB
   (arm64) for the report's bundled fonts — quote the per-ABI figure, not the universal APK, whose
   jump is three ABIs of the same code. Previously: v1.0.5 = PR #18 + backlog #13. **Android released 2026-09-29** (`release.yml`
   green, APK/AAB published, not draft/prerelease, signature verified). **iOS 1.0.5 (build 11): submitted 2026-09-29, APPROVED and released 2026-09-30.**
