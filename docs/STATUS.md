@@ -155,8 +155,14 @@ his iPhone via TestFlight the same day — looks good. The manual path was: `flu
 - **Routine releases no longer need a merge request.** The merged recipe carries
   `AutoUpdateMode: Version`, `UpdateCheckMode: Tags ^v[\d.]+$`, `VercodeOperation` (×10+1/2/3) and
   `UpdateCheckData` reading `app/pubspec.yaml`, so F-Droid's bot picks up each new `v*` tag and
-  generates the per-ABI build entries itself. **Tagging is the whole job.** Remember each release
-  needs both `<code>.txt` and the per-ABI changelog copies (e.g. `7.txt` plus `71/72/73.txt`).
+  generates the per-ABI build entries itself. **Tagging is the whole job.**
+- **Changelogs are generated, not hand-copied** (since 2026-10-05). Write the notes once in
+  `docs/release-notes/<version>.txt` (500 characters max) and run `tools/sync_changelogs.py`; it
+  reads the version from `app/pubspec.yaml` and writes the three per-ABI files F-Droid expects
+  (`111/112/113.txt` for versionCode 11, per the recipe's `VercodeOperation`). CI runs it with
+  `--check`, so a drifted hand-edit fails the build. Earlier releases also carry an un-suffixed
+  `<code>.txt` — those match **no** F-Droid build and nothing reads them (the GitHub release
+  workflow doesn't use changelogs); they're left as history and no new ones are written.
 - The canonical recipe now lives in `fdroiddata`; the copy under `fdroid/` is a historical
   reference and will drift as the bot appends entries.
 - **Publication lags the tag by days, in two stages.** The bot appends the build entries (pinned to

@@ -29,6 +29,13 @@ jobs:
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter analyze
+      # F-Droid names a changelog after each per-ABI build's versionCode (111/112/113 for
+      # release 11), so the same text lives in three files. They're generated from
+      # docs/release-notes/<version>.txt; fail here if one was hand-edited and drifted, rather
+      # than shipping a release whose changelog is wrong on two architectures out of three.
+      - name: Changelogs match their release notes
+        working-directory: ${{ github.workspace }}
+        run: tools/sync_changelogs.py --check
       - run: flutter test
       # Re-run under a DST timezone so date/time bucketing bugs that only appear across a
       # daylight-saving transition (see analytics day-stepping) are actually exercised.
