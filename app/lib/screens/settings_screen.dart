@@ -12,9 +12,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../legal.dart';
+import '../models/backup_status.dart';
 import '../models/home_location.dart';
 import '../repositories/megrim_repository.dart';
 import '../services/import_service.dart';
+import '../widgets/severity_badge.dart' show StatusColors;
 import '../widgets/location_picker.dart';
 import 'manage_vocab_screen.dart';
 
@@ -43,11 +45,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// through a FutureBuilder right after writing it).
   bool _weatherEnrichment = false;
 
+  /// Backup reminder (backlog #14). Held in state for the same reason as the two above.
+  BackupStatus _backup = const BackupStatus(
+      lastBackupAt: null, reminderDays: kBackupReminderOff, daysSince: null);
+
   @override
   void initState() {
     super.initState();
     _loadHome();
     _loadWeatherEnrichment();
+    _loadBackup();
+  }
+
+  Future<void> _loadBackup() async {
+    final s = await repo.backupStatus();
+    if (mounted) setState(() => _backup = s);
+  }
+
+  /// Called by the export paths after a JSON export actually completed (saved, or shared and the
+  /// sheet reported success). CSV doesn't count: it can't be imported back, so it isn't a backup.
+  Future<void> _recordBackup() async {
+    await repo.markBackedUp();
+    await _loadBackup();
+  }
+
+  Future<void> _pickReminderInterval() async {
+    final chosen = await showDialog<int>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: const Text('Remind me to back up'),
+        children: [
+          // SimpleDialogOption + ListTile, matching the Export dialog below rather than
+          // RadioListTile, whose groupValue/onChanged are deprecated in this Flutter.
+          for (final days in kBackupReminderChoices)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, days),
+              child: ListTile(
+                leading: Icon(days == _backup.reminderDays
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_unchecked),
+                title: Text(backupReminderLabel(days)),
+              ),
+            ),
+        ],
+      ),
+    );
+    if (chosen == null) return;
+    await repo.setBackupReminderDays(chosen);
+    await _loadBackup();
   }
 
   Future<void> _loadWeatherEnrichment() async {
@@ -107,6 +152,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _vocabTile(context, 'Head locations', VocabKind.headLocation),
           _vocabTile(context, 'Medications', VocabKind.medication),
           const Divider(),
+          ListTile(
+            leading: Icon(
+              _backup.isOverdue ? Icons.backup_outlined : Icons.backup,
+              color: _backup.isOverdue ? StatusColors.serious : null,
+            ),
+            title: const Text('Last backup'),
+            subtitle: Text(
+              '${_backup.ageLabel} · ${backupReminderLabel(_backup.reminderDays)}'
+              '${_backup.isOverdue ? ' · due' : ''}',
+              style: _backup.isOverdue
+                  ? const TextStyle(color: StatusColors.serious)
+                  : null,
+            ),
+            trailing: const Icon(Icons.edit_outlined),
+            onTap: _pickReminderInterval,
+          ),
           ListTile(
             leading: const Icon(Icons.upload_file),
             title: const Text('Export (JSON backup)'),
@@ -195,7 +256,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final json = await repo.exportJson();
     if (!context.mounted) return;
     final name = ExportServiceFilename.json();
-    await _exportContent(context, json, name);
+    // Only a JSON export counts as a backup — it is the only format the app can import back.
+    if (await _exportContent(context, json, name)) await _recordBackup();
   }
 
   Future<void> _exportCsv(BuildContext context) async {
@@ -209,7 +271,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// Android's Storage Access Framework (file_picker's saveFile). The share sheet's available
   /// targets depend entirely on what's installed — some phones/emulators have nothing registered
   /// to save straight to local storage, so "share only" isn't a reliable substitute for this.
-  Future<void> _exportContent(
+  /// Returns true when the export actually reached somewhere: saved to a file the user chose, or
+  /// handed to a share target that reported success. Cancelling either returns false.
+  Future<bool> _exportContent(
       BuildContext context, String content, String filename) async {
     final action = await showDialog<_ExportAction>(
       context: context,
@@ -233,15 +297,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
-    if (!context.mounted || action == null) return;
+    if (!context.mounted || action == null) return false;
     if (action == _ExportAction.share) {
-      await _shareText(content, filename);
-    } else {
-      await _saveToFile(context, content, filename);
+      return _shareText(content, filename);
     }
+    return _saveToFile(context, content, filename);
   }
 
-  Future<void> _saveToFile(
+  Future<bool> _saveToFile(
       BuildContext context, String content, String filename) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
@@ -251,14 +314,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       );
       if (path != null) {
         messenger.showSnackBar(const SnackBar(content: Text('Saved.')));
+        return true;
       }
       // path == null: the user cancelled the save dialog — nothing to report.
+      return false;
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('Save failed: $e')));
+      return false;
     }
   }
 
-  Future<void> _shareText(String content, String filename) async {
+  Future<bool> _shareText(String content, String filename) async {
     // iPadOS presents the share sheet as a popover, which needs an explicit source rect —
     // without one share_plus throws there. Anchoring to this screen's bounds is enough;
     // Android and iPhone ignore it. Computed before the first await, while context is fresh.
@@ -268,7 +334,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final dir = await getTemporaryDirectory();
     final file = File(p.join(dir.path, filename));
     await file.writeAsString(content);
-    await Share.shareXFiles([XFile(file.path)],
+    final result = await Share.shareXFiles([XFile(file.path)],
         subject: filename, sharePositionOrigin: origin);
     // shareXFiles() resolves once the user picks a target, not once that app has finished reading
     // the file over its content:// URI — so delete after a delay (best-effort) rather than
@@ -279,6 +345,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         await file.delete();
       } catch (_) {}
     }));
+    // Only a completed share counts. `dismissed` means the user backed out of the sheet, and
+    // `unavailable` means the platform couldn't say — neither is evidence the file landed anywhere.
+    return result.status == ShareResultStatus.success;
   }
 
   Future<void> _import(BuildContext context) async {

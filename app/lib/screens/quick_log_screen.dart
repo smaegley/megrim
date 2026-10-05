@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import '../analytics/dashboard.dart';
 import '../database/database.dart';
 import '../legal.dart';
+import '../models/backup_status.dart';
 import '../repositories/megrim_repository.dart';
+import '../widgets/severity_badge.dart' show StatusColors;
 import '../widgets/days_since_card.dart';
 import 'event_detail_screen.dart';
 
@@ -14,8 +16,20 @@ import 'event_detail_screen.dart';
 /// severity slider and notes; one tap to end. GPS is deferred, so entries use the home location
 /// for enrichment automatically.
 class QuickLogScreen extends StatefulWidget {
+  /// Bumped by [HomeShell] whenever this tab is opened, so the backup line re-reads after an
+  /// export done on the Settings tab (IndexedStack keeps this screen alive, so it would otherwise
+  /// keep showing the date from when it was first built).
+  final int refreshToken;
+
+  /// Switches the shell to the Settings tab — tapping the backup line goes there.
+  final VoidCallback? onOpenSettings;
   final MegrimRepository repo;
-  const QuickLogScreen({super.key, required this.repo});
+  const QuickLogScreen({
+    super.key,
+    required this.repo,
+    this.refreshToken = 0,
+    this.onOpenSettings,
+  });
 
   @override
   State<QuickLogScreen> createState() => _QuickLogScreenState();
@@ -26,13 +40,29 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   Timer? _ticker;
   final _notes = TextEditingController();
 
+  /// Backup reminder (backlog #14); only rendered once the user has opted in to an interval.
+  BackupStatus _backup = const BackupStatus(
+      lastBackupAt: null, reminderDays: kBackupReminderOff, daysSince: null);
+
   @override
   void initState() {
     super.initState();
     _loadActive();
+    _loadBackup();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (_active != null && mounted) setState(() {});
     });
+  }
+
+  @override
+  void didUpdateWidget(QuickLogScreen old) {
+    super.didUpdateWidget(old);
+    if (old.refreshToken != widget.refreshToken) _loadBackup();
+  }
+
+  Future<void> _loadBackup() async {
+    final s = await widget.repo.backupStatus();
+    if (mounted) setState(() => _backup = s);
   }
 
   @override
@@ -150,8 +180,46 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           ],
         ),
       ),
-      body: Center(
-        child: _active == null ? _idleView() : _activeView(),
+      // The backup line sits outside the scrollable view so it stays at the bottom of the screen
+      // rather than below the content — deliberately the least prominent thing here.
+      body: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: _active == null ? _idleView() : _activeView(),
+            ),
+          ),
+          _backupLine(),
+        ],
+      ),
+    );
+  }
+
+  /// "Last backup: 12 days ago" with a green or orange dot, shown only when the user has turned
+  /// the reminder on in Settings (backlog #14). Tapping opens Settings, where it can be changed.
+  Widget _backupLine() {
+    if (!_backup.reminderEnabled) return const SizedBox.shrink();
+    final color =
+        _backup.isOverdue ? StatusColors.serious : StatusColors.good;
+    return InkWell(
+      onTap: widget.onOpenSettings,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Last backup: ${_backup.ageLabel}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
       ),
     );
   }

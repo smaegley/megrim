@@ -19,11 +19,18 @@ class _HomeShellState extends State<HomeShell> {
   int _index = 0;
   // Bumped whenever the Analytics tab is opened, forcing it to recompute against current data.
   int _analyticsToken = 0;
+  // Same idea for the Log tab's backup line, which would otherwise keep the date it first read
+  // (IndexedStack never disposes the page).
+  int _logToken = 0;
 
   @override
   Widget build(BuildContext context) {
     final pages = [
-      QuickLogScreen(repo: widget.repo),
+      QuickLogScreen(
+        repo: widget.repo,
+        refreshToken: _logToken,
+        onOpenSettings: () => setState(() => _index = 3),
+      ),
       HistoryScreen(repo: widget.repo),
       AnalyticsScreen(repo: widget.repo, refreshToken: _analyticsToken),
       SettingsScreen(repo: widget.repo),
@@ -37,6 +44,7 @@ class _HomeShellState extends State<HomeShell> {
           ScaffoldMessenger.of(context).clearSnackBars();
           setState(() {
             _index = i;
+            if (i == 0) _logToken++;
             if (i == 2) _analyticsToken++;
           });
         },
