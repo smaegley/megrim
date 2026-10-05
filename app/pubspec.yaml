@@ -41,6 +41,7 @@ dependencies:
   share_plus: ^10.0.0
   file_picker: ^8.1.0
   open_location_code: ^1.0.1
+  pdf: ^3.13.1
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +63,12 @@ flutter:
   assets:
     - assets/logo.png
     - assets/gpl-3.0.txt
+    # Noto Sans (Latin/Greek/Cyrillic), unmodified upstream, SIL OFL 1.1 — the PDF report's font.
+    # The PDF built-in fonts are Latin-1 only: they can't render the app's own "≥ 14 h" and
+    # "Pressure Δ 24h" labels, nor notes written in Polish, Turkish, Czech, Greek or Cyrillic.
+    - assets/fonts/NotoSans-Regular.ttf
+    - assets/fonts/NotoSans-Bold.ttf
+    - assets/fonts/OFL.txt
 
 # Launcher icon generation (run: dart run flutter_launcher_icons).
 flutter_launcher_icons:

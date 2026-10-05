@@ -5,8 +5,10 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart' show TtfParser;
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,8 +18,9 @@ import '../models/backup_status.dart';
 import '../models/home_location.dart';
 import '../repositories/megrim_repository.dart';
 import '../services/import_service.dart';
-import '../widgets/severity_badge.dart' show StatusColors;
+import '../services/report_pdf.dart';
 import '../widgets/location_picker.dart';
+import '../widgets/severity_badge.dart' show StatusColors;
 import 'manage_vocab_screen.dart';
 
 enum _ExportAction { share, save }
@@ -179,6 +182,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onTap: () => _exportCsv(context),
           ),
           ListTile(
+            leading: const Icon(Icons.picture_as_pdf_outlined),
+            title: const Text('Export report (PDF)'),
+            subtitle: const Text('A printable summary to share with a clinician'),
+            onTap: () => _exportReport(context),
+          ),
+          ListTile(
             leading: const Icon(Icons.download),
             title: const Text('Import (JSON)'),
             onTap: () => _import(context),
@@ -260,6 +269,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (await _exportContent(context, json, name)) await _recordBackup();
   }
 
+  /// The printable report (backlog #12). Deliberately does NOT count as a backup for the reminder:
+  /// a PDF can't be imported back, the same reason CSV doesn't.
+  Future<void> _exportReport(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(
+        const SnackBar(content: Text('Building report…'), duration: Duration(seconds: 2)));
+    try {
+      final regular = await rootBundle.load('assets/fonts/NotoSans-Regular.ttf');
+      final bold = await rootBundle.load('assets/fonts/NotoSans-Bold.ttf');
+      // Exact glyph coverage of the embedded font, so anything it can't draw becomes "?" rather
+      // than silently disappearing.
+      final coverage = TtfParser(regular).charToGlyphIndexMap;
+      final content = await repo.reportContent(canRender: coverage.containsKey);
+      final bytes = await renderReportPdf(content, regular: regular, bold: bold);
+      if (!context.mounted) return;
+      await _exportBytes(context, bytes, ExportServiceFilename.pdf());
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Report failed: $e')));
+    }
+  }
+
   Future<void> _exportCsv(BuildContext context) async {
     final csv = await repo.exporter.toCsv();
     if (!context.mounted) return;
@@ -274,7 +304,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// Returns true when the export actually reached somewhere: saved to a file the user chose, or
   /// handed to a share target that reported success. Cancelling either returns false.
   Future<bool> _exportContent(
-      BuildContext context, String content, String filename) async {
+      BuildContext context, String content, String filename) =>
+      _exportBytes(context, Uint8List.fromList(utf8.encode(content)), filename);
+
+  /// Returns true when the export actually reached somewhere: saved to a file the user chose, or
+  /// handed to a share target that reported success. Cancelling either returns false.
+  Future<bool> _exportBytes(
+      BuildContext context, Uint8List bytes, String filename) async {
     final action = await showDialog<_ExportAction>(
       context: context,
       builder: (context) => SimpleDialog(
@@ -299,18 +335,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     if (!context.mounted || action == null) return false;
     if (action == _ExportAction.share) {
-      return _shareText(content, filename);
+      return _shareBytes(bytes, filename);
     }
-    return _saveToFile(context, content, filename);
+    return _saveToFile(context, bytes, filename);
   }
 
   Future<bool> _saveToFile(
-      BuildContext context, String content, String filename) async {
+      BuildContext context, Uint8List bytes, String filename) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
       final path = await FilePicker.platform.saveFile(
         fileName: filename,
-        bytes: Uint8List.fromList(utf8.encode(content)),
+        bytes: bytes,
       );
       if (path != null) {
         messenger.showSnackBar(const SnackBar(content: Text('Saved.')));
@@ -324,7 +360,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Future<bool> _shareText(String content, String filename) async {
+  Future<bool> _shareBytes(Uint8List bytes, String filename) async {
     // iPadOS presents the share sheet as a popover, which needs an explicit source rect —
     // without one share_plus throws there. Anchoring to this screen's bounds is enough;
     // Android and iPhone ignore it. Computed before the first await, while context is fresh.
@@ -333,7 +369,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         box == null ? null : box.localToGlobal(Offset.zero) & box.size;
     final dir = await getTemporaryDirectory();
     final file = File(p.join(dir.path, filename));
-    await file.writeAsString(content);
+    await file.writeAsBytes(bytes);
     final result = await Share.shareXFiles([XFile(file.path)],
         subject: filename, sharePositionOrigin: origin);
     // shareXFiles() resolves once the user picks a target, not once that app has finished reading
@@ -441,10 +477,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
 class ExportServiceFilename {
   static String json() => _name('json');
   static String csv() => _name('csv');
-  static String _name(String ext) {
+
+  /// The report is named "report", not "export": it is a document to hand over, not a backup, and
+  /// the app cannot read it back.
+  static String pdf() => 'megrim-report-${_stamp()}.pdf';
+
+  static String _name(String ext) => 'megrim-export-${_stamp()}.$ext';
+
+  static String _stamp() {
     final now = DateTime.now();
-    return 'megrim-export-${now.year.toString().padLeft(4, '0')}'
+    return '${now.year.toString().padLeft(4, '0')}'
         '${now.month.toString().padLeft(2, '0')}'
-        '${now.day.toString().padLeft(2, '0')}.$ext';
+        '${now.day.toString().padLeft(2, '0')}';
   }
 }
