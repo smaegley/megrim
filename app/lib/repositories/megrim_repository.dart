@@ -10,7 +10,9 @@ import '../models/backup_status.dart';
 import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
+import '../legal.dart' show kAppVersion;
 import '../services/analytics_export.dart';
+import '../services/report_content.dart';
 import '../services/export_service.dart';
 import '../services/import_service.dart';
 
@@ -285,6 +287,39 @@ class MegrimRepository {
         correlations: corr,
         homeLocation: await homeLocation,
         now: now ?? DateTime.now(),
+      );
+    } finally {
+      baselineService.close();
+    }
+  }
+
+  /// Everything on the printable report (backlog #12), composed from the same dashboard and
+  /// correlation results the Analytics tab uses. Never touches the network, for the same reason
+  /// [analyticsForExport] doesn't: the pressure factor appears only if a baseline is already
+  /// cached, and its absence is footnoted rather than silently dropped.
+  ///
+  /// [canRender] reports whether the report's font can draw a rune; unsupported ones become "?"
+  /// instead of vanishing. Pass null to skip substitution (tests that don't care about fonts).
+  Future<ReportContent> reportContent({
+    DateTime? now,
+    bool Function(int rune)? canRender,
+  }) async {
+    final baselineService = PressureBaselineService(db: db);
+    try {
+      final dash = await dashboard();
+      final corr =
+          await correlations(baselineService: baselineService, allowFetch: false);
+      final events = await db.select(db.migraineEvents).get();
+      final home = await homeLocation;
+      return buildReportContent(
+        dash: dash,
+        corr: corr,
+        events: events,
+        appVersion: kAppVersion,
+        now: now ?? DateTime.now(),
+        homeLabel: home?.label,
+        weatherEnabled: await weatherEnrichmentEnabled,
+        canRender: canRender,
       );
     } finally {
       baselineService.close();

@@ -18,6 +18,12 @@ void main() {
       'Licensed under the GNU General Public License v3.0 or later.\n\n$gpl',
     );
   });
+  // The PDF report embeds Noto Sans (Latin/Greek/Cyrillic), bundled unmodified from upstream. Pub
+  // package licences are collected automatically; a bundled asset's is not, so register it here.
+  LicenseRegistry.addLicense(() async* {
+    final ofl = await rootBundle.loadString('assets/fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(const ['Noto Sans'], ofl);
+  });
   final db = MegrimDatabase();
   final repo = MegrimRepository(db: db);
   runApp(MegrimApp(repo: repo));
