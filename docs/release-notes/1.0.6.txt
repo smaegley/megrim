@@ -1,0 +1,3 @@
+• New: Export report (PDF) — a printable summary of your diary to hand to a clinician, built on your device and never uploaded.
+• New: an optional backup reminder. Settings shows when you last exported, and can warn you after 7, 14, 30 or 90 days.
+• Once the reminder is on, the Log screen shows a small green or orange backup indicator.
