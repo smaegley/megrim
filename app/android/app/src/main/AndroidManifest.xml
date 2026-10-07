@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- The ONLY permission. Network is used solely to reach Open-Meteo, and only after the user
+    <!-- The only permission declared here. Network is used solely to reach Open-Meteo, and only after the user
          opts in to weather enrichment (or actively types a place-name search). See
          docs/PRIVACY.md. Deliberately NO location permissions: the app never reads device
-         location — the home location is typed by the user (searched, GPS pair, or Plus Code). -->
+         location — the home location is typed by the user (searched, GPS pair, or Plus Code).
+         Merged in from plugins: ACCESS_NETWORK_STATE (connectivity_plus) and USE_BIOMETRIC +
+         USE_FINGERPRINT (local_auth / androidx.biometric, for the optional app lock, backlog #24).
+         All are install-time permissions with no user prompt. Keep docs/PRIVACY.md in step. -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application

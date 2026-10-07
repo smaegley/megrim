@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'repositories/megrim_repository.dart';
 import 'screens/home_shell.dart';
 import 'screens/onboarding_screen.dart';
+import 'services/app_lock.dart';
 import 'services/connectivity_monitor.dart';
 import 'services/geocoder.dart';
 import 'theme.dart';
+import 'widgets/app_lock_gate.dart';
 
 /// Root widget. Decides between onboarding and the main shell based on whether the disclaimer has
 /// been accepted and a home location is set. Kicks off a background enrichment-queue drain.
@@ -14,7 +16,10 @@ class MegrimApp extends StatefulWidget {
 
   /// Injectable for tests (passed through to [OnboardingScreen]); defaults to a real geocoder.
   final Geocoder? geocoder;
-  const MegrimApp({super.key, required this.repo, this.geocoder});
+
+  /// App lock (backlog #24). Injectable for tests; defaults to one using the phone's unlock.
+  final AppLockController? appLock;
+  const MegrimApp({super.key, required this.repo, this.geocoder, this.appLock});
 
   @override
   State<MegrimApp> createState() => _MegrimAppState();
@@ -31,10 +36,13 @@ class _MegrimAppState extends State<MegrimApp> {
   // its exact cause.
   bool? _onboardedOverride;
   final ConnectivityMonitor _connectivity = ConnectivityMonitor();
+  late final AppLockController _appLock;
 
   @override
   void initState() {
     super.initState();
+    _appLock = widget.appLock ?? AppLockController(repo: widget.repo);
+    _appLock.init();
     _onboardedFuture = widget.repo.isOnboarded;
     // Drain the enrichment queue on cold start, and again whenever connectivity returns so events
     // logged offline get their weather as soon as the network is back (SPEC §5.1).
@@ -45,6 +53,7 @@ class _MegrimAppState extends State<MegrimApp> {
   @override
   void dispose() {
     _connectivity.dispose();
+    if (widget.appLock == null) _appLock.dispose();
     super.dispose();
   }
 
@@ -67,6 +76,12 @@ class _MegrimAppState extends State<MegrimApp> {
       theme: megrimLightTheme(),
       darkTheme: megrimDarkTheme(),
       themeMode: ThemeMode.system,
+      // App lock (backlog #24) sits above the Navigator, so it covers every route and dialog, and
+      // the scope makes the controller reachable from Settings and the export/import paths.
+      builder: (context, child) => AppLockScope(
+        controller: _appLock,
+        child: AppLockGate(controller: _appLock, child: child ?? const SizedBox.shrink()),
+      ),
       home: _onboardedOverride == true
           ? HomeShell(repo: widget.repo)
           : FutureBuilder<bool>(

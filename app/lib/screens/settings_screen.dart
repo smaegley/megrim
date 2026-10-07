@@ -14,9 +14,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../legal.dart';
+import '../models/app_lock_timeout.dart';
 import '../models/backup_status.dart';
 import '../models/home_location.dart';
 import '../repositories/megrim_repository.dart';
+import '../services/app_lock.dart';
 import '../services/import_service.dart';
 import '../services/report_pdf.dart';
 import '../widgets/location_picker.dart';
@@ -198,6 +200,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: const Text('Bring in data from another app'),
             onTap: () => _launch(context, kImportDocUrl),
           ),
+          if (AppLockScope.maybeOf(context) case final lock?) ...[
+            const Divider(),
+            ..._privacyTiles(context, lock),
+          ],
           const Divider(),
           ListTile(
             leading: const Icon(Icons.favorite_outline),
@@ -218,6 +224,86 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+
+  /// Privacy (backlog #24): app lock with the phone's own unlock, and hide from recent apps.
+  List<Widget> _privacyTiles(BuildContext context, AppLockController lock) => [
+        SwitchListTile(
+          secondary: const Icon(Icons.lock_outline),
+          title: const Text('App lock'),
+          subtitle: const Text('Ask for your fingerprint, face or phone PIN when opening Megrim'),
+          value: lock.enabled,
+          onChanged: (on) => _setAppLock(context, lock, on),
+        ),
+        ListTile(
+          leading: const Icon(Icons.timer_outlined),
+          title: const Text('Lock after'),
+          subtitle: Text('${appLockTimeoutLabel(lock.timeout)} in the background'),
+          enabled: lock.enabled,
+          onTap: () => _pickLockTimeout(lock),
+        ),
+        SwitchListTile(
+          secondary: const Icon(Icons.visibility_off_outlined),
+          title: const Text('Hide in recent apps'),
+          subtitle: Text(Platform.isAndroid
+              ? 'Blank Megrim in the app switcher. Also blocks screenshots of the app.'
+              : 'Blank Megrim in the app switcher.'),
+          value: lock.hideInSwitcher,
+          onChanged: lock.setHideInSwitcher,
+        ),
+      ];
+
+  Future<void> _setAppLock(BuildContext context, AppLockController lock, bool on) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final outcome = await lock.setEnabled(on);
+    if (!context.mounted) return;
+    switch (outcome) {
+      case AuthOutcome.success:
+        messenger.showSnackBar(SnackBar(
+            content: Text(on ? 'App lock on.' : 'App lock off.'), duration: const Duration(seconds: 2)));
+      case AuthOutcome.noCredential:
+        await showDialog<void>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('No screen lock on this phone'),
+            content: const Text('App lock uses your phone\'s own unlock — fingerprint, face, or '
+                'PIN, pattern or password. Set a screen lock in your phone\'s settings first, then '
+                'turn app lock on here.'),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
+            ],
+          ),
+        );
+      case AuthOutcome.lockedOut:
+        messenger.showSnackBar(const SnackBar(
+            content: Text('Too many attempts. Wait a moment, then try again.')));
+      case AuthOutcome.cancelled:
+        break;
+      case AuthOutcome.error:
+        messenger.showSnackBar(
+            const SnackBar(content: Text('Couldn\'t ask for your phone\'s unlock.')));
+    }
+  }
+
+  Future<void> _pickLockTimeout(AppLockController lock) async {
+    final chosen = await showDialog<Duration>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: const Text('Lock after'),
+        children: [
+          for (final d in kAppLockTimeoutChoices)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, d),
+              child: ListTile(
+                leading: Icon(
+                    d == lock.timeout ? Icons.radio_button_checked : Icons.radio_button_unchecked),
+                title: Text(appLockTimeoutLabel(d)),
+              ),
+            ),
+        ],
+      ),
+    );
+    if (chosen != null) await lock.setTimeout(chosen);
   }
 
   Widget _vocabTile(BuildContext context, String title, String kind) => ListTile(
@@ -344,10 +430,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       BuildContext context, Uint8List bytes, String filename) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
-      final path = await FilePicker.platform.saveFile(
-        fileName: filename,
-        bytes: bytes,
-      );
+      // The system save dialog is Megrim's own trip out, so it doesn't count as leaving (#24).
+      final path = await AppLockScope.external(
+          context, () => FilePicker.platform.saveFile(fileName: filename, bytes: bytes));
       if (path != null) {
         messenger.showSnackBar(const SnackBar(content: Text('Saved.')));
         return true;
@@ -370,8 +455,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final dir = await getTemporaryDirectory();
     final file = File(p.join(dir.path, filename));
     await file.writeAsBytes(bytes);
-    final result = await Share.shareXFiles([XFile(file.path)],
-        subject: filename, sharePositionOrigin: origin);
+    if (!mounted) return false;
+    final result = await AppLockScope.external(
+        context,
+        () => Share.shareXFiles([XFile(file.path)],
+            subject: filename, sharePositionOrigin: origin));
     // shareXFiles() resolves once the user picks a target, not once that app has finished reading
     // the file over its content:// URI — so delete after a delay (best-effort) rather than
     // immediately, to avoid a race with a slow receiving app. Worst case it lingers in the
@@ -388,7 +476,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _import(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
-    final result = await FilePicker.platform.pickFiles(withData: true);
+    final result =
+        await AppLockScope.external(context, () => FilePicker.platform.pickFiles(withData: true));
     if (result == null || result.files.isEmpty) return;
     final bytes = result.files.first.bytes;
     if (bytes == null) return;
