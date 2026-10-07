@@ -4,9 +4,10 @@
 Non-blocking improvements captured for later. Not committed to a release; groom as needed.
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
-> **Status (2026-09-22):** #1–11 are **DONE** and merged to `main` (see [`SPEC.md` §12](SPEC.md)),
-> kept here as a record. **#15 is DEFERRED**; everything else is done. #13 shipped in `v1.0.5`;
-> #12 and #14 are merged on `main`, unreleased. Add new items as they come up.
+> **Status (2026-10-07):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
+> record. #13 shipped in `v1.0.5`; #12 and #14 shipped in `v1.0.6`. **#15 is DEFERRED.**
+> **#16–#24 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features* below).
+> Add new items as they come up.
 
 ## UI / UX
 
@@ -113,7 +114,7 @@ magenta↔green under deuteranopia, true grey fails the chroma floor), so this i
 theme fit that stays readable. Both modes validated all-pairs against their card surfaces
 (donuts wrap, so every slice pair is adjacent).
 
-### 12. In-app "Export report (PDF)" — **DONE** *(built 2026-10-05, unreleased)*
+### 12. In-app "Export report (PDF)" — **DONE** *(built 2026-10-05, shipped in `v1.0.6`)*
 
 **Want:** a printable, clinician-ready report generated **on the phone**, offered next to
 Export (JSON) and Export (CSV) in Settings.
@@ -239,7 +240,7 @@ implementation), and asserting an *exact* distance threshold is unstable in floa
 (100 km expressed in degrees comes back as 100.00000000000038), so the test asserts either side of
 it instead.
 
-### 14. Backup reminder — **DONE** *(merged 2026-10-05, unreleased)*
+### 14. Backup reminder — **DONE** *(merged 2026-10-05, shipped in `v1.0.6`)*
 
 **Want:** tell the user how long it has been since their last backup, and let them opt in to being
 warned when it has been too long.
@@ -305,6 +306,361 @@ would be a different feature per platform. A middle option exists: write the bac
 when one is due**, which needs the persistent folder access but no scheduler and no new
 permissions. **Steve chose the reminder (#14) for now**; revisit this if reminding proves not to
 be enough.
+
+## Features — from the 2026-10 competitor review
+
+Captured 2026-10-06 from a feature comparison against Migraine Buddy, N1-Headache, Migraine
+Monitor, Canadian Migraine Tracker, Migraine Attack Diary, Migraine Log (F-Droid) and Bearable.
+Megrim's enrichment and correlation analytics are already ahead of most of these; the gaps are
+**clinical tracking** and **capture speed**. Everything below fits the locked decisions (no
+server, no accounts, no telemetry, on-device only). Items that would break a non-goal are listed
+at the end under *Reviewed, not planned* so the reasoning isn't lost.
+
+**Numbering:** these backlog numbers overlap GitHub issue numbers that the docs already cite
+(issue #16 = the export `analytics` block, issue #17 = event time zones, issue #18 = the
+recent-locations picker). In this section a bare number never appears: it is always
+**backlog #N** or **issue #N**.
+
+**Rough priority (revised 2026-10-07):**
+
+1. Backlog #17 — needs **no schema change** (a pure function over existing data), and it's the
+   number clinicians ask for first. Can ship alone.
+2. Backlog #23 step (1), the app-icon shortcut — small, no schema, no new permission.
+3. Backlog #16 and #18 — make the existing analytics more correct and add the medication-overuse
+   numbers.
+4. Backlog #19–#21 — data-model additions; batch into one v4 bump.
+5. Backlog #22, #24, and #23 steps (2)–(3).
+
+**Common to every item that adds data:** a schema bump with an additive, nullable `onUpgrade`
+step (same pattern as v2/v3), the field carried in JSON + CSV export and import, documented in
+`docs/IMPORT.md` and `docs/megrim-export.schema.json`, and — where Analytics computes something
+new — carried in the `analytics` export block so it stays "what the tab computes". Items that
+ship in the same release share one bump.
+
+**Permissions:** the Android manifest declares only `INTERNET`. PRIVACY also mentions the
+network-state check that ships in the APK. Below, "no new permission" means nothing beyond that
+current set. Anything that adds one must update README, PRIVACY and the F-Droid listing in the
+same change, verified by inspecting the merged manifest of a release build (as was done for
+backlog #5).
+
+### 16. Headache-free days: a one-tap "No migraine today" check-in — **PROPOSED** *(2026-10-06)*
+
+**Want:** a way to record that a day was migraine-free — a one-tap button on Quick Log, plus a
+long-press / tap on a past History Calendar day to mark it clear — optionally carrying the same
+self-reported fields an event has (sleep, stress, triggers/exposures, notable foods).
+
+**Why:** this is the single biggest analytic improvement available. Today the app assumes every
+day without an entry was migraine-free, and it can't tell that apart from a day the user simply
+didn't open the app. Worse, self-reported factors exist only on migraine days, which is why
+`triggerFrequency` is descriptive-only and the Analytics/report copy has to caveat that "triggers
+are only recorded on migraine days". With clear days that carry the same fields, self-reported
+triggers, sleep and stress get a real non-migraine baseline and can enter the 2×2 odds-ratio
+engine. N1-Headache's whole method is built on daily tracking; Migraine Attack Diary has a
+one-tap "No Headache Today".
+
+**Shape:**
+
+- New table `day_checkins` (v4): `local_date` (PK, the wall-clock date in the zone it was logged)
+  plus `offset_min` (as issue #17 does for events). A row's presence means "clear". It also
+  carries the same nullable self-report fields as `migraine_events` (`triggers_suspected`,
+  `sleep_hours_prior`, `stress_level`, `foods_notable`), and `created_at` / `updated_at`. No
+  location, no per-row enrichment: calendar and astro factors are computed for every day already,
+  and the only weather baseline is the cached home-location pressure histogram
+  (`pressure_baseline.dart`), which doesn't need per-day rows.
+- A day with an event wins over a check-in for the same date; logging an event on a clear day
+  should offer to remove the check-in.
+- **Tracked vs untracked days.** Add a "days tracked" figure (event days + check-in days) to the
+  summary and the PDF report — clinicians and N1 both show it, and it tells the user how much to
+  trust the numbers.
+- **Correlations — existing factors:** keep the calendar/astro/pressure factors on the current
+  all-days baseline (they don't need check-ins).
+- **Correlations — new self-reported set:** a *separate* odds-ratio set computed **only over
+  tracked days**, with these rules:
+  - **Its own window.** The existing engine's study window runs from the first event to the
+    **last event** (`correlations.dart`, kept to match the reference Python), so check-ins after
+    the most recent migraine would be dropped. The tracked-days set uses first tracked day →
+    last tracked day.
+  - **Its own gate.** `kMinEventsForCorrelations` (5) is far too low for a clear-day baseline.
+    Start at **≥ 30 tracked days, with ≥ 5 migraine days and ≥ 5 clear days**, and hide the set
+    until then.
+  - **Bucket the numeric fields.** Sleep hours and stress level need fixed buckets before they
+    fit a 2×2 table (e.g. sleep `< 6 h` / `6–8 h` / `> 8 h`; stress `1–2` / `3` / `4–5`). Pin
+    them in `docs/METHODS.md`.
+  - **State the bias.** Recall bias is the known weakness of this design: people search harder
+    for causes after a migraine than on a good day, so triggers can be over-recorded on migraine
+    days. Say so in METHODS and in the card's caveat.
+- `triggerFrequency` stays as-is for users who never check in.
+
+**Verification:** migration test (v3→v4, existing data untouched); unit tests for the tracked-day
+odds ratios against a hand-built 2×2; a test that a check-in after the last event is inside the
+tracked window; a fixture dataset in `test/fixtures/datasets/` where a trigger is planted on
+migraine days and absent on clear days, asserting it surfaces, plus one where it's equally common
+on both and must not.
+
+### 17. Monthly migraine days and their trend — **PROPOSED** *(2026-10-06)*
+
+**Want:** a "migraine days per month" bar chart on Analytics (last 12 months, scrollable back to
+the first entry), a "last 30 days" stat tile, and the same chart in the PDF report (backlog #12).
+
+**Why:** monthly migraine/headache days is the outcome measure neurologists use — it's how
+preventive treatment is judged, and the first thing asked at an appointment. Megrim currently
+breaks the data down by year and by factor, but never by month.
+
+**Shape:**
+
+- **No schema change** — a pure function over existing data, so this can ship on its own.
+- Count **distinct local days** with a migraine, not events: a multi-day migraine counts every day
+  it spans (reuse `localDaysSpanned` / `eventsByLocalDay` from backlog #10), and two migraines on
+  one day count once. Show event count alongside if useful, but days is the headline.
+- **Ongoing migraines — decide:** `localDaysSpanned` gives an ongoing event (no end yet) its start
+  day only. Either reuse that rule (consistent with History, and safe for entries the user forgot
+  to end) or count through today. Recommendation: reuse the History rule, so both screens agree.
+- Use each event's own offset (issue #17, `started_at_offset_min`) for the day bucket, like
+  everything else.
+- When backlog #19 lands, overlay preventive start/stop markers on this chart — that's the "did
+  it work?" view.
+- Pure function on `DashboardResult` (`byMonth: List<MonthCount>`), so it's unit-testable and
+  goes into the export `analytics` block for free.
+
+**Verification:** unit tests for month bucketing across DST changes, month boundaries, a migraine
+spanning a month boundary (counts in both), two events on one day (counts once), and an ongoing
+event (start day only, per the rule above).
+
+### 18. Acute-medication days and a medication-overuse notice — **PROPOSED** *(2026-10-06)*
+
+**Want:** count the days per month on which acute medication was taken, by medication class,
+and show a calm, informational notice when the count reaches the levels headache guidelines
+associate with medication-overuse headache.
+
+**Why:** medication-overuse headache is common and avoidable, and patients often don't realise
+they're near the line. Canadian Migraine Tracker monitors it; N1 summarises medication use by
+category. Megrim already records every med per event (`meds_taken`), so the data is there.
+
+**Reference thresholds (ICHD-3, 8.2)** — all require the use to be regular for **more than 3
+months**:
+
+| ICHD-3 | class | days/month |
+|---|---|---|
+| 8.2.1 | ergotamine | ≥ 10 |
+| 8.2.2 | triptans | ≥ 10 |
+| 8.2.3 | simple analgesics (paracetamol/acetaminophen, NSAIDs, aspirin) | ≥ 15 |
+| 8.2.4 | opioids | ≥ 10 |
+| 8.2.5 | combination analgesics | ≥ 10 |
+| 8.2.6 | **any mix** of the above — **simple analgesics included** — where no single class reaches its own limit | ≥ 10 total |
+
+Gepants and ditans postdate ICHD-3 and are not currently thought to cause medication overuse:
+count and show them, but they **never trigger the notice**. Verify all of this against the
+current ICHD-3 text before shipping and cite it in `docs/METHODS.md`.
+
+**Shape:**
+
+- Meds need a **class**. Add an optional class to medication vocabulary entries (v4; the
+  `vocabularies` table has no attribute column today, so either add a nullable `meta` JSON column
+  or a small `medication_classes` table keyed by name). Classes: triptan, gepant, ditan, ergot,
+  opioid, combination analgesic, simple analgesic, antiemetic, other. Unclassified, gepant, ditan,
+  antiemetic and other meds are counted but never trigger the notice. Ship **no** brand-name drug
+  database (keeps the "leaning empty + learn from entries" decision, SPEC open question 4); offer
+  the class picker the first time a new med name is entered.
+- A med "day" is a distinct local day with at least one dose of that class. Use the med's own
+  `time` when present — it's stored as an ISO-8601 **UTC** string (`MedEntry.time`), so convert
+  it with the event's `started_at_offset_min` before taking the date — else the event's start day.
+- **The notice is based on months, not the last 30 days.** It appears only when the threshold is
+  met in **each of the last 3 complete calendar months**, matching the ">3 months" criterion. The
+  "last 30 days" figure is shown as a plain count with no notice attached, so one bad month never
+  raises it.
+- Analytics card: "Acute medication days, last 30 days" with a per-class breakdown and the
+  monthly trend (shares backlog #17's month bucketing).
+- **Wording matters — not a medical device.** The notice states the count and the reference
+  level and suggests discussing it with a clinician; it never says the user *has* medication-
+  overuse headache, and never tells them to stop a medication. Have the copy reviewed the same
+  way the disclaimer was.
+- Include the per-class monthly counts in the PDF report.
+
+**Verification:** unit tests for class-day counting (two doses same day = 1 day; a dose whose UTC
+`time` falls on the next local day; mixed classes; unclassified/gepant ignored for the notice);
+threshold edge cases at 9/10 and 14/15; the 8.2.6 mixed rule (e.g. 6 triptan + 5 simple-analgesic
+days = 11, notice); the 3-month rule (3 qualifying months = notice, 2 then 1 non-qualifying = no
+notice); widget test that the notice copy renders and contains no diagnostic phrasing.
+
+### 19. Acute vs preventive medications, and non-drug relief — **PROPOSED** *(2026-10-06)*
+
+**Want:** (a) a list of **preventive** medications with start and stop dates (not per-attack),
+and (b) a per-event "what else did you try" list for non-drug relief (dark room, sleep,
+cold/heat, caffeine, hydration…) with the same helped / didn't / unknown tri-state as meds.
+
+**Why:** preventives are taken daily and judged over months, so logging them per attack is wrong
+— they need a regimen record that backlog #17's trend chart can annotate. Non-drug relief is a
+standard field in Migraine Buddy and N1 (which splits treatments into acute, preventive and
+non-pharmacologic).
+
+**Shape:**
+
+- New table `preventive_regimens` (v4): `id`, `name`, `dose`, `started_on`, `stopped_on`
+  (nullable = current), `notes`. Settings › Medications › Preventives, plus the markers on
+  backlog #17.
+- `migraine_events.relief_tried` (v4): JSON `[{name, helped}]`, new vocab kind `relief` seeded
+  with a short default list. Event Detail section mirroring the Medications UI (backlog #6).
+- Analytics: a descriptive "what helped" card — per med and per relief method, helped / tried.
+  Descriptive only, same caveat style as `triggerFrequency`.
+
+**Verification:** migration test; export/import round-trip of both new structures; unit test for
+the helped-rate computation including unknowns.
+
+### 20. Symptoms — **PROPOSED** *(2026-10-06)*
+
+**Want:** a symptom chip set on Event Detail (and optionally on the active Quick Log view):
+nausea, vomiting, light sensitivity, sound sensitivity, smell sensitivity, neck pain, dizziness,
+fatigue, brain fog — user-editable like triggers.
+
+**Why:** every competitor records symptoms; Megrim has no symptom field at all (only aura). It's
+also what a clinician uses to tell migraine from other headache types, so it belongs in the
+report.
+
+**Shape:** `migraine_events.symptoms` (v4, JSON array of strings), new vocab kind `symptom`
+seeded on create and inserted once on upgrade with `insertOrIgnore` (the backlog #13 "Travel"
+pattern). Analytics: descriptive "most common symptoms" frequency card. PDF report: symptom
+frequency table.
+
+**Verification:** migration seeds defaults exactly once and leaves user-edited vocab alone;
+export/import round-trip; report test asserts the symptom table.
+
+### 21. Menstrual cycle log (opt-in) — **PROPOSED** *(2026-10-06)*
+
+**Want:** an opt-in setting that adds "Period started" logging (a date, nothing else) and a
+perimenstrual factor in the correlations.
+
+**Why:** menstrually related migraine is a major, well-defined subtype, and N1, Migraine Attack
+Diary and the Canadian tracker all track cycles. Megrim can do it better than most: because cycle
+start dates are known for *every* day, "perimenstrual window" is a proper 2×2 factor — a real
+odds ratio, not a descriptive count. And on-device-only matters more here than anywhere: period
+data is something many users are especially careful about.
+
+**Shape:**
+
+- Off by default; enabling it adds the logging entry point (History Calendar day action + a
+  Settings list). Disabling it hides everything and offers to delete the stored dates.
+- New table `cycle_starts` (v4): `local_date` (PK). No flow, symptoms or predictions — keeping it
+  minimal is a feature.
+- Correlation factor: event day falls in **day −2 to +3** of a cycle start (day 1 = first day of
+  bleeding), the ICHD-3 Appendix A1.1 menstrual-migraine window.
+- **Only count well-logged cycles.** Gaps in logging would show up as "outside the window" and
+  weaken the odds ratio. Include a cycle in the analysis only when the gap to the next logged
+  start is plausible (≤ 45 days), and treat days after an over-long gap as untracked for this
+  factor. Gate the factor on a minimum number of such cycles (suggest ≥ 3).
+- **Every export path is opt-in for cycle data.** JSON/CSV exports end up in cloud drives and
+  email, so they omit `cycle_starts` unless the user ticks "Include cycle dates" for that export —
+  the same tick box the PDF report gets. Import accepts it when present.
+
+**Verification:** unit tests for the window (cycle start on the 1st, migraine on the previous
+month's 30th = day −2, in window); the gap rule (a 70-day gap excludes that cycle); odds ratio on
+a planted fixture; export test that cycle dates are absent by default and present when ticked;
+disabled-state test that no cycle UI or report section renders.
+
+### 22. Functional impact and an optional disability score — **PROPOSED** *(2026-10-06)*
+
+**Want:** (a) a per-event "impact" field — *able to function normally / reduced / unable* — and
+(b) optionally, a periodic disability questionnaire.
+
+**Why:** impact is what clinicians and insurers ask about ("how many days did you miss?"), and
+N1 calculates a monthly MIDAS score. The per-event field alone yields "days with reduced
+function / days unable to function" per month, alongside backlog #17.
+
+**Shape:** `migraine_events.impact` (v4, nullable enum). Monthly impact-day counts on Analytics and
+in the report.
+
+**Licensing — check before (b):** MIDAS and HIT-6 are copyrighted instruments. HIT-6 requires a
+license from its owner; confirm MIDAS's terms for embedding in a GPL app (and whether the
+question text can be redistributed) before building it. If neither is clear, ship (a) only — it
+needs no license and covers most of the value.
+
+**Verification:** migration + round-trip; monthly impact-day counting reuses backlog #17's day
+logic and tests.
+
+### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **PROPOSED** *(2026-10-06)*
+
+**Want:** start a migraine without navigating the app — in increasing cost: (1) long-press app
+icon → "Log migraine" / "No migraine today"; (2) a home-screen widget showing days since last
+migraine with Log and Clear buttons; (3) on iOS, a Live Activity / Dynamic Island timer while a
+migraine is active, with an End button.
+
+**Why:** the moment of logging is the worst moment to navigate an app. Migraine Attack Diary
+ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others push quick entry.
+
+**Shape:**
+
+- (1) `quick_actions` plugin → deep link into Quick Log / the backlog #16 check-in. Cheapest; do
+  first. ("No migraine today" only once backlog #16 exists.)
+- (2) `home_widget` with a native Android `AppWidgetProvider` and an iOS WidgetKit extension.
+  Buttons deep-link into the app rather than writing the database from the widget process —
+  simpler, and avoids sharing the SQLite file across processes. The "days since" figure the widget shows is a
+  single number the app writes to the widget's shared storage, so state in PRIVACY that this one
+  value sits outside the database.
+- (3) ActivityKit needs a Swift widget extension target and an App Group; iOS-only.
+- **F-Droid check:** confirm each plugin's license and its transitive Android deps are FOSS and
+  that they add no permission beyond the current set (see *Permissions* above).
+
+**Verification:** widget/shortcut deep links covered by integration tests where possible;
+manual release-build smoke test on a real device (minification note in STATUS "Known gaps").
+
+### 24. App lock with the phone's own unlock, and hide from the app switcher — **PROPOSED** *(2026-10-06, revised 2026-10-07)*
+
+**Want:** (a) an optional lock on open that uses **whatever unlock the phone already has** —
+fingerprint, face, or the device PIN/pattern/password; (b) the app's content blanked in the
+recent-apps switcher.
+
+**Why:** cheap, and it completes the privacy story — the data never leaves the phone, but anyone
+holding an unlocked phone can currently read it.
+
+**(a) App lock — device credential, not an app PIN.**
+
+- Settings › Privacy › App lock: off by default; lock on cold start and after N minutes in the
+  background.
+- `local_auth` with biometrics-only **off**: the system prompt offers the user's enrolled
+  biometric and falls back to their device PIN/pattern/password (Android `BiometricPrompt` with
+  `BIOMETRIC_STRONG | DEVICE_CREDENTIAL`; iOS `LAPolicy.deviceOwnerAuthentication`). The user
+  picks their preference in the phone's settings, not in Megrim.
+- **No Megrim PIN means nothing to forget.** The recovery path is the phone's own unlock. The
+  earlier PIN-only idea is dropped: a 4–6 digit PIN hashed into `app_settings` can be brute-forced
+  by anyone who can read the database, so it would have been weaker than the device lock anyway.
+- If the phone has no screen lock, the toggle can't be turned on; say why and link to the
+  system's security settings.
+- Costs: Android `MainActivity` must change from `FlutterActivity` to `FlutterFragmentActivity`
+  (regression-test the share/file-picker flows); iOS needs `NSFaceIDUsageDescription` in
+  Info.plist. **Permission:** `local_auth` merges in **`USE_BIOMETRIC`**. It's a normal,
+  install-time permission with no user prompt, but it changes the listed set, so README, PRIVACY
+  and the F-Droid listing are updated in the same change (see *Permissions* above).
+
+**(b) Hide from the app switcher.** Android `FLAG_SECURE` (blanks the switcher thumbnail and
+blocks screenshots) as its own toggle, since some users want screenshots for their doctor; iOS:
+overlay a blank view on `applicationWillResignActive`.
+
+**Encryption at rest — reviewed 2026-10-07, not planned.** SQLCipher with a Keystore/Keychain
+key was considered. Android file-based encryption and iOS Data Protection already encrypt
+Megrim's storage with the phone's credential, so it would only add a layer against the file being
+copied off the device, while costing a native-library swap (F-Droid build question), a possible
+App Store export-compliance change, and data loss on phone migration (the key can't follow the
+database through OS backup). Steve judged it not worth it.
+
+**Verification:** widget tests for lock gating and timeout; manual check of the switcher and of
+the device-credential fallback (no biometric enrolled) on both platforms; manifest inspection of
+the release build.
+
+### Reviewed, not planned *(2026-10-06)*
+
+Seen in competitors, deliberately left out because they conflict with SPEC §1.3 non-goals or the
+locked decisions. Recorded so the question isn't re-litigated from scratch:
+
+- **Daily reminders.** Competitors use them to drive backlog #16-style daily tracking. *Local*
+  notifications are not push and need no server, so this is the most reasonable one to revisit —
+  but Android 13+ requires `POST_NOTIFICATIONS`, a new permission (see *Permissions* above).
+  Revisit after backlog #16 if check-in adherence is poor.
+- **Apple Health / Health Connect.** Non-goal; Health Connect also brings Play policy burden.
+- **Cloud / iCloud sync, multi-device.** Non-goal (no server, ever). Export/import + backlog
+  #14/#15 cover backup.
+- **Weather-forecast risk alerts** (Migraine Buddy's 7-day pressure forecast). Needs a daily
+  background network call and edges into prediction claims; both are non-goals.
+- **AI coaching, community, in-app research questionnaires, voice logging.** Out of scope for a
+  serverless, telemetry-free app.
 
 ## Release / infra
 
