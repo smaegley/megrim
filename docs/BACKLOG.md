@@ -7,7 +7,7 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 > **Status (2026-10-07):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
 > record. #13 shipped in `v1.0.5`; #12 and #14 shipped in `v1.0.6`. **#15 is DEFERRED.**
 > **#16–#23 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features* below);
-> **#24 (app lock) is BUILT** on `feat/app-lock`, awaiting test.
+> **#24 (app lock) is DONE**, merged to `main` 2026-10-07, unreleased.
 > Add new items as they come up.
 
 ## UI / UX
@@ -603,7 +603,7 @@ ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others pus
 **Verification:** widget/shortcut deep links covered by integration tests where possible;
 manual release-build smoke test on a real device (minification note in STATUS "Known gaps").
 
-### 24. App lock with the phone's own unlock, and hide from the app switcher — **BUILT** *(2026-10-07, on `feat/app-lock`, awaiting Steve's test)*
+### 24. App lock with the phone's own unlock, and hide from the app switcher — **DONE** *(merged 2026-10-07, unreleased; all Android tests passed, iOS to check in TestFlight)*
 
 **Want:** (a) an optional lock on open that uses **whatever unlock the phone already has** —
 fingerprint, face, or the device PIN/pattern/password; (b) the app's content blanked in the
