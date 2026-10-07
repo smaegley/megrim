@@ -1,6 +1,6 @@
 # Megrim Privacy Policy
 
-_Last updated: 2026-08-03_
+_Last updated: 2026-10-07_
 
 **All data stays on your device.** We operate no servers and collect nothing — no accounts, no
 analytics, no identifiers, no crash reporting.
@@ -31,8 +31,25 @@ device** with no network call.
 
 There isn't one. The app **declares no location permission at all** and never reads your
 device's location — it cannot, even in principle. Your home location is whatever you type
-during setup: a place-name search, GPS coordinates, or a Plus Code. (The APK's only permissions
-are INTERNET and the system's network-state check used to detect being offline.)
+during setup: a place-name search, GPS coordinates, or a Plus Code. (The APK's permissions are
+INTERNET, the system's network-state check used to detect being offline, and the biometric /
+fingerprint permissions the optional app lock uses — see below. None of them is location.)
+
+## App lock
+
+Optional, off by default (Settings › Privacy › App lock). When on, Megrim asks for **your phone's
+own unlock** — fingerprint, face, or the phone's PIN, pattern or password — when you open it, and
+again after it has been in the background for the time you choose. Megrim never sees or stores
+your fingerprint, face or PIN: the phone checks them and only tells the app "yes" or "no". This
+is why the APK declares the `USE_BIOMETRIC` and `USE_FINGERPRINT` permissions; both are granted
+at install, with no prompt, and do nothing unless you turn app lock on.
+
+The lock stops someone holding your unlocked phone from reading your diary. It is not extra
+encryption: your data is protected at rest by the phone's own storage encryption, as before.
+
+**Hide in recent apps** (also optional, off by default) blanks Megrim in the app switcher. On
+Android it also blocks screenshots of the app; turn it off if you want to screenshot something
+for your doctor.
 
 ## Backups
 

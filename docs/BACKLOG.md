@@ -6,7 +6,8 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 
 > **Status (2026-10-07):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
 > record. #13 shipped in `v1.0.5`; #12 and #14 shipped in `v1.0.6`. **#15 is DEFERRED.**
-> **#16–#24 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features* below).
+> **#16–#23 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features* below);
+> **#24 (app lock) is BUILT** on `feat/app-lock`, awaiting test.
 > Add new items as they come up.
 
 ## UI / UX
@@ -602,7 +603,7 @@ ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others pus
 **Verification:** widget/shortcut deep links covered by integration tests where possible;
 manual release-build smoke test on a real device (minification note in STATUS "Known gaps").
 
-### 24. App lock with the phone's own unlock, and hide from the app switcher — **PROPOSED** *(2026-10-06, revised 2026-10-07)*
+### 24. App lock with the phone's own unlock, and hide from the app switcher — **BUILT** *(2026-10-07, on `feat/app-lock`, awaiting Steve's test)*
 
 **Want:** (a) an optional lock on open that uses **whatever unlock the phone already has** —
 fingerprint, face, or the device PIN/pattern/password; (b) the app's content blanked in the
@@ -622,13 +623,19 @@ holding an unlocked phone can currently read it.
 - **No Megrim PIN means nothing to forget.** The recovery path is the phone's own unlock. The
   earlier PIN-only idea is dropped: a 4–6 digit PIN hashed into `app_settings` can be brute-forced
   by anyone who can read the database, so it would have been weaker than the device lock anyway.
-- If the phone has no screen lock, the toggle can't be turned on; say why and link to the
-  system's security settings.
+- If the phone has no screen lock, the toggle can't be turned on; a dialog says why. If the
+  screen lock is removed later, the lock turns itself off with a one-time explanation rather than
+  shutting the user out of their data.
+- Turning it on **and** off both need a successful unlock. "Lock after": Immediately / 1 / 5 /
+  15 minutes, default 1. The share sheet, file picker and the unlock prompt itself don't count as
+  leaving the app. Nothing can be logged from the lock screen (Steve, 2026-10-07).
 - Costs: Android `MainActivity` must change from `FlutterActivity` to `FlutterFragmentActivity`
   (regression-test the share/file-picker flows); iOS needs `NSFaceIDUsageDescription` in
-  Info.plist. **Permission:** `local_auth` merges in **`USE_BIOMETRIC`**. It's a normal,
-  install-time permission with no user prompt, but it changes the listed set, so README, PRIVACY
-  and the F-Droid listing are updated in the same change (see *Permissions* above).
+  Info.plist; `LaunchTheme` must have an AppCompat parent or the prompt crashes on Android ≤ 8.
+  **Permissions:** `local_auth` merges in **`USE_BIOMETRIC`**, and `androidx.biometric` adds
+  **`USE_FINGERPRINT`** (fingerprint on API 26–27). Both are normal, install-time permissions with
+  no user prompt, but they change the listed set, so PRIVACY and the F-Droid listing are updated
+  in the same change (see *Permissions* above).
 
 **(b) Hide from the app switcher.** Android `FLAG_SECURE` (blanks the switcher thumbnail and
 blocks screenshots) as its own toggle, since some users want screenshots for their doctor; iOS:
