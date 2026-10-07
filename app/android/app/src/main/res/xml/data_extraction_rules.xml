@@ -7,16 +7,21 @@
      The database is NOT in the "database" domain: path_provider's getApplicationDocumentsDirectory()
      is Context.getDir("flutter"), i.e. <data dir>/app_flutter/megrim.sqlite, which only the "root"
      domain covers. An <include> list backs up nothing it doesn't name, so without the root entry
-     Android 12+ backups and device transfers silently carried no events or settings. -->
+     Android 12+ backups and device transfers silently carried no events or settings.
+
+     Name the database FILE, not the whole app_flutter/ folder: debug builds also keep
+     flutter_assets/ there, which pushed the backup past Android's 25 MB per-app quota ("Size quota
+     exceeded", seen on the emulator 2026-10-07). Drift uses SQLite's default rollback journal, so
+     there is no -wal/-shm file to include alongside it. -->
 <data-extraction-rules>
     <cloud-backup>
-        <include domain="root" path="app_flutter/" />
+        <include domain="root" path="app_flutter/megrim.sqlite" />
         <include domain="database" path="." />
         <include domain="sharedpref" path="." />
         <include domain="file" path="." />
     </cloud-backup>
     <device-transfer>
-        <include domain="root" path="app_flutter/" />
+        <include domain="root" path="app_flutter/megrim.sqlite" />
         <include domain="database" path="." />
         <include domain="sharedpref" path="." />
         <include domain="file" path="." />
