@@ -6,6 +6,7 @@ import '../analytics/dashboard.dart';
 import '../analytics/pressure_baseline.dart';
 import '../database/database.dart';
 import '../enrichment/enrichment_service.dart';
+import '../models/app_lock_timeout.dart';
 import '../models/backup_status.dart';
 import '../models/event_time.dart';
 import '../models/home_location.dart';
@@ -76,6 +77,26 @@ class MegrimRepository {
 
   Future<void> setWeatherEnrichmentEnabled(bool enabled) =>
       db.setSetting('weather_enrichment', enabled ? '1' : '0');
+
+  /// App lock (backlog #24). OFF unless the user turns it on in Settings.
+  Future<bool> get appLockEnabled async => (await db.getSetting('app_lock')) == '1';
+
+  Future<void> setAppLockEnabled(bool enabled) =>
+      db.setSetting('app_lock', enabled ? '1' : '0');
+
+  /// How long the app may sit in the background before it locks again. 0 = immediately.
+  Future<Duration> get appLockTimeout async => Duration(
+      seconds: int.tryParse(await db.getSetting('app_lock_timeout_s') ?? '') ??
+          kAppLockDefaultTimeout.inSeconds);
+
+  Future<void> setAppLockTimeout(Duration d) =>
+      db.setSetting('app_lock_timeout_s', '${d.inSeconds}');
+
+  /// Blank the app in the recent-apps switcher (Android also blocks screenshots). OFF by default.
+  Future<bool> get hideInSwitcher async => (await db.getSetting('hide_in_switcher')) == '1';
+
+  Future<void> setHideInSwitcher(bool enabled) =>
+      db.setSetting('hide_in_switcher', enabled ? '1' : '0');
 
   // ── Events ──────────────────────────────────────────────────────────────
   Stream<List<MigraineEvent>> watchEvents() {

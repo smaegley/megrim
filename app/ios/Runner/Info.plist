@@ -30,6 +30,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Megrim does not use the camera. A file-picker component references this permission, but the app never requests camera access.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Megrim uses Face ID to unlock the app when you turn on App lock in Settings.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Megrim does not use device location. Weather and astronomy enrichment use only the home location you type in yourself.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
