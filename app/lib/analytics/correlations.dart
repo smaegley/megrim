@@ -27,9 +27,14 @@ import '../models/event_time.dart' show daysCovered, wallClock;
 ///  - "Top factors" filter is migraine_days ≥ 3 AND OR > 1.0 (prose says OR ≥ 1.5).
 /// These are noted so a future change can reconcile prose and code deliberately.
 ///
-/// Known, accepted bias: a migraine day with no pressure data (enrichment pending/failed) still
-/// counts in `totalMigraine` (cell b), but contributes no delta to any pressure bucket — matching
-/// the reference Python.
+/// Pressure (changed 2026-10-08, diverging from the reference Python): both sides of the pressure
+/// table come from the same series — the home location's daily-mean pressure, as a day-over-day
+/// change — read per day from the cached baseline. Before, migraine days used the event's own
+/// hourly reading at onset minus 24 h earlier while the baseline used daily means; hourly changes
+/// swing further, so migraine days piled into the extreme buckets and produced spurious odds
+/// ratios (41 for "< -10" on the sample data). Days without a pressure value leave the pressure
+/// table only (on both sides), which also removes the old bias where such a migraine day still
+/// counted as a migraine day for pressure.
 
 const List<String> kDowLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const List<String> kMonthLabels = [
@@ -176,13 +181,10 @@ List<FactorRow> factorRows(
 /// [eventStarts] are the event start instants (any tz; reduced to calendar dates in the zone each
 /// event was logged in via [startOffsets] — a parallel list of UTC offsets in minutes, null entries
 /// falling back to the phone's zone; omit the list for the all-phone-zone behaviour).
-/// [migrainePressureDeltas] is one non-null `pressure_delta_24h` value per migraine *day* (not
-/// per event — a day with multiple enriched events contributes only one delta), so its units
-/// match the day-based baseline. [pressureBaseline] is the cached all-days delta histogram
-/// (§6.2); when null/empty the pressure factor is omitted. [pressureDayBuckets] is the same
-/// baseline per day (`yyyy-MM-dd` → bucket); when given it is used instead of the histogram so
-/// mid-attack days can be left out of the pressure baseline too. [homeLat] selects the hemisphere
-/// for season labels.
+/// [pressureDayBuckets] is the cached daily pressure-change bucket per day (`yyyy-MM-dd` →
+/// bucket, §6.2); it supplies both the migraine days' and the other days' buckets for the pressure
+/// factor. When null/empty the pressure factor is omitted. [homeLat] selects the hemisphere for
+/// season labels.
 ///
 /// [eventEnds] / [endOffsets] (parallel to [eventStarts]) let the engine find the days in the
 /// middle of multi-day migraines and leave them out. Omit them for start-day-only behaviour,
@@ -192,8 +194,6 @@ CorrelationResult computeCorrelations({
   List<int?>? startOffsets,
   List<DateTime?>? eventEnds,
   List<int?>? endOffsets,
-  List<double> migrainePressureDeltas = const [],
-  Map<String, int>? pressureBaseline,
   Map<String, String>? pressureDayBuckets,
   double homeLat = 40.0,
   double homeLon = 0.0,
@@ -284,26 +284,27 @@ CorrelationResult computeCorrelations({
         kDaylightBuckets, daylightMig, daylightBase, totalMigraine, totalDays),
   };
 
-  // Per-day buckets let mid-attack days leave the pressure baseline like every other factor's;
-  // an older histogram-only cache can't, so it is used as-is.
-  var pressureBase = pressureBaseline;
+  // Pressure: one daily series for both sides. Only days in the window, not mid-attack, and with
+  // a pressure value take part, so this table has its own totals.
   if (pressureDayBuckets != null && pressureDayBuckets.isNotEmpty) {
     final skip = {for (final d in midAttack) _dayKey(d)};
-    final fromDays = <String, int>{};
+    final onsetKeys = {for (final d in migraineDaySet) _dayKey(d)};
+    final firstKey = _dayKey(start), lastKey = _dayKey(end);
+    final base = <String, int>{}, mig = <String, int>{};
+    var pDays = 0, pMig = 0;
     pressureDayBuckets.forEach((day, bucket) {
-      if (!skip.contains(day)) fromDays[bucket] = (fromDays[bucket] ?? 0) + 1;
+      // yyyy-MM-dd keys compare correctly as strings.
+      if (day.compareTo(firstKey) < 0 || day.compareTo(lastKey) > 0 || skip.contains(day)) return;
+      pDays++;
+      base[bucket] = (base[bucket] ?? 0) + 1;
+      if (onsetKeys.contains(day)) {
+        pMig++;
+        mig[bucket] = (mig[bucket] ?? 0) + 1;
+      }
     });
-    pressureBase = fromDays;
-  }
-
-  if (pressureBase != null && pressureBase.isNotEmpty) {
-    final pressureMig = <String, int>{};
-    for (final delta in migrainePressureDeltas) {
-      final b = pressureBucket(delta);
-      pressureMig[b] = (pressureMig[b] ?? 0) + 1;
+    if (pDays > 0) {
+      factors['Pressure Δ 24h (hPa)'] = factorRows(kPressureBuckets, mig, base, pMig, pDays);
     }
-    factors['Pressure Δ 24h (hPa)'] = factorRows(
-        kPressureBuckets, pressureMig, pressureBase, totalMigraine, totalDays);
   }
 
   final top = <TopFactor>[];

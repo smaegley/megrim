@@ -25,63 +25,60 @@ Future<void> _insertEvent(
       ));
 }
 
+/// The pressure factor reads BOTH sides from the cached daily series (2026-10-08): each migraine
+/// day's bucket is that day's daily-mean change, the same measure as every other day. So a day
+/// counts once however many migraines started on it, and the events' own hourly onset readings
+/// (pressureDelta24h) no longer feed the factor — they used to, and their wider swings piled
+/// migraine days into the extreme buckets.
 void main() {
-  test('pressure factor counts one delta per migraine day, not per event',
-      () async {
+  test('pressure factor: one bucket per migraine day, from the daily series', () async {
     final db = freshDb();
     await db.setSetting('home_location',
         jsonEncode({'lat': 40.0, 'lon': -105.0, 'label': 'Home'}));
 
-    // Day 2024-06-01: two events, deltas fall in DIFFERENT buckets. The earlier event (08:00)
-    // must be the one that counts; the later one (18:00) must be dropped by the dedup.
-    await _insertEvent(db, 'd1a', DateTime.utc(2024, 6, 1, 8), -8); // '-10 to -5'
-    await _insertEvent(db, 'd1b', DateTime.utc(2024, 6, 1, 18), 8); // '5 to 10'
-    // A migraine day with no pressure data at all: counts toward totalMigraine, contributes
-    // nothing to any pressure bucket.
+    // Two migraines on 1 June whose own hourly readings fall in different, extreme buckets. They
+    // must count once, in 1 June's daily bucket ('0 to 5'), not in either hourly bucket.
+    await _insertEvent(db, 'd1a', DateTime.utc(2024, 6, 1, 12), -12); // hourly: '< -10'
+    await _insertEvent(db, 'd1b', DateTime.utc(2024, 6, 1, 18), 12); // hourly: '> 10'
     await _insertEvent(db, 'd2', DateTime.utc(2024, 6, 2, 12), null);
-    // Three more distinct migraine days, one delta each, each in its own bucket.
-    await _insertEvent(db, 'd3', DateTime.utc(2024, 6, 3, 12), 2); // '0 to 5'
-    await _insertEvent(db, 'd4', DateTime.utc(2024, 6, 4, 12), -3); // '-5 to 0'
-    await _insertEvent(db, 'd5', DateTime.utc(2024, 6, 5, 12), 12); // '> 10'
+    await _insertEvent(db, 'd3', DateTime.utc(2024, 6, 3, 12), 2);
+    await _insertEvent(db, 'd4', DateTime.utc(2024, 6, 4, 12), -3);
+    await _insertEvent(db, 'd5', DateTime.utc(2024, 6, 5, 12), 12);
 
-    // Pre-seed the cached baseline (matching repo.correlations()'s exact tag) so getOrBuild
-    // returns it without any network call.
+    // A current per-day cache for exactly repo.correlations()'s window, so no network call.
     final tag =
         pressureBaselineTag(DateTime(2024, 6, 1), DateTime(2024, 6, 5), 40.0, -105.0);
-    const baselineHist = {
-      '< -10': 3,
-      '-10 to -5': 5,
-      '-5 to 0': 6,
-      '0 to 5': 6,
-      '5 to 10': 5,
-      '> 10': 3,
+    const days = {
+      '2024-06-01': '0 to 5',
+      '2024-06-02': '-5 to 0',
+      '2024-06-03': '0 to 5',
+      '2024-06-04': '-5 to 0',
+      // 5 June: no pressure value — leaves the pressure table on both sides.
     };
     await db.setSetting(
-        'pressure_baseline', jsonEncode(PressureBaseline(tag, baselineHist).toJson()));
+        'pressure_baseline',
+        jsonEncode(const PressureBaseline('t', {'0 to 5': 2, '-5 to 0': 2}, dayBuckets: days)
+            .toJson()
+          ..['tag'] = tag));
 
     final baselineService = PressureBaselineService(
       db: db,
       httpClient: MockClient((req) async =>
-          throw StateError('network should not be hit: the cache should already match')),
+          throw StateError('network should not be hit: the cache already matches')),
     );
-
     final repo = MegrimRepository(db: db);
-    // Offline: a histogram-only cache (pre per-day buckets) would otherwise trigger one refresh
-    // attempt when online; this test is about the per-day dedup, not the refresh.
-    final corr = await repo.correlations(baselineService: baselineService, allowFetch: false);
+    final corr = await repo.correlations(baselineService: baselineService);
 
-    expect(corr.available, isTrue);
-    final rows = corr.factors['Pressure Δ 24h (hPa)'];
-    expect(rows, isNotNull);
+    final rows = {for (final r in corr.factors['Pressure Δ 24h (hPa)']!) r.bucket: r};
+    expect(rows.keys.toSet(), {'0 to 5', '-5 to 0'},
+        reason: 'no extreme bucket: the hourly onset readings are not used');
+    expect(rows['0 to 5']!.migraineDays, 2, reason: '1 June (once) and 3 June');
+    expect(rows['-5 to 0']!.migraineDays, 2, reason: '2 and 4 June');
+    expect(rows['0 to 5']!.totalDays + rows['-5 to 0']!.totalDays, 4,
+        reason: '5 June has no value and is out of the pressure table');
+    expect(corr.totalMigraineDays, 5, reason: 'the other factors still count all five days');
 
-    final summedMigraineDays = rows!.fold<int>(0, (s, r) => s + r.migraineDays);
-    // 4 distinct migraine days carried pressure data (the 2024-06-01 duplicate collapses to one);
-    // pre-fix (one delta per event) this would sum to 5.
-    expect(summedMigraineDays, 4);
-    for (final r in rows) {
-      expect(r.migraineDays, lessThanOrEqualTo(r.totalDays));
-    }
-
+    baselineService.close();
     await db.close();
   });
 }

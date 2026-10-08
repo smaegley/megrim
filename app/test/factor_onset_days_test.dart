@@ -26,16 +26,11 @@ void main() {
   ];
   List<int?> zeros(int n) => List.filled(n, 0);
 
-  CorrelationResult run({
-    List<DateTime?>? ends,
-    Map<String, int>? hist,
-    Map<String, String>? days,
-  }) => computeCorrelations(
+  CorrelationResult run({List<DateTime?>? ends, Map<String, String>? days}) => computeCorrelations(
     eventStarts: starts,
     startOffsets: zeros(starts.length),
     eventEnds: ends,
     endOffsets: ends == null ? null : zeros(starts.length),
-    pressureBaseline: hist,
     pressureDayBuckets: days,
     homeLat: 40.0,
   );
@@ -105,18 +100,36 @@ void main() {
       for (var d = 1; d <= 29; d++) '2024-06-${d.toString().padLeft(2, '0')}': bucket,
     };
 
-    test('per-day buckets: mid-attack days leave the pressure baseline too', () {
-      final days = allDays('0 to 5')..['2024-06-11'] = '< -10';
+    test('both sides come from the daily series; mid-attack days leave it', () {
+      // Every day '0 to 5', except 11 June (mid-attack) '< -10' and 24 June (an onset) '5 to 10'.
+      final days = allDays('0 to 5')
+        ..['2024-06-11'] = '< -10'
+        ..['2024-06-24'] = '5 to 10';
       final r = run(ends: ends, days: days);
       final rows = {for (final row in r.factors['Pressure Δ 24h (hPa)']!) row.bucket: row};
-      expect(rows['0 to 5']!.totalDays, 27, reason: '29 days minus 11 and 12 June');
+      expect(rows['0 to 5']!.totalDays, 26, reason: '29 days − 11, 12 June − 24 June');
+      expect(rows['0 to 5']!.migraineDays, 6, reason: 'the other six onsets');
+      expect(rows['5 to 10']!.migraineDays, 1, reason: '24 June read from the daily series');
       expect(rows.containsKey('< -10'), isFalse, reason: '11 June was the only day in it');
     });
 
-    test('an old histogram-only cache is used as it is', () {
-      final r = run(ends: ends, hist: {'0 to 5': 29});
+    test('a day without pressure data leaves the pressure table on both sides', () {
+      final days = allDays('0 to 5')..remove('2024-06-05'); // an onset day
+      final r = run(ends: ends, days: days);
       final row = r.factors['Pressure Δ 24h (hPa)']!.single;
-      expect(row.totalDays, 29);
+      expect(row.totalDays, 26, reason: '29 − 11, 12 June − 5 June (no data)');
+      expect(row.migraineDays, 6);
+      expect(r.totalMigraineDays, 7, reason: 'every other factor still counts 5 June');
+    });
+
+    test('no per-day data (an old cache): no pressure factor, rather than mixed measures', () {
+      expect(run(ends: ends).factors.containsKey('Pressure Δ 24h (hPa)'), isFalse);
+    });
+
+    test('days outside the study window are ignored', () {
+      final days = allDays('0 to 5')..['2024-05-31'] = '< -10'..['2024-06-30'] = '> 10';
+      final rows = run(ends: ends, days: days).factors['Pressure Δ 24h (hPa)']!;
+      expect(rows.single.bucket, '0 to 5');
     });
   });
 

@@ -246,24 +246,8 @@ class MegrimRepository {
         startOffsets: events.map((e) => e.startedAtOffsetMin).toList(),
       );
     }
-    final derived = await db.select(db.derivedFactors).get();
-    final derivedById = {for (final d in derived) d.eventId: d};
-    // One pressure delta per migraine *day* (earliest event with data wins), so the pressure 2×2
-    // counts days like every other factor — the baseline (built from daily archive data) is per
-    // day, but events are per-event, so two same-day events would otherwise double-count cell
-    // `a` and could even drive `c = inBucketTotal - a` negative.
-    final deltaByDay = <DateTime, double>{};
-    final byStart = [...events]..sort((a, b) => a.startedAt.compareTo(b.startedAt));
-    for (final e in byStart) {
-      final delta = derivedById[e.id]?.pressureDelta24h;
-      if (delta == null) continue;
-      deltaByDay.putIfAbsent(e.startedWallDate, () => delta);
-    }
-    final deltas = deltaByDay.values.toList();
-
     final dates = events.map((e) => e.startedWallDate).toList()..sort();
     final home = await homeLocation;
-    Map<String, int>? baseline;
     Map<String, String>? baselineDays;
     if (baselineService != null && home != null) {
       final b = await baselineService.getOrBuild(
@@ -271,7 +255,6 @@ class MegrimRepository {
         DateTime(dates.last.year, dates.last.month, dates.last.day),
         allowFetch: allowFetch,
       );
-      baseline = b?.histogram;
       baselineDays = b?.dayBuckets;
     }
 
@@ -280,8 +263,6 @@ class MegrimRepository {
       startOffsets: events.map((e) => e.startedAtOffsetMin).toList(),
       eventEnds: events.map((e) => e.endedAt).toList(),
       endOffsets: events.map((e) => e.endedAtOffsetMin).toList(),
-      migrainePressureDeltas: deltas,
-      pressureBaseline: baseline,
       pressureDayBuckets: baselineDays,
       homeLat: home?.lat ?? 40.0,
       homeLon: home?.lon ?? 0.0,
