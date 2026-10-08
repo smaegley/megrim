@@ -163,6 +163,9 @@ Future<Uint8List> renderReportPdf(
         for (final s in c.summary)
           pw.Expanded(
             child: pw.Container(
+              // Fixed height with room for a two-line label, so a tile whose label wraps
+              // ("Migraine days, last 30 d") isn't taller than its neighbours.
+              height: 52,
               margin: const pw.EdgeInsets.only(right: 4),
               padding: const pw.EdgeInsets.all(6),
               color: _panel,
