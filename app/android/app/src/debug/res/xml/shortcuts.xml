@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DEBUG-BUILD COPY of src/main/res/xml/shortcuts.xml, differing only in targetPackage, so
+     Megrim dev's shortcut opens Megrim dev. -->
+<!-- App-icon shortcut (backlog #23, step 1): long-press the icon → "Log migraine". The intent is
+     handled in MainActivity, which tells Flutter; Flutter starts the migraine only once the app is
+     in the foreground and, if app lock is on, unlocked. No permission needed.
+
+     targetPackage must be a LITERAL: Android does not resolve a @string reference here (a
+     resValue-based target left Megrim dev's shortcut pointing at the store app, "App isn't
+     installed", 2026-10-08). The debug build has its own copy in src/debug/res/xml/. Keep the
+     two in step. -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="log_migraine"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_log"
+        android:shortcutShortLabel="@string/shortcut_log_short"
+        android:shortcutLongLabel="@string/shortcut_log_long">
+        <intent
+            android:action="org.maegley.megrim.action.LOG_MIGRAINE"
+            android:targetPackage="org.maegley.megrim.debug"
+            android:targetClass="org.maegley.megrim.MainActivity" />
+    </shortcut>
+</shortcuts>

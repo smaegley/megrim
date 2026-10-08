@@ -586,7 +586,7 @@ needs no license and covers most of the value.
 **Verification:** migration + round-trip; monthly impact-day counting reuses backlog #17's day
 logic and tests.
 
-### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **PROPOSED** *(2026-10-06)*
+### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) BUILT** *(2026-10-08, on `feat/app-shortcut`, awaiting test)*; (2)–(3) **PROPOSED**
 
 **Want:** start a migraine without navigating the app — in increasing cost: (1) long-press app
 icon → "Log migraine" / "No migraine today"; (2) a home-screen widget showing days since last
@@ -598,8 +598,16 @@ ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others pus
 
 **Shape:**
 
-- (1) `quick_actions` plugin → deep link into Quick Log / the backlog #16 check-in. Cheapest; do
-  first. ("No migraine today" only once backlog #16 exists.)
+- (1) **As built (2026-10-08):** no plugin. A static Android shortcut (`res/xml/shortcuts.xml`,
+  handled in `MainActivity`) and an iOS `UIApplicationShortcutItems` entry (handled by a small
+  scene-delegate class in `AppDelegate.swift`, modelled on Flutter's `quick_actions_ios`) both send
+  "log_migraine" over one channel. Steve's choices: a tap **starts** the migraine (Discard undoes
+  an accidental one); with one in progress it just shows it; with app lock on it waits for the
+  unlock; during onboarding it's dropped. It is acted on only once the app is in the foreground,
+  after app lock has had the chance to re-lock. No new permission. Debug builds target Megrim dev
+  via a debug-only copy of `shortcuts.xml` (the target package must be a literal; a `resValue`
+  reference isn't resolved there, which left the dev shortcut showing "App isn't installed"). "No migraine today" waits for backlog #16. Steve chose the
+  shortcut only for now; the widget (2) is about another half day on Android, iOS 1–2 days.
 - (2) `home_widget` with a native Android `AppWidgetProvider` and an iOS WidgetKit extension.
   Buttons deep-link into the app rather than writing the database from the widget process —
   simpler, and avoids sharing the SQLite file across processes. The "days since" figure the widget shows is a

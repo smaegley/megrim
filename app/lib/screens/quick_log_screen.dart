@@ -21,6 +21,10 @@ class QuickLogScreen extends StatefulWidget {
   /// keep showing the date from when it was first built).
   final int refreshToken;
 
+  /// Bumped by [HomeShell] when the app-icon "Log migraine" shortcut is used (backlog #23): start
+  /// a migraine, unless one is already in progress.
+  final int startToken;
+
   /// Switches the shell to the Settings tab — tapping the backup line goes there.
   final VoidCallback? onOpenSettings;
   final MegrimRepository repo;
@@ -28,6 +32,7 @@ class QuickLogScreen extends StatefulWidget {
     super.key,
     required this.repo,
     this.refreshToken = 0,
+    this.startToken = 0,
     this.onOpenSettings,
   });
 
@@ -37,6 +42,10 @@ class QuickLogScreen extends StatefulWidget {
 
 class _QuickLogScreenState extends State<QuickLogScreen> {
   MigraineEvent? _active;
+
+  /// Completes once the in-progress check has run, so a shortcut can't start a second migraine
+  /// before we know whether one is already going.
+  late Future<void> _activeLoaded;
   Timer? _ticker;
   final _notes = TextEditingController();
 
@@ -47,8 +56,9 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   @override
   void initState() {
     super.initState();
-    _loadActive();
+    _activeLoaded = _loadActive();
     _loadBackup();
+    if (widget.startToken > 0) _startFromShortcut();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (_active != null && mounted) setState(() {});
     });
@@ -58,6 +68,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   void didUpdateWidget(QuickLogScreen old) {
     super.didUpdateWidget(old);
     if (old.refreshToken != widget.refreshToken) _loadBackup();
+    if (old.startToken != widget.startToken) _startFromShortcut();
   }
 
   Future<void> _loadBackup() async {
@@ -76,10 +87,20 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     final events = await widget.repo.db.select(widget.repo.db.migraineEvents).get();
     final ongoing = events.where((e) => e.endedAt == null).toList()
       ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+    if (!mounted) return;
     setState(() {
       _active = ongoing.isNotEmpty ? ongoing.first : null;
       _notes.text = _active?.notes ?? '';
     });
+  }
+
+  /// The app-icon shortcut: start a migraine, or just show the one already in progress.
+  Future<void> _startFromShortcut() async {
+    await _activeLoaded;
+    if (!mounted || _active != null) return;
+    final started = _start();
+    _activeLoaded = started;
+    await started;
   }
 
   Future<void> _start() async {

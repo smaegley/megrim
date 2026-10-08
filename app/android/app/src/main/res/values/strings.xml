@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App-icon shortcut labels (res/xml/shortcuts.xml). -->
+    <string name="shortcut_log_short">Log migraine</string>
+    <string name="shortcut_log_long">Log a migraine now</string>
+</resources>
