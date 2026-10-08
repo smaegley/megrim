@@ -66,7 +66,9 @@ void main() {
     );
 
     final repo = MegrimRepository(db: db);
-    final corr = await repo.correlations(baselineService: baselineService);
+    // Offline: a histogram-only cache (pre per-day buckets) would otherwise trigger one refresh
+    // attempt when online; this test is about the per-day dedup, not the refresh.
+    final corr = await repo.correlations(baselineService: baselineService, allowFetch: false);
 
     expect(corr.available, isTrue);
     final rows = corr.factors['Pressure Δ 24h (hPa)'];

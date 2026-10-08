@@ -1,6 +1,6 @@
 import '../enrichment/astro.dart' show moonPhaseName, sunTimes;
 import '../enrichment/calendar_factors.dart' show seasonForMonth;
-import '../models/event_time.dart' show wallClock;
+import '../models/event_time.dart' show daysCovered, wallClock;
 
 /// Port of the private app's `correlations.py` (SPEC §6.2) — "Top Suspected Factors".
 ///
@@ -14,6 +14,13 @@ import '../models/event_time.dart' show wallClock;
 ///
 /// odds ratio = (a·d)/(b·c) with a Haldane–Anscombe +0.5 correction on every cell.
 /// OR > 1 ⇒ migraines are MORE likely when the factor is in that bucket.
+///
+/// The outcome is attack ONSET: a migraine-day is a day on which a migraine started. Days in the
+/// middle of a multi-day migraine (day 2 onward) are left out of the table entirely — they are
+/// neither onset days nor days on which an attack could have started — which is how trigger
+/// studies treat them (only headache-free days are "at risk" of a new attack). That exclusion is
+/// a deliberate divergence from the reference Python, made 2026-10-08 (see docs/METHODS.md); with
+/// no end times supplied the engine behaves exactly like the reference.
 ///
 /// Divergences from the SPEC §6.2 prose, kept to match the reference Python (the golden source):
 ///  - Study window is first-event → LAST-event date (Python uses the last event, not "today").
@@ -111,7 +118,12 @@ class CorrelationResult {
   final String? reason;
   final int totalEvents;
   final int totalMigraineDays;
+  /// Days compared: the study window minus [excludedMidAttackDays].
   final int totalDaysInRange;
+
+  /// Days in the window that fell in the middle of a multi-day migraine (not its start day), left
+  /// out of every factor's table.
+  final int excludedMidAttackDays;
   final double baseRatePct;
   final List<TopFactor> topFactors;
   final Map<String, List<FactorRow>> factors;
@@ -123,6 +135,7 @@ class CorrelationResult {
     this.totalEvents = 0,
     this.totalMigraineDays = 0,
     this.totalDaysInRange = 0,
+    this.excludedMidAttackDays = 0,
     this.baseRatePct = 0,
     this.topFactors = const [],
     this.factors = const {},
@@ -166,13 +179,22 @@ List<FactorRow> factorRows(
 /// [migrainePressureDeltas] is one non-null `pressure_delta_24h` value per migraine *day* (not
 /// per event — a day with multiple enriched events contributes only one delta), so its units
 /// match the day-based baseline. [pressureBaseline] is the cached all-days delta histogram
-/// (§6.2); when null/empty the pressure factor is omitted. [homeLat] selects the hemisphere for
-/// season labels.
+/// (§6.2); when null/empty the pressure factor is omitted. [pressureDayBuckets] is the same
+/// baseline per day (`yyyy-MM-dd` → bucket); when given it is used instead of the histogram so
+/// mid-attack days can be left out of the pressure baseline too. [homeLat] selects the hemisphere
+/// for season labels.
+///
+/// [eventEnds] / [endOffsets] (parallel to [eventStarts]) let the engine find the days in the
+/// middle of multi-day migraines and leave them out. Omit them for start-day-only behaviour,
+/// identical to the reference Python.
 CorrelationResult computeCorrelations({
   required List<DateTime> eventStarts,
   List<int?>? startOffsets,
+  List<DateTime?>? eventEnds,
+  List<int?>? endOffsets,
   List<double> migrainePressureDeltas = const [],
   Map<String, int>? pressureBaseline,
+  Map<String, String>? pressureDayBuckets,
   double homeLat = 40.0,
   double homeLon = 0.0,
 }) {
@@ -198,6 +220,15 @@ CorrelationResult computeCorrelations({
   final migraineDaySet = eventDates.toSet();
   final totalMigraine = migraineDaySet.length;
 
+  // Day 2 onward of each multi-day migraine, unless another migraine started that day (then it's
+  // an onset day and counts as one). Only days inside the window matter.
+  assert(eventEnds == null || eventEnds.length == eventStarts.length);
+  final midAttack = <DateTime>{
+    if (eventEnds != null)
+      for (var i = 0; i < eventStarts.length; i++)
+        ...daysCovered(eventStarts[i], startOffsets?[i], eventEnds[i], endOffsets?[i]).skip(1),
+  }..removeWhere((d) => migraineDaySet.contains(d) || d.isBefore(start) || d.isAfter(end));
+
   final dowBase = <String, int>{}, dowMig = <String, int>{};
   final seasonBase = <String, int>{}, seasonMig = <String, int>{};
   final monthBase = <String, int>{}, monthMig = <String, int>{};
@@ -212,6 +243,7 @@ CorrelationResult computeCorrelations({
   for (var cur = start;
       !cur.isAfter(end);
       cur = DateTime(cur.year, cur.month, cur.day + 1)) {
+    if (midAttack.contains(cur)) continue;
     totalDays++;
     final dow = kDowLabels[cur.weekday - 1];
     final season = seasonForMonth(cur.month, homeLat);
@@ -252,14 +284,26 @@ CorrelationResult computeCorrelations({
         kDaylightBuckets, daylightMig, daylightBase, totalMigraine, totalDays),
   };
 
-  if (pressureBaseline != null && pressureBaseline.isNotEmpty) {
+  // Per-day buckets let mid-attack days leave the pressure baseline like every other factor's;
+  // an older histogram-only cache can't, so it is used as-is.
+  var pressureBase = pressureBaseline;
+  if (pressureDayBuckets != null && pressureDayBuckets.isNotEmpty) {
+    final skip = {for (final d in midAttack) _dayKey(d)};
+    final fromDays = <String, int>{};
+    pressureDayBuckets.forEach((day, bucket) {
+      if (!skip.contains(day)) fromDays[bucket] = (fromDays[bucket] ?? 0) + 1;
+    });
+    pressureBase = fromDays;
+  }
+
+  if (pressureBase != null && pressureBase.isNotEmpty) {
     final pressureMig = <String, int>{};
     for (final delta in migrainePressureDeltas) {
       final b = pressureBucket(delta);
       pressureMig[b] = (pressureMig[b] ?? 0) + 1;
     }
     factors['Pressure Δ 24h (hPa)'] = factorRows(
-        kPressureBuckets, pressureMig, pressureBaseline, totalMigraine, totalDays);
+        kPressureBuckets, pressureMig, pressureBase, totalMigraine, totalDays);
   }
 
   final top = <TopFactor>[];
@@ -284,14 +328,22 @@ CorrelationResult computeCorrelations({
     totalEvents: eventStarts.length,
     totalMigraineDays: totalMigraine,
     totalDaysInRange: totalDays,
+    excludedMidAttackDays: midAttack.length,
     baseRatePct: _round2(totalMigraine / totalDays * 100),
     topFactors: top.take(8).toList(),
     factors: factors,
     caveats: [
       'Based on $totalMigraine migraine days over $totalDays days — small sample, results are noisy.',
+      if (midAttack.isNotEmpty)
+        '${midAttack.length} ${midAttack.length == 1 ? 'day' : 'days'} in the middle of a '
+            'multi-day migraine ${midAttack.length == 1 ? 'is' : 'are'} left out: a new attack '
+            'can\'t start while one is underway.',
       'Odds ratios use a +0.5 correction for empty cells; treat values near 1.0 as no signal.',
       'Many factors are tested at once (multiple comparisons) — some apparent associations are chance.',
       'Association is not causation. Use this to form hypotheses, not conclusions.',
     ],
   );
 }
+
+String _dayKey(DateTime d) => '${d.year.toString().padLeft(4, '0')}-'
+    '${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';

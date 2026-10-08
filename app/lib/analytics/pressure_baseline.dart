@@ -8,7 +8,9 @@ import '../models/home_location.dart';
 import 'correlations.dart' show kPressureBuckets, pressureBucket;
 
 /// Builds and caches the all-days 24h pressure-delta histogram used as the non-migraine-day
-/// baseline for the pressure correlation factor (SPEC §6.2).
+/// baseline for the pressure correlation factor (SPEC §6.2). Since 2026-10 it also keeps each
+/// day's bucket, so days in the middle of a multi-day migraine can be left out of the baseline
+/// like they are for every other factor (see computeCorrelations).
 ///
 /// One bulk Open-Meteo archive fetch of `surface_pressure_mean` over the study window at the home
 /// location, bucketed and cached in app_settings under `pressure_baseline`. Refreshed only when
@@ -17,9 +19,15 @@ import 'correlations.dart' show kPressureBuckets, pressureBucket;
 class PressureBaseline {
   final String tag;
   final Map<String, int> histogram;
-  const PressureBaseline(this.tag, this.histogram);
 
-  Map<String, dynamic> toJson() => {'tag': tag, 'histogram': histogram};
+  /// Each day's delta bucket, keyed `yyyy-MM-dd`. Null on a cache written before this existed;
+  /// [PressureBaselineService.getOrBuild] rebuilds those when it can go online.
+  final Map<String, String>? dayBuckets;
+
+  const PressureBaseline(this.tag, this.histogram, {this.dayBuckets});
+
+  Map<String, dynamic> toJson() =>
+      {'tag': tag, 'histogram': histogram, if (dayBuckets != null) 'days': dayBuckets};
 
   static PressureBaseline? tryDecode(String? raw) {
     if (raw == null || raw.isEmpty) return null;
@@ -27,7 +35,8 @@ class PressureBaseline {
       final j = jsonDecode(raw) as Map<String, dynamic>;
       final hist = (j['histogram'] as Map).map(
           (k, v) => MapEntry(k.toString(), (v as num).toInt()));
-      return PressureBaseline(j['tag'] as String, hist);
+      final days = (j['days'] as Map?)?.map((k, v) => MapEntry(k.toString(), v.toString()));
+      return PressureBaseline(j['tag'] as String, hist, dayBuckets: days);
     } catch (_) {
       return null;
     }
@@ -41,18 +50,25 @@ String pressureBaselineTag(DateTime start, DateTime end, double lat, double lon)
 /// [dates] and [pressures] are parallel; nulls are skipped. A day's delta needs the prior day.
 Map<String, int> bucketDailyDeltas(List<DateTime> dates, List<double?> pressures) {
   final hist = {for (final b in kPressureBuckets) b: 0};
+  for (final b in bucketDailyDeltasByDay(dates, pressures).values) {
+    hist[b] = hist[b]! + 1;
+  }
+  return hist;
+}
+
+/// Each day's 24h-delta bucket, keyed `yyyy-MM-dd` — the per-day form of [bucketDailyDeltas].
+Map<String, String> bucketDailyDeltasByDay(List<DateTime> dates, List<double?> pressures) {
   final byDate = <DateTime, double>{};
   for (var i = 0; i < dates.length; i++) {
     final p = i < pressures.length ? pressures[i] : null;
     if (p != null) byDate[_dateOnly(dates[i])] = p;
   }
+  final out = <String, String>{};
   byDate.forEach((date, p) {
     final prev = byDate[date.subtract(const Duration(days: 1))];
-    if (prev != null) {
-      hist[pressureBucket(p - prev)] = hist[pressureBucket(p - prev)]! + 1;
-    }
+    if (prev != null) out[_d(date)] = pressureBucket(p - prev);
   });
-  return hist;
+  return out;
 }
 
 /// Parse an Open-Meteo archive `daily` response into (dates, pressures). Pure/testable.
@@ -108,7 +124,8 @@ class PressureBaselineService {
 
     final cached = PressureBaseline.tryDecode(
         await db.getSetting('pressure_baseline'));
-    if (cached != null && cached.tag == tag) return cached;
+    // A cache from before per-day buckets is still used offline, but rebuilt when we can fetch.
+    if (cached != null && cached.tag == tag && cached.dayBuckets != null) return cached;
     if (!allowFetch) return cached; // offline: use cache if any, never hit the network
 
     try {
@@ -117,8 +134,12 @@ class PressureBaselineService {
       if (resp.statusCode != 200) return cached; // keep stale over nothing
       final parsed =
           parseDailyPressure(jsonDecode(resp.body) as Map<String, dynamic>);
-      final hist = bucketDailyDeltas(parsed.dates, parsed.pressures);
-      final baseline = PressureBaseline(tag, hist);
+      final days = bucketDailyDeltasByDay(parsed.dates, parsed.pressures);
+      final hist = {for (final b in kPressureBuckets) b: 0};
+      for (final b in days.values) {
+        hist[b] = hist[b]! + 1;
+      }
+      final baseline = PressureBaseline(tag, hist, dayBuckets: days);
       await db.setSetting('pressure_baseline', jsonEncode(baseline.toJson()));
       return baseline;
     } catch (_) {

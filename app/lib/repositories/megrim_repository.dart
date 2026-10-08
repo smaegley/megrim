@@ -264,6 +264,7 @@ class MegrimRepository {
     final dates = events.map((e) => e.startedWallDate).toList()..sort();
     final home = await homeLocation;
     Map<String, int>? baseline;
+    Map<String, String>? baselineDays;
     if (baselineService != null && home != null) {
       final b = await baselineService.getOrBuild(
         DateTime(dates.first.year, dates.first.month, dates.first.day),
@@ -271,13 +272,17 @@ class MegrimRepository {
         allowFetch: allowFetch,
       );
       baseline = b?.histogram;
+      baselineDays = b?.dayBuckets;
     }
 
     return computeCorrelations(
       eventStarts: events.map((e) => e.startedAt).toList(),
       startOffsets: events.map((e) => e.startedAtOffsetMin).toList(),
+      eventEnds: events.map((e) => e.endedAt).toList(),
+      endOffsets: events.map((e) => e.endedAtOffsetMin).toList(),
       migrainePressureDeltas: deltas,
       pressureBaseline: baseline,
+      pressureDayBuckets: baselineDays,
       homeLat: home?.lat ?? 40.0,
       homeLon: home?.lon ?? 0.0,
     );
