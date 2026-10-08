@@ -47,6 +47,35 @@ DateTime instantOf(DateTime naive, int offsetMinutes) => DateTime.utc(
 /// DST-correct for that date.
 int offsetMinutesOf([DateTime? at]) => (at ?? DateTime.now()).timeZoneOffset.inMinutes;
 
+/// Every wall-clock calendar day an event covers, start date through end date inclusive, as
+/// local-flagged midnights (backlog #10: a multi-day migraine counts on each day it spans). An
+/// ongoing event (no end yet) or a malformed end-before-start covers only its start day, so an
+/// entry the user forgot to end can't inflate a month. The end is read in [endOffsetMinutes]'s
+/// zone, falling back to the start's, like [MigraineEventWallClock.endedWall]. Days are built with
+/// constructor normalisation (`day + i`) rather than `.add(Duration(days: 1))` so a DST shift
+/// inside the span can't drift the date (the `cb6671c` bug class).
+///
+/// Shared by the History calendar and the monthly migraine-day counts (backlog #17), so both
+/// always agree on which days a migraine covers.
+List<DateTime> daysCovered(
+  DateTime startedAt,
+  int? startOffsetMinutes,
+  DateTime? endedAt,
+  int? endOffsetMinutes,
+) {
+  final start = wallDate(startedAt, startOffsetMinutes);
+  if (endedAt == null) return [start];
+  final endDay = wallDate(endedAt, endOffsetMinutes ?? startOffsetMinutes);
+  if (endDay.isBefore(start)) return [start];
+  final out = <DateTime>[];
+  for (var i = 0; ; i++) {
+    final d = DateTime(start.year, start.month, start.day + i);
+    if (d.isAfter(endDay)) break;
+    out.add(d);
+  }
+  return out;
+}
+
 extension MigraineEventWallClock on MigraineEvent {
   DateTime get startedWall => wallClock(startedAt, startedAtOffsetMin);
   DateTime? get endedWall =>
