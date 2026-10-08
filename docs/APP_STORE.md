@@ -1,7 +1,12 @@
 # App Store release prep (iOS)
 
-Everything decided/drafted in advance so the release is execution-only once the Apple Developer
-membership (enrolled 2026-09-03, individual, steve@maegley.com Apple ID) is approved.
+**Status (2026-10-08):** approved and live since 2026-09 as
+[Megrim: Migraine Diary](https://apps.apple.com/us/app/megrim-migraine-diary/id6808385548). This file
+is now the record of the original setup and submission plus the listing content; per-release steps
+(build number, Organizer upload, What's New) are in `docs/STATUS.md`.
+
+Originally: everything decided/drafted in advance so the release was execution-only once the Apple
+Developer membership (enrolled 2026-09-03, individual, steve@maegley.com Apple ID) was approved.
 
 ## One-time setup order (after approval email)
 
@@ -10,7 +15,11 @@ membership (enrolled 2026-09-03, individual, steve@maegley.com Apple ID) is appr
 2. **Xcode → Settings → Accounts** → add the Apple ID → the team ("Steve Maegley") appears.
 3. **App Store Connect → Apps → "+" → New App**: platform iOS, name **Megrim**, primary language
    English (U.S.), bundle ID `org.maegley.megrim` (register it when prompted), SKU `megrim`.
+   *(As created: name `Megrim: Migraine Diary`, because bare "Megrim" was taken; see below.)*
 4. In Xcode, Runner target → Signing & Capabilities → team = Steve Maegley, automatic signing.
+   *(As done: Release signing is **manual**, with an Apple Distribution certificate and the "Megrim
+   App Store" provisioning profile, because a team with no registered devices can't archive with
+   automatic signing. See `docs/STATUS.md`.)*
 5. Product → Archive → Distribute → App Store Connect. Export-compliance question is already
    answered by `ITSAppUsesNonExemptEncryption=false` in Info.plist.
 
@@ -46,7 +55,7 @@ Answer "No" to all collection questions; the label renders as "Data Not Collecte
 
 ## Availability + the Ko-fi decision
 
-**Decision needed from Steve at submission time:**
+**Decided: Option A** (US storefront only, Ko-fi tile kept). The options as considered:
 
 - **Option A — US storefront only, keep the Ko-fi tile.** Post-Epic (guideline 3.1.1, May 2025)
   external donation links are allowed on the US storefront with no entitlement or fee. Expansion
@@ -83,6 +92,11 @@ with enrichment, Settings/export.
   device, no diagnosis/treatment claims.
 - Weather enrichment is opt-in; sole network endpoint is api.open-meteo.com (documented in
   docs/PRIVACY.md).
+- Face ID (and the device passcode) is used only for the optional app lock in Settings › Privacy
+  (from the release after 1.0.6); it's off by default, and the app never sees biometric data
+  (`NSFaceIDUsageDescription` explains this).
+- A "Log migraine" Home Screen quick action (long-press the icon) starts logging; it waits for the
+  unlock if app lock is on.
 - The statistical methodology behind "Suspected Factors" is publicly documented in plain
   language: https://github.com/smaegley/megrim/blob/main/docs/METHODS.md (retrospective
   descriptive statistics only — no diagnosis, no prediction).
@@ -136,7 +150,7 @@ conversation reply — captured on a physical iPhone via TestFlight internal tes
 
 ## Post-approval loose ends
 
-- README.md line 12 still says "migraine diary for Android" — update once the iOS release is
-  live, along with a store badge/link section.
+- ~~README.md still says "migraine diary for Android"~~ Done: the README covers both platforms
+  and links the App Store listing.
 - Release automation (macOS runner building a signed IPA in CI) is deliberately deferred —
   first submissions go through Xcode by hand.

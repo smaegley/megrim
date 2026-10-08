@@ -1,6 +1,6 @@
 # Megrim Privacy Policy
 
-_Last updated: 2026-10-07_
+_Last updated: 2026-10-08_
 
 **All data stays on your device.** We operate no servers and collect nothing — no accounts, no
 analytics, no identifiers, no crash reporting.
@@ -53,10 +53,17 @@ for your doctor.
 
 ## Backups
 
-Standard Android device backup applies (to *your* Google account, controlled by you in Android
-settings). Manual export files (JSON/CSV) go wherever *you* choose to save them via the system
-share sheet. If you object to OS-level backup, disable it in Android settings; manual
-export/import remains the canonical migration path.
+Your phone's own backup applies, to an account you control:
+
+- **Android:** standard device backup to *your* Google account, controlled in Android settings.
+  It includes Megrim's diary (from the release after v1.0.6; before that, Android 12 and later
+  backed up Megrim's settings but not its database).
+- **iPhone:** iCloud Backup, or a backup to your computer, as you've set it up in iOS settings.
+  Megrim's diary is included like other app data.
+
+Manual export files (JSON/CSV/PDF) go wherever *you* choose to save them via the system share
+sheet. If you object to OS-level backup, turn it off in your phone's settings; manual
+export/import remains the canonical way to move to a new phone.
 
 ## Your controls
 

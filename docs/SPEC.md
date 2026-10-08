@@ -13,7 +13,7 @@ the handoff artifact for implementation.
 
 ## 1. Product definition
 
-A **privacy-first, offline-first migraine diary for Android** that automatically enriches each
+A **privacy-first, offline-first migraine diary for Android and iOS** that automatically enriches each
 logged migraine with weather, barometric-pressure, and astronomical context — computed and stored
 **entirely on the device** — and surfaces personal descriptive analytics plus odds-ratio
 "suspected factors" correlations. No accounts, no server, no telemetry. Data is fully portable
@@ -36,8 +36,8 @@ headache apps — "we collect nothing" is the differentiator, not a limitation.
 | Data location | On-device SQLite only | Concern #3: user owns everything |
 | Monetization | **Free + donate button** | Concern #4; also required: Open-Meteo free tier is non-commercial-only |
 | Telemetry / crash SDK | **None** (no Firebase/Crashlytics — banned on F-Droid anyway) | Privacy story; add a "copy error details" button instead |
-| First distribution | **GitHub Releases → F-Droid**; Play optional later | Simplest FOSS path; defers Play's org-account / health-declaration burden |
-| Platform | Android only for v1 (Flutter keeps iOS possible) | Matches existing expertise and code |
+| First distribution | **GitHub Releases → F-Droid**; Play optional later | Simplest FOSS path; defers Play's org-account / health-declaration burden. *Now (2026-10): GitHub Releases, F-Droid (since 2026-08-23) and the US Apple App Store (since 2026-09); Play still deferred.* |
+| Platform | Android only for v1 (Flutter keeps iOS possible) | Matches existing expertise and code. *iOS was added 2026-09 from the same codebase.* |
 
 ### 1.2 Identity / publishing
 
@@ -53,7 +53,8 @@ anonymity plan was dropped.** Concretely:
   on the author's Mac + password manager. The four signing values are stored as repo Actions
   secrets (`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`); tagging `v*` builds
   a signed APK + AAB via `release.yml`.
-- **F-Droid:** submission is a merge request to `fdroiddata` (post-1.0).
+- **F-Droid:** submission is a merge request to `fdroiddata` (post-1.0). *Merged 2026-08-23
+  ([!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692)).*
 - **Google Play (if ever):** optional later phase; individual accounts display the legal name and
   Health-category apps may require an Organization account. Not pursued for now.
 - **Donations:** optional; wire `.github/FUNDING.yml` + the in-app Donate URL to a platform if/when
@@ -62,9 +63,10 @@ anonymity plan was dropped.** Concretely:
 ### 1.3 Non-goals (v1)
 
 No cloud sync, no accounts, no multi-device sync, no community/social features, no push
-notifications, no migraine *prediction* claims (only retrospective correlation), no iOS, no
-in-app purchases, no wearable integration, no Health Connect (adds Play policy burden for little
-value — revisit later).
+notifications, no migraine *prediction* claims (only retrospective correlation), no in-app
+purchases, no wearable integration, no Health Connect (adds Play policy burden for little value —
+revisit later). *(The v1 list also said "no iOS"; iOS shipped 2026-09. Added 2026-10-07: no
+encryption at rest, reviewed and not planned — see `docs/BACKLOG.md` #24.)*
 
 ---
 
@@ -111,6 +113,9 @@ Baseline set (all carried over from the private app, all FOSS-clean):
 `shared_preferences`, `intl`, `provider`, `fl_chart`, `url_launcher`, `file_picker` or
 `share_plus` (for export — verify GMS-free; both are community standards on F-Droid apps).
 
+*(Superseded: GPS capture was never built and `geolocator` is not a dependency — see §12
+deviation 1; the location permissions were removed in v1.0.1. Kept for the record.)*
+
 **Location:** `geolocator` defaults to Google's fused location provider on Android. Either set
 `AndroidSettings(forceLocationManager: true)` on every call, or use a plain-LocationManager
 package. GPS is **optional** (quick-log convenience only); the app must be fully functional with
@@ -123,6 +128,9 @@ appears in the merged dependency graph (simple gradle-deps grep step).
 ---
 
 ## 3. Data model (Drift/SQLite, schema v1)
+
+*Now schema v3 (2026-09): v2 added per-event UTC offsets (issue #17), v3 the "Travel" trigger seed
+(backlog #13); both additive. Details in §12.*
 
 Carried from the private app with server-sync fields removed and vocab made user-editable.
 All timestamps stored UTC (ISO-8601 in exports); all display in local time.
@@ -191,8 +199,10 @@ Port the private app's screens (same layouts; the theme now supports **both ligh
 follows the system setting** — see §12 Session-3, backlog #8) with these changes:
 
 1. **Onboarding (new, first run):** welcome → **medical disclaimer** (must accept; text in §9)
-   → home-location search (Open-Meteo geocoder, same `LocationPickerField` pattern) → optional
-   GPS permission with plain-language explanation ("only to tag where a migraine happened; never
+   → home-location search (Open-Meteo geocoder, same `LocationPickerField` pattern; GPS
+   coordinates or a Plus Code can be typed instead, decoded offline) → weather-enrichment opt-in
+   (off by default, v1.0.1). *The optional GPS permission step below was never built.* Original:
+   optional GPS permission with plain-language explanation ("only to tag where a migraine happened; never
    leaves your device except as rounded coordinates sent to the weather service"). No skipping
    home location — enrichment needs it as fallback.
 2. **Quick Log:** identical to private app (LOG MIGRAINE → active view with elapsed timer,
@@ -208,11 +218,16 @@ follows the system setting** — see §12 Session-3, backlog #8) with these chan
    are **horizontal odds-ratio bars** (with caveats); descriptive charts (day-of-week, season,
    time-of-day, daylight, pressure-delta buckets, moon phase) show **per-bar counts** and a
    **purple magnitude shade**; season & time-of-day are donuts. Plus a "days since last migraine"
-   card and a "Most-tagged triggers" frequency card. Includes the required "Weather data by
+   card and a "Most-tagged triggers" frequency card. *Since added:* **Migraine days per month**
+   right after Summary (last 30 days, average over the last 3 complete months, a bar per month;
+   backlog #17) and an **Away from home** card (backlog #13). Includes the required "Weather data by
    Open-Meteo.com" attribution footer (CC-BY 4.0).
 6. **Settings:** home location (change → confirm → bulk re-enrich), vocab management, export /
    import (§7), **donate (Ko-fi URL → browser)**, About (version, license, source link, bundled
    licenses page via `showAboutDialog`'s LicenseRegistry, privacy summary, disclaimer re-read).
+   *Since added:* the weather-enrichment toggle (v1.0.1), **Export report (PDF)** and the backup
+   reminder (v1.0.6), and a **Privacy** section: app lock with the device's own unlock, "Lock
+   after", and "Hide in recent apps" (backlog #24).
 7. **Removed vs private app:** sync button/status, OTA update checker (stores handle updates),
    web entry point (`web_main.dart`), all of `api_service.dart` except nothing — it's deleted.
 
@@ -341,11 +356,18 @@ One row per event, arrays joined with `;`, derived columns flattened. For spread
   script, not an in-app mapper). The doc's minimal example is pinned by a test in
   `export_import_test.dart` so the contract can't drift silently.
 
-### 7.4 Android Auto Backup
+### 7.4 OS backups (Android Auto Backup, iOS)
 Enable (`android:allowBackup` + full-backup content including the DB). Documented in the privacy
 policy ("device-encrypted backup to the user's own Google account, controlled by Android
 settings"). Users who object can disable OS-level backups; export/import remains the canonical
 migration path.
+
+*Note (2026-10-08):* the DB is `app_flutter/megrim.sqlite` (path_provider's documents directory),
+which only the `root` backup domain covers. The API 31+ `data_extraction_rules.xml` listed only
+database/sharedpref/file, so until the fix on `main` Android 12+ backups carried no events. It now
+includes `root` + `app_flutter/megrim.sqlite` (the file only; the folder also holds debug
+`flutter_assets/` and exceeds the 25 MB quota). On iOS the same file sits in the app's Documents
+directory, which iCloud and Finder backups include by default.
 
 ### 7.5 Steve's migration
 One-off script (private repo, not shipped): pull events+derived from the personal server API →
@@ -369,12 +391,16 @@ emit `megrim-export` JSON → import on phone. ~50 lines of Python against
 - **F-Droid submission (after 1.0):** merge request to `fdroiddata` with the build recipe;
   Flutter is accepted (prebuilt-SDK carve-out in their inclusion policy). Expect review
   iterations on the recipe. Optionally publish reproducible builds so F-Droid ships your
-  signature.
+  signature. *Done: merged 2026-08-23 after four rounds; reproducible builds declined, so F-Droid
+  signs with its own key. The bot picks up `v*` tags.*
 - **Target/min SDK:** target = current Play requirement (API 35+ in 2026, ratchets yearly — this
   is the main recurring maintenance task); minSdk 26 (Android 8.0) is a sane floor.
-- **Permissions manifest (complete list):** `INTERNET`, `ACCESS_COARSE_LOCATION` +
-  `ACCESS_FINE_LOCATION` (optional feature, `<uses-feature android:required="false">`). Nothing
-  else. No background location, no notifications (v1), no storage permission (SAF handles it).
+- **Permissions manifest (complete list):** *current (2026-10):* `INTERNET`;
+  `ACCESS_NETWORK_STATE` (merged in by connectivity_plus); and, on `main` for the next release,
+  `USE_BIOMETRIC` + `USE_FINGERPRINT` (merged in by local_auth / androidx.biometric, used only
+  when app lock is on). No location permission (the original `ACCESS_COARSE/FINE_LOCATION` were
+  removed in v1.0.1), no background location, no notifications, no storage permission (SAF
+  handles it).
 
 ---
 
@@ -387,10 +413,12 @@ emit `megrim-export` JSON → import on phone. ~50 lines of Python against
   making any treatment decisions."
 - **Privacy policy (PRIVACY.md, linked in app + listing):** "All data stays on your device. We
   operate no servers and collect nothing — no accounts, no analytics, no identifiers, no crash
-  reporting. The app's only network traffic is to Open-Meteo.com to fetch weather for the
-  approximate (~1 km rounded) location and date of entries you create; see Open-Meteo's privacy
-  policy. Backups: standard Android device backup to *your* Google account (you control it in
-  Android settings); manual export files go wherever you choose to save them."
+  reporting. Weather enrichment is opt-in; when it's on, the app's only network traffic is to
+  Open-Meteo.com to fetch weather for the approximate (~1 km rounded) location and date of entries
+  you create; see Open-Meteo's privacy policy. Backups: your phone's own backup (Google on
+  Android, iCloud or your computer on iPhone), which you control in the phone's settings; manual
+  export files go wherever you choose to save them." *(Current wording lives in
+  `docs/PRIVACY.md` and `app/lib/legal.dart`.)*
 - **In-analytics caveats:** keep the private app's caveat list verbatim on the correlations card.
 - **Play-only extras (deferred until/if Play):** Health apps declaration form, data-safety form
   ("no data collected/shared"), possible Organization-account requirement (verify in Console).
@@ -430,6 +458,9 @@ in tests.
 ---
 
 ## 12. Implementation status (2026-07-09)
+
+*A running history, oldest first; the newest entry is at the end of this section. For a short
+current snapshot see [`docs/STATUS.md`](STATUS.md).*
 
 First implementation pass complete: a buildable Flutter app under `app/`, `flutter analyze`
 clean, **55 tests passing**, and a **signed release APK** produced (release signing path verified
@@ -536,7 +567,8 @@ Obtainium already provide install *and* auto-update.
    constraint in §2.1 ("CI should fail if `com.google.android.gms` appears"). Since GPS is
    explicitly optional and the app must work without it, v1 uses the onboarding home location for
    all enrichment. `lib/services/` keeps a seam for a future GMS-free `LocationManager` provider.
-   The manifest still declares the (optional) location permissions for later use.
+   The manifest still declares the (optional) location permissions for later use. *(Removed in
+   v1.0.1.)*
 2. **`flutter_plugin_android_lifecycle` pinned to 2.0.24** via `dependency_overrides`. The current
    release (2.0.35) sets an AAR `minCompileSdk` of 36 that breaks the build under Flutter 3.44.1
    (file_picker's metadata check fails). Revisit when Flutter's default compileSdk reaches 36.
@@ -803,3 +835,12 @@ accessibility + import-docs work above.)*
 days after a spring-forward in DST timezones (fixed 2026-07-08; CI now also runs under
 `TZ=America/Denver`). The `migraine-tracker` exporter corrects timestamps that its own importer had
 stored as local-clock-mislabeled-as-UTC (6–7h early).
+
+**2026-10 (post-`v1.0.6`, merged on `main`, unreleased):** from a competitor feature review
+(`docs/BACKLOG.md` #16–#24): **app lock** (#24; device credential via `local_auth`, "Hide in
+recent apps"; adds `USE_BIOMETRIC`/`USE_FINGERPRINT`; `MainActivity` → `FlutterFragmentActivity`;
+encryption at rest reviewed and not planned), **migraine days per month** (#17; shared
+`daysCovered()` rule with History), the **"Log migraine" app-icon shortcut** (#23 step 1; no
+plugin), the **Android backup fix** (§7.4), and two **Suspected Factors corrections** (§6.2):
+onset days with mid-attack days left out, and pressure read from one daily-mean series on both
+sides. Each was tested by Steve from a written test script; 312 tests on `main`.
