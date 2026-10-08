@@ -383,72 +383,73 @@
     "reason": null,
     "total_events": 55,
     "total_migraine_days": 55,
-    "total_days_in_range": 879,
-    "base_rate_pct": 6.26,
+    "total_days_in_range": 861,
+    "excluded_mid_attack_days": 18,
+    "base_rate_pct": 6.39,
     "top_factors": [
       {
         "factor": "Month",
         "condition": "Jul",
-        "odds_ratio": 2.95,
+        "odds_ratio": 2.94,
         "migraine_days": 9,
-        "total_days": 62,
-        "migraine_rate_pct": 14.52
+        "total_days": 61,
+        "migraine_rate_pct": 14.75
       },
       {
         "factor": "Moon phase",
         "condition": "Full Moon",
-        "odds_ratio": 2.61,
+        "odds_ratio": 2.63,
         "migraine_days": 14,
-        "total_days": 111,
-        "migraine_rate_pct": 12.61
+        "total_days": 108,
+        "migraine_rate_pct": 12.96
       },
       {
         "factor": "Day of week",
         "condition": "Fri",
-        "odds_ratio": 1.99,
+        "odds_ratio": 1.96,
         "migraine_days": 13,
-        "total_days": 126,
-        "migraine_rate_pct": 10.32
+        "total_days": 125,
+        "migraine_rate_pct": 10.4
       },
       {
         "factor": "Month",
         "condition": "Jan",
-        "odds_ratio": 1.89,
+        "odds_ratio": 1.87,
         "migraine_days": 9,
-        "total_days": 89,
-        "migraine_rate_pct": 10.11
+        "total_days": 88,
+        "migraine_rate_pct": 10.23
       },
       {
         "factor": "Season",
         "condition": "Summer",
-        "odds_ratio": 1.77,
+        "odds_ratio": 1.82,
         "migraine_days": 17,
-        "total_days": 185,
-        "migraine_rate_pct": 9.19
+        "total_days": 178,
+        "migraine_rate_pct": 9.55
       },
       {
         "factor": "Moon phase",
         "condition": "Waning Gibbous",
-        "odds_ratio": 1.52,
+        "odds_ratio": 1.5,
         "migraine_days": 9,
-        "total_days": 106,
-        "migraine_rate_pct": 8.49
+        "total_days": 105,
+        "migraine_rate_pct": 8.57
       },
       {
         "factor": "Daylight hours",
         "condition": "< 9.5 h",
-        "odds_ratio": 1.41,
+        "odds_ratio": 1.42,
         "migraine_days": 6,
-        "total_days": 76,
-        "migraine_rate_pct": 7.89
+        "total_days": 74,
+        "migraine_rate_pct": 8.11
       },
       {
         "factor": "Daylight hours",
         "condition": "≥ 14 h",
-        "odds_ratio": 1.37,
+        "odds_ratio": 1.39,
         "migraine_days": 17,
-        "total_days": 222,
-        "migraine_rate_pct": 7.66
+        "total_days": 215,
+        "migraine_rate_pct": 7.91
       }
     ],
     "factors": {
@@ -456,15 +457,15 @@
         {
           "bucket": "Mon",
           "migraine_days": 9,
-          "total_days": 126,
-          "migraine_rate_pct": 7.14,
-          "odds_ratio": 1.23
+          "total_days": 123,
+          "migraine_rate_pct": 7.32,
+          "odds_ratio": 1.24
         },
         {
           "bucket": "Tue",
           "migraine_days": 6,
-          "total_days": 125,
-          "migraine_rate_pct": 4.8,
+          "total_days": 122,
+          "migraine_rate_pct": 4.92,
           "odds_ratio": 0.78
         },
         {
@@ -472,208 +473,208 @@
           "migraine_days": 6,
           "total_days": 125,
           "migraine_rate_pct": 4.8,
-          "odds_ratio": 0.78
+          "odds_ratio": 0.76
         },
         {
           "bucket": "Thu",
           "migraine_days": 8,
-          "total_days": 125,
-          "migraine_rate_pct": 6.4,
-          "odds_ratio": 1.08
+          "total_days": 124,
+          "migraine_rate_pct": 6.45,
+          "odds_ratio": 1.06
         },
         {
           "bucket": "Fri",
           "migraine_days": 13,
-          "total_days": 126,
-          "migraine_rate_pct": 10.32,
-          "odds_ratio": 1.99
+          "total_days": 125,
+          "migraine_rate_pct": 10.4,
+          "odds_ratio": 1.96
         },
         {
           "bucket": "Sat",
           "migraine_days": 7,
-          "total_days": 126,
-          "migraine_rate_pct": 5.56,
-          "odds_ratio": 0.91
+          "total_days": 118,
+          "migraine_rate_pct": 5.93,
+          "odds_ratio": 0.96
         },
         {
           "bucket": "Sun",
           "migraine_days": 6,
-          "total_days": 126,
-          "migraine_rate_pct": 4.76,
-          "odds_ratio": 0.77
+          "total_days": 124,
+          "migraine_rate_pct": 4.84,
+          "odds_ratio": 0.76
         }
       ],
       "Season": [
         {
           "bucket": "Spring",
           "migraine_days": 10,
-          "total_days": 276,
-          "migraine_rate_pct": 3.62,
+          "total_days": 272,
+          "migraine_rate_pct": 3.68,
           "odds_ratio": 0.48
         },
         {
           "bucket": "Summer",
           "migraine_days": 17,
-          "total_days": 185,
-          "migraine_rate_pct": 9.19,
-          "odds_ratio": 1.77
+          "total_days": 178,
+          "migraine_rate_pct": 9.55,
+          "odds_ratio": 1.82
         },
         {
           "bucket": "Autumn",
           "migraine_days": 11,
-          "total_days": 182,
-          "migraine_rate_pct": 6.04,
-          "odds_ratio": 0.98
+          "total_days": 178,
+          "migraine_rate_pct": 6.18,
+          "odds_ratio": 0.99
         },
         {
           "bucket": "Winter",
           "migraine_days": 17,
-          "total_days": 236,
-          "migraine_rate_pct": 7.2,
-          "odds_ratio": 1.25
+          "total_days": 233,
+          "migraine_rate_pct": 7.3,
+          "odds_ratio": 1.24
         }
       ],
       "Month": [
         {
           "bucket": "Jan",
           "migraine_days": 9,
-          "total_days": 89,
-          "migraine_rate_pct": 10.11,
-          "odds_ratio": 1.89
+          "total_days": 88,
+          "migraine_rate_pct": 10.23,
+          "odds_ratio": 1.87
         },
         {
           "bucket": "Feb",
           "migraine_days": 5,
           "total_days": 85,
           "migraine_rate_pct": 5.88,
-          "odds_ratio": 1.01
+          "odds_ratio": 0.98
         },
         {
           "bucket": "Mar",
           "migraine_days": 4,
-          "total_days": 93,
-          "migraine_rate_pct": 4.3,
-          "odds_ratio": 0.72
+          "total_days": 92,
+          "migraine_rate_pct": 4.35,
+          "odds_ratio": 0.71
         },
         {
           "bucket": "Apr",
           "migraine_days": 3,
-          "total_days": 90,
-          "migraine_rate_pct": 3.33,
+          "total_days": 89,
+          "migraine_rate_pct": 3.37,
           "odds_ratio": 0.56
         },
         {
           "bucket": "May",
           "migraine_days": 3,
-          "total_days": 93,
-          "migraine_rate_pct": 3.23,
+          "total_days": 91,
+          "migraine_rate_pct": 3.3,
           "odds_ratio": 0.54
         },
         {
           "bucket": "Jun",
           "migraine_days": 4,
-          "total_days": 61,
-          "migraine_rate_pct": 6.56,
-          "odds_ratio": 1.17
+          "total_days": 58,
+          "migraine_rate_pct": 6.9,
+          "odds_ratio": 1.21
         },
         {
           "bucket": "Jul",
           "migraine_days": 9,
-          "total_days": 62,
-          "migraine_rate_pct": 14.52,
-          "odds_ratio": 2.95
+          "total_days": 61,
+          "migraine_rate_pct": 14.75,
+          "odds_ratio": 2.94
         },
         {
           "bucket": "Aug",
           "migraine_days": 4,
-          "total_days": 62,
-          "migraine_rate_pct": 6.45,
-          "odds_ratio": 1.14
+          "total_days": 59,
+          "migraine_rate_pct": 6.78,
+          "odds_ratio": 1.18
         },
         {
           "bucket": "Sep",
           "migraine_days": 4,
-          "total_days": 60,
-          "migraine_rate_pct": 6.67,
-          "odds_ratio": 1.19
+          "total_days": 59,
+          "migraine_rate_pct": 6.78,
+          "odds_ratio": 1.18
         },
         {
           "bucket": "Oct",
           "migraine_days": 3,
-          "total_days": 62,
-          "migraine_rate_pct": 4.84,
-          "odds_ratio": 0.86
+          "total_days": 61,
+          "migraine_rate_pct": 4.92,
+          "odds_ratio": 0.85
         },
         {
           "bucket": "Nov",
           "migraine_days": 4,
-          "total_days": 60,
-          "migraine_rate_pct": 6.67,
-          "odds_ratio": 1.19
+          "total_days": 58,
+          "migraine_rate_pct": 6.9,
+          "odds_ratio": 1.21
         },
         {
           "bucket": "Dec",
           "migraine_days": 3,
-          "total_days": 62,
-          "migraine_rate_pct": 4.84,
-          "odds_ratio": 0.86
+          "total_days": 60,
+          "migraine_rate_pct": 5.0,
+          "odds_ratio": 0.87
         }
       ],
       "Moon phase": [
         {
           "bucket": "New Moon",
           "migraine_days": 6,
-          "total_days": 110,
-          "migraine_rate_pct": 5.45,
+          "total_days": 107,
+          "migraine_rate_pct": 5.61,
           "odds_ratio": 0.91
         },
         {
           "bucket": "Waxing Crescent",
           "migraine_days": 3,
-          "total_days": 111,
-          "migraine_rate_pct": 2.7,
-          "odds_ratio": 0.44
+          "total_days": 110,
+          "migraine_rate_pct": 2.73,
+          "odds_ratio": 0.43
         },
         {
           "bucket": "First Quarter",
           "migraine_days": 3,
-          "total_days": 111,
-          "migraine_rate_pct": 2.7,
-          "odds_ratio": 0.44
+          "total_days": 110,
+          "migraine_rate_pct": 2.73,
+          "odds_ratio": 0.43
         },
         {
           "bucket": "Waxing Gibbous",
           "migraine_days": 7,
-          "total_days": 111,
-          "migraine_rate_pct": 6.31,
+          "total_days": 108,
+          "migraine_rate_pct": 6.48,
           "odds_ratio": 1.07
         },
         {
           "bucket": "Full Moon",
           "migraine_days": 14,
-          "total_days": 111,
-          "migraine_rate_pct": 12.61,
-          "odds_ratio": 2.61
+          "total_days": 108,
+          "migraine_rate_pct": 12.96,
+          "odds_ratio": 2.63
         },
         {
           "bucket": "Waning Gibbous",
           "migraine_days": 9,
-          "total_days": 106,
-          "migraine_rate_pct": 8.49,
-          "odds_ratio": 1.52
+          "total_days": 105,
+          "migraine_rate_pct": 8.57,
+          "odds_ratio": 1.5
         },
         {
           "bucket": "Last Quarter",
           "migraine_days": 8,
-          "total_days": 108,
-          "migraine_rate_pct": 7.41,
-          "odds_ratio": 1.29
+          "total_days": 104,
+          "migraine_rate_pct": 7.69,
+          "odds_ratio": 1.32
         },
         {
           "bucket": "Waning Crescent",
           "migraine_days": 5,
-          "total_days": 111,
-          "migraine_rate_pct": 4.5,
+          "total_days": 109,
+          "migraine_rate_pct": 4.59,
           "odds_ratio": 0.73
         }
       ],
@@ -681,42 +682,43 @@
         {
           "bucket": "< 9.5 h",
           "migraine_days": 6,
-          "total_days": 76,
-          "migraine_rate_pct": 7.89,
-          "odds_ratio": 1.41
+          "total_days": 74,
+          "migraine_rate_pct": 8.11,
+          "odds_ratio": 1.42
         },
         {
           "bucket": "9.5–11 h",
           "migraine_days": 13,
-          "total_days": 225,
-          "migraine_rate_pct": 5.78,
-          "odds_ratio": 0.92
+          "total_days": 222,
+          "migraine_rate_pct": 5.86,
+          "odds_ratio": 0.91
         },
         {
           "bucket": "11–12.5 h",
           "migraine_days": 12,
-          "total_days": 172,
-          "migraine_rate_pct": 6.98,
-          "odds_ratio": 1.19
+          "total_days": 170,
+          "migraine_rate_pct": 7.06,
+          "odds_ratio": 1.18
         },
         {
           "bucket": "12.5–14 h",
           "migraine_days": 7,
-          "total_days": 184,
-          "migraine_rate_pct": 3.8,
+          "total_days": 180,
+          "migraine_rate_pct": 3.89,
           "odds_ratio": 0.56
         },
         {
           "bucket": "≥ 14 h",
           "migraine_days": 17,
-          "total_days": 222,
-          "migraine_rate_pct": 7.66,
-          "odds_ratio": 1.37
+          "total_days": 215,
+          "migraine_rate_pct": 7.91,
+          "odds_ratio": 1.39
         }
       ]
     },
     "caveats": [
-      "Based on 55 migraine days over 879 days — small sample, results are noisy.",
+      "Based on 55 migraine days over 861 days — small sample, results are noisy.",
+      "18 days in the middle of a multi-day migraine are left out: a new attack can't start while one is underway.",
       "Odds ratios use a +0.5 correction for empty cells; treat values near 1.0 as no signal.",
       "Many factors are tested at once (multiple comparisons) — some apparent associations are chance.",
       "Association is not causation. Use this to form hypotheses, not conclusions."

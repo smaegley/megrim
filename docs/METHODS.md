@@ -47,10 +47,31 @@ month without migraines or a month you didn't log; the app can't tell the two ap
 
 ## How Suspected Factors are calculated
 
-**Migraine-days.** The unit of analysis is a *day*, not an entry. Every calendar day inside your
-study window is either a migraine-day (you logged at least one migraine that day, or a
-multi-day migraine covered it) or a non-migraine-day. Logging three entries on one bad day
-counts once. The **study window** runs from your first logged migraine to your most recent one.
+**Migraine-days are the days a migraine *started*.** The question here is "what tends to come
+before an attack begins?", so the unit of analysis is the day of each attack's **onset**, not
+every day you had pain. Logging three entries on one bad day counts once. The **study window**
+runs from your first logged migraine to your most recent one.
+
+**Days in the middle of a migraine are left out.** Day 2 onward of a multi-day migraine is
+neither an onset day nor a day on which a new attack could have started, so it isn't counted on
+either side of the comparison. (If another migraine starts on such a day, that day counts as an
+onset as usual.) Without this, a three-day attack would make slow-changing conditions such as
+the season, the daylight or a multi-day low-pressure spell look more strongly linked to attacks
+than they are, because they are still present on day 3. The Analytics card notes how many days
+were left out.
+
+This follows how migraine trigger studies are designed: they look at what precedes the *onset*
+of an attack, and treat only headache-free days as days on which a new attack could begin
+(see, for example, the individual-patient trigger analysis by Peris et al., *Cephalalgia* 2017,
+and weather studies that compare conditions in the hours before onset). It is a deliberate
+change from the reference implementation Megrim's analytics were ported from, made in October
+2026; with no end times recorded, the results are identical to it.
+
+**Why this number differs from "Migraine days per month".** The two answer different
+questions. *Migraine days per month* measures how much migraine you had, so a three-day
+migraine counts three days; that is the figure clinicians use to judge frequency and whether a
+treatment is working. *Suspected Factors* asks what precedes an attack starting, so the same
+migraine counts once, on its first day. Both are right for their purpose.
 
 **The comparison.** For each factor bucket (say, "Friday" or "pressure fell more than 10 hPa"),
 Megrim builds a 2×2 table: migraine-days in the bucket, migraine-days outside it,
@@ -61,9 +82,22 @@ for *every* day in the window, not just migraine days:
   known weekday and season.
 - **Moon phase and daylight** are computed astronomically for every day in the window, on the
   device.
-- **Pressure change** needs real weather history for the non-migraine days, so it's only
-  available if you opted into weather enrichment; the app fetches a one-time daily-pressure
-  history for your home location from Open-Meteo and caches it.
+- **Pressure change** needs real weather history, so it's only available if you opted into
+  weather enrichment. The app fetches a daily-pressure history for your home location from
+  Open-Meteo once and caches it, and **both sides of the comparison come from that one series**:
+  each day's change in average pressure from the day before, for migraine days and other days
+  alike. Days without a pressure value are left out of this table only, and mid-migraine days
+  are left out as everywhere else.
+
+  Why one series matters: until October 2026 a migraine day used the pressure change at the hour
+  the migraine started, while the other days used daily averages. Hour-by-hour changes swing
+  much further than day-to-day averages, so migraine days landed in the extreme buckets far more
+  often purely because they were measured differently. That made big drops look strongly linked
+  to migraines (an odds ratio of 41 on the sample data, versus about 0.6 when both sides are
+  measured the same way). The hourly reading at onset is still kept on each entry and shown in
+  the "Pressure change (24h)" chart, which is a plain count. A cache saved by an older version
+  has no per-day values, so the pressure factor stays hidden until Analytics next loads online
+  and refreshes it.
 
 **The odds ratio.** From the 2×2 table Megrim computes an odds ratio (OR): how much more likely
 a day in that bucket was to be a migraine-day, compared with a day outside it, *in your log*.

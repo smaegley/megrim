@@ -277,7 +277,16 @@ counts by year, month-of-year, day-of-week, time-of-day, season, pressure-delta 
 ### 6.2 Correlations (Top Suspected Factors)
 Port the exact algorithm:
 - Study window = first event date → **last event date** (matches the reference Python; an earlier
-  draft said "today"). Migraine-days = distinct local dates with ≥1 event.
+  draft said "today"). Migraine-days = distinct local dates with ≥1 event **starting** (onset
+  days). **Changed 2026-10-08, diverging from the reference Python:** days in the middle of a
+  multi-day migraine (day 2 onward, unless another migraine starts that day) are left out of every
+  table — they are neither onset days nor days a new attack could start on, as in trigger studies.
+  The pressure cache keeps per-day buckets for this. Rationale in `docs/METHODS.md`.
+- **Pressure, changed 2026-10-08:** both cells of the pressure 2×2 come from the cached daily-mean
+  series (day-over-day change of `surface_pressure_mean` at home). Migraine days no longer use
+  the event's hourly onset delta (`derived_factors.pressure_delta_24h`); mixing hourly onset deltas
+  with a daily-mean baseline inflated the extreme buckets. Days with no value leave the pressure
+  table on both sides. No per-day cache (older version) → pressure factor omitted until refreshed.
 - Per factor bucket build the 2×2 contingency (migraine-days vs non-migraine-days, in-bucket vs
   not) and compute the odds ratio with the **Haldane–Anscombe correction** (+0.5 added to all
   four cells of every table, unconditionally — matches the reference Python).

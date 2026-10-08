@@ -66,14 +66,13 @@ void main() {
       expect(r.caveats, hasLength(4));
     });
 
-    test('includes the pressure factor when a baseline is supplied', () {
+    test('includes the pressure factor when per-day pressure data is supplied', () {
       final events = List.generate(6, (i) => DateTime.utc(2024, 1, 1 + i, 12));
       final r = computeCorrelations(
         eventStarts: events,
-        migrainePressureDeltas: [-12, -8, 2, 3, 7, 11],
-        pressureBaseline: {
-          '< -10': 2, '-10 to -5': 2, '-5 to 0': 5, '0 to 5': 6,
-          '5 to 10': 3, '> 10': 2 //
+        startOffsets: List.filled(6, 0),
+        pressureDayBuckets: {
+          for (var d = 1; d <= 6; d++) '2024-01-0$d': d.isEven ? '0 to 5' : '-5 to 0',
         },
       );
       expect(r.factors.containsKey('Pressure Δ 24h (hPa)'), isTrue);

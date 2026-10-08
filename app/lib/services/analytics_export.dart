@@ -67,6 +67,7 @@ Map<String, dynamic> correlationsToJson(CorrelationResult c) => {
       'total_events': c.totalEvents,
       'total_migraine_days': c.totalMigraineDays,
       'total_days_in_range': c.totalDaysInRange,
+      'excluded_mid_attack_days': c.excludedMidAttackDays,
       'base_rate_pct': c.baseRatePct,
       'top_factors': [
         for (final t in c.topFactors)
