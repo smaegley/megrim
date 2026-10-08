@@ -163,7 +163,9 @@ Notes for renderers:
 - The **pressure factor** (`Pressure Δ 24h (hPa)`) appears only when the app has a cached pressure
   baseline — built the first time Analytics is opened online with weather enrichment on. It cannot
   be computed from the export alone (the daily pressure history is not exported), so treat its
-  absence as "not available", not zero.
+  absence as "not available", not zero. From app v1.0.7 both sides of the pressure table come from
+  that daily series (day-over-day change in daily-mean pressure at home); the per-event
+  `pressure_delta_24h` (hourly, at onset) is no longer used for it.
 - `dashboard` has no per-event calendar: that is the `events` array.
 - **`away_from_home`** (app v1.0.5+) counts entries recorded more than `threshold_km` from the
   home location. `located_events` is the denominator — entries with no `geo_lat`/`geo_lon` are in

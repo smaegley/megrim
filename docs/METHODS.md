@@ -82,11 +82,22 @@ for *every* day in the window, not just migraine days:
   known weekday and season.
 - **Moon phase and daylight** are computed astronomically for every day in the window, on the
   device.
-- **Pressure change** needs real weather history for the non-migraine days, so it's only
-  available if you opted into weather enrichment; the app fetches a one-time daily-pressure
-  history for your home location from Open-Meteo and caches it. The cache keeps each day's pressure change, so
-  mid-migraine days are left out here too. (A cache saved by an older version only has the
-  totals; it is used as-is offline and refreshed the next time Analytics loads online.)
+- **Pressure change** needs real weather history, so it's only available if you opted into
+  weather enrichment. The app fetches a daily-pressure history for your home location from
+  Open-Meteo once and caches it, and **both sides of the comparison come from that one series**:
+  each day's change in average pressure from the day before, for migraine days and other days
+  alike. Days without a pressure value are left out of this table only, and mid-migraine days
+  are left out as everywhere else.
+
+  Why one series matters: until October 2026 a migraine day used the pressure change at the hour
+  the migraine started, while the other days used daily averages. Hour-by-hour changes swing
+  much further than day-to-day averages, so migraine days landed in the extreme buckets far more
+  often purely because they were measured differently. That made big drops look strongly linked
+  to migraines (an odds ratio of 41 on the sample data, versus about 0.6 when both sides are
+  measured the same way). The hourly reading at onset is still kept on each entry and shown in
+  the "Pressure change (24h)" chart, which is a plain count. A cache saved by an older version
+  has no per-day values, so the pressure factor stays hidden until Analytics next loads online
+  and refreshes it.
 
 **The odds ratio.** From the 2×2 table Megrim computes an odds ratio (OR): how much more likely
 a day in that bucket was to be a migraine-day, compared with a day outside it, *in your log*.
