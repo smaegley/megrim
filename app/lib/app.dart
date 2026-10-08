@@ -4,6 +4,7 @@ import 'repositories/megrim_repository.dart';
 import 'screens/home_shell.dart';
 import 'screens/onboarding_screen.dart';
 import 'services/app_lock.dart';
+import 'services/app_shortcuts.dart';
 import 'services/connectivity_monitor.dart';
 import 'services/geocoder.dart';
 import 'theme.dart';
@@ -19,7 +20,11 @@ class MegrimApp extends StatefulWidget {
 
   /// App lock (backlog #24). Injectable for tests; defaults to one using the phone's unlock.
   final AppLockController? appLock;
-  const MegrimApp({super.key, required this.repo, this.geocoder, this.appLock});
+
+  /// The app-icon shortcut (backlog #23). Injectable for tests; defaults to the platform channel.
+  final AppShortcuts? shortcuts;
+  const MegrimApp(
+      {super.key, required this.repo, this.geocoder, this.appLock, this.shortcuts});
 
   @override
   State<MegrimApp> createState() => _MegrimAppState();
@@ -37,13 +42,25 @@ class _MegrimAppState extends State<MegrimApp> {
   bool? _onboardedOverride;
   final ConnectivityMonitor _connectivity = ConnectivityMonitor();
   late final AppLockController _appLock;
+  late final AppShortcuts _shortcuts;
+
+  /// Null until the onboarding check returns. While false, a shortcut tap is dropped: there is no
+  /// home location yet, and onboarding comes first (Steve, 2026-10-08).
+  bool? _onboarded;
 
   @override
   void initState() {
     super.initState();
     _appLock = widget.appLock ?? AppLockController(repo: widget.repo);
     _appLock.init();
-    _onboardedFuture = widget.repo.isOnboarded;
+    _onboardedFuture = widget.repo.isOnboarded
+      ..then((v) {
+        _onboarded = v;
+        _dropShortcutDuringOnboarding();
+      }, onError: (_) {}); // the FutureBuilder below shows the error state
+    _shortcuts = widget.shortcuts ?? AppShortcuts();
+    _shortcuts.addListener(_dropShortcutDuringOnboarding);
+    _shortcuts.init();
     // Drain the enrichment queue on cold start, and again whenever connectivity returns so events
     // logged offline get their weather as soon as the network is back (SPEC §5.1).
     _drainEnrichment();
@@ -54,6 +71,8 @@ class _MegrimAppState extends State<MegrimApp> {
   void dispose() {
     _connectivity.dispose();
     if (widget.appLock == null) _appLock.dispose();
+    _shortcuts.removeListener(_dropShortcutDuringOnboarding);
+    if (widget.shortcuts == null) _shortcuts.dispose();
     super.dispose();
   }
 
@@ -63,8 +82,15 @@ class _MegrimAppState extends State<MegrimApp> {
   }
 
   void _onOnboardingComplete() {
-    setState(() => _onboardedOverride = true);
+    setState(() {
+      _onboardedOverride = true;
+      _onboarded = true;
+    });
     _drainEnrichment();
+  }
+
+  void _dropShortcutDuringOnboarding() {
+    if (_onboarded == false) _shortcuts.take();
   }
 
   @override
@@ -78,9 +104,12 @@ class _MegrimAppState extends State<MegrimApp> {
       themeMode: ThemeMode.system,
       // App lock (backlog #24) sits above the Navigator, so it covers every route and dialog, and
       // the scope makes the controller reachable from Settings and the export/import paths.
-      builder: (context, child) => AppLockScope(
-        controller: _appLock,
-        child: AppLockGate(controller: _appLock, child: child ?? const SizedBox.shrink()),
+      builder: (context, child) => AppShortcutsScope(
+        shortcuts: _shortcuts,
+        child: AppLockScope(
+          controller: _appLock,
+          child: AppLockGate(controller: _appLock, child: child ?? const SizedBox.shrink()),
+        ),
       ),
       home: _onboardedOverride == true
           ? HomeShell(repo: widget.repo)

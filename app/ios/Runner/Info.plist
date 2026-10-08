@@ -30,6 +30,17 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Megrim does not use the camera. A file-picker component references this permission, but the app never requests camera access.</string>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>org.maegley.megrim.log_migraine</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Log migraine</string>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeAdd</string>
+		</dict>
+	</array>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Megrim uses Face ID to unlock the app when you turn on App lock in Settings.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

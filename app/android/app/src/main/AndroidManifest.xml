@@ -32,6 +32,10 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Long-press "Log migraine" shortcut (backlog #23 step 1). -->
+            <meta-data
+              android:name="android.app.shortcuts"
+              android:resource="@xml/shortcuts" />
         </activity>
         <meta-data
             android:name="flutterEmbedding"
