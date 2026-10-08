@@ -66,7 +66,7 @@ migraine-days, study window, Haldane–Anscombe correction, the same buckets and
   moon/daylight/season buckets.
 - Migraine-days: each event contributes one migraine-day, its local start date, and multi-day
   migraines count once, not for their full span, as in the app. Migraine rates are rounded to two
-  decimals like the app. **One difference (2026-10):** from the release after v1.0.6 the app also
+  decimals like the app. **One difference (2026-10):** from v1.0.7 the app also
   leaves the days in the middle of a multi-day migraine out of the comparison
   (`excluded_mid_attack_days`); this page's own compute path doesn't yet, so its fallback figures
   can differ slightly from the app's. Exports that carry the `analytics` block are unaffected,

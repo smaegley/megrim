@@ -1,0 +1,5 @@
+• New: optional app lock with your phone's fingerprint, face or PIN (Settings › Privacy). Adds two Android permissions, unused unless it's on.
+• New: migraine days per month, in Analytics and the PDF report.
+• New: long-press the icon → Log migraine.
+• Fixed: Android backup now includes your diary.
+• Suspected factors are more accurate: each migraine counts once, on its first day, and pressure is compared fairly. Your odds ratios will change.
