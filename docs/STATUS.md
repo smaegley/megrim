@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-08: v1.0.6 released on Android and submitted to App Review; the next release's features are all merged on `main`, unreleased._
+_Last updated: 2026-10-08: v1.0.6 live on Android and iOS (iOS build 12 approved 2026-10-06); the next release's features are all merged on `main`, unreleased._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -39,7 +39,8 @@ passed.
 **APPROVED and LIVE** —
 [Megrim: Migraine Diary](https://apps.apple.com/us/app/megrim-migraine-diary/id6808385548)
 (Apple ID `6808385548`), approved the week of 2026-09-07 after one Guideline 2.1
-information-request round (details below). US storefront only, free. **Current store build: 1.0.5 (11),
+information-request round (details below). US storefront only, free. **Current store build: 1.0.6 (12),
+approved 2026-10-06** (submitted 2026-10-05). Previous: **1.0.5 (11),
 approved and released 2026-09-30** (submitted 2026-09-29 — about a day in review). Previous: **1.0.4 (10),
 approved and released 2026-09-27** (submitted 2026-09-22 — a bug-fix update to an approved app, no
 questions asked). Previous: **1.0.3 (9),
@@ -156,7 +157,7 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   factor.
 - **Release plan:** v1.0.6 = backlog #12 + #14; no schema change. **Android released 2026-10-05**
   (`release.yml` green, APK/AAB published, signature and permissions verified); **iOS build 12
-  submitted to App Review 2026-10-05.** The generated-changelog CI check ran green on its first
+  submitted to App Review 2026-10-05, APPROVED 2026-10-06.** The generated-changelog CI check ran green on its first
   real release. Note the APK grows ~22 → 23.5 MB
   (arm64) for the report's bundled fonts — quote the per-ABI figure, not the universal APK, whose
   jump is three ABIs of the same code. Previously: v1.0.5 = PR #18 + backlog #13. **Android released 2026-09-29** (`release.yml`

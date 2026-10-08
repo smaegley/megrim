@@ -4,8 +4,11 @@
 `megrim-export` v1 JSON file into a clean, printable report you can hand to a clinician or
 specialist — through an upload portal, on a USB stick, or on a laptop with no internet at all.
 
-Since v1.0.6 the app can also make a PDF report itself (Settings › Export report (PDF)). This page
-is for working from an export file instead, for example on a computer.
+Since v1.0.6 the app can also make a PDF report itself (Settings › Export report (PDF)), and that
+is the supported way to make a report. This page is a **community contribution**
+([PR #11](https://github.com/smaegley/megrim/pull/11), nfd9001) for working from an export file
+instead, for example on a computer. It is kept in the repo as contributed and isn't maintained
+alongside the app, so it may lag behind changes to the app's analytics (see the notes below).
 
 ## Privacy model
 
