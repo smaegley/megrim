@@ -1,13 +1,16 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-08: v1.0.7 tagged for Android (iOS to follow); v1.0.6 live on Android and iOS (iOS build 12 approved 2026-10-06)._
+_Last updated: 2026-10-08: v1.0.7 released on Android (GitHub; F-Droid to follow), iOS build 13 to be submitted; v1.0.6 live on iOS._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
 
 ## `v1.0.7` (versionCode 12, tagged 2026-10-08)
 
-Android: tagged 2026-10-08; F-Droid follows by itself. iOS: build to be archived and submitted by
+Android: **released 2026-10-08** (`release.yml` green, APK/AAB published, not draft/prerelease;
+the published APK verified: versionCode 12, versionName 1.0.7, signed `CN=Steve Maegley` SHA-256
+`c316cce2…`, permissions INTERNET, ACCESS_NETWORK_STATE, USE_BIOMETRIC, USE_FINGERPRINT). F-Droid
+follows by itself. iOS: build to be archived and submitted by
 Steve, with app lock's TestFlight checks (Face ID prompt, blank switcher card). Each item below
 had a manual test script on the emulator (and a real phone where native code changed), all
 passed.
