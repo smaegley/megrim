@@ -6,9 +6,9 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 
 > **Status (2026-10-07):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
 > record. #13 shipped in `v1.0.5`; #12 and #14 shipped in `v1.0.6`. **#15 is DEFERRED.**
-> **#16 and #18–#23 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features*
-> below); **#17 (monthly migraine days) and #24 (app lock) are DONE**, merged 2026-10-08 and
-> 2026-10-07, unreleased.
+> **#16 and #18–#22 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features*
+> below); **#17 (monthly migraine days), #23 step (1) (app-icon shortcut) and #24 (app lock) are
+> DONE**, merged 2026-10-07/08, unreleased; #23 steps (2)–(3) remain proposed.
 > Add new items as they come up.
 
 ## UI / UX
@@ -586,7 +586,7 @@ needs no license and covers most of the value.
 **Verification:** migration + round-trip; monthly impact-day counting reuses backlog #17's day
 logic and tests.
 
-### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) BUILT** *(2026-10-08, on `feat/app-shortcut`, awaiting test)*; (2)–(3) **PROPOSED**
+### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(merged 2026-10-08, unreleased; tested on Android and the iOS Simulator)*; (2)–(3) **PROPOSED**
 
 **Want:** start a migraine without navigating the app — in increasing cost: (1) long-press app
 icon → "Log migraine" / "No migraine today"; (2) a home-screen widget showing days since last
