@@ -209,7 +209,8 @@ class MegrimRepository {
   }
 
   // ── Analytics ────────────────────────────────────────────────────────────
-  Future<DashboardResult> dashboard() async {
+  /// [now] fixes "today" for the monthly migraine-day figures (backlog #17); default: now.
+  Future<DashboardResult> dashboard({DateTime? now}) async {
     final events = await db.select(db.migraineEvents).get();
     final derived = await db.select(db.derivedFactors).get();
     final dById = {for (final d in derived) d.eventId: d};
@@ -233,7 +234,7 @@ class MegrimRepository {
             ))
         .toList();
     final home = await homeLocation;
-    return computeDashboard(stats, homeLat: home?.lat, homeLon: home?.lon);
+    return computeDashboard(stats, homeLat: home?.lat, homeLon: home?.lon, now: now);
   }
 
   Future<CorrelationResult> correlations(
@@ -300,7 +301,7 @@ class MegrimRepository {
   Future<Map<String, dynamic>> analyticsForExport({DateTime? now}) async {
     final baselineService = PressureBaselineService(db: db);
     try {
-      final dash = await dashboard();
+      final dash = await dashboard(now: now);
       final corr =
           await correlations(baselineService: baselineService, allowFetch: false);
       return analyticsBlock(
@@ -327,7 +328,7 @@ class MegrimRepository {
   }) async {
     final baselineService = PressureBaselineService(db: db);
     try {
-      final dash = await dashboard();
+      final dash = await dashboard(now: now);
       final corr =
           await correlations(baselineService: baselineService, allowFetch: false);
       final events = await db.select(db.migraineEvents).get();

@@ -1,5 +1,5 @@
 import 'dart:math' show sqrt;
-import '../models/event_time.dart' show wallClock, wallDate;
+import '../models/event_time.dart' show daysCovered, wallClock, wallDate;
 import 'geo_distance.dart';
 
 import 'correlations.dart'
@@ -99,6 +99,17 @@ class YearCount {
   const YearCount(this.year, this.count, this.avgSeverity);
 }
 
+/// Distinct migraine days in one calendar month (backlog #17).
+class MonthDays {
+  final int year;
+  final int month;
+  final int days;
+  const MonthDays(this.year, this.month, this.days);
+
+  /// `yyyy-MM`, the month's key in the export.
+  String get key => '$year-${month.toString().padLeft(2, '0')}';
+}
+
 class LabeledCount {
   final String label;
   final int count;
@@ -165,6 +176,19 @@ class DashboardResult {
   /// simply doesn't render (backlog #13).
   final AwayFromHome? awayFromHome;
 
+  /// Migraine days per calendar month (backlog #17), oldest first: every month from the first
+  /// entry's through the current month, zero months included — a migraine-free month is
+  /// information. A "migraine day" is a distinct local calendar day covered by at least one
+  /// migraine ([daysCovered]): a multi-day migraine counts each day, two on one day count once.
+  final List<MonthDays> migraineDaysByMonth;
+
+  /// Migraine days in the rolling 30 days ending today (today and the 29 days before).
+  final int migraineDaysLast30;
+
+  /// Mean migraine days per month over the last 3 complete calendar months, the usual clinical
+  /// baseline. Null until 3 complete months have passed since the month of the first entry.
+  final double? avgMigraineDaysLast3Months;
+
   const DashboardResult({
     required this.summary,
     this.byYear = const [],
@@ -177,6 +201,9 @@ class DashboardResult {
     this.triggerFrequency = const [],
     this.calendar = const [],
     this.awayFromHome,
+    this.migraineDaysByMonth = const [],
+    this.migraineDaysLast30 = 0,
+    this.avgMigraineDaysLast3Months,
   });
 
   bool get isEmpty => summary.totalEvents == 0;
@@ -185,11 +212,13 @@ class DashboardResult {
 double _round1(double v) => (v * 10).round() / 10;
 
 /// [homeLat]/[homeLon] are the user's home location, used only for the away-from-home share
-/// (backlog #13); omit them and [DashboardResult.awayFromHome] is null.
+/// (backlog #13); omit them and [DashboardResult.awayFromHome] is null. [now] (default: the
+/// phone's current time) fixes "today" for the monthly migraine-day figures (backlog #17).
 DashboardResult computeDashboard(
   List<EventStat> events, {
   double? homeLat,
   double? homeLon,
+  DateTime? now,
 }) {
   if (events.isEmpty) {
     return const DashboardResult(summary: Summary(totalEvents: 0));
@@ -361,6 +390,8 @@ DashboardResult computeDashboard(
     }
   }
 
+  final monthly = migraineDays(sorted, now ?? DateTime.now());
+
   return DashboardResult(
     summary: summary,
     byYear: byYear,
@@ -373,7 +404,52 @@ DashboardResult computeDashboard(
     triggerFrequency: triggerFrequency,
     calendar: calendar,
     awayFromHome: away,
+    migraineDaysByMonth: monthly.byMonth,
+    migraineDaysLast30: monthly.last30,
+    avgMigraineDaysLast3Months: monthly.avgLast3Months,
   );
+}
+
+/// The backlog #17 figures. "Today" is [now]'s date on the phone's clock; each migraine's days are
+/// read in the zone it was logged in. Public for tests.
+({List<MonthDays> byMonth, int last30, double? avgLast3Months}) migraineDays(
+  Iterable<EventStat> events,
+  DateTime now,
+) {
+  final days = <DateTime>{
+    for (final e in events)
+      ...daysCovered(e.startedAt, e.startOffsetMin, e.endedAt, e.endOffsetMin),
+  };
+  if (days.isEmpty) return (byMonth: const [], last30: 0, avgLast3Months: null);
+
+  final local = now.toLocal();
+  final today = DateTime(local.year, local.month, local.day);
+  int monthIndex(DateTime d) => d.year * 12 + d.month - 1;
+
+  final perMonth = <int, int>{};
+  for (final d in days) {
+    perMonth[monthIndex(d)] = (perMonth[monthIndex(d)] ?? 0) + 1;
+  }
+  final first = perMonth.keys.reduce((a, b) => a < b ? a : b);
+  // Through the current month, or later if an entry is dated in the future.
+  final last = [monthIndex(today), ...perMonth.keys].reduce((a, b) => a > b ? a : b);
+  final byMonth = [
+    for (var m = first; m <= last; m++) MonthDays(m ~/ 12, m % 12 + 1, perMonth[m] ?? 0),
+  ];
+
+  final windowStart = DateTime(today.year, today.month, today.day - 29);
+  final last30 = days.where((d) => !d.isBefore(windowStart) && !d.isAfter(today)).length;
+
+  // The 3 complete months before the current one; all must be on or after the first entry's
+  // month, otherwise months before tracking began would drag the average down.
+  final current = monthIndex(today);
+  final avgLast3 = current - 3 >= first
+      ? _round1([for (var m = current - 3; m < current; m++) perMonth[m] ?? 0]
+              .reduce((a, b) => a + b) /
+          3)
+      : null;
+
+  return (byMonth: byMonth, last30: last30, avgLast3Months: avgLast3);
 }
 
 List<LabeledCount> _labeledFrom(List<String> order, Iterable<String?> values) {

@@ -398,7 +398,7 @@ tracked window; a fixture dataset in `test/fixtures/datasets/` where a trigger i
 migraine days and absent on clear days, asserting it surfaces, plus one where it's equally common
 on both and must not.
 
-### 17. Monthly migraine days and their trend — **PROPOSED** *(2026-10-06)*
+### 17. Monthly migraine days and their trend — **BUILT** *(2026-10-08, on `feat/monthly-migraine-days`, awaiting Steve's test)*
 
 **Want:** a "migraine days per month" bar chart on Analytics (last 12 months, scrollable back to
 the first entry), a "last 30 days" stat tile, and the same chart in the PDF report (backlog #12).
@@ -426,6 +426,14 @@ breaks the data down by year and by factor, but never by month.
 **Verification:** unit tests for month bucketing across DST changes, month boundaries, a migraine
 spanning a month boundary (counts in both), two events on one day (counts once), and an ongoing
 event (start day only, per the rule above).
+
+**As built (Steve's choices, 2026-10-08):** the card sits right after Summary; it shows every month
+since the first entry, scrolling sideways and opening on the latest 12; it carries both "last 30
+days" and "avg/month, last 3 complete months" (blank until 3 complete months exist); days only,
+no event count. The current month is drawn lighter and starred. The PDF gets the chart (last 12
+months) first under Patterns, plus a "Migraine days, last 30 d" summary tile. The day rule moved
+to `daysCovered()` in `event_time.dart`, shared with the History calendar. Export:
+`migraine_days_last_30`, `migraine_days_avg_last_3_months`, `migraine_days_by_month`.
 
 ### 18. Acute-medication days and a medication-overuse notice — **PROPOSED** *(2026-10-06)*
 

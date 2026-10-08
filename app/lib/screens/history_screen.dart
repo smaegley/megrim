@@ -268,27 +268,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 }
 
-/// Every local calendar day [e] covers, start date through end date inclusive (backlog #10 — a
-/// multi-day migraine shows on each day it spans, not just its start day). An ongoing event (no
-/// end yet) or a malformed end-before-start covers only its start day. Days are built with
-/// constructor normalisation (`day + i`) rather than `.add(Duration(days: 1))` so a DST shift
-/// inside the span can't drift the date (the `cb6671c` bug class).
+/// Every local calendar day [e] covers — see [daysCovered], which Analytics' monthly migraine-day
+/// counts share (backlog #17) so the two can't disagree.
 @visibleForTesting
-List<DateTime> localDaysSpanned(MigraineEvent e) {
-  final s = e.startedWall;
-  final start = DateTime(s.year, s.month, s.day);
-  final end = e.endedWall;
-  if (end == null) return [start];
-  final endDay = DateTime(end.year, end.month, end.day);
-  if (endDay.isBefore(start)) return [start];
-  final out = <DateTime>[];
-  for (var i = 0; ; i++) {
-    final d = DateTime(start.year, start.month, start.day + i);
-    if (d.isAfter(endDay)) break;
-    out.add(d);
-  }
-  return out;
-}
+List<DateTime> localDaysSpanned(MigraineEvent e) =>
+    daysCovered(e.startedAt, e.startedAtOffsetMin, e.endedAt, e.endedAtOffsetMin);
 
 String _dayKey(DateTime localDay) =>
     '${DateFormat('yyyy-MM').format(localDay)}-${localDay.day}';

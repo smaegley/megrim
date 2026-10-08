@@ -245,12 +245,36 @@ ReportContent buildReportContent({
     ReportStat(
         'Avg interval', s.avgIntervalDays != null ? '${s.avgIntervalDays}d' : '-'),
     ReportStat('Per year', '${s.eventsPerYear}'),
+    // Backlog #17: days, not entries — the figure a clinician asks for first.
+    ReportStat('Migraine days, last 30 d', '${dash.migraineDaysLast30}'),
   ];
 
   List<ReportBar> bars(List<LabeledCount> l) =>
       [for (final c in l) ReportBar(clean(c.label), c.count)];
 
+  // Last 12 months of migraine days (backlog #17), the current month marked as unfinished.
+  final recentMonths = dash.migraineDaysByMonth.length > 12
+      ? dash.migraineDaysByMonth.sublist(dash.migraineDaysByMonth.length - 12)
+      : dash.migraineDaysByMonth;
+  final thisMonth = DateTime(now.year, now.month);
+  final monthLabel = DateFormat('MMM yyyy');
+
   final charts = <ReportChart>[
+    if (recentMonths.isNotEmpty)
+      ReportChart(
+        title: 'Migraine days per month',
+        note: 'Days with a migraine, not entries; a multi-day migraine counts each day. '
+            '${dash.avgMigraineDaysLast3Months == null ? '' : 'Average over the last 3 complete months: ${dash.avgMigraineDaysLast3Months}. '}'
+            '* month in progress.',
+        bars: [
+          for (final m in recentMonths)
+            ReportBar(
+              '${monthLabel.format(DateTime(m.year, m.month))}'
+              '${DateTime(m.year, m.month) == thisMonth ? ' *' : ''}',
+              m.days,
+            ),
+        ],
+      ),
     if (dash.byYear.isNotEmpty)
       ReportChart(
         title: 'By year',

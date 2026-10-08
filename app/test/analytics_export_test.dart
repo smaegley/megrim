@@ -71,9 +71,12 @@ void main() {
   // reference is defined under UTC; the Denver CI run skips it. Regenerate deliberately with
   // `MEGRIM_WRITE_GOLDEN=1 TZ=UTC flutter test test/analytics_export_test.dart`.
   final isUtc = DateTime.now().timeZoneOffset == Duration.zero;
+  // The monthly migraine-day figures (backlog #17) depend on "today", so the reference is
+  // computed as of a fixed date rather than whenever the test happens to run.
+  final referenceNow = DateTime.utc(2026, 10, 8, 12);
   test('matches the checked-in reference (test/fixtures/sample-data.analytics.json)', () async {
     final file = File('test/fixtures/sample-data.analytics.json');
-    final actual = stable(await repo.analyticsForExport());
+    final actual = stable(await repo.analyticsForExport(now: referenceNow));
     final pretty = const JsonEncoder.withIndent('  ').convert(actual);
     if (Platform.environment['MEGRIM_WRITE_GOLDEN'] == '1') {
       file.writeAsStringSync('$pretty\n');

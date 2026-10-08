@@ -9,6 +9,7 @@ import '../legal.dart';
 import '../repositories/megrim_repository.dart';
 import '../services/connectivity_monitor.dart';
 import '../widgets/days_since_card.dart';
+import '../widgets/monthly_days_card.dart';
 import '../widgets/severity_badge.dart' show onStatusColor;
 
 /// x-axis glyphs for the moon-phase chart — icons in place of text labels (review item #6).
@@ -203,6 +204,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 DaysSinceCard(summary: dash.summary),
                 const SizedBox(height: 16),
                 _summaryCard(dash.summary),
+                const SizedBox(height: 16),
+                // Backlog #17: right after Summary — the headline clinical number.
+                MonthlyDaysCard(dash: dash),
                 const SizedBox(height: 16),
                 _CorrelationsCard(corr: corr, weatherEnabled: weatherOn),
                 const SizedBox(height: 16),

@@ -21,6 +21,30 @@ that every week contains a Monday; that's what the second kind is for.
 **2. Top Suspected Factors** is the only place Megrim does real statistics, and it works like
 this.
 
+## Migraine days per month
+
+The **Migraine days per month** card counts *days*, not entries: the number neurologists use to
+track how often migraines happen and whether a preventive treatment is working.
+
+- A **migraine day** is a calendar day covered by at least one logged migraine. Two entries on
+  the same day count once. A migraine that runs from Friday into Sunday counts three days: each
+  day from its start date to its end date. This is the same rule the History calendar uses.
+- Each entry's days are read **in the time zone it was logged in**, so a migraine logged while
+  travelling stays on the day it happened there.
+- A migraine with **no end time yet** counts only its start day, so an entry you forgot to end
+  doesn't inflate a month.
+- **Last 30 days** is today and the 29 days before it.
+- **Avg/month, last 3 months** is the average over the three most recent *complete* calendar
+  months; the current month is left out because it isn't over. It stays blank until three
+  complete months have passed since your first entry, so months before you started logging
+  can't pull the average down.
+- The chart shows every month from your first entry to now, **including months with no
+  migraines**, because a migraine-free month is information too. The current month is marked
+  as still in progress.
+
+Like the other charts, this is a count of what you logged. A month with no entries could be a
+month without migraines or a month you didn't log; the app can't tell the two apart.
+
 ## How Suspected Factors are calculated
 
 **Migraine-days.** The unit of analysis is a *day*, not an entry. Every calendar day inside your
