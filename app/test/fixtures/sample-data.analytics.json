@@ -35,6 +35,146 @@
         "avg_severity": 6.3
       }
     ],
+    "migraine_days_last_30": 0,
+    "migraine_days_avg_last_3_months": 0.0,
+    "migraine_days_by_month": [
+      {
+        "month": "2024-01",
+        "days": 5
+      },
+      {
+        "month": "2024-02",
+        "days": 3
+      },
+      {
+        "month": "2024-03",
+        "days": 3
+      },
+      {
+        "month": "2024-04",
+        "days": 0
+      },
+      {
+        "month": "2024-05",
+        "days": 2
+      },
+      {
+        "month": "2024-06",
+        "days": 2
+      },
+      {
+        "month": "2024-07",
+        "days": 6
+      },
+      {
+        "month": "2024-08",
+        "days": 0
+      },
+      {
+        "month": "2024-09",
+        "days": 4
+      },
+      {
+        "month": "2024-10",
+        "days": 1
+      },
+      {
+        "month": "2024-11",
+        "days": 3
+      },
+      {
+        "month": "2024-12",
+        "days": 5
+      },
+      {
+        "month": "2025-01",
+        "days": 1
+      },
+      {
+        "month": "2025-02",
+        "days": 0
+      },
+      {
+        "month": "2025-03",
+        "days": 1
+      },
+      {
+        "month": "2025-04",
+        "days": 3
+      },
+      {
+        "month": "2025-05",
+        "days": 2
+      },
+      {
+        "month": "2025-06",
+        "days": 4
+      },
+      {
+        "month": "2025-07",
+        "days": 4
+      },
+      {
+        "month": "2025-08",
+        "days": 7
+      },
+      {
+        "month": "2025-09",
+        "days": 1
+      },
+      {
+        "month": "2025-10",
+        "days": 3
+      },
+      {
+        "month": "2025-11",
+        "days": 3
+      },
+      {
+        "month": "2025-12",
+        "days": 0
+      },
+      {
+        "month": "2026-01",
+        "days": 4
+      },
+      {
+        "month": "2026-02",
+        "days": 2
+      },
+      {
+        "month": "2026-03",
+        "days": 1
+      },
+      {
+        "month": "2026-04",
+        "days": 1
+      },
+      {
+        "month": "2026-05",
+        "days": 1
+      },
+      {
+        "month": "2026-06",
+        "days": 1
+      },
+      {
+        "month": "2026-07",
+        "days": 0
+      },
+      {
+        "month": "2026-08",
+        "days": 0
+      },
+      {
+        "month": "2026-09",
+        "days": 0
+      },
+      {
+        "month": "2026-10",
+        "days": 0
+      }
+    ],
     "by_day_of_week": [
       {
         "label": "Mon",

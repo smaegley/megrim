@@ -33,6 +33,12 @@ Map<String, dynamic> dashboardToJson(DashboardResult d) => {
         for (final y in d.byYear)
           {'year': y.year, 'count': y.count, 'avg_severity': y.avgSeverity},
       ],
+      // Backlog #17: distinct migraine days, not events (see docs/METHODS.md).
+      'migraine_days_last_30': d.migraineDaysLast30,
+      'migraine_days_avg_last_3_months': d.avgMigraineDaysLast3Months,
+      'migraine_days_by_month': [
+        for (final m in d.migraineDaysByMonth) {'month': m.key, 'days': m.days},
+      ],
       'by_day_of_week': d.byDayOfWeek.map(_labeled).toList(),
       'by_time_of_day': d.byTimeOfDay.map(_labeled).toList(),
       'by_season': d.bySeason.map(_labeled).toList(),
