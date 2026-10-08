@@ -5,6 +5,52 @@ _Last updated: 2026-10-08: v1.0.7 released on Android (GitHub; F-Droid to follow
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
 
+## Next steps (as of 2026-10-08)
+
+**Finish the 1.0.7 release**
+1. **iOS 1.0.7 (13) is in App Review** (submitted 2026-10-08). Record the approval here when it
+   comes. If not yet done, check on a real iPhone via TestFlight: app lock's Face ID prompt (H1),
+   the blank app-switcher card with "Hide in recent apps" on (H2), and the "Log migraine" shortcut.
+   Scripts: `.claude/test-app-lock.md` Part H, `.claude/test-app-shortcut.md` Part E.
+2. **F-Droid**: the bot should pick up `v1.0.7` by itself; expect it served in about a week. Check
+   with the `curl` commands under *Done: F-Droid inclusion* below.
+
+**Next task: refresh the store screenshots** (they predate the PDF report, app lock and the
+migraine-days card; App Store "creative assets" were skipped for now).
+- Proposed shot list, about 8, same screens on both stores: (1) Log with the days-since card;
+  (2) **Migraine days per month** card; (3) Top Suspected Factors; (4) History calendar with a
+  multi-day migraine; (5) entry detail (triggers, medications, enrichment); (6) PDF report page 1;
+  (7) Settings › Privacy (app lock); (8) Analytics in dark mode.
+- **Decisions for Steve before a capture script is written:** (a) both stores or one first (App
+  Store needs iPhone sizes, 6.9" primary; F-Droid uses
+  `fastlane/metadata/android/en-US/images/phoneScreenshots/NN-name.png`, filename order = carousel
+  order); (b) keep the sample data with the New York decoy home location; (c) plain screenshots, or
+  a short caption above each.
+- Then: a capture script in the test-script format (data setup, screen and scroll position per
+  shot, emulator/Simulator commands at the right size).
+
+**Backlog still open** (details in `docs/BACKLOG.md`)
+- **#16** "No migraine today" check-ins: the biggest analytics improvement (a real baseline for
+  self-reported triggers); medium–large.
+- **#18** Acute-medication days and a medication-overuse notice (ICHD-3 thresholds; wording needs
+  review); medium.
+- **#19** Preventive medications and non-drug relief; **#20** symptoms; **#21** opt-in menstrual
+  cycle log; **#22** impact on the day (questionnaire licensing to check first).
+  #16 and #18–#22 all need schema v4: batch them into one release.
+- **#23 steps 2–3**: a home-screen widget (Android about half a day; iOS 1–2 days, needs the Mac)
+  and an iOS Live Activity. Steve chose the shortcut only for now.
+- **#15** remembering the export location / automatic backups: still deferred.
+
+**Housekeeping (optional)**
+- The erased commit `a056b55` (a personal export committed by mistake, removed from history
+  2026-10-08) can still be fetched from GitHub by its exact id until GitHub's own cleanup; GitHub
+  Support can purge it on request. Steve judged this not worth doing.
+- Merged branches still on GitHub (`feat/app-lock`, `fix/android-backup`,
+  `feat/monthly-migraine-days`, `fix/factor-onset-days`, `feat/app-shortcut`,
+  `docs/readme-refresh`, `chore/release-1.0.7` if pushed) can be deleted whenever convenient.
+- `tools/report.html` is a community contribution marked as unmaintained in `docs/REPORT.md`; no
+  action planned.
+
 ## `v1.0.7` (versionCode 12, tagged 2026-10-08)
 
 Android: **released 2026-10-08** (`release.yml` green, APK/AAB published, not draft/prerelease;
