@@ -6,8 +6,9 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 
 > **Status (2026-10-07):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
 > record. #13 shipped in `v1.0.5`; #12 and #14 shipped in `v1.0.6`. **#15 is DEFERRED.**
-> **#16–#23 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features* below);
-> **#24 (app lock) is DONE**, merged to `main` 2026-10-07, unreleased.
+> **#16 and #18–#23 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features*
+> below); **#17 (monthly migraine days) and #24 (app lock) are DONE**, merged 2026-10-08 and
+> 2026-10-07, unreleased.
 > Add new items as they come up.
 
 ## UI / UX
@@ -398,7 +399,7 @@ tracked window; a fixture dataset in `test/fixtures/datasets/` where a trigger i
 migraine days and absent on clear days, asserting it surfaces, plus one where it's equally common
 on both and must not.
 
-### 17. Monthly migraine days and their trend — **BUILT** *(2026-10-08, on `feat/monthly-migraine-days`, awaiting Steve's test)*
+### 17. Monthly migraine days and their trend — **DONE** *(merged 2026-10-08, unreleased)*
 
 **Want:** a "migraine days per month" bar chart on Analytics (last 12 months, scrollable back to
 the first entry), a "last 30 days" stat tile, and the same chart in the PDF report (backlog #12).
