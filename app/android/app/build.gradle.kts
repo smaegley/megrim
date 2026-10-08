@@ -27,11 +27,6 @@ android {
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
-    // resValue (the shortcut's target package below) is off by default in AGP 8+.
-    buildFeatures {
-        resValues = true
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -45,9 +40,6 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        // The app-icon shortcut (res/xml/shortcuts.xml) must name its target package; it reads
-        // this, so the debug build's shortcut opens Megrim dev rather than the store app.
-        resValue("string", "shortcut_target_package", "org.maegley.megrim")
     }
 
     signingConfigs {
@@ -70,7 +62,6 @@ android {
             // apps to Android; the label keeps them apart on the home screen.
             applicationIdSuffix = ".debug"
             manifestPlaceholders["appLabel"] = "Megrim dev"
-            resValue("string", "shortcut_target_package", "org.maegley.megrim.debug")
         }
         release {
             manifestPlaceholders["appLabel"] = "Megrim"

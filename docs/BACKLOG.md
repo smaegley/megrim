@@ -605,7 +605,8 @@ ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others pus
   an accidental one); with one in progress it just shows it; with app lock on it waits for the
   unlock; during onboarding it's dropped. It is acted on only once the app is in the foreground,
   after app lock has had the chance to re-lock. No new permission. Debug builds target Megrim dev
-  via a per-build-type `resValue`. "No migraine today" waits for backlog #16. Steve chose the
+  via a debug-only copy of `shortcuts.xml` (the target package must be a literal; a `resValue`
+  reference isn't resolved there, which left the dev shortcut showing "App isn't installed"). "No migraine today" waits for backlog #16. Steve chose the
   shortcut only for now; the widget (2) is about another half day on Android, iOS 1–2 days.
 - (2) `home_widget` with a native Android `AppWidgetProvider` and an iOS WidgetKit extension.
   Buttons deep-link into the app rather than writing the database from the widget process —
