@@ -4,6 +4,12 @@
 `megrim-export` v1 JSON file into a clean, printable report you can hand to a clinician or
 specialist — through an upload portal, on a USB stick, or on a laptop with no internet at all.
 
+Since v1.0.6 the app can also make a PDF report itself (Settings › Export report (PDF)), and that
+is the supported way to make a report. This page is a **community contribution**
+([PR #11](https://github.com/smaegley/megrim/pull/11), nfd9001) for working from an export file
+instead, for example on a computer. It is kept in the repo as contributed and isn't maintained
+alongside the app, so it may lag behind changes to the app's analytics (see the notes below).
+
 ## Privacy model
 
 The page makes **zero network requests** and **stores nothing**: no CDN scripts, no web fonts,
@@ -34,14 +40,15 @@ migraine-days, study window, Haldane–Anscombe correction, the same buckets and
   duration histogram, sleep and stress summaries, self-reported trigger/food/head-location
   tallies
 - Medication table with helped / didn't-help / unknown outcomes
-- **Suspected factors**: odds ratios over migraine-days, computed exactly like the app
-  (`correlations.dart`: ≥3 migraine-days per bucket, OR > 1, strongest 8 shown) — with the same
-  read-this-first caveats
+- **Suspected factors**: odds ratios over migraine-days, with the app's display rules
+  (`correlations.dart`: ≥3 migraine-days per bucket, OR > 1, strongest 8 shown) and the same
+  read-this-first caveats. From an export that carries the `analytics` block these are the app's
+  own figures; otherwise the page computes them (see the note on migraine-days below)
 - Full event log, newest first
 
 ## Notes
 
-- **App-computed figures when available.** Exports from app v1.0.4 embed an `analytics` block
+- **App-computed figures when available.** Exports from app v1.0.4 on embed an `analytics` block
   — the exact numbers the app's Analytics tab computed at export time, including the pressure
   factor and the timezone they were computed in. This page formats that block directly and the
   masthead says so; its own compute path is only a fallback for older exports and external
@@ -57,8 +64,13 @@ migraine-days, study window, Haldane–Anscombe correction, the same buckets and
   per-event `geo_lat`/`geo_lon`) — so daylight buckets match the app exactly, and external
   imports that omit the `derived` block work too. A latitude is needed for
   moon/daylight/season buckets.
-- Migraine-day semantics match the app exactly (`correlations.dart`): each event contributes
-  one migraine-day — its local start date — and multi-day migraines count once, not for their
-  full span. Migraine rates are rounded to two decimals like the app.
+- Migraine-days: each event contributes one migraine-day, its local start date, and multi-day
+  migraines count once, not for their full span, as in the app. Migraine rates are rounded to two
+  decimals like the app. **One difference (2026-10):** from the release after v1.0.6 the app also
+  leaves the days in the middle of a multi-day migraine out of the comparison
+  (`excluded_mid_attack_days`); this page's own compute path doesn't yet, so its fallback figures
+  can differ slightly from the app's. Exports that carry the `analytics` block are unaffected,
+  because the page shows the block's figures. The page also doesn't yet show the new
+  `migraine_days_*` fields (migraine days per month).
 - Malformed input produces a warning banner rather than a broken page; unreadable events are
   skipped and listed.

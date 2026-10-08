@@ -1,16 +1,46 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-05: v1.0.6 released on Android and submitted to App Review; v1.0.5 live on all three channels._
+_Last updated: 2026-10-08: v1.0.6 live on Android and iOS (iOS build 12 approved 2026-10-06); the next release's features are all merged on `main`, unreleased._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
+
+## Next release: merged on `main`, unreleased (2026-10-08)
+
+Everything below is tested and merged; no version number or tag yet (1.0.7 would be next). Each
+item had a manual test script on the emulator (and a real phone where native code changed), all
+passed.
+
+- **Android backup actually includes the diary.** The database is `app_flutter/megrim.sqlite`
+  (path_provider's documents directory), which only the `root` backup domain covers; the API 31+
+  rules listed only database/sharedpref/file, so Android 12+ Google backup and device transfer
+  carried no events. Now `root` + `app_flutter/megrim.sqlite` (the file only: the whole folder
+  includes debug `flutter_assets/` and exceeded the 25 MB quota). Verified with a `bmgr` backup →
+  uninstall → restore on the emulator.
+- **App lock (backlog #24).** Settings › Privacy: the phone's own fingerprint/face/PIN via
+  `local_auth`, "Lock after" (immediately/1/5/15 min, default 1), and "Hide in recent apps"
+  (Android `FLAG_SECURE`, iOS blank overlay). **Adds `USE_BIOMETRIC` and `USE_FINGERPRINT`**
+  (install-time, no prompt); PRIVACY and the F-Droid description updated. `MainActivity` is now a
+  `FlutterFragmentActivity`. iOS checks (Face ID prompt, switcher) still to do in TestFlight.
+  Encryption at rest was reviewed and is **not planned**.
+- **Migraine days per month (backlog #17)** on Analytics (after Summary) and in the PDF report:
+  last 30 days, average over the last 3 complete months, a bar per month since the first entry.
+  Export gains `migraine_days_*`.
+- **Suspected Factors corrections.** Migraine-days are onset days, and days 2+ of a multi-day
+  migraine leave the comparison (`excluded_mid_attack_days` in the export). The pressure factor
+  now reads both sides from the cached daily-mean series (it compared hourly onset deltas with a
+  daily-mean baseline, which inflated the extreme buckets: OR 41 → 0.6 on the sample data). Users'
+  odds ratios will change; say so in the release notes. Rationale in `docs/METHODS.md`.
+- **"Log migraine" app-icon shortcut (backlog #23 step 1)**, Android and iOS (iOS checked in the
+  Simulator). No plugin, no permission.
 
 ## Shipped: iOS App Store (2026-09)
 
 **APPROVED and LIVE** —
 [Megrim: Migraine Diary](https://apps.apple.com/us/app/megrim-migraine-diary/id6808385548)
 (Apple ID `6808385548`), approved the week of 2026-09-07 after one Guideline 2.1
-information-request round (details below). US storefront only, free. **Current store build: 1.0.5 (11),
+information-request round (details below). US storefront only, free. **Current store build: 1.0.6 (12),
+approved 2026-10-06** (submitted 2026-10-05). Previous: **1.0.5 (11),
 approved and released 2026-09-30** (submitted 2026-09-29 — about a day in review). Previous: **1.0.4 (10),
 approved and released 2026-09-27** (submitted 2026-09-22 — a bug-fix update to an approved app, no
 questions asked). Previous: **1.0.3 (9),
@@ -23,8 +53,9 @@ the direct link is the fix; README now carries the store link so web search pick
 ## The submission trail (2026-09-03)
 
 **Megrim is now a two-platform Flutter app.** The iOS port (`app/ios/`, merged same day it was
-scaffolded) runs the identical Dart codebase; the only iOS-specific code is the iPadOS share-sheet
-anchor. Build **1.0.2 (8)** was submitted to App Review 2026-09-03 5:52 PM (submission ID
+scaffolded) runs the identical Dart codebase; at the time the only iOS-specific code was the
+iPadOS share-sheet anchor (since then: the app-lock blank overlay and Face ID string, and the
+app-icon shortcut handler in `AppDelegate.swift`, all on `main`). Build **1.0.2 (8)** was submitted to App Review 2026-09-03 5:52 PM (submission ID
 `ed4d3f5e-d1d3-4f5a-bf36-d06655246296`). First response (2026-09-05) was a **Guideline 2.1
 "Information Needed"** hold — the standard new-developer questionnaire, not an app rejection.
 Replied 2026-09-06 14:05 with the six written answers (kept below in `docs/APP_STORE.md`) plus a
@@ -60,14 +91,15 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 | Latest release | **`v1.0.6`** (versionCode 11, tagged 2026-10-05), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.6); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`) with the permission list unchanged. Contents: the in-app PDF report (backlog #12) and the opt-in backup reminder (#14). No schema change. Previous: **`v1.0.5`** (versionCode 10, tagged 2026-09-29), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.5); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
 | Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
-| Permissions | `INTERNET` only (plus `ACCESS_NETWORK_STATE` from connectivity_plus). No location permission at all |
-| Verification bar | `flutter analyze` clean, **239 tests** green under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
+| Permissions | Released (v1.0.6): `INTERNET` and `ACCESS_NETWORK_STATE` (connectivity_plus). On `main`: also `USE_BIOMETRIC` and `USE_FINGERPRINT` (local_auth / androidx.biometric, for the optional app lock). No location permission at all |
+| Verification bar | `flutter analyze` clean, **312 tests** green (on `main`, 2026-10-08) under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
 
 Everything in the original spec is implemented, plus the accessibility pass, documented import
 format, and the opt-in privacy work below. `docs/BACKLOG.md` is closed out apart from **#15,
 remembering the export location / automatic backups** — deferred, because `file_picker` discards
-the real save destination and the automatic half would cost permissions beyond `INTERNET`.
-**#12 (in-app PDF report) and #14 (backup reminder) are merged on `main`, unreleased.**
+the real save destination and the automatic half would need background-work permissions.
+#12 (in-app PDF report) and #14 (backup reminder) shipped in v1.0.6. The 2026-10 competitor review
+added #16–#24; #17, #23 step 1 and #24 are done (see *Next release* above), the rest proposed.
 
 ## Community: first outside issues and PRs (2026-09)
 
@@ -83,10 +115,11 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   Moving an entry's start now shifts its end by the same delta unless the end was edited, so a
   backdated past entry needs one date pick instead of two and existing entries keep their
   duration. First round had it snapping the end to the start (collapsed real entries to zero
-  duration); the author reworked it to the delta rule. Unreleased — goes out in the next patch.
+  duration); the author reworked it to the delta rule. Shipped in v1.0.4.
 - **[Issue #15](https://github.com/smaegley/megrim/issues/15) (zatteo)** — show the 3 most recent
   distinct past-entry locations in the Recorded-location dialog, hidden once the user types.
-  Assessed as ~150 lines + tests, no schema/permission change; the author was invited to PR it.
+  Assessed as ~150 lines + tests, no schema/permission change; the author sent PR #18, merged and
+  shipped in v1.0.5 (below).
 - **[PR #11](https://github.com/smaegley/megrim/pull/11) (nfd9001)** adds a model-written offline
   HTML report (`tools/report.html`). Review posted 2026-09-19 requesting changes: its factor
   analysis counts every day a migraine spans as a migraine-day where the app counts start days only
@@ -102,7 +135,7 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   ([#16](https://github.com/smaegley/megrim/issues/16) — **built and MERGED 2026-09-20**, `54812ab`, Steve verified
   export → re-import and an older file's import on his Pixel; ships in v1.0.4; renderers see `docs/IMPORT.md`
   "The analytics block" and the reference `app/test/fixtures/sample-data.analytics.json`);
-  an in-app PDF report is a v1.1 candidate.
+  the in-app PDF report followed in v1.0.6 (backlog #12).
 - **Dev safety:** debug builds now install as a separate app (`org.maegley.megrim.debug`, "Megrim
   dev"). Running a branch on a phone that carried the F-Droid build used to make the Flutter tool
   uninstall it, data included.
@@ -124,7 +157,7 @@ Two issues and two pull requests arrived from F-Droid users in mid-September.
   factor.
 - **Release plan:** v1.0.6 = backlog #12 + #14; no schema change. **Android released 2026-10-05**
   (`release.yml` green, APK/AAB published, signature and permissions verified); **iOS build 12
-  submitted to App Review 2026-10-05.** The generated-changelog CI check ran green on its first
+  submitted to App Review 2026-10-05, APPROVED 2026-10-06.** The generated-changelog CI check ran green on its first
   real release. Note the APK grows ~22 → 23.5 MB
   (arm64) for the report's bundled fonts — quote the per-ABI figure, not the universal APK, whose
   jump is three ABIs of the same code. Previously: v1.0.5 = PR #18 + backlog #13. **Android released 2026-09-29** (`release.yml`
@@ -290,6 +323,11 @@ please keep that precision if editing the privacy copy.
   would need enrichment to treat location-less events as complete rather than errored. Not built;
   a privacy-minded user can enter deliberately vague coordinates today.
 - **Reproducible builds: declined**, permanently, per the review. F-Droid signs its own builds.
+- **Encryption at rest: reviewed 2026-10-07, not planned.** The phones already encrypt app
+  storage; app lock covers someone holding an unlocked phone. Reasoning in `docs/BACKLOG.md` #24.
+- **`tools/report.html` no longer computes exactly like the app when it has to compute.** Since
+  the onset-day and daily-pressure changes, only its block-first path (reading an export's
+  `analytics` block) matches; its own fallback still counts the old way. See `docs/REPORT.md`.
 - Minification is on, so a plugin-level regression would only show in a release build. Smoke-test
   file picker, share sheet, save-to-file, the external links, and Analytics online/offline before
   each release.
@@ -302,6 +340,6 @@ please keep that precision if editing the privacy copy.
   `fastlane/metadata/android/en-US/images/phoneScreenshots/`, `NN-description.png`, filename order
   is carousel order. Currently 10: 01–08 light (incl. the new Settings and weather opt-in steps)
   and 09–10 dark. They use a **New York decoy** home location on purpose.
-- Changelogs are `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`. Each release
-  needs the plain code (`6.txt`) **and** the per-ABI copies (`61.txt`, `62.txt`, `63.txt`), since
-  F-Droid looks them up by the split versionCodes.
+- Changelogs: write `docs/release-notes/<version>.txt` and run `tools/sync_changelogs.py`, which
+  generates the per-ABI files F-Droid reads (see *Done: F-Droid inclusion* above). Don't hand-write
+  files under `fastlane/.../changelogs/`.

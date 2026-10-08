@@ -22,3 +22,11 @@ app/.flutter-plugins-dependencies
 *.iml
 .idea/
 .vscode/
+
+# Personal diary data: Megrim exports and converted tracker histories must never be committed
+# (a real one reached the public repo on 2026-10-08 and had to be erased from history).
+# Test fixtures live under app/test/fixtures/ with their own names and are not matched.
+megrim-export-*.json
+megrim-export-*.csv
+megrim-report-*.pdf
+megrim-from-tracker*.json

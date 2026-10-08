@@ -1,5 +1,12 @@
 # Submitting Megrim to F-Droid
 
+> **Historical (2026-10-08).** This was the pre-submission playbook. Megrim was **accepted into
+> F-Droid on 2026-08-23** ([fdroiddata!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692)).
+> The canonical recipe now lives in `fdroiddata`, and F-Droid's bot updates it for each `v*` tag,
+> so the copy in [`metadata/`](metadata/) is a reference that will drift. Reproducible builds were
+> declined; F-Droid signs with its own key. The listing now has 10 screenshots. For how releases
+> reach F-Droid today, see *Done: F-Droid inclusion* in [`docs/STATUS.md`](../docs/STATUS.md).
+
 This folder is **tooling, not shipped in the app** — it has nothing to do with the Flutter build.
 It holds the draft F-Droid build recipe and the steps to get Megrim into the F-Droid catalogue.
 

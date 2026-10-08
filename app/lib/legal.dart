@@ -10,12 +10,13 @@ const String kMedicalDisclaimer =
 
 const String kPrivacySummary =
     'All data stays on your device. We operate no servers and collect nothing — '
-    'no accounts, no analytics, no identifiers, no crash reporting. The app\'s '
-    'only network traffic is to Open-Meteo.com to fetch weather for the '
-    'approximate (~1 km rounded) location and date of entries you create. '
-    'Backups use standard Android device backup to your own Google account, '
-    'which you control in Android settings; manual export files go wherever you '
-    'choose to save them.';
+    'no accounts, no analytics, no identifiers, no crash reporting. Weather '
+    'enrichment is off unless you turn it on; then the app\'s only automatic '
+    'network traffic is to Open-Meteo.com, to fetch weather for the approximate '
+    '(~1 km rounded) location and date of entries you create. Backups use your '
+    'phone\'s own backup (Google on Android, iCloud or your computer on iPhone), '
+    'which you control in its settings; export files go wherever you choose to '
+    'save them.';
 
 /// Caveats shown verbatim on the correlations card (SPEC §9 / §6.2).
 const List<String> kCorrelationCaveats = [
@@ -47,7 +48,7 @@ const String kShortDescription =
     'Private, offline migraine log with automatic on-device pattern insights.';
 const String kFullDescription =
     'Megrim is an open-source, offline-first migraine diary that helps you find '
-    'your personal triggers. The app automatically adds local weather, '
-    'barometric pressure, and time-of-day context to your entries, calculating '
-    'correlations entirely on your phone. With no accounts, no cloud servers, and '
+    'your personal triggers. The app automatically adds time-of-day, season, '
+    'daylight and moon context to your entries (and, if you opt in, local weather '
+    'and barometric pressure), calculating correlations entirely on your phone. With no accounts, no cloud servers, and '
     'zero tracking, your health data stays completely private and under your control.';
