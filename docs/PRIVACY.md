@@ -56,7 +56,7 @@ for your doctor.
 Your phone's own backup applies, to an account you control:
 
 - **Android:** standard device backup to *your* Google account, controlled in Android settings.
-  It includes Megrim's diary (from the release after v1.0.6; before that, Android 12 and later
+  It includes Megrim's diary (from v1.0.7; before that, Android 12 and later
   backed up Megrim's settings but not its database).
 - **iPhone:** iCloud Backup, or a backup to your computer, as you've set it up in iOS settings.
   Megrim's diary is included like other app data.

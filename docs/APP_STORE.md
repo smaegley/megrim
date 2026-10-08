@@ -93,7 +93,7 @@ with enrichment, Settings/export.
 - Weather enrichment is opt-in; sole network endpoint is api.open-meteo.com (documented in
   docs/PRIVACY.md).
 - Face ID (and the device passcode) is used only for the optional app lock in Settings › Privacy
-  (from the release after 1.0.6); it's off by default, and the app never sees biometric data
+  (from 1.0.7); it's off by default, and the app never sees biometric data
   (`NSFaceIDUsageDescription` explains this).
 - A "Log migraine" Home Screen quick action (long-press the icon) starts logging; it waits for the
   unlock if app lock is on.

@@ -1,14 +1,15 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-08: v1.0.6 live on Android and iOS (iOS build 12 approved 2026-10-06); the next release's features are all merged on `main`, unreleased._
+_Last updated: 2026-10-08: v1.0.7 tagged for Android (iOS to follow); v1.0.6 live on Android and iOS (iOS build 12 approved 2026-10-06)._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
 
-## Next release: merged on `main`, unreleased (2026-10-08)
+## `v1.0.7` (versionCode 12, tagged 2026-10-08)
 
-Everything below is tested and merged; no version number or tag yet (1.0.7 would be next). Each
-item had a manual test script on the emulator (and a real phone where native code changed), all
+Android: tagged 2026-10-08; F-Droid follows by itself. iOS: build to be archived and submitted by
+Steve, with app lock's TestFlight checks (Face ID prompt, blank switcher card). Each item below
+had a manual test script on the emulator (and a real phone where native code changed), all
 passed.
 
 - **Android backup actually includes the diary.** The database is `app_flutter/megrim.sqlite`
@@ -88,10 +89,10 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 
 | | |
 |---|---|
-| Latest release | **`v1.0.6`** (versionCode 11, tagged 2026-10-05), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.6); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`) with the permission list unchanged. Contents: the in-app PDF report (backlog #12) and the opt-in backup reminder (#14). No schema change. Previous: **`v1.0.5`** (versionCode 10, tagged 2026-09-29), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.5); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
+| Latest release | **`v1.0.7`** (versionCode 12, tagged 2026-10-08): app lock, migraine days per month, the "Log migraine" shortcut, the Android backup fix and the Suspected Factors corrections (see the section above); no schema change. Previous: **`v1.0.6`** (versionCode 11, tagged 2026-10-05), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.6); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`) with the permission list unchanged. Contents: the in-app PDF report (backlog #12) and the opt-in backup reminder (#14). No schema change. Previous: **`v1.0.5`** (versionCode 10, tagged 2026-09-29), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.5); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
 | Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
-| Permissions | Released (v1.0.6): `INTERNET` and `ACCESS_NETWORK_STATE` (connectivity_plus). On `main`: also `USE_BIOMETRIC` and `USE_FINGERPRINT` (local_auth / androidx.biometric, for the optional app lock). No location permission at all |
+| Permissions | `INTERNET`, `ACCESS_NETWORK_STATE` (connectivity_plus), and since v1.0.7 `USE_BIOMETRIC` + `USE_FINGERPRINT` (local_auth / androidx.biometric, for the optional app lock; install-time, no prompt). No location permission at all |
 | Verification bar | `flutter analyze` clean, **312 tests** green (on `main`, 2026-10-08) under both UTC and `TZ=America/Denver`, release APK builds. Release builds are minified (R8), so on-device checks should use the release APK, not a debug build |
 
 Everything in the original spec is implemented, plus the accessibility pass, documented import
@@ -99,7 +100,7 @@ format, and the opt-in privacy work below. `docs/BACKLOG.md` is closed out apart
 remembering the export location / automatic backups** — deferred, because `file_picker` discards
 the real save destination and the automatic half would need background-work permissions.
 #12 (in-app PDF report) and #14 (backup reminder) shipped in v1.0.6. The 2026-10 competitor review
-added #16–#24; #17, #23 step 1 and #24 are done (see *Next release* above), the rest proposed.
+added #16–#24; #17, #23 step 1 and #24 are done (shipped in v1.0.7, above), the rest proposed.
 
 ## Community: first outside issues and PRs (2026-09)
 

@@ -8,7 +8,7 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 > record. #13 shipped in `v1.0.5`; #12 and #14 shipped in `v1.0.6`. **#15 is DEFERRED.**
 > **#16 and #18–#22 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features*
 > below); **#17 (monthly migraine days), #23 step (1) (app-icon shortcut) and #24 (app lock) are
-> DONE**, merged 2026-10-07/08, unreleased; #23 steps (2)–(3) remain proposed.
+> DONE**, shipped in `v1.0.7` (2026-10-08); #23 steps (2)–(3) remain proposed.
 > Add new items as they come up.
 
 ## UI / UX
@@ -399,7 +399,7 @@ tracked window; a fixture dataset in `test/fixtures/datasets/` where a trigger i
 migraine days and absent on clear days, asserting it surfaces, plus one where it's equally common
 on both and must not.
 
-### 17. Monthly migraine days and their trend — **DONE** *(merged 2026-10-08, unreleased)*
+### 17. Monthly migraine days and their trend — **DONE** *(shipped in `v1.0.7`)*
 
 **Want:** a "migraine days per month" bar chart on Analytics (last 12 months, scrollable back to
 the first entry), a "last 30 days" stat tile, and the same chart in the PDF report (backlog #12).
@@ -586,7 +586,7 @@ needs no license and covers most of the value.
 **Verification:** migration + round-trip; monthly impact-day counting reuses backlog #17's day
 logic and tests.
 
-### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(merged 2026-10-08, unreleased; tested on Android and the iOS Simulator)*; (2)–(3) **PROPOSED**
+### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; (2)–(3) **PROPOSED**
 
 **Want:** start a migraine without navigating the app — in increasing cost: (1) long-press app
 icon → "Log migraine" / "No migraine today"; (2) a home-screen widget showing days since last
@@ -620,7 +620,7 @@ ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others pus
 **Verification:** widget/shortcut deep links covered by integration tests where possible;
 manual release-build smoke test on a real device (minification note in STATUS "Known gaps").
 
-### 24. App lock with the phone's own unlock, and hide from the app switcher — **DONE** *(merged 2026-10-07, unreleased; all Android tests passed, iOS to check in TestFlight)*
+### 24. App lock with the phone's own unlock, and hide from the app switcher — **DONE** *(shipped in `v1.0.7`; all Android tests passed, iOS to check in TestFlight)*
 
 **Want:** (a) an optional lock on open that uses **whatever unlock the phone already has** —
 fingerprint, face, or the device PIN/pattern/password; (b) the app's content blanked in the

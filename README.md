@@ -31,7 +31,8 @@ come before them.
 
 **Logging**
 - **One tap to start a migraine**, one to end it; an elapsed timer, severity slider and notes
-  while it's going, and **Discard** for an accidental tap.
+  while it's going, and **Discard** for an accidental tap. Or long-press the app icon and choose
+  **Log migraine**.
 - Full entry details: start and end (in the time zone you logged in), severity, head location,
   aura, medications with dose and whether each helped, suspected triggers (including "Travel"),
   sleep, stress, notable foods, notes, and the recorded location (your home, a recent place, a
@@ -46,6 +47,9 @@ come before them.
 **Analytics** (all computed on the device; see [`docs/METHODS.md`](docs/METHODS.md))
 - **Days since your last migraine**, coloured against your usual gap, and a summary (entries,
   years tracked, average severity, duration, interval, migraines per year).
+- **Migraine days per month**: the last 30 days, the average over the last 3 complete months, and
+  a bar for every month since your first entry, the measure neurologists use to judge frequency
+  and treatment.
 - **Top Suspected Factors**: odds ratios for day of week, month, season, moon phase, daylight
   hours and (with weather on) pressure change, with the caveats spelled out.
 - Descriptive charts by year, weekday, season, time of day, daylight, pressure change and moon
@@ -54,19 +58,22 @@ come before them.
 **Reports, export and backup**
 - **Export report (PDF)**: a printable summary for a clinician, built on the device.
 - Export to JSON (a full backup, including the computed analytics) or CSV; import JSON (merge or
-  replace).
+  replace). Your phone's own backup (Google on Android, iCloud or a computer on iPhone) includes
+  the diary too.
 - An optional **backup reminder** that shows when you last exported and can warn you after an
   interval you choose.
 
 **Privacy and accessibility**
+- Optional **app lock** (Settings › Privacy) with your phone's own fingerprint, face or PIN, so
+  there's no separate Megrim PIN to forget; it locks again after a time you choose. **Hide in
+  recent apps** blanks Megrim in the app switcher (on Android it also blocks screenshots).
 - Light and dark themes following the phone; tap targets, contrast and screen-reader labels
   checked by automated tests in both themes.
-- See also *Coming in the next release* below.
 
 ## Status
 
-**Latest release: [`v1.0.6`](https://github.com/smaegley/megrim/releases/tag/v1.0.6)**
-(2026-10-05). App id `org.maegley.megrim`.
+**Latest release: [`v1.0.7`](https://github.com/smaegley/megrim/releases/tag/v1.0.7)**
+(2026-10-08). App id `org.maegley.megrim`.
 
 - **F-Droid:** in the catalogue since 2026-08-23
   ([!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692)); new `v*` tags are
@@ -80,32 +87,21 @@ For a resume-here snapshot of the project (what is shipped, in flight, and known
 [`docs/STATUS.md`](docs/STATUS.md). The product definition is [`docs/SPEC.md`](docs/SPEC.md), and
 planned and proposed work is in [`docs/BACKLOG.md`](docs/BACKLOG.md).
 
-### Coming in the next release
-
-Merged on `main`, not yet released:
-
-- **App lock** (Settings › Privacy): opens with your phone's own fingerprint, face or PIN, and
-  locks again after a time you choose. There's no separate Megrim PIN to forget. **Hide in
-  recent apps** blanks Megrim in the app switcher (on Android it also blocks screenshots). On
-  Android this adds the `USE_BIOMETRIC` and `USE_FINGERPRINT` permissions, both granted at
-  install with no prompt and unused unless app lock is on.
-- **Migraine days per month** on Analytics and in the PDF report: the last 30 days, the average
-  over the last 3 complete months, and a bar for every month since your first entry, the measure
-  neurologists use to judge frequency and treatment.
-- **A "Log migraine" shortcut**: long-press the app icon to start logging straight away (after
-  unlocking, if app lock is on).
-- **Android backup now includes your diary.** Before, Android 12 and later backed up Megrim's
-  settings files but not its database.
-- **More accurate Suspected Factors.** Each migraine now counts once, on the day it started; the
-  days in the middle of a multi-day migraine are left out of the comparison; and pressure is
-  measured the same way on migraine days and other days. Odds ratios will change, pressure ones
-  most. The reasoning is in [`docs/METHODS.md`](docs/METHODS.md).
-
 ## Release history
 
 Newest first. Full notes for each release are on the
 [Releases page](https://github.com/smaegley/megrim/releases).
 
+- **`v1.0.7`** (2026-10-08): **app lock** with the phone's own fingerprint, face or PIN, and
+  **Hide in recent apps** (on Android this adds the `USE_BIOMETRIC` and `USE_FINGERPRINT`
+  permissions, granted at install with no prompt and unused unless app lock is on); **migraine
+  days per month** on Analytics and in the PDF report; a **"Log migraine"** shortcut on the app
+  icon; **Android backup now includes the diary** (before, Android 12 and later backed up
+  Megrim's settings but not its database); and **more accurate Suspected Factors**: each
+  migraine counts once, on the day it started, the days in the middle of a multi-day migraine
+  are left out of the comparison, and pressure is measured the same way on migraine days and
+  other days, so odds ratios will change (pressure ones most). See
+  [`docs/METHODS.md`](docs/METHODS.md).
 - **`v1.0.6`** (2026-10-05): an in-app **printable report** (Settings › Export report (PDF)),
   built entirely on the device, and an optional **backup reminder** that shows when you last
   exported and warns you after an interval you choose.
@@ -205,9 +201,8 @@ from them, and CI checks they're in step.
 
 See [`docs/PRIVACY.md`](docs/PRIVACY.md). Short version: all data stays on your device; we
 operate no servers and collect nothing. The Android app's permissions are `INTERNET` (weather and
-place search, only when you use them) and the network-state check used to detect being offline;
-the next release adds `USE_BIOMETRIC` and `USE_FINGERPRINT` for the optional app lock. There is
-no location permission.
+place search, only when you use them), the network-state check used to detect being offline, and
+`USE_BIOMETRIC` / `USE_FINGERPRINT` for the optional app lock. There is no location permission.
 
 ## How the analytics work
 

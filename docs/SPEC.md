@@ -396,7 +396,7 @@ emit `megrim-export` JSON → import on phone. ~50 lines of Python against
 - **Target/min SDK:** target = current Play requirement (API 35+ in 2026, ratchets yearly — this
   is the main recurring maintenance task); minSdk 26 (Android 8.0) is a sane floor.
 - **Permissions manifest (complete list):** *current (2026-10):* `INTERNET`;
-  `ACCESS_NETWORK_STATE` (merged in by connectivity_plus); and, on `main` for the next release,
+  `ACCESS_NETWORK_STATE` (merged in by connectivity_plus); and, since v1.0.7,
   `USE_BIOMETRIC` + `USE_FINGERPRINT` (merged in by local_auth / androidx.biometric, used only
   when app lock is on). No location permission (the original `ACCESS_COARSE/FINE_LOCATION` were
   removed in v1.0.1), no background location, no notifications, no storage permission (SAF
@@ -836,7 +836,7 @@ days after a spring-forward in DST timezones (fixed 2026-07-08; CI now also runs
 `TZ=America/Denver`). The `migraine-tracker` exporter corrects timestamps that its own importer had
 stored as local-clock-mislabeled-as-UTC (6–7h early).
 
-**2026-10 (post-`v1.0.6`, merged on `main`, unreleased):** from a competitor feature review
+**2026-10 (`v1.0.7`, tagged 2026-10-08):** from a competitor feature review
 (`docs/BACKLOG.md` #16–#24): **app lock** (#24; device credential via `local_auth`, "Hide in
 recent apps"; adds `USE_BIOMETRIC`/`USE_FINGERPRINT`; `MainActivity` → `FlutterFragmentActivity`;
 encryption at rest reviewed and not planned), **migraine days per month** (#17; shared
