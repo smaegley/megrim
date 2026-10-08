@@ -105,7 +105,8 @@
             "reason": { "type": ["string", "null"] },
             "total_events": { "type": "integer" },
             "total_migraine_days": { "type": "integer" },
-            "total_days_in_range": { "type": "integer" },
+            "total_days_in_range": { "type": "integer", "description": "Days compared: the study window minus excluded_mid_attack_days (app v1.0.7+)." },
+            "excluded_mid_attack_days": { "type": "integer", "description": "Days in the middle of a multi-day migraine (not its start day), left out of every factor table because no new attack can start on them (app v1.0.7+)." },
             "base_rate_pct": { "type": "number" },
             "top_factors": { "type": "array", "items": { "$ref": "#/$defs/topFactor" } },
             "factors": {

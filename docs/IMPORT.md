@@ -137,9 +137,10 @@ reference produced from the sample data lives at
   },
   "correlations": {
     "available": true, "reason": null,
-    "total_events": 55, "total_migraine_days": 55, "total_days_in_range": 879, "base_rate_pct": 6.26,
-    "top_factors": [ { "factor": "Month", "condition": "Jul", "odds_ratio": 2.95,
-                       "migraine_days": 9, "total_days": 62, "migraine_rate_pct": 14.52 }, … ],
+    "total_events": 55, "total_migraine_days": 55, "total_days_in_range": 861,
+    "excluded_mid_attack_days": 18, "base_rate_pct": 6.39,
+    "top_factors": [ { "factor": "Month", "condition": "Jul", "odds_ratio": 2.94,
+                       "migraine_days": 9, "total_days": 61, "migraine_rate_pct": 14.75 }, … ],
     "factors": { "Day of week": [ { "bucket": "Mon", "migraine_days": 9, "total_days": 126,
                                     "migraine_rate_pct": 7.14, "odds_ratio": 1.23 }, … ],
                  "Season": [ … ], "Month": [ … ], "Moon phase": [ … ], "Daylight hours": [ … ],
@@ -176,6 +177,11 @@ Notes for renderers:
   [`METHODS.md`](METHODS.md)). They depend on the export date: `migraine_days_last_30` is the 30
   days ending that day, and `migraine_days_by_month` runs through the export month, so two exports
   of the same data on different days can differ here and nowhere else.
+- In `correlations`, `total_migraine_days` counts **onset** days (the day each migraine
+  started), and `total_days_in_range` is the number of days compared: the study window minus
+  `excluded_mid_attack_days`, the days in the middle of a multi-day migraine, which are left out
+  of every factor's table (app v1.0.7+; earlier versions counted them as non-migraine days). The
+  reasoning is in [`METHODS.md`](METHODS.md).
 - `available: false` (with a `reason`) means fewer than 5 events; `dashboard` is still present.
 
 ## Minimal working example
