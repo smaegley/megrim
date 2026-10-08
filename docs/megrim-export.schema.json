@@ -63,6 +63,19 @@
           "properties": {
             "summary": { "type": "object" },
             "by_year": { "type": "array", "items": { "type": "object" } },
+            "migraine_days_last_30": { "type": "integer", "description": "Distinct migraine days in the 30 days ending on the export date (app v1.0.7+). A day counts once however many entries cover it; a multi-day migraine counts every day it spans." },
+            "migraine_days_avg_last_3_months": { "type": ["number", "null"], "description": "Mean migraine days per month over the last 3 complete calendar months (app v1.0.7+). Null until 3 complete months have passed since the first entry's month." },
+            "migraine_days_by_month": {
+              "type": "array",
+              "description": "Distinct migraine days per calendar month, oldest first, from the first entry's month through the export month, zero months included (app v1.0.7+).",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "month": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
+                  "days": { "type": "integer" }
+                }
+              }
+            },
             "by_day_of_week": { "$ref": "#/$defs/labeledCounts" },
             "by_time_of_day": { "$ref": "#/$defs/labeledCounts" },
             "by_season": { "$ref": "#/$defs/labeledCounts" },

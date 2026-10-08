@@ -125,6 +125,8 @@ reference produced from the sample data lives at
                  "avg_severity": 6.2, "avg_duration_hours": 8.4, "avg_interval_days": 15.7,
                  "interval_std_dev_days": 15.7, "events_per_year": 22.9 },
     "by_year":         [ { "year": 2024, "count": 26, "avg_severity": 5.7 }, … ],
+    "migraine_days_last_30": 2, "migraine_days_avg_last_3_months": 1.7,
+    "migraine_days_by_month": [ { "month": "2024-01", "days": 3 }, … ],
     "by_day_of_week":  [ { "label": "Mon", "count": 13 }, … ],
     "by_time_of_day":  [ … ], "by_season": [ … ], "by_moon_phase": [ … ],
     "by_daylight":     [ … ], "pressure_delta": [ … ],
@@ -169,6 +171,11 @@ Notes for renderers:
   means the user genuinely stayed near home, which is a different statement. It is **descriptive
   only**, the same standing as `trigger_frequency` — it is not a correlation factor because an odds
   ratio would need the user's location on non-migraine days, which the app never collects.
+- **`migraine_days_*`** (app v1.0.7+) count distinct **days**, not entries: a day covered by
+  several entries counts once and a multi-day migraine counts every day it spans (definition in
+  [`METHODS.md`](METHODS.md)). They depend on the export date: `migraine_days_last_30` is the 30
+  days ending that day, and `migraine_days_by_month` runs through the export month, so two exports
+  of the same data on different days can differ here and nowhere else.
 - `available: false` (with a `reason`) means fewer than 5 events; `dashboard` is still present.
 
 ## Minimal working example
