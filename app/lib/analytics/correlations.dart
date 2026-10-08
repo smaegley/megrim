@@ -334,16 +334,18 @@ CorrelationResult computeCorrelations({
     factors: factors,
     caveats: [
       'Based on $totalMigraine migraine days over $totalDays days — small sample, results are noisy.',
-      if (midAttack.isNotEmpty)
-        '${midAttack.length} ${midAttack.length == 1 ? 'day' : 'days'} in the middle of a '
-            'multi-day migraine ${midAttack.length == 1 ? 'is' : 'are'} left out: a new attack '
-            'can\'t start while one is underway.',
+      if (midAttack.isNotEmpty) midAttackNote(midAttack.length),
       'Odds ratios use a +0.5 correction for empty cells; treat values near 1.0 as no signal.',
       'Many factors are tested at once (multiple comparisons) — some apparent associations are chance.',
       'Association is not causation. Use this to form hypotheses, not conclusions.',
     ],
   );
 }
+
+/// The caveat shown wherever Suspected Factors is (Analytics card, PDF report) when [n] mid-attack
+/// days were left out.
+String midAttackNote(int n) => '$n ${n == 1 ? 'day' : 'days'} in the middle of a multi-day '
+    'migraine ${n == 1 ? 'is' : 'are'} left out: a new attack can\'t start while one is underway.';
 
 String _dayKey(DateTime d) => '${d.year.toString().padLeft(4, '0')}-'
     '${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';

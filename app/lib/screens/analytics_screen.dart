@@ -647,7 +647,10 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
             // Caveats appear on expansion (review item #6).
             if (_expanded) ...[
               const Divider(height: 24),
-              for (final c in kCorrelationCaveats)
+              for (final c in [
+                ...kCorrelationCaveats,
+                if (corr.excludedMidAttackDays > 0) midAttackNote(corr.excludedMidAttackDays),
+              ])
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
                   child: Text('• $c',

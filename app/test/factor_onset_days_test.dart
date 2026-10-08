@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,7 +8,11 @@ import 'package:http/testing.dart';
 import 'package:megrim/analytics/correlations.dart';
 import 'package:megrim/analytics/pressure_baseline.dart';
 import 'package:megrim/database/database.dart';
+import 'package:flutter/material.dart';
 import 'package:megrim/models/home_location.dart';
+import 'package:megrim/repositories/megrim_repository.dart';
+import 'package:megrim/screens/analytics_screen.dart';
+import 'package:megrim/services/import_service.dart';
 
 /// Suspected Factors counts attack ONSET days, and leaves the days in the middle of a multi-day
 /// migraine out of the table altogether (2026-10-08, docs/METHODS.md): those days are neither
@@ -179,5 +184,50 @@ void main() {
       await service.getOrBuild(start, end);
       expect(calls, 1);
     });
+  });
+
+  testWidgets('the Analytics card lists the left-out days among its caveats', (tester) async {
+    // Steve's 2026-10-08 test (A2): the note reached the PDF but not the app card.
+    final db = MegrimDatabase.forTesting(NativeDatabase.memory());
+    final repo = MegrimRepository(db: db);
+    await tester.runAsync(
+      () => ImportService(
+        db,
+      ).importJsonString(File('test/fixtures/sample-data.json').readAsStringSync(), replace: true),
+    );
+    final excluded = (await tester.runAsync(() => repo.correlations()))!.excludedMidAttackDays;
+    expect(excluded, greaterThan(0));
+
+    await tester.pumpWidget(MaterialApp(home: AnalyticsScreen(repo: repo)));
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
+    await tester.pumpAndSettle();
+    final showAll = find.textContaining(RegExp(r'^Show all \d+ factors$'));
+    // The page scrolls vertically; the monthly chart (backlog #17) is a second, sideways one.
+    final page = find.byWidgetPredicate(
+      (w) => w is Scrollable && w.axisDirection == AxisDirection.down,
+    );
+    await tester.scrollUntilVisible(showAll, 300, scrollable: page.first);
+    await tester.ensureVisible(showAll);
+    await tester.pumpAndSettle();
+    await tester.tap(showAll);
+    await tester.pumpAndSettle();
+    final note = find.text('• ${midAttackNote(excluded)}');
+    await tester.scrollUntilVisible(note, 200, scrollable: page.first);
+    expect(note, findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(seconds: 1));
+    await tester.runAsync(() => db.close());
+  });
+
+  test('the note reads naturally for one day and for several', () {
+    expect(
+      midAttackNote(1),
+      '1 day in the middle of a multi-day migraine is left out: a new attack can\'t start while one is underway.',
+    );
+    expect(
+      midAttackNote(18),
+      startsWith('18 days in the middle of a multi-day migraine are left out'),
+    );
   });
 }
