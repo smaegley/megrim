@@ -4,6 +4,7 @@
     tools/screenshots.py <target>          # validate build/screenshots/raw/<target>/ and copy
     tools/screenshots.py --list            # show the targets, sizes and destinations
     tools/screenshots.py --regen-demo-data # rebuild app/integration_test/demo_data.dart
+    tools/screenshots.py --stale           # have screens changed since the screenshots were taken?
 
 Each target's raw PNGs (named by the shot list in app/integration_test/shots.dart, e.g.
 `03-suspected-factors.png`) are checked against the pixel sizes the store accepts for that device
@@ -122,6 +123,41 @@ def sort_target(target):
         print(f"  {p.name}")
 
 
+# The code that draws the screens in the shot list. A change here since the screenshots were last
+# committed means the published screenshots may no longer match the app.
+UI_PATHS = ["app/lib/screens", "app/lib/widgets", "app/lib/theme.dart", "app/lib/app.dart"]
+SHOTS_DIR = "fastlane/metadata/android/en-US/images/phoneScreenshots"
+
+
+def stale(quiet_if_current=False):
+    """Print the UI files changed (committed) since the last screenshot commit. Exit 0 if current,
+    3 if stale. The Android set's last commit stands in for both stores (they're taken together)."""
+
+    def git(*args):
+        return subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True, text=True,
+                              check=True).stdout.strip()
+
+    base = git("log", "-1", "--format=%H", "--", SHOTS_DIR)
+    if not base:
+        print("No screenshots committed yet: take them with tools/screenshots.sh.")
+        return 3
+    when = git("log", "-1", "--format=%ad", "--date=short", base)
+    changed = [f for f in git("diff", "--name-only", base, "HEAD", "--", *UI_PATHS).splitlines() if f]
+    shots = git("diff", "--name-only", base, "HEAD", "--", "app/integration_test/shots.dart")
+    if not changed and not shots:
+        if not quiet_if_current:
+            print(f"Store screenshots are current (taken {when}, {base[:7]}).")
+        return 0
+    print(f"Store screenshots were last taken {when} ({base[:7]}). Since then:")
+    for f in changed:
+        print(f"  changed: {f}")
+    if shots:
+        print("  changed: app/integration_test/shots.dart (the shot list itself)")
+    print("If any of these change how a shot looks, retake them: tools/screenshots.sh <target> "
+          "(guide: .claude/test-store-screenshots.md).")
+    return 3
+
+
 def regen_demo_data():
     src = (APP / "test" / "fixtures" / "sample-data.json").read_text()
     if "'''" in src:
@@ -139,7 +175,11 @@ def main():
     ap.add_argument("target", nargs="?", choices=sorted(TARGETS))
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--regen-demo-data", action="store_true")
+    ap.add_argument("--stale", action="store_true")
+    ap.add_argument("--quiet", action="store_true", help="with --stale: print nothing if current")
     a = ap.parse_args()
+    if a.stale:
+        sys.exit(stale(quiet_if_current=a.quiet))
     if a.regen_demo_data:
         regen_demo_data()
     elif a.list or not a.target:
