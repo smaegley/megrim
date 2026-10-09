@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-09: v1.0.7 released on GitHub and the App Store (iOS build 13); F-Droid still serves 1.0.5, with 1.0.6 built and publishing and 1.0.7 queued for the next build cycle._
+_Last updated: 2026-10-09: v1.0.7 released on GitHub and the App Store (iOS build 13); F-Droid catching up (1.0.6 built, 1.0.7 queued); store screenshots refreshed with the new automated capture._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -17,19 +17,13 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
    with the `curl` commands under *Done: F-Droid inclusion* below (`build.json` lists
    `successfulBuildIds` / `failedBuilds`).
 
-**Next task: refresh the store screenshots** (they predate the PDF report, app lock and the
-migraine-days card; App Store "creative assets" were skipped for now).
-- Proposed shot list, about 8, same screens on both stores: (1) Log with the days-since card;
-  (2) **Migraine days per month** card; (3) Top Suspected Factors; (4) History calendar with a
-  multi-day migraine; (5) entry detail (triggers, medications, enrichment); (6) PDF report page 1;
-  (7) Settings › Privacy (app lock); (8) Analytics in dark mode.
-- **Decisions for Steve before a capture script is written:** (a) both stores or one first (App
-  Store needs iPhone sizes, 6.9" primary; F-Droid uses
-  `fastlane/metadata/android/en-US/images/phoneScreenshots/NN-name.png`, filename order = carousel
-  order); (b) keep the sample data with the New York decoy home location; (c) plain screenshots, or
-  a short caption above each.
-- Then: a capture script in the test-script format (data setup, screen and scroll position per
-  shot, emulator/Simulator commands at the right size).
+**Store screenshots: refreshed 2026-10-09** with the new automated capture: 10 shots (Log with the
+backup line, Analytics overview with migraine days per month, factors, a chart, History list and
+calendar, entry detail, Settings › Privacy, two dark) for Android phone + Pixel Fold (F-Droid,
+committed) and iPhone 6.9" / 6.3" / iPad 13" (uploaded in App Store Connect). The old F-Droid set,
+which showed Steve's real last-migraine date, is gone. To retake: `tools/screenshots.sh <target>`
+(guide `.claude/test-store-screenshots.md`); `tools/screenshots.py --stale` says whether screens
+changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DUO`).
 
 **Backlog still open** (details in `docs/BACKLOG.md`)
 - **#16** "No migraine today" check-ins: the biggest analytics improvement (a real baseline for
@@ -395,10 +389,12 @@ please keep that precision if editing the privacy copy.
 
 - Build environment, toolchain paths and gotchas: see the dev-environment notes (source
   `~/.megrim_env.sh` before any flutter/gradle command on the VM).
-- Screenshots for the store listing live in
-  `fastlane/metadata/android/en-US/images/phoneScreenshots/`, `NN-description.png`, filename order
-  is carousel order. Currently 10: 01–08 light (incl. the new Settings and weather opt-in steps)
-  and 09–10 dark. They use a **New York decoy** home location on purpose.
+- Store screenshots are generated, not hand-taken (since 2026-10-09): `tools/screenshots.sh <target>`
+  drives the app through `app/integration_test/shots.dart` on a Simulator/emulator and
+  `tools/screenshots.py` sorts them (Android: `fastlane/.../phoneScreenshots/` and
+  `sevenInchScreenshots/`, filename order = carousel order; iOS: `screenshots/ios/<display>/`,
+  gitignored, uploaded by hand). Made-up sample data, New York decoy home. On the Mac, pushing the
+  PNGs over HTTPS needed `git config http.postBuffer 524288000` + `http.version HTTP/1.1`.
 - Changelogs: write `docs/release-notes/<version>.txt` and run `tools/sync_changelogs.py`, which
   generates the per-ABI files F-Droid reads (see *Done: F-Droid inclusion* above). Don't hand-write
   files under `fastlane/.../changelogs/`.
