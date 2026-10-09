@@ -30,3 +30,7 @@ megrim-export-*.json
 megrim-export-*.csv
 megrim-report-*.pdf
 megrim-from-tracker*.json
+
+# iOS store screenshots from tools/screenshots.sh, for uploading in App Store Connect (the Android
+# set lives under fastlane/ and IS tracked, because F-Droid reads it from the repo).
+screenshots/

@@ -47,6 +47,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # Store screenshots (tools/screenshots.sh): drives the real app on an emulator/Simulator and
+  # captures each screen. Dev-only; nothing ships in the app.
+  integration_test:
+    sdk: flutter
   flutter_lints: ^6.0.0
   build_runner: ^2.4.0
   drift_dev: ^2.22.0
