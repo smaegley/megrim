@@ -17,6 +17,12 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
    with the `curl` commands under *Done: F-Droid inclusion* below (`build.json` lists
    `successfulBuildIds` / `failedBuilds`).
 
+**Next iOS update: upload the new screenshots.** App Store Connect only takes screenshots for a
+version in preparation, so they couldn't go on the already-released 1.0.7. With the next version:
+6.9" iPhone ← `screenshots/ios/iphone-6.9`, 6.3" ← `iphone-6.3`, 13" iPad ← `ipad-13` (on Steve's
+Mac under `~/megrim/screenshots/ios/`), replacing the old ones. Retake first if `--stale` says
+screens changed. (Also raised automatically at release prep from `.claude/reminders/release.md`.)
+
 **Store screenshots: refreshed 2026-10-09** with the new automated capture: 10 shots (Log with the
 backup line, Analytics overview with migraine days per month, factors, a chart, History list and
 calendar, entry detail, Settings › Privacy, two dark) for Android phone + Pixel Fold (F-Droid,
