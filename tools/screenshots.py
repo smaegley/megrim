@@ -34,6 +34,10 @@ RAW = APP / "build" / "screenshots" / "raw"
 FASTLANE = ROOT / "fastlane" / "metadata" / "android" / "en-US" / "images"
 
 # target → (store, accepted portrait sizes or None for "any", destination)
+# Targets whose screen is wider than tall in normal use: the Pixel Fold's inner display. F-Droid's
+# tablet-size folders take landscape images; phone and App Store sets must be portrait.
+LANDSCAPE_OK = {"android-fold"}
+
 TARGETS = {
     "android-phone": ("android", None, FASTLANE / "phoneScreenshots"),
     "android-fold": ("android", None, FASTLANE / "sevenInchScreenshots"),
@@ -96,7 +100,7 @@ def sort_target(target):
     problems = []
     for p in shots:
         w, h, _ = png_info(p)
-        if h < w:
+        if h < w and target not in LANDSCAPE_OK:
             problems.append(f"{p.name}: {w}×{h} is landscape")
         elif sizes and (w, h) not in sizes:
             ok = ", ".join(f"{a}×{b}" for a, b in sizes)
