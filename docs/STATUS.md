@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-08: v1.0.7 released on Android (GitHub; F-Droid to follow) and iOS 1.0.7 (13) submitted to App Review; v1.0.6 live on iOS._
+_Last updated: 2026-10-09: v1.0.7 released on GitHub and the App Store (iOS build 13); F-Droid still serves 1.0.5, with 1.0.6 built and publishing and 1.0.7 queued for the next build cycle._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -8,12 +8,14 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
 ## Next steps (as of 2026-10-08)
 
 **Finish the 1.0.7 release**
-1. **iOS 1.0.7 (13) is in App Review** (submitted 2026-10-08). Record the approval here when it
-   comes. If not yet done, check on a real iPhone via TestFlight: app lock's Face ID prompt (H1),
+1. **iOS 1.0.7 (13) is released** (approved by 2026-10-09). If not yet done, check on a real
+   iPhone: app lock's Face ID prompt (H1),
    the blank app-switcher card with "Hide in recent apps" on (H2), and the "Log migraine" shortcut.
    Scripts: `.claude/test-app-lock.md` Part H, `.claude/test-app-shortcut.md` Part E.
-2. **F-Droid**: the bot should pick up `v1.0.7` by itself; expect it served in about a week. Check
-   with the `curl` commands under *Done: F-Droid inclusion* below.
+2. **F-Droid**: 1.0.6 is built and publishing; 1.0.7's entries are in (2026-10-09) and it builds in
+   the next cycle, expected served around 2026-10-14/15. Nothing to do unless a build fails. Check
+   with the `curl` commands under *Done: F-Droid inclusion* below (`build.json` lists
+   `successfulBuildIds` / `failedBuilds`).
 
 **Next task: refresh the store screenshots** (they predate the PDF report, app lock and the
 migraine-days card; App Store "creative assets" were skipped for now).
@@ -57,8 +59,14 @@ Android: **released 2026-10-08** (`release.yml` green, APK/AAB published, not dr
 the published APK verified: versionCode 12, versionName 1.0.7, signed `CN=Steve Maegley` SHA-256
 `c316cce2…`, permissions INTERNET, ACCESS_NETWORK_STATE, USE_BIOMETRIC, USE_FINGERPRINT). F-Droid
 follows by itself. **iOS 1.0.7 (build 13): submitted to App Review
-2026-10-08** (What's New = the release notes minus the Android-only lines; Face ID explained in the
-review notes). Each item below
+2026-10-08, APPROVED and released by 2026-10-09** (What's New = the release notes minus the
+Android-only lines; Face ID explained in the review notes).
+
+**F-Droid pipeline, checked 2026-10-09:** still serving 1.0.5. 1.0.6: bot entries 2026-10-06,
+**built** in the 2026-10-07→08 build run (111/112/113, no failures), publishing run in progress
+since 2026-10-08 09:22 UTC. 1.0.7: bot entries added 2026-10-09 07:25 UTC, after that build run
+started, so it builds in the next cycle; expected to be served around 2026-10-14/15 (1.0.5 took
+about six days tag-to-served). Both versions will be published; clients offer the newest. Each item below
 had a manual test script on the emulator (and a real phone where native code changed), all
 passed.
 
