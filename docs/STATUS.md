@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-09: v1.0.7 released on GitHub and the App Store (iOS build 13); F-Droid catching up (1.0.6 built, 1.0.7 queued); store screenshots refreshed with the new automated capture._
+_Last updated: 2026-10-09: v1.0.7 released on GitHub and the App Store (iOS build 13); F-Droid serving 1.0.6 (1.0.7 queued); store screenshots refreshed with the new automated capture._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -12,8 +12,8 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
    iPhone: app lock's Face ID prompt (H1),
    the blank app-switcher card with "Hide in recent apps" on (H2), and the "Log migraine" shortcut.
    Scripts: `.claude/test-app-lock.md` Part H, `.claude/test-app-shortcut.md` Part E.
-2. **F-Droid**: 1.0.6 is built and publishing; 1.0.7's entries are in (2026-10-09) and it builds in
-   the next cycle, expected served around 2026-10-14/15. Nothing to do unless a build fails. Check
+2. **F-Droid**: **serving 1.0.6** since 2026-10-10; 1.0.7's entries are in (2026-10-09) and it builds
+   in the next cycle, expected served around 2026-10-14/15. Nothing to do unless a build fails. Check
    with the `curl` commands under *Done: F-Droid inclusion* below (`build.json` lists
    `successfulBuildIds` / `failedBuilds`).
 
