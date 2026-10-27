@@ -272,4 +272,63 @@ void main() {
       await db.close();
     });
   });
+
+  group('report', () {
+    Future<MegrimRepository> seeded() async {
+      final db = MegrimDatabase.forTesting(NativeDatabase.memory());
+      Future<void> add(String id, int day,
+              {bool? headache, bool? aura, List<String> symptoms = const [], String? impact}) =>
+          db.into(db.migraineEvents).insert(MigraineEventsCompanion.insert(
+                id: id,
+                startedAt: DateTime.utc(2026, 10, day, 9),
+                endedAt: Value(DateTime.utc(2026, 10, day, 13)),
+                startedAtOffsetMin: const Value(0),
+                endedAtOffsetMin: const Value(0),
+                headachePresent: Value(headache),
+                auraPresent: Value(aura),
+                severity: Value(headache == false ? null : 6),
+                symptoms: Value(encodeStringList(symptoms)),
+                impact: Value(impact),
+                createdAt: t0,
+                updatedAt: t0,
+              ));
+      await add('a', 1, headache: false, aura: true, impact: EventImpact.reduced);
+      await add('b', 3, headache: false, symptoms: [kSymptomVertigo, 'Fatigue']);
+      await add('c', 5, symptoms: ['Nausea'], impact: EventImpact.unable);
+      return MegrimRepository(db: db);
+    }
+
+    test('lists attacks without headache separately, with their kinds and symptoms', () async {
+      final repo = await seeded();
+      final c = await repo.reportContent(now: DateTime(2026, 10, 8));
+      final w = c.withoutHeadache!;
+      expect(w.summary, startsWith('2 of 3 entries (66.7%) were recorded without headache: '
+          '1 with aura, 1 with vertigo or dizziness, 0 other.'));
+      expect(w.summary, endsWith('Median length 4.0h.'));
+      expect({for (final b in w.byKind) b.label: b.count},
+          {'With aura': 1, 'With vertigo or dizziness': 1, 'Other': 0});
+      expect(w.symptoms.map((b) => b.label), [kSymptomVertigo, 'Fatigue'].toList()..sort());
+      expect(c.symptomFrequency.map((b) => b.label), containsAll(['Nausea', kSymptomVertigo]));
+      expect(c.impact, contains('1 day unable to function, 1 day with reduced function'));
+      expect(c.impact, contains('impact recorded on 2 of 3 migraine days'));
+      final chart = c.charts.firstWhere((ch) => ch.title == 'Migraine days per month');
+      expect(chart.note, contains('Includes 2 days with only attacks without headache.'));
+      final rows = {for (final r in c.events) r.date: r};
+      expect(rows['1 Oct 2026']!.severity, 'none');
+      expect(rows['5 Oct 2026']!.severity, '6');
+      expect(rows['3 Oct 2026']!.symptoms, '$kSymptomVertigo, Fatigue');
+      await repo.db.close();
+    });
+
+    test('a diary with none of the new fields leaves the sections out', () async {
+      final db = MegrimDatabase.forTesting(NativeDatabase.memory());
+      await db.into(db.migraineEvents).insert(ev('x', severity: 5));
+      final c = await MegrimRepository(db: db).reportContent(now: DateTime(2026, 10, 8));
+      expect(c.withoutHeadache, isNull);
+      expect(c.impact, isNull);
+      expect(c.symptomFrequency, isEmpty);
+      expect(c.events.single.severity, '5');
+      await db.close();
+    });
+  });
 }

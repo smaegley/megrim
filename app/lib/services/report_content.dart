@@ -14,6 +14,7 @@ import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
 import '../database/database.dart';
 import '../legal.dart' show kMedicalDisclaimer, kWeatherAttribution;
+import '../models/attack_details.dart';
 import '../models/event_time.dart';
 import '../models/json_fields.dart';
 
@@ -81,13 +82,30 @@ class ReportFactorGroup {
   const ReportFactorGroup({required this.name, required this.rows});
 }
 
+/// The "Attacks without headache" section (backlog #26). Null on [ReportContent] when there are
+/// none, and the section is left out.
+class ReportWithoutHeadache {
+  /// One sentence: how many, what share, the split by kind, the median length.
+  final String summary;
+  final List<ReportBar> byKind;
+  final List<ReportBar> symptoms;
+  const ReportWithoutHeadache({
+    required this.summary,
+    required this.byKind,
+    required this.symptoms,
+  });
+}
+
 class ReportEventRow {
   final String date;
   final String time;
+
+  /// "none" for an attack without headache (backlog #26), "-" when not recorded.
   final String severity;
   final String duration;
   final String aura;
   final String headLocations;
+  final String symptoms;
   final String triggers;
   final String meds;
   final String notes;
@@ -98,6 +116,7 @@ class ReportEventRow {
     required this.duration,
     required this.aura,
     required this.headLocations,
+    required this.symptoms,
     required this.triggers,
     required this.meds,
     required this.notes,
@@ -113,7 +132,15 @@ class ReportContent {
   /// One line from the away-from-home share (backlog #13); null when it isn't available.
   final String? awayFromHome;
 
+  /// One line of impact-day counts (backlog #22a); null until an entry has an impact recorded.
+  final String? impact;
+
+  final ReportWithoutHeadache? withoutHeadache;
+
   final List<ReportBar> triggerFrequency;
+
+  /// Backlog #20.
+  final List<ReportBar> symptomFrequency;
   final List<ReportMedRow> medications;
 
   /// False when there are too few events; [factorsReason] then says why.
@@ -137,7 +164,10 @@ class ReportContent {
     required this.summary,
     required this.charts,
     required this.awayFromHome,
+    this.impact,
+    this.withoutHeadache,
     required this.triggerFrequency,
+    this.symptomFrequency = const [],
     required this.medications,
     required this.factorsAvailable,
     required this.factorsReason,
@@ -258,6 +288,7 @@ ReportContent buildReportContent({
       : dash.migraineDaysByMonth;
   final thisMonth = DateTime(now.year, now.month);
   final monthLabel = DateFormat('MMM yyyy');
+  final recentWithout = recentMonths.fold<int>(0, (n, m) => n + m.daysWithoutHeadache);
 
   final charts = <ReportChart>[
     if (recentMonths.isNotEmpty)
@@ -265,6 +296,7 @@ ReportContent buildReportContent({
         title: 'Migraine days per month',
         note: 'Days with a migraine, not entries; a multi-day migraine counts each day. '
             '${dash.avgMigraineDaysLast3Months == null ? '' : 'Average over the last 3 complete months: ${dash.avgMigraineDaysLast3Months}. '}'
+            '${recentWithout == 0 ? '' : 'Includes $recentWithout ${recentWithout == 1 ? 'day' : 'days'} with only attacks without headache. '}'
             '* month in progress.',
         bars: [
           for (final m in recentMonths)
@@ -304,6 +336,36 @@ ReportContent buildReportContent({
           'were recorded more than $km km from home'
           '${a.awayPlaces.isEmpty ? '' : ': ${a.awayPlaces.take(5).map((p) => '${clean(p.label)} (${p.count})').join(', ')}'}.';
     }
+  }
+
+  // Impact on the day (backlog #22a).
+  String? impact;
+  final i = dash.impact;
+  if (i != null) {
+    String days(int n) => '$n ${n == 1 ? 'day' : 'days'}';
+    impact = 'Impact, last 30 days: ${days(i.unableLast30)} unable to function, '
+        '${days(i.reducedLast30)} with reduced function (impact recorded on '
+        '${i.recordedLast30} of ${dash.migraineDaysLast30} migraine days).'
+        '${i.avgUnableLast3Months == null ? '' : ' Monthly average over the last 3 complete '
+            'months: ${i.avgUnableLast3Months} unable, ${i.avgReducedLast3Months} reduced.'}';
+  }
+
+  // Attacks without headache (backlog #26).
+  ReportWithoutHeadache? withoutHeadache;
+  final w = dash.withoutHeadache;
+  if (w != null) {
+    withoutHeadache = ReportWithoutHeadache(
+      summary: '${w.events} of ${w.totalEvents} entries (${w.pct}%) were recorded without '
+          'headache: ${w.withAura} with aura, ${w.withVertigo} with vertigo or dizziness, '
+          '${w.other} other.'
+          '${w.medianDurationHours == null ? '' : ' Median length ${w.medianDurationHours}h.'}',
+      byKind: [
+        ReportBar('With aura', w.withAura),
+        ReportBar('With vertigo or dizziness', w.withVertigo),
+        ReportBar('Other', w.other),
+      ],
+      symptoms: bars(w.symptoms),
+    );
   }
 
   // Medications, tallied across every event (the dashboard doesn't carry these).
@@ -367,7 +429,7 @@ ReportContent buildReportContent({
       ReportEventRow(
         date: dfRow.format(e.startedWall),
         time: tf.format(e.startedWall),
-        severity: e.severity?.toString() ?? '-',
+        severity: hasHeadache(e.headachePresent) ? (e.severity?.toString() ?? '-') : 'none',
         duration: e.endedAt == null
             ? 'ongoing'
             : (e.endedAt!.isBefore(e.startedAt)
@@ -375,6 +437,7 @@ ReportContent buildReportContent({
                 : _fmtDuration(e.endedAt!.difference(e.startedAt))),
         aura: e.auraPresent == null ? '-' : (e.auraPresent! ? 'yes' : 'no'),
         headLocations: clean(decodeStringList(e.locationHead).join(', ')),
+        symptoms: clean(decodeStringList(e.symptoms).join(', ')),
         triggers: clean(decodeStringList(e.triggersSuspected).join(', ')),
         meds: clean(decodeMeds(e.medsTaken)
             .map((m) => [m.name, if (m.dose != null && m.dose!.isNotEmpty) m.dose!].join(' '))
@@ -406,7 +469,10 @@ ReportContent buildReportContent({
     summary: summary,
     charts: charts,
     awayFromHome: away,
+    impact: impact,
+    withoutHeadache: withoutHeadache,
     triggerFrequency: bars(dash.triggerFrequency),
+    symptomFrequency: bars(dash.symptomFrequency),
     medications: medications,
     factorsAvailable: corr.available,
     factorsReason: corr.reason,
