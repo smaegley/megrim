@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../analytics/dashboard.dart';
 import '../database/database.dart';
 import '../legal.dart';
+import '../models/attack_details.dart';
 import '../models/backup_status.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/severity_badge.dart' show StatusColors;
@@ -297,21 +298,39 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.displaySmall),
           const SizedBox(height: 24),
-          Text('Severity: ${_active!.severity ?? 5} / 10'),
-          Slider(
-            value: (_active!.severity ?? 5).toDouble(),
-            min: 1,
-            max: 10,
-            divisions: 9,
-            label: '${_active!.severity ?? 5}',
+          const Text('Headache?'),
+          HeadacheSelector(
+            value: _active!.headachePresent,
             onChanged: (v) async {
+              // No headache means no pain to rate (backlog #26): the severity is cleared, and put
+              // back at the slider's starting point if the user changes their mind.
               await widget.repo.updateEvent(MigraineEventsCompanion(
                 id: Value(_active!.id),
-                severity: Value(v.round()),
+                headachePresent: Value(v),
+                severity: Value(hasHeadache(v) ? (_active!.severity ?? 5) : null),
               ));
               await _loadActive();
             },
           ),
+          if (hasHeadache(_active!.headachePresent)) ...[
+            const SizedBox(height: 16),
+            Text('Severity: ${_active!.severity ?? 5} / 10'),
+            Slider(
+              value: (_active!.severity ?? 5).toDouble(),
+              min: 1,
+              max: 10,
+              divisions: 9,
+              label: '${_active!.severity ?? 5}',
+              onChanged: (v) async {
+                await widget.repo.updateEvent(MigraineEventsCompanion(
+                  id: Value(_active!.id),
+                  severity: Value(v.round()),
+                ));
+                await _loadActive();
+              },
+            ),
+          ] else
+            const SizedBox(height: 16),
           const SizedBox(height: 8),
           TextField(
             controller: _notes,

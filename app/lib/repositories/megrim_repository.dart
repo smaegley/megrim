@@ -114,7 +114,10 @@ class MegrimRepository {
           .getSingleOrNull();
 
   /// Start a new event now. Returns the new id. Enqueues enrichment.
-  Future<String> startEvent({int? severity, double? lat, double? lon, String? label}) async {
+  /// [headachePresent] defaults to true: Quick Log starts every attack with a severity, which
+  /// already assumes a headache, and an attack without one is a single tap to mark (backlog #26).
+  Future<String> startEvent(
+      {int? severity, bool? headachePresent = true, double? lat, double? lon, String? label}) async {
     final id = _uuid.v4();
     final now = DateTime.now().toUtc();
     await db.into(db.migraineEvents).insert(MigraineEventsCompanion.insert(
@@ -122,6 +125,7 @@ class MegrimRepository {
           startedAt: now,
           startedAtOffsetMin: Value(offsetMinutesOf()),
           severity: Value(severity),
+          headachePresent: Value(headachePresent),
           geoLat: Value(lat),
           geoLon: Value(lon),
           geoLabel: Value(label),

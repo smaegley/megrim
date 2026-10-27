@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../database/database.dart';
+import '../models/attack_details.dart';
 import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
@@ -70,6 +71,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   List<String> _triggerVocab = const [];
   List<String> _locationVocab = const [];
   List<String> _medVocab = const [];
+  List<String> _symptomVocab = const [];
 
   // Wall-clock times in the zone the entry belongs to (issue #17): an entry keeps the zone it was
   // logged in, so editing it abroad adjusts its wall clock there rather than re-basing it on the
@@ -84,6 +86,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   double? _geoLon;
   String? _geoLabel;
   int? _severity;
+
+  /// Backlog #26. A new entry starts at "Yes", like Quick Log; an existing one shows what it has.
+  bool? _headache = true;
+
+  /// Backlog #22a: one of [EventImpact]'s values, or null.
+  String? _impact;
   bool? _aura;
   int? _stress;
   final _sleep = TextEditingController();
@@ -91,6 +99,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   final _auraDescription = TextEditingController();
   final Set<String> _locations = {};
   final Set<String> _triggers = {};
+  final Set<String> _symptoms = {};
   final List<MedEntry> _meds = [];
   final List<String> _foods = [];
 
@@ -152,6 +161,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       _geoLon = e.geoLon;
       _geoLabel = e.geoLabel;
       _severity = e.severity;
+      _headache = e.headachePresent;
+      _impact = e.impact;
       _aura = e.auraPresent;
       _stress = e.stressLevel;
       _sleep.text = e.sleepHoursPrior?.toString() ?? '';
@@ -163,6 +174,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       _triggers
         ..clear()
         ..addAll(decodeStringList(e.triggersSuspected));
+      _symptoms
+        ..clear()
+        ..addAll(decodeStringList(e.symptoms));
       _foods
         ..clear()
         ..addAll(decodeStringList(e.foodsNotable));
@@ -179,8 +193,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     final triggers = await widget.repo.vocab(VocabKind.trigger);
     final locations = await widget.repo.vocab(VocabKind.headLocation);
     final meds = await widget.repo.vocab(VocabKind.medication);
+    final symptoms = await widget.repo.vocab(VocabKind.symptom);
     if (!mounted) return;
     setState(() {
+      _symptomVocab = symptoms;
       _triggerVocab = triggers;
       _locationVocab = locations;
       _medVocab = meds;
@@ -197,19 +213,25 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           const SnackBar(content: Text('End time must be after the start time.')));
       return;
     }
+    // Without a headache there is no pain to rate or place (backlog #26): those fields are hidden
+    // and cleared, and the day's burden goes in Impact instead.
+    final headache = hasHeadache(_headache);
     final fields = MigraineEventsCompanion(
       startedAt: Value(startInstant),
       endedAt: Value(endInstant),
       startedAtOffsetMin: Value(_startOffset),
       endedAtOffsetMin: Value(_endedAt == null ? null : _endOffset ?? _startOffset),
-      severity: Value(_severity),
+      headachePresent: Value(_headache),
+      severity: Value(headache ? _severity : null),
+      impact: Value(_impact),
+      symptoms: Value(encodeStringList(_symptoms.toList())),
       auraPresent: Value(_aura),
       auraDescription:
           Value(_auraDescription.text.isEmpty ? null : _auraDescription.text),
       stressLevel: Value(_stress),
       sleepHoursPrior: Value(double.tryParse(_sleep.text)),
       notes: Value(_notes.text.isEmpty ? null : _notes.text),
-      locationHead: Value(encodeStringList(_locations.toList())),
+      locationHead: Value(headache ? encodeStringList(_locations.toList()) : null),
       triggersSuspected: Value(encodeStringList(_triggers.toList())),
       foodsNotable: Value(encodeStringList(_foods)),
       medsTaken: Value(encodeMeds(_meds)),
@@ -384,22 +406,51 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           _locationTile(),
           const Divider(height: 24),
 
-          Text('Severity: ${_severity ?? '—'} / 10'),
-          Slider(
-            value: (_severity ?? 5).toDouble(),
-            min: 1,
-            max: 10,
-            divisions: 9,
-            label: '${_severity ?? 5}',
-            onChanged: (v) => setState(() => _severity = v.round()),
+          const Text('Headache?'),
+          HeadacheSelector(
+            value: _headache,
+            onChanged: (v) => setState(() => _headache = v),
           ),
+          if (hasHeadache(_headache)) ...[
+            const SizedBox(height: 16),
+            Text('Severity: ${_severity ?? '—'} / 10'),
+            Slider(
+              value: (_severity ?? 5).toDouble(),
+              min: 1,
+              max: 10,
+              divisions: 9,
+              label: '${_severity ?? 5}',
+              onChanged: (v) => setState(() => _severity = v.round()),
+            ),
+            _sectionHeader('Head location', VocabKind.headLocation),
+            _chips(_locationVocab, _locations),
+          ] else
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                'Logged as an attack without headache. Record how it affected you below.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
 
-          _sectionHeader('Head location', VocabKind.headLocation),
-          _chips(_locationVocab, _locations),
+          const SizedBox(height: 16),
+          const Text('Impact on the day'),
+          Text('How much did it stop you?', style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 4),
+          SegmentedButton<String>(
+            segments: [
+              for (final v in EventImpact.all)
+                ButtonSegment(value: v, label: Text(kImpactLabels[v]!)),
+            ],
+            selected: {?_impact},
+            emptySelectionAllowed: true,
+            onSelectionChanged: (s) => setState(() => _impact = s.isEmpty ? null : s.first),
+          ),
 
           const SizedBox(height: 16),
           const Text('Aura'),
           SegmentedButton<int>(
+            key: const Key('aura-selector'),
             segments: const [
               ButtonSegment(value: 1, label: Text('Yes')),
               ButtonSegment(value: 0, label: Text('No')),
@@ -422,6 +473,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               ),
             ),
           ],
+
+          _sectionHeader('Symptoms', VocabKind.symptom),
+          _chips(_symptomVocab, _symptoms),
 
           _sectionHeader('Suspected triggers', VocabKind.trigger),
           _chips(_triggerVocab, _triggers),
@@ -762,6 +816,29 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// "Headache?" Yes / No / Not sure (backlog #26), shared by Event Detail and Quick Log.
+class HeadacheSelector extends StatelessWidget {
+  final bool? value;
+  final ValueChanged<bool?> onChanged;
+  const HeadacheSelector({super.key, required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return SegmentedButton<int>(
+      segments: const [
+        ButtonSegment(value: 1, label: Text('Yes')),
+        ButtonSegment(value: 0, label: Text('No')),
+        ButtonSegment(value: -1, label: Text('Not sure')),
+      ],
+      selected: {value == null ? -1 : (value! ? 1 : 0)},
+      onSelectionChanged: (s) {
+        final v = s.first;
+        onChanged(v == -1 ? null : v == 1);
+      },
     );
   }
 }
