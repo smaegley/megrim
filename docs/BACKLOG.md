@@ -9,7 +9,8 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 > **#16 and #18–#22 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features*
 > below); **#17 (monthly migraine days), #23 step (1) (app-icon shortcut) and #24 (app lock) are
 > DONE**, shipped in `v1.0.7` (2026-10-08); #23 steps (2)–(3) remain proposed.
-> Add new items as they come up.
+> **#25 (move UI text into a message file, prep for translations) is PROPOSED** (2026-10-27, from
+> issue #19). Add new items as they come up.
 
 ## UI / UX
 
@@ -685,6 +686,67 @@ locked decisions. Recorded so the question isn't re-litigated from scratch:
   background network call and edges into prediction claims; both are non-goals.
 - **AI coaching, community, in-app research questionnaires, voice logging.** Out of scope for a
   serverless, telemetry-free app.
+
+## Localization
+
+### 25. Move the UI's English text into a message file (prep for translations) — **PROPOSED** *(2026-10-27)*
+
+**Want:** every user-visible English string pulled out of the Dart code into a Flutter ARB file
+(`app_en.arb`), using the standard `flutter_localizations` + `gen-l10n` setup. **No visible
+change** — the app still ships English only. This is the groundwork that makes any later language a
+matter of adding one file.
+
+**Why:** issue #19 (2026-10-17) asks for Simplified Chinese. Not committing to that, but today
+there is **no** localization setup at all: no `flutter_localizations`, no `l10n.yaml`, and roughly
+360 English strings hard-coded across 47 files under `app/lib/`. Until those are extracted, *any*
+translation means touching every screen. This step is worth doing once, regardless of which
+language (if any) comes next. Needs a dedicated block of time, not a side task — it touches nearly
+every screen.
+
+**Shape:**
+
+- **Setup:** add `flutter_localizations` (SDK) to `pubspec.yaml`, `generate: true`, an
+  `l10n.yaml` (`arb-dir: lib/l10n`, template `app_en.arb`), and wire `localizationsDelegates` /
+  `supportedLocales` into `MaterialApp`. `intl` is already a dependency.
+- **Extract by file, heaviest first** — `settings_screen.dart` (~58 strings),
+  `event_detail_screen.dart` (~53), `analytics_screen.dart` (~52), then `report_content.dart` /
+  `report_pdf.dart`, `onboarding_screen.dart`, `quick_log_screen.dart`, `legal.dart`, and the
+  rest. One commit per screen keeps it reviewable.
+- **Use ICU placeholders and plurals, not string-building.** e.g. `'Need at least $n events…'`
+  becomes a message with a `{count}` placeholder; `'1 day' / '3 days'` becomes a `plural`.
+  Concatenated sentence fragments must become one whole message (word order differs by language).
+- **Stored values stay English — translate at display only.** This is the main trap.
+  `kDefaultTriggers` / `kTravelTrigger` (`database.dart`), and the season, moon-phase and
+  day-of-week factor labels (`astro.dart`, `calendar_factors.dart`, `correlations.dart`) are
+  **data**: they are written to the database, compared as keys, and appear in the JSON export
+  (`export_format.dart`, `analytics_export.dart`, `megrim-export.schema.json`). Keep the English
+  value as the key and map it to a display string at render time. User-typed custom triggers are
+  never translated. The export format must not change.
+- **Dates:** `DateFormat('EEE d MMM yyyy, HH:mm')` etc. (`history_screen.dart`,
+  `event_detail_screen.dart`) hard-code the field order. Switch to locale-aware skeletons
+  (`DateFormat.yMMMEd(locale)`, `DateFormat.Hm(locale)`) — check the English output still looks the
+  way it does today, or accept the small change deliberately.
+- **Legal text** (`legal.dart`, privacy/disclaimer): extract it, but any translation of it later
+  should be marked as unofficial, with English as the version that counts.
+- **Out of scope here:** the store listings (fastlane metadata, App Store) and any actual
+  translation.
+
+**Later, if a language is added** (e.g. zh-CN for #19): one `app_zh.arb`, a machine-translated
+first pass reviewed by a native speaker (the #19 requester could be asked; ship it marked
+"community translation"), plus `CFBundleLocalizations` in `ios/Runner/Info.plist`. Two known
+gotchas for Chinese: the **PDF report embeds `NotoSans-Regular/Bold.ttf`, which has no CJK
+glyphs** — Chinese would print as empty boxes — so it needs a Noto Sans SC (or similar) fallback
+font, which adds several MB to the app; and missing keys fall back to English, so new strings
+drift untranslated unless someone keeps the file current. On-screen CJK text uses the system font
+and needs nothing.
+
+**Verification:** `flutter analyze` clean; the full test suite passes. ~21 test files use
+`find.text('…')` against English strings, so the tests need a `localizationsDelegates`-aware test
+wrapper and should keep passing with no assertion changes. Re-run the store-screenshot flow
+(`test/screenshot_flow_test.dart`) and compare: the shots should come out identical. Export a
+JSON file before and after and diff it — it must be byte-for-byte the same apart from timestamps.
+Generate a PDF report and check it matches. Optional check: a throwaway pseudo-locale ARB
+(e.g. every string wrapped in `⟦…⟧`) run once on a device shows any string that was missed.
 
 ## Release / infra
 
