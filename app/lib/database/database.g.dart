@@ -202,6 +202,40 @@ class $MigraineEventsTable extends MigraineEvents
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _headachePresentMeta = const VerificationMeta(
+    'headachePresent',
+  );
+  @override
+  late final GeneratedColumn<bool> headachePresent = GeneratedColumn<bool>(
+    'headache_present',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("headache_present" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _symptomsMeta = const VerificationMeta(
+    'symptoms',
+  );
+  @override
+  late final GeneratedColumn<String> symptoms = GeneratedColumn<String>(
+    'symptoms',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _impactMeta = const VerificationMeta('impact');
+  @override
+  late final GeneratedColumn<String> impact = GeneratedColumn<String>(
+    'impact',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -244,6 +278,9 @@ class $MigraineEventsTable extends MigraineEvents
     geoLabel,
     startedAtOffsetMin,
     endedAtOffsetMin,
+    headachePresent,
+    symptoms,
+    impact,
     createdAt,
     updatedAt,
   ];
@@ -395,6 +432,27 @@ class $MigraineEventsTable extends MigraineEvents
         ),
       );
     }
+    if (data.containsKey('headache_present')) {
+      context.handle(
+        _headachePresentMeta,
+        headachePresent.isAcceptableOrUnknown(
+          data['headache_present']!,
+          _headachePresentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('symptoms')) {
+      context.handle(
+        _symptomsMeta,
+        symptoms.isAcceptableOrUnknown(data['symptoms']!, _symptomsMeta),
+      );
+    }
+    if (data.containsKey('impact')) {
+      context.handle(
+        _impactMeta,
+        impact.isAcceptableOrUnknown(data['impact']!, _impactMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -492,6 +550,18 @@ class $MigraineEventsTable extends MigraineEvents
         DriftSqlType.int,
         data['${effectivePrefix}ended_at_offset_min'],
       ),
+      headachePresent: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}headache_present'],
+      ),
+      symptoms: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}symptoms'],
+      ),
+      impact: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}impact'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -553,6 +623,17 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
   /// those fall back to the phone's current zone (the pre-v2 behaviour).
   final int? startedAtOffsetMin;
   final int? endedAtOffsetMin;
+
+  /// Schema v4 (backlog #26). Tri-state: true / false / null(unknown). False marks an attack
+  /// without headache (aura only, vertigo, the fatigue phase with no pain); null is treated as a
+  /// headache everywhere, so rows from before v4 count exactly as they did.
+  final bool? headachePresent;
+
+  /// Schema v4 (backlog #20). JSON array of strings (vocab: symptom).
+  final String? symptoms;
+
+  /// Schema v4 (backlog #22a). One of [EventImpact]'s values, or null when not recorded.
+  final String? impact;
   final DateTime createdAt;
   final DateTime updatedAt;
   const MigraineEvent({
@@ -574,6 +655,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     this.geoLabel,
     this.startedAtOffsetMin,
     this.endedAtOffsetMin,
+    this.headachePresent,
+    this.symptoms,
+    this.impact,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -629,6 +713,15 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     }
     if (!nullToAbsent || endedAtOffsetMin != null) {
       map['ended_at_offset_min'] = Variable<int>(endedAtOffsetMin);
+    }
+    if (!nullToAbsent || headachePresent != null) {
+      map['headache_present'] = Variable<bool>(headachePresent);
+    }
+    if (!nullToAbsent || symptoms != null) {
+      map['symptoms'] = Variable<String>(symptoms);
+    }
+    if (!nullToAbsent || impact != null) {
+      map['impact'] = Variable<String>(impact);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -687,6 +780,15 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       endedAtOffsetMin: endedAtOffsetMin == null && nullToAbsent
           ? const Value.absent()
           : Value(endedAtOffsetMin),
+      headachePresent: headachePresent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(headachePresent),
+      symptoms: symptoms == null && nullToAbsent
+          ? const Value.absent()
+          : Value(symptoms),
+      impact: impact == null && nullToAbsent
+          ? const Value.absent()
+          : Value(impact),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -718,6 +820,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       geoLabel: serializer.fromJson<String?>(json['geoLabel']),
       startedAtOffsetMin: serializer.fromJson<int?>(json['startedAtOffsetMin']),
       endedAtOffsetMin: serializer.fromJson<int?>(json['endedAtOffsetMin']),
+      headachePresent: serializer.fromJson<bool?>(json['headachePresent']),
+      symptoms: serializer.fromJson<String?>(json['symptoms']),
+      impact: serializer.fromJson<String?>(json['impact']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -744,6 +849,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       'geoLabel': serializer.toJson<String?>(geoLabel),
       'startedAtOffsetMin': serializer.toJson<int?>(startedAtOffsetMin),
       'endedAtOffsetMin': serializer.toJson<int?>(endedAtOffsetMin),
+      'headachePresent': serializer.toJson<bool?>(headachePresent),
+      'symptoms': serializer.toJson<String?>(symptoms),
+      'impact': serializer.toJson<String?>(impact),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -768,6 +876,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     Value<String?> geoLabel = const Value.absent(),
     Value<int?> startedAtOffsetMin = const Value.absent(),
     Value<int?> endedAtOffsetMin = const Value.absent(),
+    Value<bool?> headachePresent = const Value.absent(),
+    Value<String?> symptoms = const Value.absent(),
+    Value<String?> impact = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => MigraineEvent(
@@ -799,6 +910,11 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     endedAtOffsetMin: endedAtOffsetMin.present
         ? endedAtOffsetMin.value
         : this.endedAtOffsetMin,
+    headachePresent: headachePresent.present
+        ? headachePresent.value
+        : this.headachePresent,
+    symptoms: symptoms.present ? symptoms.value : this.symptoms,
+    impact: impact.present ? impact.value : this.impact,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -840,6 +956,11 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       endedAtOffsetMin: data.endedAtOffsetMin.present
           ? data.endedAtOffsetMin.value
           : this.endedAtOffsetMin,
+      headachePresent: data.headachePresent.present
+          ? data.headachePresent.value
+          : this.headachePresent,
+      symptoms: data.symptoms.present ? data.symptoms.value : this.symptoms,
+      impact: data.impact.present ? data.impact.value : this.impact,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -866,6 +987,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
           ..write('geoLabel: $geoLabel, ')
           ..write('startedAtOffsetMin: $startedAtOffsetMin, ')
           ..write('endedAtOffsetMin: $endedAtOffsetMin, ')
+          ..write('headachePresent: $headachePresent, ')
+          ..write('symptoms: $symptoms, ')
+          ..write('impact: $impact, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -873,7 +997,7 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     startedAt,
     endedAt,
@@ -892,9 +1016,12 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     geoLabel,
     startedAtOffsetMin,
     endedAtOffsetMin,
+    headachePresent,
+    symptoms,
+    impact,
     createdAt,
     updatedAt,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -917,6 +1044,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
           other.geoLabel == this.geoLabel &&
           other.startedAtOffsetMin == this.startedAtOffsetMin &&
           other.endedAtOffsetMin == this.endedAtOffsetMin &&
+          other.headachePresent == this.headachePresent &&
+          other.symptoms == this.symptoms &&
+          other.impact == this.impact &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -940,6 +1070,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
   final Value<String?> geoLabel;
   final Value<int?> startedAtOffsetMin;
   final Value<int?> endedAtOffsetMin;
+  final Value<bool?> headachePresent;
+  final Value<String?> symptoms;
+  final Value<String?> impact;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -962,6 +1095,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     this.geoLabel = const Value.absent(),
     this.startedAtOffsetMin = const Value.absent(),
     this.endedAtOffsetMin = const Value.absent(),
+    this.headachePresent = const Value.absent(),
+    this.symptoms = const Value.absent(),
+    this.impact = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -985,6 +1121,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     this.geoLabel = const Value.absent(),
     this.startedAtOffsetMin = const Value.absent(),
     this.endedAtOffsetMin = const Value.absent(),
+    this.headachePresent = const Value.absent(),
+    this.symptoms = const Value.absent(),
+    this.impact = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -1011,6 +1150,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     Expression<String>? geoLabel,
     Expression<int>? startedAtOffsetMin,
     Expression<int>? endedAtOffsetMin,
+    Expression<bool>? headachePresent,
+    Expression<String>? symptoms,
+    Expression<String>? impact,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -1035,6 +1177,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
       if (startedAtOffsetMin != null)
         'started_at_offset_min': startedAtOffsetMin,
       if (endedAtOffsetMin != null) 'ended_at_offset_min': endedAtOffsetMin,
+      if (headachePresent != null) 'headache_present': headachePresent,
+      if (symptoms != null) 'symptoms': symptoms,
+      if (impact != null) 'impact': impact,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1060,6 +1205,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     Value<String?>? geoLabel,
     Value<int?>? startedAtOffsetMin,
     Value<int?>? endedAtOffsetMin,
+    Value<bool?>? headachePresent,
+    Value<String?>? symptoms,
+    Value<String?>? impact,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -1083,6 +1231,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
       geoLabel: geoLabel ?? this.geoLabel,
       startedAtOffsetMin: startedAtOffsetMin ?? this.startedAtOffsetMin,
       endedAtOffsetMin: endedAtOffsetMin ?? this.endedAtOffsetMin,
+      headachePresent: headachePresent ?? this.headachePresent,
+      symptoms: symptoms ?? this.symptoms,
+      impact: impact ?? this.impact,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1146,6 +1297,15 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     if (endedAtOffsetMin.present) {
       map['ended_at_offset_min'] = Variable<int>(endedAtOffsetMin.value);
     }
+    if (headachePresent.present) {
+      map['headache_present'] = Variable<bool>(headachePresent.value);
+    }
+    if (symptoms.present) {
+      map['symptoms'] = Variable<String>(symptoms.value);
+    }
+    if (impact.present) {
+      map['impact'] = Variable<String>(impact.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1179,6 +1339,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
           ..write('geoLabel: $geoLabel, ')
           ..write('startedAtOffsetMin: $startedAtOffsetMin, ')
           ..write('endedAtOffsetMin: $endedAtOffsetMin, ')
+          ..write('headachePresent: $headachePresent, ')
+          ..write('symptoms: $symptoms, ')
+          ..write('impact: $impact, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -2785,6 +2948,9 @@ typedef $$MigraineEventsTableCreateCompanionBuilder =
       Value<String?> geoLabel,
       Value<int?> startedAtOffsetMin,
       Value<int?> endedAtOffsetMin,
+      Value<bool?> headachePresent,
+      Value<String?> symptoms,
+      Value<String?> impact,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -2809,6 +2975,9 @@ typedef $$MigraineEventsTableUpdateCompanionBuilder =
       Value<String?> geoLabel,
       Value<int?> startedAtOffsetMin,
       Value<int?> endedAtOffsetMin,
+      Value<bool?> headachePresent,
+      Value<String?> symptoms,
+      Value<String?> impact,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -2939,6 +3108,21 @@ class $$MigraineEventsTableFilterComposer
 
   ColumnFilters<int> get endedAtOffsetMin => $composableBuilder(
     column: $table.endedAtOffsetMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get headachePresent => $composableBuilder(
+    column: $table.headachePresent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get symptoms => $composableBuilder(
+    column: $table.symptoms,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get impact => $composableBuilder(
+    column: $table.impact,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3077,6 +3261,21 @@ class $$MigraineEventsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get headachePresent => $composableBuilder(
+    column: $table.headachePresent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get symptoms => $composableBuilder(
+    column: $table.symptoms,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get impact => $composableBuilder(
+    column: $table.impact,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -3169,6 +3368,17 @@ class $$MigraineEventsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<bool> get headachePresent => $composableBuilder(
+    column: $table.headachePresent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get symptoms =>
+      $composableBuilder(column: $table.symptoms, builder: (column) => column);
+
+  GeneratedColumn<String> get impact =>
+      $composableBuilder(column: $table.impact, builder: (column) => column);
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -3249,6 +3459,9 @@ class $$MigraineEventsTableTableManager
                 Value<String?> geoLabel = const Value.absent(),
                 Value<int?> startedAtOffsetMin = const Value.absent(),
                 Value<int?> endedAtOffsetMin = const Value.absent(),
+                Value<bool?> headachePresent = const Value.absent(),
+                Value<String?> symptoms = const Value.absent(),
+                Value<String?> impact = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3271,6 +3484,9 @@ class $$MigraineEventsTableTableManager
                 geoLabel: geoLabel,
                 startedAtOffsetMin: startedAtOffsetMin,
                 endedAtOffsetMin: endedAtOffsetMin,
+                headachePresent: headachePresent,
+                symptoms: symptoms,
+                impact: impact,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -3295,6 +3511,9 @@ class $$MigraineEventsTableTableManager
                 Value<String?> geoLabel = const Value.absent(),
                 Value<int?> startedAtOffsetMin = const Value.absent(),
                 Value<int?> endedAtOffsetMin = const Value.absent(),
+                Value<bool?> headachePresent = const Value.absent(),
+                Value<String?> symptoms = const Value.absent(),
+                Value<String?> impact = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -3317,6 +3536,9 @@ class $$MigraineEventsTableTableManager
                 geoLabel: geoLabel,
                 startedAtOffsetMin: startedAtOffsetMin,
                 endedAtOffsetMin: endedAtOffsetMin,
+                headachePresent: headachePresent,
+                symptoms: symptoms,
+                impact: impact,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,

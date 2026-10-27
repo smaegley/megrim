@@ -10,6 +10,17 @@ class VocabKind {
   static const trigger = 'trigger';
   static const headLocation = 'head_location';
   static const medication = 'medication';
+  static const symptom = 'symptom';
+}
+
+/// Values of `migraine_events.impact` (schema v4, backlog #22a): how far the attack stopped the
+/// user that day. Stored as these strings; ordered mildest first, so a day's impact is the
+/// highest index among the attacks covering it.
+class EventImpact {
+  static const normal = 'normal';
+  static const reduced = 'reduced';
+  static const unable = 'unable';
+  static const all = [normal, reduced, unable];
 }
 
 /// Default seed vocabularies, carried over from the private app (SPEC §3.4).
@@ -46,6 +57,29 @@ const List<String> kDefaultHeadLocations = [
   'Both sides',
 ];
 
+/// The symptom names an attack without headache is labelled by (backlog #26): "with vertigo"
+/// when either is ticked. Matched by value, so a user who renames these loses the label — the
+/// symptoms themselves are kept either way.
+const String kSymptomVertigo = 'Vertigo';
+const String kSymptomDizziness = 'Dizziness';
+
+/// Default symptoms, seeded in schema v4 (backlog #20 + #26): the usual migraine symptoms plus
+/// the ones that mark vestibular migraine and the prodrome / postdrome.
+const List<String> kDefaultSymptoms = [
+  'Nausea',
+  'Vomiting',
+  'Light sensitivity',
+  'Sound sensitivity',
+  'Smell sensitivity',
+  'Neck pain / stiffness',
+  kSymptomDizziness,
+  kSymptomVertigo,
+  'Motion sensitivity',
+  'Fatigue',
+  'Brain fog',
+  'Yawning',
+];
+
 @DriftDatabase(
   tables: [MigraineEvents, DerivedFactors, AppSettings, Vocabularies],
 )
@@ -56,7 +90,7 @@ class MegrimDatabase extends _$MegrimDatabase {
   MegrimDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -83,6 +117,25 @@ class MegrimDatabase extends _$MegrimDatabase {
               ),
               mode: InsertMode.insertOrIgnore,
             );
+          }
+          if (from < 4) {
+            // v4 (backlog #20, #22a, #26): symptoms, impact, and whether there was a headache.
+            // Additive and nullable — existing rows read as "headache, nothing else recorded".
+            final existing = {
+              for (final r in await customSelect('PRAGMA table_info(migraine_events)').get())
+                r.read<String>('name'),
+            };
+            for (final c in [
+              migraineEvents.headachePresent,
+              migraineEvents.symptoms,
+              migraineEvents.impact,
+            ]) {
+              // Guarded so a database whose user_version was rolled back by hand (the migration
+              // tests do this) doesn't fail on a duplicate column.
+              if (!existing.contains(c.name)) await m.addColumn(migraineEvents, c);
+            }
+            // Seeded once, like "Travel" in v3: insertOrIgnore keeps anything the user has.
+            await _seedSymptoms();
           }
         },
         beforeOpen: (details) async {
@@ -115,6 +168,23 @@ class MegrimDatabase extends _$MegrimDatabase {
           VocabulariesCompanion.insert(
             kind: VocabKind.headLocation,
             value: kDefaultHeadLocations[i],
+            sort: Value(i),
+          ),
+          mode: InsertMode.insertOrIgnore,
+        );
+      }
+    });
+    await _seedSymptoms();
+  }
+
+  Future<void> _seedSymptoms() async {
+    await batch((b) {
+      for (var i = 0; i < kDefaultSymptoms.length; i++) {
+        b.insert(
+          vocabularies,
+          VocabulariesCompanion.insert(
+            kind: VocabKind.symptom,
+            value: kDefaultSymptoms[i],
             sort: Value(i),
           ),
           mode: InsertMode.insertOrIgnore,

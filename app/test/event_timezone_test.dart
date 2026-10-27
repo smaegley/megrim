@@ -109,7 +109,8 @@ void main() {
       expect(ev['started_at_offset_minutes'], tokyoOffset);
       expect(ev['ended_at_offset_minutes'], isNull);
       final csv = await ExportService(db: db).toCsv();
-      expect(csv.split('\n').first, endsWith('started_at_offset_minutes,ended_at_offset_minutes'));
+      // The offset columns stay in place; later schema columns are appended after them.
+      expect(csv.split('\n').first, contains(',started_at_offset_minutes,ended_at_offset_minutes,'));
 
       final dst = MegrimDatabase.forTesting(NativeDatabase.memory());
       await ImportService(dst).importJsonString(json, replace: true);

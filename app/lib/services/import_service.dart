@@ -127,6 +127,7 @@ class ImportService {
         'trigger': VocabKind.trigger,
         'head_location': VocabKind.headLocation,
         'medication': VocabKind.medication,
+        'symptom': VocabKind.symptom,
       }.entries) {
         final values = vocab[entry.key];
         if (values is List) {

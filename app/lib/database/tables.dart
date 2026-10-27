@@ -52,6 +52,17 @@ class MigraineEvents extends Table {
   IntColumn get startedAtOffsetMin => integer().nullable()();
   IntColumn get endedAtOffsetMin => integer().nullable()();
 
+  /// Schema v4 (backlog #26). Tri-state: true / false / null(unknown). False marks an attack
+  /// without headache (aura only, vertigo, the fatigue phase with no pain); null is treated as a
+  /// headache everywhere, so rows from before v4 count exactly as they did.
+  BoolColumn get headachePresent => boolean().nullable()();
+
+  /// Schema v4 (backlog #20). JSON array of strings (vocab: symptom).
+  TextColumn get symptoms => text().nullable()();
+
+  /// Schema v4 (backlog #22a). One of [EventImpact]'s values, or null when not recorded.
+  TextColumn get impact => text().nullable()();
+
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -112,7 +123,7 @@ class AppSettings extends Table {
   Set<Column> get primaryKey => {key};
 }
 
-/// §3.4 — user-editable option lists. kinds: trigger, head_location, medication.
+/// §3.4 — user-editable option lists. kinds: trigger, head_location, medication, symptom.
 class Vocabularies extends Table {
   TextColumn get kind => text()();
   TextColumn get value => text()();
