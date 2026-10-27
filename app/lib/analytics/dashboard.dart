@@ -610,7 +610,8 @@ double? _avgLast3Months(Map<int, int> perMonth, int firstMonth, DateTime today) 
   );
 }
 
-/// The backlog #22a figures, on the same day rule and windows as [migraineDays]. Null when no
+/// The backlog #22a figures, on the same day rule and windows as [migraineDays], except that the
+/// 3-month averages wait for 3 complete months since the first impact was recorded. Null when no
 /// entry has an impact recorded. Public for tests.
 ImpactDays? impactDays(Iterable<EventStat> events, DateTime now) {
   if (events.every((e) => e.impact == null)) return null;
@@ -627,7 +628,12 @@ ImpactDays? impactDays(Iterable<EventStat> events, DateTime now) {
     }
   }
   final today = _today(now);
-  final first = worst.keys.map(_monthIndex).reduce((a, b) => a < b ? a : b);
+  // Averages start from the first month with an impact recorded, not the first entry: months
+  // logged before the field existed would otherwise read as zero bad days.
+  final first = worst.entries
+      .where((e) => e.value >= 0)
+      .map((e) => _monthIndex(e.key))
+      .reduce((a, b) => a < b ? a : b);
   final reduced = EventImpact.all.indexOf(EventImpact.reduced);
   final unable = EventImpact.all.indexOf(EventImpact.unable);
   final reducedPerMonth = <int, int>{};

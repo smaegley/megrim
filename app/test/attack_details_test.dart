@@ -234,6 +234,20 @@ void main() {
       expect(r.avgReducedLast3Months, 0.3);
     });
 
+    test('impact averages count from the first impact, not the first entry', () {
+      final r = impactDays([
+        // Years of entries from before impact could be recorded...
+        EventStat(startedAt: DateTime.utc(2024, 1, 5, 12), startOffsetMin: 0),
+        // ...then the first impact, too recent for 3 complete months.
+        EventStat(
+            startedAt: DateTime.utc(2026, 9, 2, 12),
+            startOffsetMin: 0,
+            impact: EventImpact.unable),
+      ], now)!;
+      expect(r.avgUnableLast3Months, isNull, reason: 'not 0.3 over months nobody could record');
+      expect(r.avgReducedLast3Months, isNull);
+    });
+
     test('attacks without headache are summarised by kind, symptoms and median length', () {
       final d = computeDashboard([
         stat(1, headache: false, aura: true, symptoms: [kSymptomVertigo], hours: 1),
