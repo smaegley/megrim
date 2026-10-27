@@ -146,6 +146,9 @@ All timestamps stored UTC (ISO-8601 in exports); all display in local time.
 | location_head | TEXT nullable | JSON array of strings (vocab §3.4) |
 | aura_present | INTEGER (bool) nullable | tri-state yes/no/unknown |
 | aura_description | TEXT nullable | |
+| headache_present | INTEGER (bool) nullable | schema v4 (backlog #26): tri-state yes/no/unknown; false = an attack without headache, null counts as a headache |
+| symptoms | TEXT nullable | schema v4 (backlog #20): JSON array of strings (vocab §3.4) |
+| impact | TEXT nullable | schema v4 (backlog #22a): `normal` / `reduced` / `unable` |
 | meds_taken | TEXT nullable | JSON `[{name, dose, time, helped}]` |
 | triggers_suspected | TEXT nullable | JSON array of strings (vocab §3.4) |
 | sleep_hours_prior | REAL nullable | |
@@ -187,7 +190,8 @@ a Snackbar-undo grace instead of tombstones), `needs_review`, `synced_to_server`
 
 One table `vocab(kind TEXT, value TEXT, sort INTEGER, PRIMARY KEY(kind, value))`, seeded on
 first run. Kinds: `trigger` (the 11 defaults from the private app), `head_location` (the 9
-defaults), `medication` (empty; learned from entries as suggestions). Manage screens = the
+defaults), `medication` (empty; learned from entries as suggestions), `symptom` (12 defaults, schema v4 —
+seeded on create and once on upgrade, backlog #20). Manage screens = the
 "Manage triggers" pattern already built in the private app (add/rename/delete; renames do **not**
 rewrite historical events; chips shown = vocab ∪ values present on the open event).
 
@@ -844,3 +848,10 @@ encryption at rest reviewed and not planned), **migraine days per month** (#17; 
 plugin), the **Android backup fix** (§7.4), and two **Suspected Factors corrections** (§6.2):
 onset days with mid-attack days left out, and pressure read from one daily-mean series on both
 sides. Each was tested by Steve from a written test script; 312 tests on `main`.
+
+**2026-10-27 (branch `feat/attack-details`, schema v4, not yet released):** backlog **#20
+(symptoms)**, **#22a (impact on the day)** and **#26 (attacks without headache)** built together.
+Three nullable columns and a seeded `symptom` vocabulary; Event Detail gets "Headache?" Yes / No /
+Not sure, Impact and Symptoms, and Quick Log gets "Headache?". Headache-free attacks count as
+migraine days (split out on the monthly card), stay in Suspected Factors, have no severity, and
+get their own report section. Rules in `docs/METHODS.md`; export fields in `docs/IMPORT.md`.
