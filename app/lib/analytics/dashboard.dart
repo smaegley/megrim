@@ -1,4 +1,6 @@
 import 'dart:math' show sqrt;
+import '../database/database.dart' show EventImpact;
+import '../models/attack_details.dart';
 import '../models/event_time.dart' show daysCovered, wallClock, wallDate;
 import 'geo_distance.dart';
 
@@ -40,6 +42,16 @@ class EventStat {
   /// Self-reported triggers tagged on this event (descriptive only — not correlated).
   final List<String> triggers;
 
+  /// Schema v4 (backlog #26): false = an attack without headache; null counts as a headache.
+  final bool? headachePresent;
+  final bool? aura;
+
+  /// Schema v4 (backlog #20): symptoms ticked on this event (descriptive only).
+  final List<String> symptoms;
+
+  /// Schema v4 (backlog #22a): one of `EventImpact`'s values, or null.
+  final String? impact;
+
   /// The event's recorded location, if any (rounded to 2 decimals at capture — SPEC §3.1).
   final double? geoLat;
   final double? geoLon;
@@ -56,6 +68,10 @@ class EventStat {
     this.pressureDelta24h,
     this.daylightHours,
     this.triggers = const [],
+    this.headachePresent,
+    this.aura,
+    this.symptoms = const [],
+    this.impact,
     this.startOffsetMin,
     this.endOffsetMin,
     this.geoLat,
@@ -104,10 +120,68 @@ class MonthDays {
   final int year;
   final int month;
   final int days;
-  const MonthDays(this.year, this.month, this.days);
+
+  /// Of [days], those covered only by attacks without headache (backlog #26). A day with both
+  /// kinds counts as a headache day.
+  final int daysWithoutHeadache;
+  const MonthDays(this.year, this.month, this.days, [this.daysWithoutHeadache = 0]);
 
   /// `yyyy-MM`, the month's key in the export.
   String get key => '$year-${month.toString().padLeft(2, '0')}';
+}
+
+/// How much migraines stopped the user (backlog #22a), counted in days like [MonthDays]: each
+/// migraine day takes the worst impact recorded on any attack covering it. Days with no impact
+/// recorded are in neither count, and [recordedLast30] says how many of the last 30 days' migraine
+/// days had one, so a low count can be told apart from a field that is rarely filled in.
+class ImpactDays {
+  final int reducedLast30;
+  final int unableLast30;
+  final int recordedLast30;
+
+  /// Means over the last 3 complete calendar months, on the same rule as
+  /// [DashboardResult.avgMigraineDaysLast3Months]; null until those months exist.
+  final double? avgReducedLast3Months;
+  final double? avgUnableLast3Months;
+
+  const ImpactDays({
+    required this.reducedLast30,
+    required this.unableLast30,
+    required this.recordedLast30,
+    this.avgReducedLast3Months,
+    this.avgUnableLast3Months,
+  });
+}
+
+/// The attacks without headache (backlog #26), described for the report — what a clinician needs
+/// to tell typical aura without headache and vestibular migraine apart from other causes.
+class WithoutHeadache {
+  final int events;
+  final int totalEvents;
+
+  /// Split by [noHeadacheKind]: aura first, then vertigo / dizziness, then the rest.
+  final int withAura;
+  final int withVertigo;
+  final int other;
+
+  /// Symptoms on these attacks only, most-ticked first.
+  final List<LabeledCount> symptoms;
+
+  /// Median length of those with an end time, in hours; null when none has one.
+  final double? medianDurationHours;
+
+  const WithoutHeadache({
+    required this.events,
+    required this.totalEvents,
+    required this.withAura,
+    required this.withVertigo,
+    required this.other,
+    this.symptoms = const [],
+    this.medianDurationHours,
+  });
+
+  /// Share of all entries, 0–100, rounded to 1 decimal.
+  double get pct => totalEvents == 0 ? 0 : _round1(events / totalEvents * 100);
 }
 
 class LabeledCount {
@@ -170,6 +244,9 @@ class DashboardResult {
   /// (there is no non-migraine-day baseline for self-reported triggers). See SPEC §6.2.
   final List<LabeledCount> triggerFrequency;
 
+  /// Frequency of symptoms (backlog #20), most-ticked first. Descriptive only, like triggers.
+  final List<LabeledCount> symptomFrequency;
+
   final List<CalendarEntry> calendar;
 
   /// Null when there is no home location set, or when no entry carries coordinates — the card
@@ -189,6 +266,15 @@ class DashboardResult {
   /// baseline. Null until 3 complete months have passed since the month of the first entry.
   final double? avgMigraineDaysLast3Months;
 
+  /// Of [migraineDaysLast30], the days covered only by attacks without headache (backlog #26).
+  final int migraineDaysWithoutHeadacheLast30;
+
+  /// Null until some entry has an impact recorded — the card then doesn't render.
+  final ImpactDays? impact;
+
+  /// Null when no entry is marked as being without headache.
+  final WithoutHeadache? withoutHeadache;
+
   const DashboardResult({
     required this.summary,
     this.byYear = const [],
@@ -199,11 +285,15 @@ class DashboardResult {
     this.byMoonPhase = const [],
     this.byDaylight = const [],
     this.triggerFrequency = const [],
+    this.symptomFrequency = const [],
     this.calendar = const [],
     this.awayFromHome,
     this.migraineDaysByMonth = const [],
     this.migraineDaysLast30 = 0,
     this.avgMigraineDaysLast3Months,
+    this.migraineDaysWithoutHeadacheLast30 = 0,
+    this.impact,
+    this.withoutHeadache,
   });
 
   bool get isEmpty => summary.totalEvents == 0;
@@ -230,7 +320,10 @@ DashboardResult computeDashboard(
   final last = sorted.last.startedAt.toUtc();
   final yearsTracked = _round1(last.difference(first).inDays / 365.25);
 
-  final severities = sorted.where((e) => e.severity != null).map((e) => e.severity!);
+  // Severity rates pain, so it is averaged over headache attacks only (backlog #26). The app
+  // clears severity on an attack without headache, but an imported file may still carry one.
+  bool rated(EventStat e) => e.severity != null && hasHeadache(e.headachePresent);
+  final severities = sorted.where(rated).map((e) => e.severity!);
   final avgSev = severities.isEmpty
       ? null
       : _round1(severities.reduce((a, b) => a + b) / severities.length);
@@ -281,7 +374,7 @@ DashboardResult computeDashboard(
   for (final e in sorted) {
     final y = wallClock(e.startedAt, e.startOffsetMin).year;
     yearCounts[y] = (yearCounts[y] ?? 0) + 1;
-    if (e.severity != null) {
+    if (rated(e)) {
       yearSevSum[y] = (yearSevSum[y] ?? 0) + e.severity!;
       yearSevN[y] = (yearSevN[y] ?? 0) + 1;
     }
@@ -334,20 +427,8 @@ DashboardResult computeDashboard(
       .map((b) => LabeledCount(b, daylightCounts[b] ?? 0))
       .toList();
 
-  // Trigger frequency: count each trigger once per event it appears on, most-tagged first.
-  final triggerCounts = <String, int>{};
-  for (final e in sorted) {
-    for (final t in e.triggers.toSet()) {
-      triggerCounts[t] = (triggerCounts[t] ?? 0) + 1;
-    }
-  }
-  final triggerFrequency = triggerCounts.entries
-      .map((e) => LabeledCount(e.key, e.value))
-      .toList()
-    ..sort((a, b) {
-      final byCount = b.count.compareTo(a.count);
-      return byCount != 0 ? byCount : a.label.compareTo(b.label);
-    });
+  final triggerFrequency = _frequency(sorted.map((e) => e.triggers));
+  final symptomFrequency = _frequency(sorted.map((e) => e.symptoms));
 
   final calendar = sorted
       .map((e) => CalendarEntry(wallDate(e.startedAt, e.startOffsetMin), e.severity))
@@ -391,6 +472,37 @@ DashboardResult computeDashboard(
   }
 
   final monthly = migraineDays(sorted, now ?? DateTime.now());
+  final impact = impactDays(sorted, now ?? DateTime.now());
+
+  // Attacks without headache (backlog #26).
+  WithoutHeadache? withoutHeadache;
+  final noHeadache = sorted.where((e) => !hasHeadache(e.headachePresent)).toList();
+  if (noHeadache.isNotEmpty) {
+    final kinds = {for (final k in NoHeadacheKind.values) k: 0};
+    for (final e in noHeadache) {
+      final k = noHeadacheKind(aura: e.aura, symptoms: e.symptoms);
+      kinds[k] = kinds[k]! + 1;
+    }
+    final hours = [
+      for (final e in noHeadache)
+        if (e.endedAt != null && e.endedAt!.isAfter(e.startedAt))
+          e.endedAt!.difference(e.startedAt).inSeconds / 3600.0,
+    ]..sort();
+    double? median;
+    if (hours.isNotEmpty) {
+      final mid = hours.length ~/ 2;
+      median = _round1(hours.length.isOdd ? hours[mid] : (hours[mid - 1] + hours[mid]) / 2);
+    }
+    withoutHeadache = WithoutHeadache(
+      events: noHeadache.length,
+      totalEvents: n,
+      withAura: kinds[NoHeadacheKind.aura]!,
+      withVertigo: kinds[NoHeadacheKind.vertigo]!,
+      other: kinds[NoHeadacheKind.other]!,
+      symptoms: _frequency(noHeadache.map((e) => e.symptoms)),
+      medianDurationHours: median,
+    );
+  }
 
   return DashboardResult(
     summary: summary,
@@ -402,54 +514,143 @@ DashboardResult computeDashboard(
     byMoonPhase: byMoon,
     byDaylight: byDaylight,
     triggerFrequency: triggerFrequency,
+    symptomFrequency: symptomFrequency,
     calendar: calendar,
     awayFromHome: away,
     migraineDaysByMonth: monthly.byMonth,
     migraineDaysLast30: monthly.last30,
     avgMigraineDaysLast3Months: monthly.avgLast3Months,
+    migraineDaysWithoutHeadacheLast30: monthly.last30WithoutHeadache,
+    impact: impact,
+    withoutHeadache: withoutHeadache,
   );
 }
 
+/// Count each label once per event it appears on, most-tagged first (ties alphabetical).
+List<LabeledCount> _frequency(Iterable<List<String>> perEvent) {
+  final counts = <String, int>{};
+  for (final labels in perEvent) {
+    for (final l in labels.toSet()) {
+      counts[l] = (counts[l] ?? 0) + 1;
+    }
+  }
+  return counts.entries.map((e) => LabeledCount(e.key, e.value)).toList()
+    ..sort((a, b) {
+      final byCount = b.count.compareTo(a.count);
+      return byCount != 0 ? byCount : a.label.compareTo(b.label);
+    });
+}
+
+int _monthIndex(DateTime d) => d.year * 12 + d.month - 1;
+
+DateTime _today(DateTime now) {
+  final local = now.toLocal();
+  return DateTime(local.year, local.month, local.day);
+}
+
+/// Today and the 29 days before.
+bool _inLast30(DateTime d, DateTime today) =>
+    !d.isBefore(DateTime(today.year, today.month, today.day - 29)) && !d.isAfter(today);
+
+/// Mean of [perMonth] over the 3 complete months before [today]'s; null unless all three are on
+/// or after [firstMonth], otherwise months before tracking began would drag the average down.
+double? _avgLast3Months(Map<int, int> perMonth, int firstMonth, DateTime today) {
+  final current = _monthIndex(today);
+  if (current - 3 < firstMonth) return null;
+  return _round1(
+      [for (var m = current - 3; m < current; m++) perMonth[m] ?? 0].reduce((a, b) => a + b) / 3);
+}
+
 /// The backlog #17 figures. "Today" is [now]'s date on the phone's clock; each migraine's days are
-/// read in the zone it was logged in. Public for tests.
-({List<MonthDays> byMonth, int last30, double? avgLast3Months}) migraineDays(
+/// read in the zone it was logged in. Days covered only by attacks without headache are counted
+/// too, and also reported on their own (backlog #26). Public for tests.
+({
+  List<MonthDays> byMonth,
+  int last30,
+  int last30WithoutHeadache,
+  double? avgLast3Months,
+}) migraineDays(
   Iterable<EventStat> events,
   DateTime now,
 ) {
-  final days = <DateTime>{
-    for (final e in events)
-      ...daysCovered(e.startedAt, e.startOffsetMin, e.endedAt, e.endOffsetMin),
-  };
-  if (days.isEmpty) return (byMonth: const [], last30: 0, avgLast3Months: null);
+  final days = <DateTime>{};
+  final headacheDays = <DateTime>{};
+  for (final e in events) {
+    final covered = daysCovered(e.startedAt, e.startOffsetMin, e.endedAt, e.endOffsetMin);
+    days.addAll(covered);
+    if (hasHeadache(e.headachePresent)) headacheDays.addAll(covered);
+  }
+  if (days.isEmpty) {
+    return (byMonth: const [], last30: 0, last30WithoutHeadache: 0, avgLast3Months: null);
+  }
+  final withoutHeadache = days.difference(headacheDays);
 
-  final local = now.toLocal();
-  final today = DateTime(local.year, local.month, local.day);
-  int monthIndex(DateTime d) => d.year * 12 + d.month - 1;
-
+  final today = _today(now);
   final perMonth = <int, int>{};
+  final perMonthWithout = <int, int>{};
   for (final d in days) {
-    perMonth[monthIndex(d)] = (perMonth[monthIndex(d)] ?? 0) + 1;
+    perMonth[_monthIndex(d)] = (perMonth[_monthIndex(d)] ?? 0) + 1;
+  }
+  for (final d in withoutHeadache) {
+    perMonthWithout[_monthIndex(d)] = (perMonthWithout[_monthIndex(d)] ?? 0) + 1;
   }
   final first = perMonth.keys.reduce((a, b) => a < b ? a : b);
   // Through the current month, or later if an entry is dated in the future.
-  final last = [monthIndex(today), ...perMonth.keys].reduce((a, b) => a > b ? a : b);
+  final last = [_monthIndex(today), ...perMonth.keys].reduce((a, b) => a > b ? a : b);
   final byMonth = [
-    for (var m = first; m <= last; m++) MonthDays(m ~/ 12, m % 12 + 1, perMonth[m] ?? 0),
+    for (var m = first; m <= last; m++)
+      MonthDays(m ~/ 12, m % 12 + 1, perMonth[m] ?? 0, perMonthWithout[m] ?? 0),
   ];
 
-  final windowStart = DateTime(today.year, today.month, today.day - 29);
-  final last30 = days.where((d) => !d.isBefore(windowStart) && !d.isAfter(today)).length;
+  return (
+    byMonth: byMonth,
+    last30: days.where((d) => _inLast30(d, today)).length,
+    last30WithoutHeadache: withoutHeadache.where((d) => _inLast30(d, today)).length,
+    avgLast3Months: _avgLast3Months(perMonth, first, today),
+  );
+}
 
-  // The 3 complete months before the current one; all must be on or after the first entry's
-  // month, otherwise months before tracking began would drag the average down.
-  final current = monthIndex(today);
-  final avgLast3 = current - 3 >= first
-      ? _round1([for (var m = current - 3; m < current; m++) perMonth[m] ?? 0]
-              .reduce((a, b) => a + b) /
-          3)
-      : null;
-
-  return (byMonth: byMonth, last30: last30, avgLast3Months: avgLast3);
+/// The backlog #22a figures, on the same day rule and windows as [migraineDays]. Null when no
+/// entry has an impact recorded. Public for tests.
+ImpactDays? impactDays(Iterable<EventStat> events, DateTime now) {
+  if (events.every((e) => e.impact == null)) return null;
+  // Worst impact per migraine day, as an index into EventImpact.all; -1 = migraine, none recorded.
+  final worst = <DateTime, int>{};
+  for (final e in events) {
+    final level = e.impact == null ? -1 : EventImpact.all.indexOf(e.impact!);
+    for (final d in daysCovered(e.startedAt, e.startOffsetMin, e.endedAt, e.endOffsetMin)) {
+      if (level > (worst[d] ?? -1)) {
+        worst[d] = level;
+      } else {
+        worst.putIfAbsent(d, () => -1);
+      }
+    }
+  }
+  final today = _today(now);
+  final first = worst.keys.map(_monthIndex).reduce((a, b) => a < b ? a : b);
+  final reduced = EventImpact.all.indexOf(EventImpact.reduced);
+  final unable = EventImpact.all.indexOf(EventImpact.unable);
+  final reducedPerMonth = <int, int>{};
+  final unablePerMonth = <int, int>{};
+  var reduced30 = 0, unable30 = 0, recorded30 = 0;
+  for (final MapEntry(key: d, value: level) in worst.entries) {
+    final recent = _inLast30(d, today);
+    if (recent && level >= 0) recorded30++;
+    if (level == reduced) {
+      reducedPerMonth[_monthIndex(d)] = (reducedPerMonth[_monthIndex(d)] ?? 0) + 1;
+      if (recent) reduced30++;
+    } else if (level == unable) {
+      unablePerMonth[_monthIndex(d)] = (unablePerMonth[_monthIndex(d)] ?? 0) + 1;
+      if (recent) unable30++;
+    }
+  }
+  return ImpactDays(
+    reducedLast30: reduced30,
+    unableLast30: unable30,
+    recordedLast30: recorded30,
+    avgReducedLast3Months: _avgLast3Months(reducedPerMonth, first, today),
+    avgUnableLast3Months: _avgLast3Months(unablePerMonth, first, today),
+  );
 }
 
 List<LabeledCount> _labeledFrom(List<String> order, Iterable<String?> values) {

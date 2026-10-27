@@ -2,12 +2,15 @@ import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
 import 'package:megrim/models/json_fields.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
+import 'package:megrim/screens/analytics_screen.dart';
 import 'package:megrim/screens/event_detail_screen.dart';
 import 'package:megrim/screens/history_screen.dart';
 import 'package:megrim/screens/quick_log_screen.dart';
+import 'package:megrim/widgets/monthly_days_card.dart';
 import 'package:megrim/widgets/severity_badge.dart';
 
 /// The schema v4 attack fields on screen: "Headache?" (backlog #26), Impact (#22a) and Symptoms
@@ -169,6 +172,87 @@ void main() {
       expect(find.text('No headache'), findsOneWidget);
       expect(find.byWidgetPredicate((w) => w is SeverityBadge && w.noHeadache), findsNWidgets(3));
       expect(find.textContaining('Severity 6/10'), findsOneWidget);
+      await disposeAndDrain(tester);
+    });
+  });
+
+  group('Analytics', () {
+    testWidgets('the monthly card says how many days were without headache', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: MonthlyDaysCard(
+              now: DateTime(2026, 10, 15),
+              dash: const DashboardResult(
+                summary: Summary(totalEvents: 5),
+                migraineDaysLast30: 5,
+                migraineDaysWithoutHeadacheLast30: 2,
+                migraineDaysByMonth: [MonthDays(2026, 9, 3, 1), MonthDays(2026, 10, 5, 2)],
+              ),
+            ),
+          ),
+        ),
+      ));
+      expect(find.text('Last 30 days\nincluding 2 without headache'), findsOneWidget);
+      expect(find.textContaining('days with only attacks without headache'), findsOneWidget);
+      expect(
+          find.bySemanticsLabel(RegExp(r'Oct 2026 so far: 5 days, 2 without headache; '
+              r'Sep 2026: 3 days, 1 without headache')),
+          findsOneWidget);
+      handle.dispose();
+    });
+
+    testWidgets('no headache-free days: the card reads as before', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: MonthlyDaysCard(
+              now: DateTime(2026, 10, 15),
+              dash: const DashboardResult(
+                summary: Summary(totalEvents: 1),
+                migraineDaysLast30: 1,
+                migraineDaysByMonth: [MonthDays(2026, 10, 1)],
+              ),
+            ),
+          ),
+        ),
+      ));
+      expect(find.text('Last 30 days'), findsOneWidget);
+      expect(find.textContaining('without headache'), findsNothing);
+    });
+
+    testWidgets('the tab shows the Symptoms and Impact cards once there is data',
+        (tester) async {
+      // 10:00 local, so a 2-hour attack never runs past midnight into a second day.
+      final today = DateTime.now();
+      for (var i = 0; i < 3; i++) {
+        final at = DateTime(today.year, today.month, today.day - 2 - i * 3, 10).toUtc();
+        await db.into(db.migraineEvents).insert(MigraineEventsCompanion.insert(
+              id: 'e$i',
+              startedAt: at,
+              endedAt: Value(at.add(const Duration(hours: 2))),
+              headachePresent: Value(i == 0 ? false : true),
+              symptoms: Value(encodeStringList(i == 0 ? ['Fatigue'] : ['Nausea', 'Fatigue'])),
+              impact: Value(i == 2 ? EventImpact.unable : EventImpact.reduced),
+              createdAt: at,
+              updatedAt: at,
+            ));
+      }
+      await tester.pumpWidget(MaterialApp(home: AnalyticsScreen(repo: repo, refreshToken: 0)));
+      await tester.pumpAndSettle();
+
+      // The monthly chart scrolls sideways too; scroll the tab's own list.
+      final list = find
+          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+          .first;
+      await tester.scrollUntilVisible(find.text('Most common symptoms'), 300, scrollable: list);
+      expect(find.text('Fatigue'), findsOneWidget);
+      expect(find.text('3 · 100%'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Impact on the day'), 300, scrollable: list);
+      expect(find.text('Unable to function'), findsOneWidget);
+
+      expect(find.textContaining('Impact recorded on 3 of 3 migraine days'), findsOneWidget);
       await disposeAndDrain(tester);
     });
   });

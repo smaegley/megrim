@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
 import 'package:megrim/models/json_fields.dart';
+import 'package:megrim/repositories/megrim_repository.dart';
 import 'package:megrim/services/export_service.dart';
 import 'package:megrim/services/import_service.dart';
 
@@ -143,6 +145,130 @@ void main() {
       final lines = (await ExportService(db: db).toCsv()).trim().split('\n');
       expect(lines.first, endsWith('ended_at_offset_minutes,headache_present,symptoms,impact'));
       expect(lines[1], endsWith(',false,Vertigo;Nausea,unable'));
+      await db.close();
+    });
+  });
+
+  group('analytics', () {
+    // Noon UTC with a UTC offset of 0, so every event sits on its own calendar day.
+    DateTime day(int d) => DateTime.utc(2026, 10, d, 12);
+    final now = DateTime(2026, 10, 20, 18);
+    EventStat stat(int d,
+            {bool? headache,
+            int? severity,
+            String? impact,
+            bool? aura,
+            List<String> symptoms = const [],
+            int hours = 2}) =>
+        EventStat(
+          startedAt: day(d),
+          endedAt: day(d).add(Duration(hours: hours)),
+          startOffsetMin: 0,
+          endOffsetMin: 0,
+          headachePresent: headache,
+          severity: severity,
+          impact: impact,
+          aura: aura,
+          symptoms: symptoms,
+        );
+
+    test('headache-free days count as migraine days and are split out; a day with both '
+        'kinds counts once, as a headache day', () {
+      final r = migraineDays([
+        stat(1, headache: true),
+        stat(3, headache: false),
+        stat(5, headache: false),
+        stat(5), // null = headache
+        stat(7, headache: false),
+        stat(7, headache: false), // two headache-free on one day: still one day
+      ], now);
+      expect(r.last30, 4);
+      expect(r.last30WithoutHeadache, 2);
+      final oct = r.byMonth.last;
+      expect([oct.days, oct.daysWithoutHeadache], [4, 2]);
+    });
+
+    test('average severity leaves out attacks without headache, even if one carries a number',
+        () {
+      final d = computeDashboard([
+        stat(1, severity: 8),
+        stat(2, severity: 4, headache: true),
+        stat(3, severity: 2, headache: false), // e.g. an imported file
+      ], now: now);
+      expect(d.summary.avgSeverity, 6.0);
+      expect(d.byYear.single.avgSeverity, 6.0);
+      expect(d.migraineDaysWithoutHeadacheLast30, 1);
+    });
+
+    test('impact days take the worst impact on each day, and count recorded days', () {
+      final r = impactDays([
+        stat(1, impact: EventImpact.reduced),
+        stat(1, impact: EventImpact.unable),
+        stat(2, impact: EventImpact.reduced),
+        stat(3, impact: EventImpact.normal),
+        stat(4), // a migraine day with nothing recorded
+      ], now)!;
+      expect(r.unableLast30, 1);
+      expect(r.reducedLast30, 1);
+      expect(r.recordedLast30, 3);
+      expect(r.avgUnableLast3Months, isNull, reason: 'no complete months yet');
+      expect(impactDays([stat(1), stat(2)], now), isNull);
+    });
+
+    test('impact averages need 3 complete months, like migraine days', () {
+      final r = impactDays([
+        EventStat(
+            startedAt: DateTime.utc(2026, 7, 2, 12),
+            startOffsetMin: 0,
+            impact: EventImpact.unable),
+        EventStat(
+            startedAt: DateTime.utc(2026, 9, 2, 12),
+            startOffsetMin: 0,
+            impact: EventImpact.unable),
+        EventStat(
+            startedAt: DateTime.utc(2026, 9, 9, 12),
+            startOffsetMin: 0,
+            impact: EventImpact.reduced),
+      ], now)!;
+      expect(r.avgUnableLast3Months, 0.7); // (1 + 0 + 1) / 3
+      expect(r.avgReducedLast3Months, 0.3);
+    });
+
+    test('attacks without headache are summarised by kind, symptoms and median length', () {
+      final d = computeDashboard([
+        stat(1, headache: false, aura: true, symptoms: [kSymptomVertigo], hours: 1),
+        stat(2, headache: false, symptoms: [kSymptomDizziness, 'Fatigue'], hours: 3),
+        stat(3, headache: false, symptoms: ['Fatigue', 'Brain fog'], hours: 10),
+        stat(4, headache: false, symptoms: ['Fatigue'], hours: 6),
+        stat(5, symptoms: ['Nausea']),
+      ], now: now);
+      final w = d.withoutHeadache!;
+      expect([w.events, w.totalEvents, w.pct], [4, 5, 80.0]);
+      expect([w.withAura, w.withVertigo, w.other], [1, 1, 2],
+          reason: 'aura wins over vertigo on the same attack');
+      expect(w.symptoms.first.label, 'Fatigue');
+      expect(w.symptoms.first.count, 3);
+      expect(w.symptoms.map((s) => s.label), isNot(contains('Nausea')));
+      expect(w.medianDurationHours, 4.5);
+      expect(d.symptomFrequency.map((s) => s.label),
+          containsAll(['Fatigue', 'Nausea', kSymptomVertigo]));
+      expect(computeDashboard([stat(1)], now: now).withoutHeadache, isNull);
+    });
+
+    test('trigger correlations include attacks without headache', () async {
+      final db = MegrimDatabase.forTesting(NativeDatabase.memory());
+      for (var i = 0; i < 6; i++) {
+        final at = DateTime.utc(2026, 9, 1 + i * 3, 12);
+        await db.into(db.migraineEvents).insert(MigraineEventsCompanion.insert(
+            id: 'e$i',
+            startedAt: at,
+            startedAtOffsetMin: const Value(0),
+            headachePresent: Value(i.isEven ? false : true),
+            createdAt: at,
+            updatedAt: at));
+      }
+      final corr = await MegrimRepository(db: db).correlations();
+      expect(corr.totalEvents, 6);
       await db.close();
     });
   });

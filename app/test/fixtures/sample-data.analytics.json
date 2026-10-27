@@ -40,141 +40,178 @@
     "migraine_days_by_month": [
       {
         "month": "2024-01",
-        "days": 5
+        "days": 5,
+        "days_without_headache": 0
       },
       {
         "month": "2024-02",
-        "days": 3
+        "days": 3,
+        "days_without_headache": 0
       },
       {
         "month": "2024-03",
-        "days": 3
+        "days": 3,
+        "days_without_headache": 0
       },
       {
         "month": "2024-04",
-        "days": 0
+        "days": 0,
+        "days_without_headache": 0
       },
       {
         "month": "2024-05",
-        "days": 2
+        "days": 2,
+        "days_without_headache": 0
       },
       {
         "month": "2024-06",
-        "days": 2
+        "days": 2,
+        "days_without_headache": 0
       },
       {
         "month": "2024-07",
-        "days": 6
+        "days": 6,
+        "days_without_headache": 0
       },
       {
         "month": "2024-08",
-        "days": 0
+        "days": 0,
+        "days_without_headache": 0
       },
       {
         "month": "2024-09",
-        "days": 4
+        "days": 4,
+        "days_without_headache": 0
       },
       {
         "month": "2024-10",
-        "days": 1
+        "days": 1,
+        "days_without_headache": 0
       },
       {
         "month": "2024-11",
-        "days": 3
+        "days": 3,
+        "days_without_headache": 0
       },
       {
         "month": "2024-12",
-        "days": 5
+        "days": 5,
+        "days_without_headache": 0
       },
       {
         "month": "2025-01",
-        "days": 1
+        "days": 1,
+        "days_without_headache": 0
       },
       {
         "month": "2025-02",
-        "days": 0
+        "days": 0,
+        "days_without_headache": 0
       },
       {
         "month": "2025-03",
-        "days": 1
+        "days": 1,
+        "days_without_headache": 0
       },
       {
         "month": "2025-04",
-        "days": 3
+        "days": 3,
+        "days_without_headache": 0
       },
       {
         "month": "2025-05",
-        "days": 2
+        "days": 2,
+        "days_without_headache": 0
       },
       {
         "month": "2025-06",
-        "days": 4
+        "days": 4,
+        "days_without_headache": 0
       },
       {
         "month": "2025-07",
-        "days": 4
+        "days": 4,
+        "days_without_headache": 0
       },
       {
         "month": "2025-08",
-        "days": 7
+        "days": 7,
+        "days_without_headache": 0
       },
       {
         "month": "2025-09",
-        "days": 1
+        "days": 1,
+        "days_without_headache": 0
       },
       {
         "month": "2025-10",
-        "days": 3
+        "days": 3,
+        "days_without_headache": 0
       },
       {
         "month": "2025-11",
-        "days": 3
+        "days": 3,
+        "days_without_headache": 0
       },
       {
         "month": "2025-12",
-        "days": 0
+        "days": 0,
+        "days_without_headache": 0
       },
       {
         "month": "2026-01",
-        "days": 4
+        "days": 4,
+        "days_without_headache": 0
       },
       {
         "month": "2026-02",
-        "days": 2
+        "days": 2,
+        "days_without_headache": 0
       },
       {
         "month": "2026-03",
-        "days": 1
+        "days": 1,
+        "days_without_headache": 0
       },
       {
         "month": "2026-04",
-        "days": 1
+        "days": 1,
+        "days_without_headache": 0
       },
       {
         "month": "2026-05",
-        "days": 1
+        "days": 1,
+        "days_without_headache": 0
       },
       {
         "month": "2026-06",
-        "days": 1
+        "days": 1,
+        "days_without_headache": 0
       },
       {
         "month": "2026-07",
-        "days": 0
+        "days": 0,
+        "days_without_headache": 0
       },
       {
         "month": "2026-08",
-        "days": 0
+        "days": 0,
+        "days_without_headache": 0
       },
       {
         "month": "2026-09",
-        "days": 0
+        "days": 0,
+        "days_without_headache": 0
       },
       {
         "month": "2026-10",
-        "days": 0
+        "days": 0,
+        "days_without_headache": 0
       }
     ],
+    "migraine_days_without_headache_last_30": 0,
+    "without_headache": null,
+    "impact": null,
     "by_day_of_week": [
       {
         "label": "Mon",
@@ -369,6 +406,7 @@
         "count": 8
       }
     ],
+    "symptom_frequency": [],
     "away_from_home": {
       "located_events": 55,
       "away_events": 0,

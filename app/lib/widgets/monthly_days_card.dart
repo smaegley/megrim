@@ -8,6 +8,9 @@ import '../analytics/dashboard.dart';
 /// rolling last 30 days and the average over the last 3 complete months — over a bar per calendar
 /// month. Every month since the first entry is drawn, zero months included; the chart scrolls
 /// sideways and opens on the latest [visibleMonths]. Days, not entries (docs/METHODS.md).
+///
+/// Attacks without headache (backlog #26) are migraine days too: they are counted, said so under
+/// the last-30-days figure, and drawn as the lighter lower part of each month's bar.
 class MonthlyDaysCard extends StatelessWidget {
   final DashboardResult dash;
 
@@ -24,6 +27,8 @@ class MonthlyDaysCard extends StatelessWidget {
     if (months.isEmpty) return const SizedBox.shrink();
     final theme = Theme.of(context);
     final avg = dash.avgMigraineDaysLast3Months;
+    final without = dash.migraineDaysWithoutHeadacheLast30;
+    final anyWithout = months.any((m) => m.daysWithoutHeadache > 0);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -34,7 +39,13 @@ class MonthlyDaysCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: _figure(context, '${dash.migraineDaysLast30}', 'Last 30 days')),
+                Expanded(
+                  child: _figure(
+                    context,
+                    '${dash.migraineDaysLast30}',
+                    without == 0 ? 'Last 30 days' : 'Last 30 days\nincluding $without without headache',
+                  ),
+                ),
                 Expanded(
                   child: _figure(
                     context,
@@ -49,7 +60,8 @@ class MonthlyDaysCard extends StatelessWidget {
             _MonthChart(months: months, now: now ?? DateTime.now()),
             const SizedBox(height: 4),
             Text(
-              'Days with a migraine, not entries. * month in progress.',
+              'Days with a migraine, not entries. * month in progress.'
+              '${anyWithout ? ' Lower part of a bar: days with only attacks without headache.' : ''}',
               style: theme.textTheme.bodySmall,
             ),
           ],
@@ -90,11 +102,14 @@ class _MonthChart extends StatelessWidget {
 
   bool _inProgress(MonthDays m) => m.year == now.year && m.month == now.month;
 
+  Color _shade(Color c, MonthDays m) => _inProgress(m) ? c.withValues(alpha: 0.45) : c;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final labelColor = theme.textTheme.bodySmall?.color ?? theme.colorScheme.onSurface;
     final barColor = theme.colorScheme.primary;
+    final withoutColor = theme.colorScheme.tertiary;
     final maxDays = months.fold<int>(0, (m, e) => e.days > m ? e.days : m);
     final abbrev = DateFormat('MMM');
     final full = DateFormat('MMM yyyy');
@@ -103,7 +118,8 @@ class _MonthChart extends StatelessWidget {
     final spoken = [
       for (final m in months.reversed.take(MonthlyDaysCard.visibleMonths))
         '${full.format(DateTime(m.year, m.month))}${_inProgress(m) ? ' so far' : ''}: '
-            '${m.days} ${m.days == 1 ? 'day' : 'days'}',
+            '${m.days} ${m.days == 1 ? 'day' : 'days'}'
+            '${m.daysWithoutHeadache == 0 ? '' : ', ${m.daysWithoutHeadache} without headache'}',
     ].join('; ');
 
     return LayoutBuilder(
@@ -174,8 +190,17 @@ class _MonthChart extends StatelessWidget {
                         toY: months[i].days.toDouble(),
                         width: (slot * 0.55).clamp(6, 18),
                         // The unfinished month is drawn lighter so it doesn't read as a low month.
-                        color: _inProgress(months[i]) ? barColor.withValues(alpha: 0.45) : barColor,
+                        color: _shade(barColor, months[i]),
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                        // Headache-free days at the bottom, headache days stacked on top (#26).
+                        rodStackItems: months[i].daysWithoutHeadache == 0
+                            ? const []
+                            : [
+                                BarChartRodStackItem(0, months[i].daysWithoutHeadache.toDouble(),
+                                    _shade(withoutColor, months[i])),
+                                BarChartRodStackItem(months[i].daysWithoutHeadache.toDouble(),
+                                    months[i].days.toDouble(), _shade(barColor, months[i])),
+                              ],
                       ),
                     ],
                   ),

@@ -149,8 +149,8 @@ void main() {
       expect(json['migraine_days_last_30'], 2);
       expect(json['migraine_days_avg_last_3_months'], isNull);
       expect(json['migraine_days_by_month'], [
-        {'month': '2026-09', 'days': 1},
-        {'month': '2026-10', 'days': 1},
+        {'month': '2026-09', 'days': 1, 'days_without_headache': 0},
+        {'month': '2026-10', 'days': 1, 'days_without_headache': 0},
       ]);
     });
   });
