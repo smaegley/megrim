@@ -10,7 +10,8 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 > below); **#17 (monthly migraine days), #23 step (1) (app-icon shortcut) and #24 (app lock) are
 > DONE**, shipped in `v1.0.7` (2026-10-08); #23 steps (2)–(3) remain proposed.
 > **#25 (move UI text into a message file, prep for translations) is PROPOSED** (2026-10-27, from
-> issue #19). Add new items as they come up.
+> issue #19). **#26 (attacks without headache: silent / vestibular migraine) is PROPOSED**
+> (2026-10-27), to be built together with #20. Add new items as they come up.
 
 ## UI / UX
 
@@ -535,6 +536,9 @@ frequency table.
 **Verification:** migration seeds defaults exactly once and leaves user-edited vocab alone;
 export/import round-trip; report test asserts the symptom table.
 
+**Note (2026-10-27):** build together with **#26** (attacks without headache) in the same v4
+bump. #26 needs vertigo, motion sensitivity and yawning added to the default list above.
+
 ### 21. Menstrual cycle log (opt-in) — **PROPOSED** *(2026-10-06)*
 
 **Want:** an opt-in setting that adds "Period started" logging (a date, nothing else) and a
@@ -669,6 +673,85 @@ database through OS backup). Steve judged it not worth it.
 **Verification:** widget tests for lock gating and timeout; manual check of the switcher and of
 the device-credential fallback (no biometric enrolled) on both platforms; manifest inspection of
 the release build.
+
+### 26. Attacks without headache ("silent" and vestibular migraine) — **PROPOSED** *(2026-10-27)*
+
+**Want:** a way to log a migraine attack that had **no headache**: aura only, vertigo/dizziness
+only, or the fatigue / brain-fog phase with the pain never arriving. Today every entry
+implicitly assumes a headache: the 1–10 slider is labelled "Severity", defaults to 5, and nothing
+can say "no pain".
+
+**Why:** Steve gets episodes of marked fatigue with no headache and wants them in the record. Headache-free
+attacks are a recognized part of migraine, but the popular names are looser than the clinical
+ones (researched 2026-10-27):
+
+- **"Silent" / acephalgic migraine** formally means **ICHD-3 1.2.1.2 Typical aura without
+  headache**: a typical aura (visual, sensory, speech; usually 5–60 min) with no headache within
+  60 min. Some people have only these; others mix them with ordinary attacks. A first aura after
+  age 40, or one that is only "negative" (vision loss), warrants ruling out TIA, so it's worth
+  logging for the clinician.
+- **Vestibular migraine** (ICHD-3 appendix **A1.6.6**, Bárány Society/IHS criteria): episodes of
+  vertigo or head-motion dizziness lasting 5 min–72 h, in someone with a migraine history, with
+  migraine features in at least half of them. Roughly 26–30% of patients have **no headache** during
+  episodes (about half in the "probable" group).
+- **Prodrome / postdrome without headache:** fatigue is among the most common prodromal and
+  postdromal symptoms (about 72% postdromal fatigue in one 500-patient sample). In the PRODROME
+  trial, about 18% of confident prodromes had no headache within 6 h (about 5% none within 24 h).
+  Fatigue *alone* is not a defined migraine type, which is a reason to record the facts and not
+  ask the user to name a category.
+
+Sources: [ICHD-3 1.2.1.2](https://ichd-3.org/1-migraine/1-2-migraine-with-aura/1-2-1-migraine-with-typical-aura/1-2-1-2-typical-aura-without-headache/),
+[ICHD-3 A1.6.6](https://ichd-3.org/appendix/a1-migraine/a1-6-episodic-syndromes-that-may-be-associated-with-migraine/a1-6-6-vestibular-migraine/),
+[Bárány/IHS VM criteria](https://pmc.ncbi.nlm.nih.gov/articles/5204080),
+[VM with/without headache](https://ejo.springeropen.com/articles/10.1186/s43163-024-00740-z),
+[VM review](https://pmc.ncbi.nlm.nih.gov/articles/PMC7388671),
+[postdrome frequency](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3620007/),
+[prodrome symptoms](https://www.frontiersin.org/journals/neurology/articles/10.3389/fneur.2019.00199/full),
+[PRODROME trial](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12283353/).
+
+**Shape:**
+
+- **Record facts, not a self-diagnosis.** No "type" picker. Instead:
+  - New `migraine_events.headache_present`: tri-state bool, same as `aura_present` (true / false /
+    null = unknown). Existing rows stay null, and **null is treated as "headache"** everywhere, so
+    nothing about existing data or counts changes.
+  - Symptoms come from **backlog #20**; build the two together in the same schema bump (v4). #20's
+    default list must cover these presentations: fatigue, brain fog, yawning, neck stiffness,
+    dizziness, **vertigo**, motion sensitivity, nausea, light / sound / smell sensitivity. Aura
+    is already recorded (`aura_present` / `aura_description`).
+- **UI:** a "Headache? Yes / No / Not sure" control on Event Detail, and on the active Quick Log
+  view. When "No" is chosen, the slider relabels to **overall impact** ("How much did it stop
+  you?"; ties into #22) and the head-location field hides.
+- **Derived label, shown not stored:** a "No headache" badge on History rows and Event Detail,
+  with a qualifier taken from the facts: "with aura" (aura present), "with vertigo" (vertigo /
+  dizziness symptom), otherwise just "No headache". Computed at display time, so it can be revised
+  without a migration.
+- **Analytics (Steve's decisions, 2026-10-27):**
+  - **Monthly migraine days (#17): count them**, and say so: "12 migraine days, including 3
+    without headache" on the stat tile, and a split (stacked) bar in the monthly chart. Same in
+    the export (`migraine_days_without_headache_last_30`, and a per-month field next to
+    `migraine_days_by_month`).
+  - **Trigger correlations: include them by default**, like any other event. No separate set.
+  - **Average severity:** compute it over headache attacks only, because a headache-free entry's
+    number means impact, not pain, and mixing the two would skew the average. Note the
+    headache-free count beside it. The History calendar keeps colouring by the number either way.
+- **PDF report (Steve's decision): list them separately.** An "Attacks without headache" section:
+  count and share of all attacks, broken down by with aura / with vertigo or dizziness / other,
+  their most common symptoms, and typical duration. A clinician uses exactly this to tell typical
+  aura without headache and vestibular migraine apart from other causes.
+- **Export:** `headache_present` added to each event as an optional field (allowed under the
+  export schema's rules for compatible changes); update `megrim-export.schema.json`. Import of
+  older files leaves it null.
+- **Not doing:** no diagnosis, wording that implies one, or "this was a silent migraine"
+  verdicts. The app records and counts; the clinician interprets.
+
+**Verification:** migration test (v3→v4; existing events read back with `headache_present` null
+and are counted exactly as before); unit tests for monthly days with a mix of headache and
+headache-free events (both counted, the without-headache split correct, a day with one of each
+counts once and, by rule, as a headache day); a correlation test asserting headache-free events
+are included; average severity excludes `headache_present == false`; export/import round-trip
+including null / true / false; a report test asserting the separate section and its breakdown;
+widget test that "No" relabels the slider and hides head location.
 
 ### Reviewed, not planned *(2026-10-06)*
 
