@@ -1,27 +1,34 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-09: v1.0.7 released on GitHub and the App Store (iOS build 13); F-Droid serving 1.0.6 (1.0.7 queued); store screenshots refreshed with the new automated capture._
+_Last updated: 2026-10-28: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release will be **1.0.8**; its first branch, `feat/attack-details` (schema v4), is built and waiting for Steve's test._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
 
-## Next steps (as of 2026-10-08)
+## Next steps (as of 2026-10-28)
 
-**Finish the 1.0.7 release**
-1. **iOS 1.0.7 (13) is released** (approved by 2026-10-09). If not yet done, check on a real
-   iPhone: app lock's Face ID prompt (H1),
-   the blank app-switcher card with "Hide in recent apps" on (H2), and the "Log migraine" shortcut.
-   Scripts: `.claude/test-app-lock.md` Part H, `.claude/test-app-shortcut.md` Part E.
-2. **F-Droid**: **serving 1.0.6** since 2026-10-10; 1.0.7's entries are in (2026-10-09) and it builds
-   in the next cycle, expected served around 2026-10-14/15. Nothing to do unless a build fails. Check
-   with the `curl` commands under *Done: F-Droid inclusion* below (`build.json` lists
-   `successfulBuildIds` / `failedBuilds`).
+**1.0.7 is done everywhere.** F-Droid serves 1.0.7 (versionCodes 121–123, checked 2026-10-28), so
+all three channels match.
 
-**Next iOS update: upload the new screenshots.** App Store Connect only takes screenshots for a
-version in preparation, so they couldn't go on the already-released 1.0.7. With the next version:
-6.9" iPhone ← `screenshots/ios/iphone-6.9`, 6.3" ← `iphone-6.3`, 13" iPad ← `ipad-13` (on Steve's
-Mac under `~/megrim/screenshots/ios/`), replacing the old ones. Retake first if `--stale` says
-screens changed. (Also raised automatically at release prep from `.claude/reminders/release.md`.)
+**Next release: 1.0.8** (Steve 2026-10-28: a patch bump, not 1.1.0, and probably several branches
+bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
+1. **`feat/attack-details`: built, pushed, waiting for Steve's test.** Backlog #20 (symptoms),
+   #22(a) (impact on the day) and #26 (attacks without headache: silent / vestibular migraine) in one
+   schema v4 upgrade. Event Detail and Quick Log get "Headache? Yes / No / Not sure" (existing
+   entries read Not sure and count as headache, so old numbers don't change); Impact and Symptoms
+   on Event Detail; a grey ring and "No headache · with aura/vertigo" in History; Analytics
+   monthly days "including N without headache", Symptoms and Impact cards; the PDF has an
+   "Attacks without headache" section and a Symptoms column; export/import and the schema carry the
+   new fields (docs say "app v1.0.8+"). 337 tests pass. Script: `.claude/test-attack-details.md`
+   (Part A starts on `main` to test the upgrade). The PDF column layout was only checked through
+   text extraction (test F2).
+2. **After all branch testing, retake the store screenshots on both platforms**
+   (`tools/screenshots.sh all-android` and `all-ios`) before the 1.0.8 tag; attack-details changes
+   shot 07 at least. Open question: extend the made-up demo data with symptoms, impact and a
+   headache-free attack so the shots show the feature (recommended; ask before doing it).
+3. **Upload the iOS screenshots with 1.0.8** in App Store Connect: the fresh set from step 2
+   replaces the 2026-10-09 set that couldn't be attached to the already-released 1.0.7. (Also
+   raised automatically at release prep from `.claude/reminders/release.md`.)
 
 **Store screenshots: refreshed 2026-10-09** with the new automated capture: 10 shots (Log with the
 backup line, Analytics overview with migraine days per month, factors, a chart, History list and
@@ -31,17 +38,18 @@ which showed Steve's real last-migraine date, is gone. To retake: `tools/screens
 (guide `.claude/test-store-screenshots.md`); `tools/screenshots.py --stale` says whether screens
 changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DUO`).
 
-**Backlog still open** (details in `docs/BACKLOG.md`)
-- **#16** "No migraine today" check-ins: the biggest analytics improvement (a real baseline for
-  self-reported triggers); medium–large.
-- **#18** Acute-medication days and a medication-overuse notice (ICHD-3 thresholds; wording needs
-  review); medium.
-- **#19** Preventive medications and non-drug relief; **#20** symptoms; **#21** opt-in menstrual
-  cycle log; **#22** impact on the day (questionnaire licensing to check first).
-  #16 and #18–#22 all need schema v4: batch them into one release.
-- **#23 steps 2–3**: a home-screen widget (Android about half a day; iOS 1–2 days, needs the Mac)
-  and an iOS Live Activity. Steve chose the shortcut only for now.
-- **#15** remembering the export location / automatic backups: still deferred.
+**Backlog still open** (details in `docs/BACKLOG.md`). Agreed order, 2026-10-27:
+- ~~**A: #26 + #20 + #22(a)**~~: built on `feat/attack-details` (above).
+- **#25** move UI text into a message file (ARB): groundwork for translations. GitHub **issue #19**
+  (a Simplified Chinese request) depends on it; no reply posted on the issue yet. Note that issue
+  #19 and backlog #19 are different things.
+- **C: #16 + #23 step 2**: "No migraine today" check-ins (the biggest analytics improvement) and
+  the home-screen widget (a natural place to check in from).
+- **B: #18 + #19**: acute-medication days with a medication-overuse notice; preventive
+  medications and non-drug relief.
+- **D: #21** opt-in menstrual cycle log.
+- **E: #23 step 3** (iOS Live Activity) and **#15** (remember export location / automatic backups).
+- **#22(b)** validated impact questionnaire: blocked on licensing.
 
 **Housekeeping (optional)**
 - The erased commit `a056b55` (a personal export committed by mistake, removed from history
