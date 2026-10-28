@@ -74,14 +74,14 @@
                 "properties": {
                   "month": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
                   "days": { "type": "integer" },
-                  "days_without_headache": { "type": "integer", "description": "Of days, those covered only by attacks without headache (app v1.1.0+). A day with both kinds counts as a headache day." }
+                  "days_without_headache": { "type": "integer", "description": "Of days, those covered only by attacks without headache (app v1.0.8+). A day with both kinds counts as a headache day." }
                 }
               }
             },
-            "migraine_days_without_headache_last_30": { "type": "integer", "description": "Of migraine_days_last_30, the days covered only by attacks without headache (app v1.1.0+)." },
+            "migraine_days_without_headache_last_30": { "type": "integer", "description": "Of migraine_days_last_30, the days covered only by attacks without headache (app v1.0.8+)." },
             "without_headache": {
               "type": ["object", "null"],
-              "description": "Attacks without headache (headache_present false), app v1.1.0+. Null when there are none.",
+              "description": "Attacks without headache (headache_present false), app v1.0.8+. Null when there are none.",
               "properties": {
                 "events": { "type": "integer" },
                 "pct_of_events": { "type": "number" },
@@ -94,7 +94,7 @@
             },
             "impact": {
               "type": ["object", "null"],
-              "description": "Impact-day counts on the migraine-day rule; each day takes the worst impact recorded on it (app v1.1.0+). The 3-month averages are null until 3 complete months have passed since the first impact was recorded. Null until an entry has an impact.",
+              "description": "Impact-day counts on the migraine-day rule; each day takes the worst impact recorded on it (app v1.0.8+). The 3-month averages are null until 3 complete months have passed since the first impact was recorded. Null until an entry has an impact.",
               "properties": {
                 "unable_days_last_30": { "type": "integer" },
                 "reduced_days_last_30": { "type": "integer" },
@@ -230,18 +230,18 @@
         "aura_description": { "type": ["string", "null"] },
         "headache_present": {
           "type": ["boolean", "null"],
-          "description": "False = an attack without headache (aura only, vertigo, or other symptoms with no pain). Null = not recorded, and counts as a headache. App v1.1.0+ (schema v4)."
+          "description": "False = an attack without headache (aura only, vertigo, or other symptoms with no pain). Null = not recorded, and counts as a headache. App v1.0.8+ (schema v4)."
         },
         "symptoms": {
           "$ref": "#/$defs/stringArray",
-          "description": "Symptoms of this attack, e.g. [\"Nausea\", \"Vertigo\"]. Free text. App v1.1.0+."
+          "description": "Symptoms of this attack, e.g. [\"Nausea\", \"Vertigo\"]. Free text. App v1.0.8+."
         },
         "impact": {
           "anyOf": [
             { "enum": ["normal", "reduced", "unable"] },
             { "type": "null" }
           ],
-          "description": "How far the attack stopped the user that day: functioned normally, reduced function, unable to function. App v1.1.0+."
+          "description": "How far the attack stopped the user that day: functioned normally, reduced function, unable to function. App v1.0.8+."
         },
         "meds_taken": {
           "type": "array",

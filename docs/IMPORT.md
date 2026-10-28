@@ -67,9 +67,9 @@ the app.
 | `location_head` | array of strings | Where on the head, e.g. `["Left temple", "Forehead"]`. Free text. |
 | `aura_present` | boolean or null | Null = not recorded (distinct from `false`). |
 | `aura_description` | string or null | Free text. |
-| `headache_present` | boolean or null | App v1.1.0+. `false` = an attack **without headache** (aura only, vertigo, or other symptoms with no pain); it still counts as a migraine day, but has no severity. Null = not recorded, and counts as a headache, which is how every older entry reads. |
-| `symptoms` | array of strings | App v1.1.0+. E.g. `["Nausea", "Vertigo"]`. Free text. |
-| `impact` | `"normal"`, `"reduced"`, `"unable"` or null | App v1.1.0+. How far the attack stopped the user that day. Any other value is dropped on import. |
+| `headache_present` | boolean or null | App v1.0.8+. `false` = an attack **without headache** (aura only, vertigo, or other symptoms with no pain); it still counts as a migraine day, but has no severity. Null = not recorded, and counts as a headache, which is how every older entry reads. |
+| `symptoms` | array of strings | App v1.0.8+. E.g. `["Nausea", "Vertigo"]`. Free text. |
+| `impact` | `"normal"`, `"reduced"`, `"unable"` or null | App v1.0.8+. How far the attack stopped the user that day. Any other value is dropped on import. |
 | `meds_taken` | array of med objects | See below. |
 | `triggers_suspected` | array of strings | Self-reported, e.g. `["Stress", "Red wine"]`. Free text. |
 | `sleep_hours_prior` | number or null | Hours slept the night before, e.g. `5.5`. |
@@ -189,14 +189,14 @@ Notes for renderers:
   [`METHODS.md`](METHODS.md)). They depend on the export date: `migraine_days_last_30` is the 30
   days ending that day, and `migraine_days_by_month` runs through the export month, so two exports
   of the same data on different days can differ here and nowhere else.
-- **Attacks without headache** (app v1.1.0+, events with `headache_present: false`) are
+- **Attacks without headache** (app v1.0.8+, events with `headache_present: false`) are
   migraine days like any other and are included in every count and in `correlations`.
   `days_without_headache` and `migraine_days_without_headache_last_30` say how many of the days
   had *only* such attacks; a day with both kinds counts as a headache day. `summary.avg_severity`
   and `by_year[].avg_severity` cover headache attacks only. `without_headache` is null when there
   are none; its `with_aura` / `with_vertigo` / `other` split puts an entry with both aura and
   vertigo under `with_aura`.
-- **`impact`** (app v1.1.0+) counts migraine days by the worst impact recorded on any entry
+- **`impact`** (app v1.0.8+) counts migraine days by the worst impact recorded on any entry
   covering them. `recorded_days_last_30` is how many of the last 30 days' migraine days had an
   impact at all, so a renderer can tell "few bad days" from "field rarely filled in". Null until
   some entry has one.
