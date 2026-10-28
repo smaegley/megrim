@@ -595,8 +595,14 @@ logic and tests.
 
 **Want:** start a migraine without navigating the app — in increasing cost: (1) long-press app
 icon → "Log migraine" / "No migraine today"; (2) a home-screen widget showing days since last
-migraine with Log and Clear buttons; (3) on iOS, a Live Activity / Dynamic Island timer while a
-migraine is active, with an End button.
+migraine with Log and Clear buttons, and a running timer while a migraine is in progress; (3) a
+persistent "migraine in progress" display while one is active, with an End button: on iOS a Live
+Activity / Dynamic Island timer, on Android an ongoing notification.
+
+**Requested again (2026-10-28):** GitHub discussion #21 (Krackmou) asked for a home-screen widget
+to start a log with one tap, and a constant notification while a headache is ongoing "so that we
+don't forget that the timer is on". Steve replied that a widget is planned and that he likes the
+timer idea. Steps (2)–(3) are in **group C** with #16 and #27.
 
 **Why:** the moment of logging is the worst moment to navigate an app. Migraine Attack Diary
 ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others push quick entry.
@@ -618,12 +624,66 @@ ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others pus
   simpler, and avoids sharing the SQLite file across processes. The "days since" figure the widget shows is a
   single number the app writes to the widget's shared storage, so state in PRIVACY that this one
   value sits outside the database.
+- (2) **Timer (added 2026-10-28).** While a migraine is in progress the widget shows elapsed time
+  instead of days since. Both platforms count up natively from a start time, so the widget needs no
+  background work and doesn't wake the app: Android's `Chronometer` in `RemoteViews` (base set
+  from the start instant), iOS `Text(startDate, style: .timer)`. The app writes the start instant
+  (or "none") to the widget's shared storage when a migraine starts, ends or is discarded, which
+  is one more value outside the database (PRIVACY). With one in progress the Log button becomes
+  "Open" (shows it), matching the shortcut. App lock: the widget shows only the timer and no
+  details, and the button still goes through the unlock.
 - (3) ActivityKit needs a Swift widget extension target and an App Group; iOS-only.
+- (3) **Android: an ongoing notification (added 2026-10-28).** Posted when a migraine starts,
+  removed when it ends or is discarded: "Migraine in progress" with a native running clock
+  (`setUsesChronometer` + `setWhen(start)`, so no foreground service and no background work) and
+  an End action that opens the app (End deep-links like the shortcut; it does not write the
+  database from the notification). Opt-in, from a Settings row and on first start of a migraine
+  once. Needs **`POST_NOTIFICATIONS`** on Android 13+ (runtime prompt), the same permission as #27,
+  so build them together and add the permission once. Android 14+ lets users swipe ongoing
+  notifications away; that's fine, since it's a reminder, not state. Repost it if the app is
+  opened during a migraine and it's missing. Lock screen: `VISIBILITY_PRIVATE` with a public
+  version that says only "Megrim", so nothing shows on a locked phone.
 - **F-Droid check:** confirm each plugin's license and its transitive Android deps are FOSS and
   that they add no permission beyond the current set (see *Permissions* above).
 
 **Verification:** widget/shortcut deep links covered by integration tests where possible;
 manual release-build smoke test on a real device (minification note in STATUS "Known gaps").
+
+### 27. Daily reminder to log (opt-in local notification) — **PROPOSED** *(2026-10-28)*
+
+**Want:** a notification once a day at a time the user picks (e.g. 8:00 AM or 8:00 PM) reminding
+them to log the day while they remember it: a migraine, or a "No migraine today" check-in (#16).
+
+**Why:** asked for in GitHub discussion #21 (Krackmou, 2026-10-28), coming from Apo, which has it.
+It's also what makes #16 work: a clear-day baseline is only as good as check-in adherence, and the
+2026-10-06 review had parked reminders as "revisit after #16" for exactly that reason. Build them
+together in **group C**.
+
+**Shape:**
+
+- **Opt-in, off by default** (like the #14 backup reminder): a Settings row, Off or a time of day.
+  The notification permission is requested only when the user turns it on.
+- **Local only.** No server, no push, no network: the OS schedules it. Likely
+  `flutter_local_notifications` (BSD-3); check it and its Android deps for F-Droid.
+- **Skip when there's nothing to ask.** If today already has an entry or a check-in, don't
+  remind. Simplest: when the app logs one, cancel today's notification and reschedule from
+  tomorrow.
+- **Actions:** "No migraine today" (once #16 exists) and "Log". Both open the app (deep link, as
+  with the shortcut) rather than writing the database from the notification, and go through app
+  lock. Notification text is generic ("Megrim: how was today?"), never health details, and private
+  on the lock screen.
+- **Android timing:** use inexact scheduling (a few minutes late is fine), which avoids
+  `SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`. Scheduled notifications are lost on reboot. Either
+  add `RECEIVE_BOOT_COMPLETED` to reschedule, or reschedule each time the app opens and accept a
+  missed day after a reboot. Decide when building; the second avoids a permission.
+- **Permissions:** `POST_NOTIFICATIONS` (Android 13+), shared with #23(3)'s ongoing notification;
+  possibly `RECEIVE_BOOT_COMPLETED`. Update README, PRIVACY and the F-Droid listing (see
+  *Permissions* above). iOS asks for notification permission at runtime; no entitlement needed.
+
+**Verification:** unit tests for "next fire time" (today vs tomorrow, after logging, DST change
+days, time-zone change); widget test of the Settings row; manual test on a real Android 13+ phone
+(permission prompt, deny path, notification arrives, reboot behaviour, lock-screen privacy) and on
+iOS from the Mac build.
 
 ### 24. App lock with the phone's own unlock, and hide from the app switcher — **DONE** *(shipped in `v1.0.7`; all Android tests passed, iOS to check in TestFlight)*
 
@@ -758,10 +818,7 @@ widget test that "No" relabels the slider and hides head location.
 Seen in competitors, deliberately left out because they conflict with SPEC §1.3 non-goals or the
 locked decisions. Recorded so the question isn't re-litigated from scratch:
 
-- **Daily reminders.** Competitors use them to drive backlog #16-style daily tracking. *Local*
-  notifications are not push and need no server, so this is the most reasonable one to revisit —
-  but Android 13+ requires `POST_NOTIFICATIONS`, a new permission (see *Permissions* above).
-  Revisit after backlog #16 if check-in adherence is poor.
+- ~~**Daily reminders.**~~ Moved to **#27** (2026-10-28), after GitHub discussion #21 asked for one.
 - **Apple Health / Health Connect.** Non-goal; Health Connect also brings Play policy burden.
 - **Cloud / iCloud sync, multi-device.** Non-goal (no server, ever). Export/import + backlog
   #14/#15 cover backup.

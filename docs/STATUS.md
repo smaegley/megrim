@@ -43,8 +43,11 @@ changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DU
 - **#25** move UI text into a message file (ARB): groundwork for translations. GitHub **issue #19**
   (a Simplified Chinese request) depends on it; no reply posted on the issue yet. Note that issue
   #19 and backlog #19 are different things.
-- **C: #16 + #23 step 2**: "No migraine today" check-ins (the biggest analytics improvement) and
-  the home-screen widget (a natural place to check in from).
+- **C: #16 + #23 steps 2–3 + #27**: "No migraine today" check-ins (the biggest analytics
+  improvement); the home-screen widget, now with a running timer during a migraine; the
+  "migraine in progress" ongoing notification on Android (Live Activity on iOS); and an opt-in
+  daily reminder to log. The last three were asked for in GitHub discussion #21 (Krackmou,
+  2026-10-28). Both notifications need `POST_NOTIFICATIONS`, so add the permission once.
 - **B: #18 + #19**: acute-medication days with a medication-overuse notice; preventive
   medications and non-drug relief.
 - **D: #21** opt-in menstrual cycle log.
