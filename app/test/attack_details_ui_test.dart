@@ -109,10 +109,14 @@ void main() {
       expect(headacheSelection(tester), {1});
 
       await tester.scrollUntilVisible(find.text('Unable'), 200);
+      expect(find.text('How well could you do your usual things?'), findsOneWidget);
       await tester.tap(find.text('Unable'));
       await tester.pumpAndSettle();
+      expect(find.text("Unable to function: couldn't do your usual activities"), findsOneWidget);
       await tester.tap(find.text('Unable'));
       await tester.pumpAndSettle();
+      expect(find.textContaining('Unable to function'), findsNothing,
+          reason: 'the explanation goes when the level is cleared');
       await tester.tap(find.byTooltip('Save'));
       await tester.pumpAndSettle();
       final saved = (await db.select(db.migraineEvents).get()).single;

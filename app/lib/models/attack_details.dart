@@ -46,3 +46,11 @@ const Map<String, String> kImpactDescriptions = {
   EventImpact.reduced: 'reduced function',
   EventImpact.unable: 'unable to function',
 };
+
+/// Shown under the Event Detail picker once a level is chosen, so the short label can't be misread
+/// ("Unable" once read as "unable to stop me").
+const Map<String, String> kImpactExplanations = {
+  EventImpact.normal: 'Functioned normally: got through the day as usual',
+  EventImpact.reduced: 'Reduced function: did less, or less well',
+  EventImpact.unable: "Unable to function: couldn't do your usual activities",
+};

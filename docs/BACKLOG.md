@@ -601,8 +601,10 @@ needs no license and covers most of the value.
 logic and tests.
 
 **As built (2026-10-27, (a) only, with #20 and #26):** `impact` stores `normal` / `reduced` /
-`unable`; Event Detail shows "Impact on the day — How much did it stop you?" with Normal /
-Reduced / Unable (tap again to clear). Counted in days on the migraine-day rule, each day taking
+`unable`; Event Detail shows "Impact on the day — How well could you do your usual things?" with
+Normal / Reduced / Unable (tap again to clear), and the chosen level's meaning under the buttons
+("Unable to function: couldn't do your usual activities"). The first hint, "How much did it stop
+you?", made "Unable" read as "unable to stop me" (found in Steve's test, 2026-10-28). Counted in days on the migraine-day rule, each day taking
 its worst impact. An Analytics card (unable and reduced days, last 30; 3-month monthly average
 once it exists; "impact recorded on N of M migraine days") and the same as one line under the
 PDF summary. Export: `impact` per event (unknown values dropped on import) and an `impact` object

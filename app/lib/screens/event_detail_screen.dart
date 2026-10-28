@@ -435,7 +435,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
           const SizedBox(height: 16),
           const Text('Impact on the day'),
-          Text('How much did it stop you?', style: Theme.of(context).textTheme.bodySmall),
+          Text('How well could you do your usual things?',
+              style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 4),
           SegmentedButton<String>(
             segments: [
@@ -446,6 +447,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             emptySelectionAllowed: true,
             onSelectionChanged: (s) => setState(() => _impact = s.isEmpty ? null : s.first),
           ),
+          if (_impact != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(kImpactExplanations[_impact]!,
+                  style: Theme.of(context).textTheme.bodySmall),
+            ),
 
           const SizedBox(height: 16),
           const Text('Aura'),
