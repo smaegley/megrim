@@ -40,10 +40,13 @@ Map<String, dynamic> eventToJson(MigraineEvent e, DerivedFactor? d) {
     'ended_at': _iso(e.endedAt),
     'started_at_offset_minutes': e.startedAtOffsetMin,
     'ended_at_offset_minutes': e.endedAtOffsetMin,
+    'headache_present': e.headachePresent,
     'severity': e.severity,
     'location_head': decodeStringList(e.locationHead),
     'aura_present': e.auraPresent,
     'aura_description': e.auraDescription,
+    'symptoms': decodeStringList(e.symptoms),
+    'impact': e.impact,
     'meds_taken': decodeMeds(e.medsTaken).map((m) => m.toJson()).toList(),
     'triggers_suspected': decodeStringList(e.triggersSuspected),
     'sleep_hours_prior': e.sleepHoursPrior,
@@ -90,10 +93,13 @@ Map<String, dynamic> _derivedToJson(DerivedFactor d) => {
     startedAtOffsetMin:
         Value(_offsetField(j, 'started_at_offset_minutes', 'started_at')),
     endedAtOffsetMin: Value(_offsetField(j, 'ended_at_offset_minutes', 'ended_at')),
+    headachePresent: Value(j['headache_present'] as bool?),
     severity: Value(j['severity'] as int?),
     locationHead: Value(encodeStringList(_strList(j['location_head']))),
     auraPresent: Value(j['aura_present'] as bool?),
     auraDescription: Value(j['aura_description'] as String?),
+    symptoms: Value(encodeStringList(_strList(j['symptoms']))),
+    impact: Value(_impact(j['impact'])),
     medsTaken: Value(_encodeMedsRaw(j['meds_taken'])),
     triggersSuspected: Value(encodeStringList(_strList(j['triggers_suspected']))),
     sleepHoursPrior: Value((j['sleep_hours_prior'] as num?)?.toDouble()),
@@ -134,6 +140,10 @@ Map<String, dynamic> _derivedToJson(DerivedFactor d) => {
   }
   return (event: event, derived: derived);
 }
+
+/// An unrecognised impact value (a newer app, a hand-edited file) is dropped rather than stored,
+/// so the column only ever holds the values the app understands.
+String? _impact(dynamic v) => EventImpact.all.contains(v) ? v as String : null;
 
 List<String> _strList(dynamic v) =>
     v is List ? v.map((e) => e.toString()).toList() : const [];

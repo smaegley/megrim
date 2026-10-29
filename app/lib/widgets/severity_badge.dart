@@ -43,13 +43,31 @@ Color onStatusColor(Color fill) {
 
 /// A small coloured circle showing a migraine's severity number, scaled green→red.
 /// Shown at the leading edge of each History row (SPEC review item #2).
+///
+/// An attack without headache (backlog #26) has no severity to show and is drawn as an empty grey
+/// ring instead, so it doesn't read as an entry whose severity was simply not filled in.
 class SeverityBadge extends StatelessWidget {
   final int? severity;
+  final bool noHeadache;
   final double size;
-  const SeverityBadge({super.key, required this.severity, this.size = 36});
+  const SeverityBadge(
+      {super.key, required this.severity, this.noHeadache = false, this.size = 36});
 
   @override
   Widget build(BuildContext context) {
+    if (noHeadache) {
+      return Semantics(
+        label: 'No headache',
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: StatusColors.neutral, width: 3),
+          ),
+        ),
+      );
+    }
     final color = severityColor(severity);
     return Container(
       width: size,

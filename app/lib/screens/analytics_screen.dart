@@ -210,8 +210,33 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 16),
                 _CorrelationsCard(corr: corr, weatherEnabled: weatherOn),
                 const SizedBox(height: 16),
-                _TriggerCard(dash: dash),
+                _FrequencyCard(
+                  title: 'Most-tagged triggers',
+                  description: 'How often you tagged each trigger, across '
+                      '${dash.summary.totalEvents} migraines.',
+                  items: dash.triggerFrequency,
+                  total: dash.summary.totalEvents,
+                  noun: 'triggers',
+                  note: 'This is a frequency count of what you noted — not a correlation. '
+                      'Self-reported triggers are only recorded on migraine days, so there '
+                      'is no non-migraine baseline to test them against. Treat these as '
+                      'personal notes, not evidence of cause.',
+                ),
                 const SizedBox(height: 16),
+                // Backlog #20.
+                _FrequencyCard(
+                  title: 'Most common symptoms',
+                  description: 'How often you ticked each symptom, across '
+                      '${dash.summary.totalEvents} migraines.',
+                  items: dash.symptomFrequency,
+                  total: dash.summary.totalEvents,
+                  noun: 'symptoms',
+                  note: 'A count of what you noted on each migraine. Entries from before '
+                      'symptoms could be recorded have none, which lowers the percentages.',
+                ),
+                const SizedBox(height: 16),
+                // Backlog #22a.
+                _ImpactCard(dash: dash),
                 _AwayFromHomeCard(dash: dash),
                 _collapsibleChart(
                   title: 'By year',
@@ -698,24 +723,38 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
   }
 }
 
-/// Most-tagged triggers (review items #7, #11). Collapsed: top 5. Expanded: all tags plus the
-/// "this is a frequency count, not a correlation" disclaimer.
-class _TriggerCard extends StatefulWidget {
-  final DashboardResult dash;
-  const _TriggerCard({required this.dash});
+/// Most-tagged triggers (review items #7, #11) and most common symptoms (backlog #20).
+/// Collapsed: top 5. Expanded: all labels plus the "this is a frequency count" [note].
+class _FrequencyCard extends StatefulWidget {
+  final String title;
+  final String description;
+  final List<LabeledCount> items;
+  final int total;
+
+  /// Plural noun for the "Show all N …" button.
+  final String noun;
+  final String note;
+  const _FrequencyCard({
+    required this.title,
+    required this.description,
+    required this.items,
+    required this.total,
+    required this.noun,
+    required this.note,
+  });
 
   @override
-  State<_TriggerCard> createState() => _TriggerCardState();
+  State<_FrequencyCard> createState() => _FrequencyCardState();
 }
 
-class _TriggerCardState extends State<_TriggerCard> {
+class _FrequencyCardState extends State<_FrequencyCard> {
   bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
-    final triggers = widget.dash.triggerFrequency;
+    final triggers = widget.items;
     if (triggers.isEmpty) return const SizedBox.shrink();
-    final total = widget.dash.summary.totalEvents;
+    final total = widget.total;
     final maxCount = triggers.first.count;
     final hasMore = triggers.length > 5;
     final shown = _expanded ? triggers : triggers.take(5).toList();
@@ -726,13 +765,9 @@ class _TriggerCardState extends State<_TriggerCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Most-tagged triggers',
-                style: Theme.of(context).textTheme.titleMedium),
+            Text(widget.title, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
-            Text(
-              'How often you tagged each trigger, across $total migraines.',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            Text(widget.description, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 12),
             for (final t in shown)
               Padding(
@@ -770,16 +805,13 @@ class _TriggerCardState extends State<_TriggerCard> {
                   onPressed: () => setState(() => _expanded = !_expanded),
                   child: Text(_expanded
                       ? 'Show top 5'
-                      : 'Show all ${triggers.length} triggers'),
+                      : 'Show all ${triggers.length} ${widget.noun}'),
                 ),
               ),
             if (_expanded) ...[
               const Divider(height: 24),
               Text(
-                'This is a frequency count of what you noted — not a correlation. '
-                'Self-reported triggers are only recorded on migraine days, so there '
-                'is no non-migraine baseline to test them against. Treat these as '
-                'personal notes, not evidence of cause.',
+                widget.note,
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
@@ -787,6 +819,69 @@ class _TriggerCardState extends State<_TriggerCard> {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// "Impact on the day" (backlog #22a): migraine days on which the user couldn't function, or
+/// functioned less, on the same day rule as Migraine days per month. Renders nothing until an
+/// entry has an impact recorded.
+class _ImpactCard extends StatelessWidget {
+  final DashboardResult dash;
+  const _ImpactCard({required this.dash});
+
+  @override
+  Widget build(BuildContext context) {
+    final i = dash.impact;
+    if (i == null) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    Widget figure(String value, String label) => Column(
+          children: [
+            Text(
+              value,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(label, textAlign: TextAlign.center, style: theme.textTheme.bodySmall),
+          ],
+        );
+    final avg = i.avgUnableLast3Months == null
+        ? null
+        : 'Avg/month over the last 3 complete months: ${i.avgUnableLast3Months} unable, '
+            '${i.avgReducedLast3Months} reduced.';
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Impact on the day', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 4),
+              Text('Migraine days in the last 30 days, by how much they stopped you.',
+                  style: theme.textTheme.bodySmall),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(child: figure('${i.unableLast30}', 'Unable to function')),
+                  Expanded(child: figure('${i.reducedLast30}', 'Reduced function')),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (avg != null) Text(avg, style: theme.textTheme.bodySmall),
+              Text(
+                'Impact recorded on ${i.recordedLast30} of ${dash.migraineDaysLast30} '
+                'migraine days in the last 30 days. A day counts its worst impact.',
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          ),
         ),
       ),
     );

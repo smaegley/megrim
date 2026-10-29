@@ -45,6 +45,46 @@ track how often migraines happen and whether a preventive treatment is working.
 Like the other charts, this is a count of what you logged. A month with no entries could be a
 month without migraines or a month you didn't log; the app can't tell the two apart.
 
+### Attacks without headache
+
+An entry can be marked **"Headache? No"**: an aura with no pain after it, an episode of vertigo,
+or the tired, foggy phase of an attack with the pain never arriving. These are recognised parts
+of migraine: ICHD-3 1.2.1.2 *typical aura without headache*, ICHD-3 appendix A1.6.6 *vestibular
+migraine* (often without headache), and the prodrome and postdrome, where fatigue is one of the
+most common symptoms. The app records what happened and does not name a type.
+
+- **They are migraine days.** They count in Migraine days per month, and the card says how many
+  of the last 30 days had *only* attacks without headache ("including N without headache"); each
+  month's bar shows that part in a second colour. A day with both kinds counts once, as a
+  headache day.
+- **They are in Suspected Factors** like any other entry: the weather and calendar factors don't
+  depend on whether it hurt.
+- **They have no severity.** Severity rates pain, so the slider is hidden and the average severity
+  covers headache attacks only. Their burden goes in **Impact** instead.
+- Entries from before this field existed read as "Not sure", which counts as a headache, so
+  older data counts exactly as it did.
+- The report lists them in their own section: how many, their share of all entries, split into
+  **with aura** (aura recorded), **with vertigo or dizziness** (either symptom ticked, no aura)
+  and **other**, their most common symptoms and their median length. An entry with both aura and
+  vertigo counts as "with aura", the more specific diagnosis to point a clinician at.
+
+### Impact on the day
+
+Each entry can record whether you **functioned normally**, had **reduced** function, or were
+**unable** to function. Impact is counted in days on the same rule as migraine days: each
+migraine day takes the worst impact recorded on any entry covering it. The card shows the last 30
+days and, once three complete months have passed since the first impact you recorded, the
+monthly average over them (counting from your first entry instead would average in months when
+the field didn't exist yet, and read as zero bad days). It also says on how
+many of the last 30 days' migraine days an impact was recorded at all, so a low count can be told
+apart from a field that is rarely filled in.
+
+### Symptoms
+
+**Most common symptoms** is a plain count, like Most-tagged triggers: how many entries each
+symptom was ticked on. It is not a correlation, because symptoms are only recorded on migraine
+days.
+
 ## How Suspected Factors are calculated
 
 **Migraine-days are the days a migraine *started*.** The question here is "what tends to come

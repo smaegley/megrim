@@ -32,7 +32,7 @@ automatically after import. A converter only has to carry over what a human actu
 | `format_version` | yes | Must be the integer `1`. |
 | `events` | yes | Array of event objects (below). May be empty. |
 | `settings` | no | `{"home_location": {"lat": …, "lon": …, "label": "…"}}`. Applied only on a **Replace** import, or when the app has no home location yet. |
-| `vocabularies` | no | `{"trigger": [...], "head_location": [...], "medication": [...]}` — string arrays that seed the autocomplete suggestion lists. Merged; duplicates ignored. |
+| `vocabularies` | no | `{"trigger": [...], "head_location": [...], "medication": [...], "symptom": [...]}` — string arrays that seed the autocomplete suggestion lists. Merged; duplicates ignored. |
 | `exported_at`, `app_version` | no | Written by Megrim's own exports; ignored on import. |
 | `analytics` | no | Written by Megrim's own exports: the app's **computed** dashboard and odds-ratio results, for renderers. Ignored on import. See [The `analytics` block](#the-analytics-block-megrim-computed--ignored-on-import). |
 
@@ -67,6 +67,9 @@ the app.
 | `location_head` | array of strings | Where on the head, e.g. `["Left temple", "Forehead"]`. Free text. |
 | `aura_present` | boolean or null | Null = not recorded (distinct from `false`). |
 | `aura_description` | string or null | Free text. |
+| `headache_present` | boolean or null | App v1.0.8+. `false` = an attack **without headache** (aura only, vertigo, or other symptoms with no pain); it still counts as a migraine day, but has no severity. Null = not recorded, and counts as a headache, which is how every older entry reads. |
+| `symptoms` | array of strings | App v1.0.8+. E.g. `["Nausea", "Vertigo"]`. Free text. |
+| `impact` | `"normal"`, `"reduced"`, `"unable"` or null | App v1.0.8+. How far the attack stopped the user that day. Any other value is dropped on import. |
 | `meds_taken` | array of med objects | See below. |
 | `triggers_suspected` | array of strings | Self-reported, e.g. `["Stress", "Red wine"]`. Free text. |
 | `sleep_hours_prior` | number or null | Hours slept the night before, e.g. `5.5`. |
@@ -126,11 +129,18 @@ reference produced from the sample data lives at
                  "interval_std_dev_days": 15.7, "events_per_year": 22.9 },
     "by_year":         [ { "year": 2024, "count": 26, "avg_severity": 5.7 }, … ],
     "migraine_days_last_30": 2, "migraine_days_avg_last_3_months": 1.7,
-    "migraine_days_by_month": [ { "month": "2024-01", "days": 3 }, … ],
+    "migraine_days_by_month": [ { "month": "2024-01", "days": 3, "days_without_headache": 0 }, … ],
+    "migraine_days_without_headache_last_30": 0,
+    "without_headache": { "events": 4, "pct_of_events": 6.8, "with_aura": 1, "with_vertigo": 2,
+                          "other": 1, "median_duration_hours": 6.5,
+                          "symptoms": [ { "label": "Fatigue", "count": 3 }, … ] },
+    "impact": { "unable_days_last_30": 1, "reduced_days_last_30": 2, "recorded_days_last_30": 3,
+                "unable_days_avg_last_3_months": 0.7, "reduced_days_avg_last_3_months": 1.0 },
     "by_day_of_week":  [ { "label": "Mon", "count": 13 }, … ],
     "by_time_of_day":  [ … ], "by_season": [ … ], "by_moon_phase": [ … ],
     "by_daylight":     [ … ], "pressure_delta": [ … ],
     "trigger_frequency": [ { "label": "Food", "count": 14 }, … ],
+    "symptom_frequency": [ { "label": "Nausea", "count": 9 }, … ],
     "away_from_home": { "located_events": 55, "away_events": 3, "away_pct": 5.5,
                         "threshold_km": 100.0, "farthest_km": 7853.8,
                         "away_places": [ { "label": "Paris", "count": 2 }, … ] }
@@ -179,6 +189,19 @@ Notes for renderers:
   [`METHODS.md`](METHODS.md)). They depend on the export date: `migraine_days_last_30` is the 30
   days ending that day, and `migraine_days_by_month` runs through the export month, so two exports
   of the same data on different days can differ here and nowhere else.
+- **Attacks without headache** (app v1.0.8+, events with `headache_present: false`) are
+  migraine days like any other and are included in every count and in `correlations`.
+  `days_without_headache` and `migraine_days_without_headache_last_30` say how many of the days
+  had *only* such attacks; a day with both kinds counts as a headache day. `summary.avg_severity`
+  and `by_year[].avg_severity` cover headache attacks only. `without_headache` is null when there
+  are none; its `with_aura` / `with_vertigo` / `other` split puts an entry with both aura and
+  vertigo under `with_aura`.
+- **`impact`** (app v1.0.8+) counts migraine days by the worst impact recorded on any entry
+  covering them. `recorded_days_last_30` is how many of the last 30 days' migraine days had an
+  impact at all, so a renderer can tell "few bad days" from "field rarely filled in". Null until
+  some entry has one.
+- `symptom_frequency` is descriptive, like `trigger_frequency`: each symptom counted once per
+  entry.
 - In `correlations`, `total_migraine_days` counts **onset** days (the day each migraine
   started), and `total_days_in_range` is the number of days compared: the study window minus
   `excluded_mid_attack_days`, the days in the middle of a multi-day migraine, which are left out

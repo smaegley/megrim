@@ -10,8 +10,10 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 > below); **#17 (monthly migraine days), #23 step (1) (app-icon shortcut) and #24 (app lock) are
 > DONE**, shipped in `v1.0.7` (2026-10-08); #23 steps (2)–(3) remain proposed.
 > **#25 (move UI text into a message file, prep for translations) is PROPOSED** (2026-10-27, from
-> issue #19). **#26 (attacks without headache: silent / vestibular migraine) is PROPOSED**
-> (2026-10-27), to be built together with #20. Add new items as they come up.
+> issue #19). **#20 (symptoms), #22(a) (impact) and #26 (attacks without headache) are BUILT**
+> together on `feat/attack-details` (schema v4, 2026-10-27); Steve's test passed 2026-10-28
+> (one wording fix, the Impact hint). They ship in **1.0.8**.
+> Add new items as they come up.
 
 ## UI / UX
 
@@ -518,7 +520,7 @@ non-pharmacologic).
 **Verification:** migration test; export/import round-trip of both new structures; unit test for
 the helped-rate computation including unknowns.
 
-### 20. Symptoms — **PROPOSED** *(2026-10-06)*
+### 20. Symptoms — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, ships in 1.0.8)*
 
 **Want:** a symptom chip set on Event Detail (and optionally on the active Quick Log view):
 nausea, vomiting, light sensitivity, sound sensitivity, smell sensitivity, neck pain, dizziness,
@@ -538,6 +540,14 @@ export/import round-trip; report test asserts the symptom table.
 
 **Note (2026-10-27):** build together with **#26** (attacks without headache) in the same v4
 bump. #26 needs vertigo, motion sensitivity and yawning added to the default list above.
+
+**As built (2026-10-27, with #22a and #26):** 12 defaults — Nausea, Vomiting, Light / Sound /
+Smell sensitivity, Neck pain / stiffness, Dizziness, Vertigo, Motion sensitivity, Fatigue, Brain
+fog, Yawning — seeded on create and once on the v3→v4 upgrade (`insertOrIgnore`, keeps the
+user's own). Symptoms chips with Manage on Event Detail (not on Quick Log); a "Most common
+symptoms" card built from the shared frequency card (the triggers card's code, generalised); the
+PDF gets a symptom chart and a Symptoms column in the entries table. Export: `symptoms` per event,
+`vocabularies.symptom`, `symptom_frequency` in the analytics block; CSV column appended.
 
 ### 21. Menstrual cycle log (opt-in) — **PROPOSED** *(2026-10-06)*
 
@@ -571,7 +581,7 @@ month's 30th = day −2, in window); the gap rule (a 70-day gap excludes that cy
 a planted fixture; export test that cycle dates are absent by default and present when ticked;
 disabled-state test that no cycle UI or report section renders.
 
-### 22. Functional impact and an optional disability score — **PROPOSED** *(2026-10-06)*
+### 22. Functional impact and an optional disability score — **(a) BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, ships in 1.0.8)*; (b) **PROPOSED** (licensing first)
 
 **Want:** (a) a per-event "impact" field — *able to function normally / reduced / unable* — and
 (b) optionally, a periodic disability questionnaire.
@@ -590,6 +600,16 @@ needs no license and covers most of the value.
 
 **Verification:** migration + round-trip; monthly impact-day counting reuses backlog #17's day
 logic and tests.
+
+**As built (2026-10-27, (a) only, with #20 and #26):** `impact` stores `normal` / `reduced` /
+`unable`; Event Detail shows "Impact on the day — How well could you do your usual things?" with
+Normal / Reduced / Unable (tap again to clear), and the chosen level's meaning under the buttons
+("Unable to function: couldn't do your usual activities"). The first hint, "How much did it stop
+you?", made "Unable" read as "unable to stop me" (found in Steve's test, 2026-10-28). Counted in days on the migraine-day rule, each day taking
+its worst impact. An Analytics card (unable and reduced days, last 30; 3-month monthly average
+once it exists; "impact recorded on N of M migraine days") and the same as one line under the
+PDF summary. Export: `impact` per event (unknown values dropped on import) and an `impact` object
+in the analytics block.
 
 ### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; (2)–(3) **PROPOSED**
 
@@ -734,7 +754,7 @@ database through OS backup). Steve judged it not worth it.
 the device-credential fallback (no biometric enrolled) on both platforms; manifest inspection of
 the release build.
 
-### 26. Attacks without headache ("silent" and vestibular migraine) — **PROPOSED** *(2026-10-27)*
+### 26. Attacks without headache ("silent" and vestibular migraine) — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, ships in 1.0.8)*
 
 **Want:** a way to log a migraine attack that had **no headache**: aura only, vertigo/dizziness
 only, or the fatigue / brain-fog phase with the pain never arriving. Today every entry
@@ -812,6 +832,18 @@ counts once and, by rule, as a headache day); a correlation test asserting heada
 are included; average severity excludes `headache_present == false`; export/import round-trip
 including null / true / false; a report test asserting the separate section and its breakdown;
 widget test that "No" relabels the slider and hides head location.
+
+**As built (2026-10-27, Steve agreed the design first):** one change from the shape above: built
+together with #22a, so choosing "No" **hides** the severity slider and head location (and clears
+them on save) instead of relabelling the slider, and the day's burden goes in the Impact field.
+That also settles average severity: headache-free attacks have none, and the dashboard skips any
+that do (an imported file). New entries (Quick Log, past entries) start at **Yes**; older ones
+show **Not sure**. History draws a headache-free entry as an empty grey ring with "No headache ·
+with aura / with vertigo"; the calendar day stays grey. Monthly card: "Last 30 days, including N
+without headache" and bars in two colours (headache-free days at the bottom). PDF: "Attacks
+without headache" right after the summary, Sev "none" in the entries table. Shared rules in
+`app/lib/models/attack_details.dart`; method in `docs/METHODS.md`; tests in
+`app/test/attack_details_test.dart` and `attack_details_ui_test.dart`.
 
 ### Reviewed, not planned *(2026-10-06)*
 

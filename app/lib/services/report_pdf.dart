@@ -186,6 +186,28 @@ Future<Uint8List> renderReportPdf(
       pw.SizedBox(height: 6),
       pw.Text(c.awayFromHome!, style: const pw.TextStyle(fontSize: 8.5)),
     ],
+    if (c.impact != null) ...[
+      pw.SizedBox(height: 6),
+      pw.Text(c.impact!, style: const pw.TextStyle(fontSize: 8.5)),
+    ],
+
+    // ── attacks without headache (backlog #26) ──────────────────────────────
+    if (c.withoutHeadache != null) ...[
+      heading('Attacks without headache'),
+      pw.Text(c.withoutHeadache!.summary, style: const pw.TextStyle(fontSize: 8.5)),
+      note('Entries marked as having no headache: aura only, vertigo, or other symptoms with no '
+          'pain. They count as migraine days above. Severity is not rated for them, so the '
+          'average severity covers headache attacks only. When both aura and vertigo are '
+          'recorded, the entry counts as "with aura".'),
+      pw.SizedBox(height: 4),
+      barChart(c.withoutHeadache!.byKind),
+      if (c.withoutHeadache!.symptoms.isNotEmpty) ...[
+        pw.SizedBox(height: 6),
+        pw.Text('Their symptoms', style: pw.TextStyle(font: fontBold, fontSize: 9)),
+        pw.SizedBox(height: 2),
+        barChart(c.withoutHeadache!.symptoms),
+      ],
+    ],
 
     // ── patterns ────────────────────────────────────────────────────────────
     heading('Patterns'),
@@ -204,6 +226,13 @@ Future<Uint8List> renderReportPdf(
       note('Self-reported, and recorded only on migraine days — there is no comparison with '
           'days you felt well, so these are counts, not correlations.'),
       barChart(c.triggerFrequency),
+    ],
+
+    if (c.symptomFrequency.isNotEmpty) ...[
+      heading('Symptoms'),
+      note('How often each symptom was recorded, across all entries. Entries from before '
+          'symptoms could be recorded have none.'),
+      barChart(c.symptomFrequency),
     ],
 
     if (c.medications.isNotEmpty) ...[
@@ -276,9 +305,13 @@ Future<Uint8List> renderReportPdf(
 
   final eventPages = <pw.Widget>[
     heading('Entries'),
-    note('Newest first. Times are shown in the zone each entry was recorded in.'),
+    note('Newest first. Times are shown in the zone each entry was recorded in. Sev "none": '
+        'an attack without headache.'),
     table(
-      const ['Date', 'Time', 'Sev', 'Duration', 'Aura', 'Head', 'Triggers', 'Meds', 'Notes'],
+      const [
+        'Date', 'Time', 'Sev', 'Duration', 'Aura', 'Head', 'Symptoms', 'Triggers', 'Meds', //
+        'Notes',
+      ],
       [
         for (final e in c.events)
           [
@@ -288,6 +321,7 @@ Future<Uint8List> renderReportPdf(
             e.duration,
             e.aura,
             e.headLocations,
+            e.symptoms,
             e.triggers,
             e.meds,
             e.notes,
@@ -295,8 +329,11 @@ Future<Uint8List> renderReportPdf(
       ],
       // Widths tuned against the rendered page: at 8pt the 'Duration' and 'Aura' headers wrap if
       // their columns are any narrower, which looks like a defect even though the data fits.
-      flex: const [3, 2, 1, 3, 2, 3, 4, 4, 5],
-      rightAlign: const [false, false, true, false, false, false, false, false, false],
+      // In points across the 531pt A4 text width, measured against Noto Sans at 8pt plus the 6pt
+      // cell padding: "28 Sep 2026" needs ~52, the bold "Duration" header ~42, "none" (Sev for an
+      // attack without headache) ~26, the "Symptoms" header ~48. Narrower and they wrap.
+      flex: const [54, 28, 27, 43, 27, 60, 74, 72, 66, 80],
+      rightAlign: const [false, false, true, false, false, false, false, false, false, false],
     ),
   ];
 

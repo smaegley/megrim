@@ -205,7 +205,7 @@ void main() {
       expect(triggers.where((t) => t == kTravelTrigger), hasLength(1));
       expect(triggers, contains('My own trigger'),
           reason: 'the migration must not touch the user\'s own vocabulary');
-      expect(await upgraded.getSetting('schema_version'), '3');
+      expect(await upgraded.getSetting('schema_version'), '${upgraded.schemaVersion}');
       await upgraded.close();
       dir.deleteSync(recursive: true);
     });

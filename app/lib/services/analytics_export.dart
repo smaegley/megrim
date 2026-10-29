@@ -37,8 +37,32 @@ Map<String, dynamic> dashboardToJson(DashboardResult d) => {
       'migraine_days_last_30': d.migraineDaysLast30,
       'migraine_days_avg_last_3_months': d.avgMigraineDaysLast3Months,
       'migraine_days_by_month': [
-        for (final m in d.migraineDaysByMonth) {'month': m.key, 'days': m.days},
+        for (final m in d.migraineDaysByMonth)
+          {'month': m.key, 'days': m.days, 'days_without_headache': m.daysWithoutHeadache},
       ],
+      // Backlog #26: of the days above, those with only attacks without headache.
+      'migraine_days_without_headache_last_30': d.migraineDaysWithoutHeadacheLast30,
+      'without_headache': d.withoutHeadache == null
+          ? null
+          : {
+              'events': d.withoutHeadache!.events,
+              'pct_of_events': d.withoutHeadache!.pct,
+              'with_aura': d.withoutHeadache!.withAura,
+              'with_vertigo': d.withoutHeadache!.withVertigo,
+              'other': d.withoutHeadache!.other,
+              'median_duration_hours': d.withoutHeadache!.medianDurationHours,
+              'symptoms': d.withoutHeadache!.symptoms.map(_labeled).toList(),
+            },
+      // Backlog #22a: days, on the migraine-day rule; a day takes its worst impact.
+      'impact': d.impact == null
+          ? null
+          : {
+              'unable_days_last_30': d.impact!.unableLast30,
+              'reduced_days_last_30': d.impact!.reducedLast30,
+              'recorded_days_last_30': d.impact!.recordedLast30,
+              'unable_days_avg_last_3_months': d.impact!.avgUnableLast3Months,
+              'reduced_days_avg_last_3_months': d.impact!.avgReducedLast3Months,
+            },
       'by_day_of_week': d.byDayOfWeek.map(_labeled).toList(),
       'by_time_of_day': d.byTimeOfDay.map(_labeled).toList(),
       'by_season': d.bySeason.map(_labeled).toList(),
@@ -46,6 +70,7 @@ Map<String, dynamic> dashboardToJson(DashboardResult d) => {
       'by_daylight': d.byDaylight.map(_labeled).toList(),
       'pressure_delta': d.pressureDelta.map(_labeled).toList(),
       'trigger_frequency': d.triggerFrequency.map(_labeled).toList(),
+      'symptom_frequency': d.symptomFrequency.map(_labeled).toList(),
       'away_from_home': d.awayFromHome == null
           ? null
           : {

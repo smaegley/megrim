@@ -45,7 +45,8 @@ void main() {
     await tester.enterText(find.widgetWithText(TextField, 'Name'), 'Sumatriptan');
     await tester.enterText(
         find.widgetWithText(TextField, 'Dose (optional)'), '50 mg');
-    await tester.tap(find.text('Yes'));
+    await tester.tap(
+        find.descendant(of: find.byType(AlertDialog), matching: find.text('Yes')));
     await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(FilledButton, 'Save'));

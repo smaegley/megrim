@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../database/database.dart';
+import '../models/attack_details.dart';
 import '../models/event_time.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/severity_badge.dart';
@@ -130,10 +131,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
           onDismissed: (_) => _delete(e.id),
           child: ListTile(
-            leading: SeverityBadge(severity: e.severity),
+            leading: SeverityBadge(
+                severity: e.severity, noHeadache: !hasHeadache(e.headachePresent)),
             title: Text(df.format(e.startedWall)),
             subtitle: Text(
               [
+                ?noHeadacheLabel(e),
                 if (e.severity != null) 'Severity ${e.severity}/10',
                 if (spanDays > 1) '$spanDays days',
                 if (e.endedAt == null) 'ongoing',
@@ -201,10 +204,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             for (final e in sorted)
               ListTile(
-                leading: SeverityBadge(severity: e.severity),
+                leading: SeverityBadge(
+                    severity: e.severity, noHeadache: !hasHeadache(e.headachePresent)),
                 title: Text(DateFormat('HH:mm').format(e.startedWall)),
                 subtitle: Text(
                   [
+                    ?noHeadacheLabel(e),
                     if (e.severity != null) 'Severity ${e.severity}/10',
                     if (e.endedAt == null) 'ongoing',
                   ].join(' · '),

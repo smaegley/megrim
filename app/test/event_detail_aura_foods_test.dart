@@ -9,6 +9,10 @@ import 'package:megrim/screens/event_detail_screen.dart';
 /// (`aura_description`, `foods_notable`), and export/import already supported both, but there was
 /// no UI to view or edit them (same gap class as the meds section — see
 /// event_detail_meds_test.dart).
+/// The aura control's own Yes / No — Event Detail also has a "Headache?" Yes / No (backlog #26).
+Finder aura(String label) =>
+    find.descendant(of: find.byKey(const Key('aura-selector')), matching: find.text(label));
+
 void main() {
   late MegrimDatabase db;
   late MegrimRepository repo;
@@ -36,12 +40,12 @@ void main() {
       await pumpDetail(tester);
       expect(find.text('Aura description (optional)'), findsNothing);
 
-      await tester.scrollUntilVisible(find.text('Yes'), 300);
-      await tester.tap(find.text('Yes'));
+      await tester.scrollUntilVisible(aura('Yes'), 300);
+      await tester.tap(aura('Yes'));
       await tester.pumpAndSettle();
       expect(find.text('Aura description (optional)'), findsOneWidget);
 
-      await tester.tap(find.text('No'));
+      await tester.tap(aura('No'));
       await tester.pumpAndSettle();
       expect(find.text('Aura description (optional)'), findsNothing);
     });
@@ -49,8 +53,8 @@ void main() {
     testWidgets('entered text persists to the database on save', (tester) async {
       await pumpDetail(tester);
 
-      await tester.scrollUntilVisible(find.text('Yes'), 300);
-      await tester.tap(find.text('Yes'));
+      await tester.scrollUntilVisible(aura('Yes'), 300);
+      await tester.tap(aura('Yes'));
       await tester.pumpAndSettle();
       await tester.enterText(
           find.widgetWithText(TextField, 'Aura description (optional)'),
