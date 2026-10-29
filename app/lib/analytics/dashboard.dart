@@ -1,8 +1,11 @@
 import 'dart:math' show sqrt;
-import '../database/database.dart' show EventImpact;
+import '../database/database.dart' show EventImpact, PreventiveRegimen;
 import '../models/attack_details.dart';
 import '../models/event_time.dart' show daysCovered, wallClock, wallDate;
+import '../models/med_entry.dart';
+import '../models/relief_entry.dart';
 import 'geo_distance.dart';
+import 'medications.dart';
 
 import 'correlations.dart'
     show
@@ -52,6 +55,10 @@ class EventStat {
   /// Schema v4 (backlog #22a): one of `EventImpact`'s values, or null.
   final String? impact;
 
+  /// Acute medications taken (backlog #18) and, from schema v5, non-drug relief tried (#19).
+  final List<MedEntry> meds;
+  final List<ReliefEntry> relief;
+
   /// The event's recorded location, if any (rounded to 2 decimals at capture — SPEC §3.1).
   final double? geoLat;
   final double? geoLon;
@@ -72,6 +79,8 @@ class EventStat {
     this.aura,
     this.symptoms = const [],
     this.impact,
+    this.meds = const [],
+    this.relief = const [],
     this.startOffsetMin,
     this.endOffsetMin,
     this.geoLat,
@@ -275,6 +284,16 @@ class DashboardResult {
   /// Null when no entry is marked as being without headache.
   final WithoutHeadache? withoutHeadache;
 
+  /// Acute-medication days (backlog #18); null when no entry has a medication.
+  final MedicationDays? medicationDays;
+
+  /// Medications and relief methods with how often each helped (backlog #19); empty when none.
+  final List<HelpedRow> whatHelped;
+
+  /// Preventive regimens (backlog #19), oldest start first: passed through so the monthly chart,
+  /// the export and the report all show the same list.
+  final List<PreventiveRegimen> preventives;
+
   const DashboardResult({
     required this.summary,
     this.byYear = const [],
@@ -294,6 +313,9 @@ class DashboardResult {
     this.migraineDaysWithoutHeadacheLast30 = 0,
     this.impact,
     this.withoutHeadache,
+    this.medicationDays,
+    this.whatHelped = const [],
+    this.preventives = const [],
   });
 
   bool get isEmpty => summary.totalEvents == 0;
@@ -304,14 +326,20 @@ double _round1(double v) => (v * 10).round() / 10;
 /// [homeLat]/[homeLon] are the user's home location, used only for the away-from-home share
 /// (backlog #13); omit them and [DashboardResult.awayFromHome] is null. [now] (default: the
 /// phone's current time) fixes "today" for the monthly migraine-day figures (backlog #17).
+/// [medClasses] maps medication names to classes for the medication days (backlog #18).
 DashboardResult computeDashboard(
   List<EventStat> events, {
   double? homeLat,
   double? homeLon,
   DateTime? now,
+  Map<String, String> medClasses = const {},
+  List<PreventiveRegimen> preventives = const [],
 }) {
+  final sortedPreventives = [...preventives]
+    ..sort((a, b) => a.startedOn.compareTo(b.startedOn));
   if (events.isEmpty) {
-    return const DashboardResult(summary: Summary(totalEvents: 0));
+    return DashboardResult(
+        summary: const Summary(totalEvents: 0), preventives: sortedPreventives);
   }
 
   final sorted = [...events]..sort((a, b) => a.startedAt.compareTo(b.startedAt));
@@ -504,6 +532,15 @@ DashboardResult computeDashboard(
     );
   }
 
+  final medInputs = [
+    for (final e in sorted)
+      MedEventInput(
+          startedAt: e.startedAt,
+          startOffsetMin: e.startOffsetMin,
+          meds: e.meds,
+          relief: e.relief),
+  ];
+
   return DashboardResult(
     summary: summary,
     byYear: byYear,
@@ -523,6 +560,9 @@ DashboardResult computeDashboard(
     migraineDaysWithoutHeadacheLast30: monthly.last30WithoutHeadache,
     impact: impact,
     withoutHeadache: withoutHeadache,
+    medicationDays: medicationDays(medInputs, medClasses, now ?? DateTime.now()),
+    whatHelped: whatHelped(medInputs),
+    preventives: sortedPreventives,
   );
 }
 

@@ -1,5 +1,6 @@
 import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
+import '../analytics/medications.dart';
 import '../models/home_location.dart';
 
 /// JSON serialization of the app's computed analytics for the `analytics` block of a
@@ -63,6 +64,21 @@ Map<String, dynamic> dashboardToJson(DashboardResult d) => {
               'unable_days_avg_last_3_months': d.impact!.avgUnableLast3Months,
               'reduced_days_avg_last_3_months': d.impact!.avgReducedLast3Months,
             },
+      // Backlog #18: distinct days with each class of acute medication (see docs/METHODS.md).
+      'medication_days': d.medicationDays == null ? null : _medicationDays(d.medicationDays!),
+      // Backlog #19: helped / didn't / unknown per medication and relief method.
+      'what_helped': [
+        for (final r in d.whatHelped)
+          {
+            'name': r.name,
+            'kind': r.relief ? 'relief' : 'medication',
+            'tried': r.tried,
+            'helped': r.helped,
+            'not_helped': r.notHelped,
+            'unknown': r.unknown,
+            'helped_pct': r.helpedPct,
+          },
+      ],
       'by_day_of_week': d.byDayOfWeek.map(_labeled).toList(),
       'by_time_of_day': d.byTimeOfDay.map(_labeled).toList(),
       'by_season': d.bySeason.map(_labeled).toList(),
@@ -81,6 +97,23 @@ Map<String, dynamic> dashboardToJson(DashboardResult d) => {
               'farthest_km': d.awayFromHome!.farthestKm,
               'away_places': d.awayFromHome!.awayPlaces.map(_labeled).toList(),
             },
+    };
+
+Map<String, dynamic> _medMonth(MedMonth m) => {
+      'month': m.key,
+      'days': m.days,
+      'by_class': m.byClass,
+      'overuse_class_days': m.overuseClassDays,
+      'levels_reached': m.levelsReached,
+    };
+
+Map<String, dynamic> _medicationDays(MedicationDays m) => {
+      'days_last_30': m.last30,
+      'by_class_last_30': m.byClassLast30,
+      'by_month': m.byMonth.map(_medMonth).toList(),
+      // The last 3 complete months when each reached a reference level; null otherwise.
+      'overuse_notice_months': m.notice?.map((x) => x.key).toList(),
+      'unclassified_names': m.unclassifiedNames,
     };
 
 /// `correlations` sub-block: the full odds-ratio result, every factor's per-bucket rows plus the

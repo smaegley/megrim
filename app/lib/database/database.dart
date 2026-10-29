@@ -11,6 +11,33 @@ class VocabKind {
   static const headLocation = 'head_location';
   static const medication = 'medication';
   static const symptom = 'symptom';
+  static const relief = 'relief';
+}
+
+/// Values of `medication_classes.med_class` (schema v5, backlog #18). The first five are the
+/// classes ICHD-3 8.2 names for medication overuse; the rest are counted but never raise the
+/// notice. See `models/medications.dart` for the limits and docs/METHODS.md for the reasoning.
+class MedClass {
+  static const triptan = 'triptan';
+  static const ergot = 'ergot';
+  static const opioid = 'opioid';
+  static const combinationAnalgesic = 'combination_analgesic';
+  static const simpleAnalgesic = 'simple_analgesic';
+  static const gepant = 'gepant';
+  static const ditan = 'ditan';
+  static const antiemetic = 'antiemetic';
+  static const other = 'other';
+  static const all = [
+    triptan,
+    ergot,
+    opioid,
+    combinationAnalgesic,
+    simpleAnalgesic,
+    gepant,
+    ditan,
+    antiemetic,
+    other,
+  ];
 }
 
 /// Values of `migraine_events.impact` (schema v4, backlog #22a): how far the attack stopped the
@@ -80,8 +107,26 @@ const List<String> kDefaultSymptoms = [
   'Yawning',
 ];
 
+/// Default non-drug relief methods, seeded in schema v5 (backlog #19).
+const List<String> kDefaultRelief = [
+  'Dark room',
+  'Sleep',
+  'Cold pack',
+  'Heat',
+  'Caffeine',
+  'Hydration',
+  'Rest',
+];
+
 @DriftDatabase(
-  tables: [MigraineEvents, DerivedFactors, AppSettings, Vocabularies],
+  tables: [
+    MigraineEvents,
+    DerivedFactors,
+    AppSettings,
+    Vocabularies,
+    MedicationClasses,
+    PreventiveRegimens,
+  ],
 )
 class MegrimDatabase extends _$MegrimDatabase {
   MegrimDatabase() : super(openConnection());
@@ -90,7 +135,7 @@ class MegrimDatabase extends _$MegrimDatabase {
   MegrimDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -137,6 +182,30 @@ class MegrimDatabase extends _$MegrimDatabase {
             // Seeded once, like "Travel" in v3: insertOrIgnore keeps anything the user has.
             await _seedSymptoms();
           }
+          if (from < 5) {
+            // v5 (backlog #18, #19): medication classes, preventives, and non-drug relief.
+            // Additive: no medication has a class until the user gives it one.
+            final existing = {
+              for (final r in await customSelect('PRAGMA table_info(migraine_events)').get())
+                r.read<String>('name'),
+            };
+            if (!existing.contains(migraineEvents.reliefTried.name)) {
+              await m.addColumn(migraineEvents, migraineEvents.reliefTried);
+            }
+            final tables = {
+              for (final r in await customSelect(
+                      "SELECT name FROM sqlite_master WHERE type = 'table'")
+                  .get())
+                r.read<String>('name'),
+            };
+            if (!tables.contains(medicationClasses.actualTableName)) {
+              await m.createTable(medicationClasses);
+            }
+            if (!tables.contains(preventiveRegimens.actualTableName)) {
+              await m.createTable(preventiveRegimens);
+            }
+            await _seedRelief();
+          }
         },
         beforeOpen: (details) async {
           await customStatement('PRAGMA foreign_keys = ON');
@@ -175,6 +244,7 @@ class MegrimDatabase extends _$MegrimDatabase {
       }
     });
     await _seedSymptoms();
+    await _seedRelief();
   }
 
   Future<void> _seedSymptoms() async {
@@ -185,6 +255,22 @@ class MegrimDatabase extends _$MegrimDatabase {
           VocabulariesCompanion.insert(
             kind: VocabKind.symptom,
             value: kDefaultSymptoms[i],
+            sort: Value(i),
+          ),
+          mode: InsertMode.insertOrIgnore,
+        );
+      }
+    });
+  }
+
+  Future<void> _seedRelief() async {
+    await batch((b) {
+      for (var i = 0; i < kDefaultRelief.length; i++) {
+        b.insert(
+          vocabularies,
+          VocabulariesCompanion.insert(
+            kind: VocabKind.relief,
+            value: kDefaultRelief[i],
             sort: Value(i),
           ),
           mode: InsertMode.insertOrIgnore,
@@ -250,6 +336,14 @@ class MegrimDatabase extends _$MegrimDatabase {
         ),
         mode: InsertMode.insertOrIgnore,
       );
+      // The new name takes the medication's class too. The old name keeps it, because past
+      // entries still carry the old name and are counted by it (backlog #18).
+      if (kind == VocabKind.medication) {
+        final cls = await medicationClassOf(oldValue);
+        if (cls != null && await medicationClassOf(newValue) == null) {
+          await setMedicationClass(newValue, cls);
+        }
+      }
     });
   }
 
@@ -257,5 +351,26 @@ class MegrimDatabase extends _$MegrimDatabase {
     await (delete(vocabularies)
           ..where((t) => t.kind.equals(kind) & t.value.equals(value)))
         .go();
+  }
+
+  // ── medication classes (backlog #18) ───────────────────────────────────
+
+  /// Every classified name → class.
+  Future<Map<String, String>> medicationClassMap() async => {
+        for (final r in await select(medicationClasses).get()) r.name: r.medClass,
+      };
+
+  Future<String?> medicationClassOf(String name) async =>
+      (await (select(medicationClasses)..where((t) => t.name.equals(name))).getSingleOrNull())
+          ?.medClass;
+
+  /// [medClass] null clears the class.
+  Future<void> setMedicationClass(String name, String? medClass) async {
+    if (medClass == null) {
+      await (delete(medicationClasses)..where((t) => t.name.equals(name))).go();
+    } else {
+      await into(medicationClasses).insertOnConflictUpdate(
+          MedicationClassesCompanion.insert(name: name, medClass: medClass));
+    }
   }
 }

@@ -63,6 +63,9 @@ class MigraineEvents extends Table {
   /// Schema v4 (backlog #22a). One of [EventImpact]'s values, or null when not recorded.
   TextColumn get impact => text().nullable()();
 
+  /// Schema v5 (backlog #19). JSON: [{name, helped}] (vocab: relief) — non-drug relief tried.
+  TextColumn get reliefTried => text().nullable()();
+
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -123,7 +126,7 @@ class AppSettings extends Table {
   Set<Column> get primaryKey => {key};
 }
 
-/// §3.4 — user-editable option lists. kinds: trigger, head_location, medication, symptom.
+/// §3.4 — user-editable option lists. kinds: trigger, head_location, medication, symptom, relief.
 class Vocabularies extends Table {
   TextColumn get kind => text()();
   TextColumn get value => text()();
@@ -131,4 +134,39 @@ class Vocabularies extends Table {
 
   @override
   Set<Column> get primaryKey => {kind, value};
+}
+
+/// Schema v5 (backlog #18): the class of each acute medication, keyed by the name as entered on
+/// events. Kept apart from [Vocabularies] so renaming or deleting a suggestion never loses the
+/// class that past entries are counted by.
+class MedicationClasses extends Table {
+  TextColumn get name => text()();
+
+  /// One of `MedClass`'s values.
+  TextColumn get medClass => text()();
+
+  @override
+  Set<Column> get primaryKey => {name};
+}
+
+/// Schema v5 (backlog #19): preventive medications, taken daily and judged over months, so they
+/// are a regimen with dates rather than something logged per attack.
+class PreventiveRegimens extends Table {
+  /// UUIDv4, client-generated.
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get dose => text().nullable()();
+
+  /// Calendar dates as `yyyy-MM-dd`: a regimen starts on a day, not at an instant, so no zone.
+  TextColumn get startedOn => text()();
+
+  /// null = still taking it.
+  TextColumn get stoppedOn => text().nullable()();
+  TextColumn get notes => text().nullable()();
+
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }

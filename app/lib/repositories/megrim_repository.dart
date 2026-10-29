@@ -236,13 +236,20 @@ class MegrimRepository {
               aura: e.auraPresent,
               symptoms: decodeStringList(e.symptoms),
               impact: e.impact,
+              meds: decodeMeds(e.medsTaken),
+              relief: decodeRelief(e.reliefTried),
               geoLat: e.geoLat,
               geoLon: e.geoLon,
               geoLabel: e.geoLabel,
             ))
         .toList();
     final home = await homeLocation;
-    return computeDashboard(stats, homeLat: home?.lat, homeLon: home?.lon, now: now);
+    return computeDashboard(stats,
+        homeLat: home?.lat,
+        homeLon: home?.lon,
+        now: now,
+        medClasses: await db.medicationClassMap(),
+        preventives: await preventives());
   }
 
   Future<CorrelationResult> correlations(
@@ -284,6 +291,52 @@ class MegrimRepository {
       db.renameVocab(kind, from, to);
   Future<void> deleteVocab(String kind, String value) =>
       db.deleteVocab(kind, value);
+
+  // ── Medication classes and preventives (backlog #18, #19) ─────────────────
+  Future<Map<String, String>> medicationClasses() => db.medicationClassMap();
+  Future<String?> medicationClassOf(String name) => db.medicationClassOf(name);
+  Future<void> setMedicationClass(String name, String? medClass) =>
+      db.setMedicationClass(name, medClass);
+
+  /// Oldest start first.
+  Future<List<PreventiveRegimen>> preventives() => (db.select(db.preventiveRegimens)
+        ..orderBy([
+          (t) => OrderingTerm(expression: t.startedOn),
+          (t) => OrderingTerm(expression: t.name),
+        ]))
+      .get();
+
+  /// Insert ([id] null) or update a regimen. Returns its id. Dates are `yyyy-MM-dd`.
+  Future<String> savePreventive({
+    String? id,
+    required String name,
+    String? dose,
+    required String startedOn,
+    String? stoppedOn,
+    String? notes,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final fields = PreventiveRegimensCompanion(
+      name: Value(name),
+      dose: Value(dose),
+      startedOn: Value(startedOn),
+      stoppedOn: Value(stoppedOn),
+      notes: Value(notes),
+      updatedAt: Value(now),
+    );
+    if (id != null) {
+      await (db.update(db.preventiveRegimens)..where((t) => t.id.equals(id))).write(fields);
+      return id;
+    }
+    final newId = _uuid.v4();
+    await db
+        .into(db.preventiveRegimens)
+        .insert(fields.copyWith(id: Value(newId), createdAt: Value(now)));
+    return newId;
+  }
+
+  Future<void> deletePreventive(String id) =>
+      (db.delete(db.preventiveRegimens)..where((t) => t.id.equals(id))).go();
 
   // ── Export / import ──────────────────────────────────────────────────────
   ExportService get exporter => ExportService(db: db);

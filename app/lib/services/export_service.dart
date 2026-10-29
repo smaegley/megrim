@@ -36,7 +36,12 @@ class ExportService {
         'head_location': await db.vocabValues(VocabKind.headLocation),
         'medication': await db.vocabValues(VocabKind.medication),
         'symptom': await db.vocabValues(VocabKind.symptom),
+        'relief': await db.vocabValues(VocabKind.relief),
       },
+      'medication_classes': medicationClassesToJson(await db.medicationClassMap()),
+      'preventives': [
+        for (final p in await db.select(db.preventiveRegimens).get()) preventiveToJson(p),
+      ],
       'events': [
         for (final e in events) eventToJson(e, derivedById[e.id]),
       ],
@@ -64,7 +69,9 @@ class ExportService {
     'precipitation_mm', 'pressure_delta_24h', 'pressure_delta_48h', 'aqi',
     'started_at_offset_minutes', 'ended_at_offset_minutes',
     // Schema v4, appended so existing columns keep their positions.
-    'headache_present', 'symptoms', 'impact' //
+    'headache_present', 'symptoms', 'impact',
+    // Schema v5.
+    'relief_tried' //
   ];
 
   /// One row per event; arrays joined with ';'; derived columns flattened (SPEC §7.2).
@@ -118,6 +125,7 @@ class ExportService {
         _csv(e.headachePresent?.toString() ?? ''),
         _csvSafeText(decodeStringList(e.symptoms).join(';')),
         _csv(e.impact ?? ''),
+        _csvSafeText(decodeRelief(e.reliefTried).map((r) => r.name).join(';')),
       ];
       buf.writeln(row.join(','));
     }

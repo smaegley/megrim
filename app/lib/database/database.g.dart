@@ -236,6 +236,17 @@ class $MigraineEventsTable extends MigraineEvents
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _reliefTriedMeta = const VerificationMeta(
+    'reliefTried',
+  );
+  @override
+  late final GeneratedColumn<String> reliefTried = GeneratedColumn<String>(
+    'relief_tried',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -281,6 +292,7 @@ class $MigraineEventsTable extends MigraineEvents
     headachePresent,
     symptoms,
     impact,
+    reliefTried,
     createdAt,
     updatedAt,
   ];
@@ -453,6 +465,15 @@ class $MigraineEventsTable extends MigraineEvents
         impact.isAcceptableOrUnknown(data['impact']!, _impactMeta),
       );
     }
+    if (data.containsKey('relief_tried')) {
+      context.handle(
+        _reliefTriedMeta,
+        reliefTried.isAcceptableOrUnknown(
+          data['relief_tried']!,
+          _reliefTriedMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -562,6 +583,10 @@ class $MigraineEventsTable extends MigraineEvents
         DriftSqlType.string,
         data['${effectivePrefix}impact'],
       ),
+      reliefTried: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}relief_tried'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -634,6 +659,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
 
   /// Schema v4 (backlog #22a). One of [EventImpact]'s values, or null when not recorded.
   final String? impact;
+
+  /// Schema v5 (backlog #19). JSON: [{name, helped}] (vocab: relief) — non-drug relief tried.
+  final String? reliefTried;
   final DateTime createdAt;
   final DateTime updatedAt;
   const MigraineEvent({
@@ -658,6 +686,7 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     this.headachePresent,
     this.symptoms,
     this.impact,
+    this.reliefTried,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -722,6 +751,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     }
     if (!nullToAbsent || impact != null) {
       map['impact'] = Variable<String>(impact);
+    }
+    if (!nullToAbsent || reliefTried != null) {
+      map['relief_tried'] = Variable<String>(reliefTried);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -789,6 +821,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       impact: impact == null && nullToAbsent
           ? const Value.absent()
           : Value(impact),
+      reliefTried: reliefTried == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reliefTried),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -823,6 +858,7 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       headachePresent: serializer.fromJson<bool?>(json['headachePresent']),
       symptoms: serializer.fromJson<String?>(json['symptoms']),
       impact: serializer.fromJson<String?>(json['impact']),
+      reliefTried: serializer.fromJson<String?>(json['reliefTried']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -852,6 +888,7 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
       'headachePresent': serializer.toJson<bool?>(headachePresent),
       'symptoms': serializer.toJson<String?>(symptoms),
       'impact': serializer.toJson<String?>(impact),
+      'reliefTried': serializer.toJson<String?>(reliefTried),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -879,6 +916,7 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     Value<bool?> headachePresent = const Value.absent(),
     Value<String?> symptoms = const Value.absent(),
     Value<String?> impact = const Value.absent(),
+    Value<String?> reliefTried = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => MigraineEvent(
@@ -915,6 +953,7 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
         : this.headachePresent,
     symptoms: symptoms.present ? symptoms.value : this.symptoms,
     impact: impact.present ? impact.value : this.impact,
+    reliefTried: reliefTried.present ? reliefTried.value : this.reliefTried,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -961,6 +1000,9 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
           : this.headachePresent,
       symptoms: data.symptoms.present ? data.symptoms.value : this.symptoms,
       impact: data.impact.present ? data.impact.value : this.impact,
+      reliefTried: data.reliefTried.present
+          ? data.reliefTried.value
+          : this.reliefTried,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -990,6 +1032,7 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
           ..write('headachePresent: $headachePresent, ')
           ..write('symptoms: $symptoms, ')
           ..write('impact: $impact, ')
+          ..write('reliefTried: $reliefTried, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1019,6 +1062,7 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
     headachePresent,
     symptoms,
     impact,
+    reliefTried,
     createdAt,
     updatedAt,
   ]);
@@ -1047,6 +1091,7 @@ class MigraineEvent extends DataClass implements Insertable<MigraineEvent> {
           other.headachePresent == this.headachePresent &&
           other.symptoms == this.symptoms &&
           other.impact == this.impact &&
+          other.reliefTried == this.reliefTried &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1073,6 +1118,7 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
   final Value<bool?> headachePresent;
   final Value<String?> symptoms;
   final Value<String?> impact;
+  final Value<String?> reliefTried;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -1098,6 +1144,7 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     this.headachePresent = const Value.absent(),
     this.symptoms = const Value.absent(),
     this.impact = const Value.absent(),
+    this.reliefTried = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1124,6 +1171,7 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     this.headachePresent = const Value.absent(),
     this.symptoms = const Value.absent(),
     this.impact = const Value.absent(),
+    this.reliefTried = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -1153,6 +1201,7 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     Expression<bool>? headachePresent,
     Expression<String>? symptoms,
     Expression<String>? impact,
+    Expression<String>? reliefTried,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -1180,6 +1229,7 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
       if (headachePresent != null) 'headache_present': headachePresent,
       if (symptoms != null) 'symptoms': symptoms,
       if (impact != null) 'impact': impact,
+      if (reliefTried != null) 'relief_tried': reliefTried,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1208,6 +1258,7 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     Value<bool?>? headachePresent,
     Value<String?>? symptoms,
     Value<String?>? impact,
+    Value<String?>? reliefTried,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -1234,6 +1285,7 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
       headachePresent: headachePresent ?? this.headachePresent,
       symptoms: symptoms ?? this.symptoms,
       impact: impact ?? this.impact,
+      reliefTried: reliefTried ?? this.reliefTried,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1306,6 +1358,9 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
     if (impact.present) {
       map['impact'] = Variable<String>(impact.value);
     }
+    if (reliefTried.present) {
+      map['relief_tried'] = Variable<String>(reliefTried.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1342,6 +1397,7 @@ class MigraineEventsCompanion extends UpdateCompanion<MigraineEvent> {
           ..write('headachePresent: $headachePresent, ')
           ..write('symptoms: $symptoms, ')
           ..write('impact: $impact, ')
+          ..write('reliefTried: $reliefTried, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -2899,6 +2955,739 @@ class VocabulariesCompanion extends UpdateCompanion<Vocabulary> {
   }
 }
 
+class $MedicationClassesTable extends MedicationClasses
+    with TableInfo<$MedicationClassesTable, MedicationClassesData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MedicationClassesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _medClassMeta = const VerificationMeta(
+    'medClass',
+  );
+  @override
+  late final GeneratedColumn<String> medClass = GeneratedColumn<String>(
+    'med_class',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [name, medClass];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'medication_classes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MedicationClassesData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('med_class')) {
+      context.handle(
+        _medClassMeta,
+        medClass.isAcceptableOrUnknown(data['med_class']!, _medClassMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_medClassMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {name};
+  @override
+  MedicationClassesData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MedicationClassesData(
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      medClass: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}med_class'],
+      )!,
+    );
+  }
+
+  @override
+  $MedicationClassesTable createAlias(String alias) {
+    return $MedicationClassesTable(attachedDatabase, alias);
+  }
+}
+
+class MedicationClassesData extends DataClass
+    implements Insertable<MedicationClassesData> {
+  final String name;
+
+  /// One of `MedClass`'s values.
+  final String medClass;
+  const MedicationClassesData({required this.name, required this.medClass});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['name'] = Variable<String>(name);
+    map['med_class'] = Variable<String>(medClass);
+    return map;
+  }
+
+  MedicationClassesCompanion toCompanion(bool nullToAbsent) {
+    return MedicationClassesCompanion(
+      name: Value(name),
+      medClass: Value(medClass),
+    );
+  }
+
+  factory MedicationClassesData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MedicationClassesData(
+      name: serializer.fromJson<String>(json['name']),
+      medClass: serializer.fromJson<String>(json['medClass']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'name': serializer.toJson<String>(name),
+      'medClass': serializer.toJson<String>(medClass),
+    };
+  }
+
+  MedicationClassesData copyWith({String? name, String? medClass}) =>
+      MedicationClassesData(
+        name: name ?? this.name,
+        medClass: medClass ?? this.medClass,
+      );
+  MedicationClassesData copyWithCompanion(MedicationClassesCompanion data) {
+    return MedicationClassesData(
+      name: data.name.present ? data.name.value : this.name,
+      medClass: data.medClass.present ? data.medClass.value : this.medClass,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MedicationClassesData(')
+          ..write('name: $name, ')
+          ..write('medClass: $medClass')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(name, medClass);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MedicationClassesData &&
+          other.name == this.name &&
+          other.medClass == this.medClass);
+}
+
+class MedicationClassesCompanion
+    extends UpdateCompanion<MedicationClassesData> {
+  final Value<String> name;
+  final Value<String> medClass;
+  final Value<int> rowid;
+  const MedicationClassesCompanion({
+    this.name = const Value.absent(),
+    this.medClass = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MedicationClassesCompanion.insert({
+    required String name,
+    required String medClass,
+    this.rowid = const Value.absent(),
+  }) : name = Value(name),
+       medClass = Value(medClass);
+  static Insertable<MedicationClassesData> custom({
+    Expression<String>? name,
+    Expression<String>? medClass,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (name != null) 'name': name,
+      if (medClass != null) 'med_class': medClass,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MedicationClassesCompanion copyWith({
+    Value<String>? name,
+    Value<String>? medClass,
+    Value<int>? rowid,
+  }) {
+    return MedicationClassesCompanion(
+      name: name ?? this.name,
+      medClass: medClass ?? this.medClass,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (medClass.present) {
+      map['med_class'] = Variable<String>(medClass.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MedicationClassesCompanion(')
+          ..write('name: $name, ')
+          ..write('medClass: $medClass, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PreventiveRegimensTable extends PreventiveRegimens
+    with TableInfo<$PreventiveRegimensTable, PreventiveRegimen> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PreventiveRegimensTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _doseMeta = const VerificationMeta('dose');
+  @override
+  late final GeneratedColumn<String> dose = GeneratedColumn<String>(
+    'dose',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _startedOnMeta = const VerificationMeta(
+    'startedOn',
+  );
+  @override
+  late final GeneratedColumn<String> startedOn = GeneratedColumn<String>(
+    'started_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stoppedOnMeta = const VerificationMeta(
+    'stoppedOn',
+  );
+  @override
+  late final GeneratedColumn<String> stoppedOn = GeneratedColumn<String>(
+    'stopped_on',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    dose,
+    startedOn,
+    stoppedOn,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'preventive_regimens';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PreventiveRegimen> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('dose')) {
+      context.handle(
+        _doseMeta,
+        dose.isAcceptableOrUnknown(data['dose']!, _doseMeta),
+      );
+    }
+    if (data.containsKey('started_on')) {
+      context.handle(
+        _startedOnMeta,
+        startedOn.isAcceptableOrUnknown(data['started_on']!, _startedOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startedOnMeta);
+    }
+    if (data.containsKey('stopped_on')) {
+      context.handle(
+        _stoppedOnMeta,
+        stoppedOn.isAcceptableOrUnknown(data['stopped_on']!, _stoppedOnMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PreventiveRegimen map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PreventiveRegimen(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      dose: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dose'],
+      ),
+      startedOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}started_on'],
+      )!,
+      stoppedOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stopped_on'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PreventiveRegimensTable createAlias(String alias) {
+    return $PreventiveRegimensTable(attachedDatabase, alias);
+  }
+}
+
+class PreventiveRegimen extends DataClass
+    implements Insertable<PreventiveRegimen> {
+  /// UUIDv4, client-generated.
+  final String id;
+  final String name;
+  final String? dose;
+
+  /// Calendar dates as `yyyy-MM-dd`: a regimen starts on a day, not at an instant, so no zone.
+  final String startedOn;
+
+  /// null = still taking it.
+  final String? stoppedOn;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const PreventiveRegimen({
+    required this.id,
+    required this.name,
+    this.dose,
+    required this.startedOn,
+    this.stoppedOn,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || dose != null) {
+      map['dose'] = Variable<String>(dose);
+    }
+    map['started_on'] = Variable<String>(startedOn);
+    if (!nullToAbsent || stoppedOn != null) {
+      map['stopped_on'] = Variable<String>(stoppedOn);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  PreventiveRegimensCompanion toCompanion(bool nullToAbsent) {
+    return PreventiveRegimensCompanion(
+      id: Value(id),
+      name: Value(name),
+      dose: dose == null && nullToAbsent ? const Value.absent() : Value(dose),
+      startedOn: Value(startedOn),
+      stoppedOn: stoppedOn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stoppedOn),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory PreventiveRegimen.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PreventiveRegimen(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      dose: serializer.fromJson<String?>(json['dose']),
+      startedOn: serializer.fromJson<String>(json['startedOn']),
+      stoppedOn: serializer.fromJson<String?>(json['stoppedOn']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'dose': serializer.toJson<String?>(dose),
+      'startedOn': serializer.toJson<String>(startedOn),
+      'stoppedOn': serializer.toJson<String?>(stoppedOn),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  PreventiveRegimen copyWith({
+    String? id,
+    String? name,
+    Value<String?> dose = const Value.absent(),
+    String? startedOn,
+    Value<String?> stoppedOn = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => PreventiveRegimen(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    dose: dose.present ? dose.value : this.dose,
+    startedOn: startedOn ?? this.startedOn,
+    stoppedOn: stoppedOn.present ? stoppedOn.value : this.stoppedOn,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  PreventiveRegimen copyWithCompanion(PreventiveRegimensCompanion data) {
+    return PreventiveRegimen(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      dose: data.dose.present ? data.dose.value : this.dose,
+      startedOn: data.startedOn.present ? data.startedOn.value : this.startedOn,
+      stoppedOn: data.stoppedOn.present ? data.stoppedOn.value : this.stoppedOn,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PreventiveRegimen(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('dose: $dose, ')
+          ..write('startedOn: $startedOn, ')
+          ..write('stoppedOn: $stoppedOn, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    dose,
+    startedOn,
+    stoppedOn,
+    notes,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PreventiveRegimen &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.dose == this.dose &&
+          other.startedOn == this.startedOn &&
+          other.stoppedOn == this.stoppedOn &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class PreventiveRegimensCompanion extends UpdateCompanion<PreventiveRegimen> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> dose;
+  final Value<String> startedOn;
+  final Value<String?> stoppedOn;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const PreventiveRegimensCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.dose = const Value.absent(),
+    this.startedOn = const Value.absent(),
+    this.stoppedOn = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PreventiveRegimensCompanion.insert({
+    required String id,
+    required String name,
+    this.dose = const Value.absent(),
+    required String startedOn,
+    this.stoppedOn = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       startedOn = Value(startedOn),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<PreventiveRegimen> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? dose,
+    Expression<String>? startedOn,
+    Expression<String>? stoppedOn,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (dose != null) 'dose': dose,
+      if (startedOn != null) 'started_on': startedOn,
+      if (stoppedOn != null) 'stopped_on': stoppedOn,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PreventiveRegimensCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String?>? dose,
+    Value<String>? startedOn,
+    Value<String?>? stoppedOn,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return PreventiveRegimensCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      dose: dose ?? this.dose,
+      startedOn: startedOn ?? this.startedOn,
+      stoppedOn: stoppedOn ?? this.stoppedOn,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (dose.present) {
+      map['dose'] = Variable<String>(dose.value);
+    }
+    if (startedOn.present) {
+      map['started_on'] = Variable<String>(startedOn.value);
+    }
+    if (stoppedOn.present) {
+      map['stopped_on'] = Variable<String>(stoppedOn.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PreventiveRegimensCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('dose: $dose, ')
+          ..write('startedOn: $startedOn, ')
+          ..write('stoppedOn: $stoppedOn, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MegrimDatabase extends GeneratedDatabase {
   _$MegrimDatabase(QueryExecutor e) : super(e);
   $MegrimDatabaseManager get managers => $MegrimDatabaseManager(this);
@@ -2906,6 +3695,10 @@ abstract class _$MegrimDatabase extends GeneratedDatabase {
   late final $DerivedFactorsTable derivedFactors = $DerivedFactorsTable(this);
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
   late final $VocabulariesTable vocabularies = $VocabulariesTable(this);
+  late final $MedicationClassesTable medicationClasses =
+      $MedicationClassesTable(this);
+  late final $PreventiveRegimensTable preventiveRegimens =
+      $PreventiveRegimensTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2915,6 +3708,8 @@ abstract class _$MegrimDatabase extends GeneratedDatabase {
     derivedFactors,
     appSettings,
     vocabularies,
+    medicationClasses,
+    preventiveRegimens,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -2951,6 +3746,7 @@ typedef $$MigraineEventsTableCreateCompanionBuilder =
       Value<bool?> headachePresent,
       Value<String?> symptoms,
       Value<String?> impact,
+      Value<String?> reliefTried,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -2978,6 +3774,7 @@ typedef $$MigraineEventsTableUpdateCompanionBuilder =
       Value<bool?> headachePresent,
       Value<String?> symptoms,
       Value<String?> impact,
+      Value<String?> reliefTried,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -3123,6 +3920,11 @@ class $$MigraineEventsTableFilterComposer
 
   ColumnFilters<String> get impact => $composableBuilder(
     column: $table.impact,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reliefTried => $composableBuilder(
+    column: $table.reliefTried,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3276,6 +4078,11 @@ class $$MigraineEventsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get reliefTried => $composableBuilder(
+    column: $table.reliefTried,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -3379,6 +4186,11 @@ class $$MigraineEventsTableAnnotationComposer
   GeneratedColumn<String> get impact =>
       $composableBuilder(column: $table.impact, builder: (column) => column);
 
+  GeneratedColumn<String> get reliefTried => $composableBuilder(
+    column: $table.reliefTried,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -3462,6 +4274,7 @@ class $$MigraineEventsTableTableManager
                 Value<bool?> headachePresent = const Value.absent(),
                 Value<String?> symptoms = const Value.absent(),
                 Value<String?> impact = const Value.absent(),
+                Value<String?> reliefTried = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3487,6 +4300,7 @@ class $$MigraineEventsTableTableManager
                 headachePresent: headachePresent,
                 symptoms: symptoms,
                 impact: impact,
+                reliefTried: reliefTried,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -3514,6 +4328,7 @@ class $$MigraineEventsTableTableManager
                 Value<bool?> headachePresent = const Value.absent(),
                 Value<String?> symptoms = const Value.absent(),
                 Value<String?> impact = const Value.absent(),
+                Value<String?> reliefTried = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -3539,6 +4354,7 @@ class $$MigraineEventsTableTableManager
                 headachePresent: headachePresent,
                 symptoms: symptoms,
                 impact: impact,
+                reliefTried: reliefTried,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -4497,6 +5313,432 @@ typedef $$VocabulariesTableProcessedTableManager =
       Vocabulary,
       PrefetchHooks Function()
     >;
+typedef $$MedicationClassesTableCreateCompanionBuilder =
+    MedicationClassesCompanion Function({
+      required String name,
+      required String medClass,
+      Value<int> rowid,
+    });
+typedef $$MedicationClassesTableUpdateCompanionBuilder =
+    MedicationClassesCompanion Function({
+      Value<String> name,
+      Value<String> medClass,
+      Value<int> rowid,
+    });
+
+class $$MedicationClassesTableFilterComposer
+    extends Composer<_$MegrimDatabase, $MedicationClassesTable> {
+  $$MedicationClassesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get medClass => $composableBuilder(
+    column: $table.medClass,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MedicationClassesTableOrderingComposer
+    extends Composer<_$MegrimDatabase, $MedicationClassesTable> {
+  $$MedicationClassesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get medClass => $composableBuilder(
+    column: $table.medClass,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MedicationClassesTableAnnotationComposer
+    extends Composer<_$MegrimDatabase, $MedicationClassesTable> {
+  $$MedicationClassesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get medClass =>
+      $composableBuilder(column: $table.medClass, builder: (column) => column);
+}
+
+class $$MedicationClassesTableTableManager
+    extends
+        RootTableManager<
+          _$MegrimDatabase,
+          $MedicationClassesTable,
+          MedicationClassesData,
+          $$MedicationClassesTableFilterComposer,
+          $$MedicationClassesTableOrderingComposer,
+          $$MedicationClassesTableAnnotationComposer,
+          $$MedicationClassesTableCreateCompanionBuilder,
+          $$MedicationClassesTableUpdateCompanionBuilder,
+          (
+            MedicationClassesData,
+            BaseReferences<
+              _$MegrimDatabase,
+              $MedicationClassesTable,
+              MedicationClassesData
+            >,
+          ),
+          MedicationClassesData,
+          PrefetchHooks Function()
+        > {
+  $$MedicationClassesTableTableManager(
+    _$MegrimDatabase db,
+    $MedicationClassesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MedicationClassesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MedicationClassesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MedicationClassesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> name = const Value.absent(),
+                Value<String> medClass = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MedicationClassesCompanion(
+                name: name,
+                medClass: medClass,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String name,
+                required String medClass,
+                Value<int> rowid = const Value.absent(),
+              }) => MedicationClassesCompanion.insert(
+                name: name,
+                medClass: medClass,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MedicationClassesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MegrimDatabase,
+      $MedicationClassesTable,
+      MedicationClassesData,
+      $$MedicationClassesTableFilterComposer,
+      $$MedicationClassesTableOrderingComposer,
+      $$MedicationClassesTableAnnotationComposer,
+      $$MedicationClassesTableCreateCompanionBuilder,
+      $$MedicationClassesTableUpdateCompanionBuilder,
+      (
+        MedicationClassesData,
+        BaseReferences<
+          _$MegrimDatabase,
+          $MedicationClassesTable,
+          MedicationClassesData
+        >,
+      ),
+      MedicationClassesData,
+      PrefetchHooks Function()
+    >;
+typedef $$PreventiveRegimensTableCreateCompanionBuilder =
+    PreventiveRegimensCompanion Function({
+      required String id,
+      required String name,
+      Value<String?> dose,
+      required String startedOn,
+      Value<String?> stoppedOn,
+      Value<String?> notes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$PreventiveRegimensTableUpdateCompanionBuilder =
+    PreventiveRegimensCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String?> dose,
+      Value<String> startedOn,
+      Value<String?> stoppedOn,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$PreventiveRegimensTableFilterComposer
+    extends Composer<_$MegrimDatabase, $PreventiveRegimensTable> {
+  $$PreventiveRegimensTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dose => $composableBuilder(
+    column: $table.dose,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get startedOn => $composableBuilder(
+    column: $table.startedOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stoppedOn => $composableBuilder(
+    column: $table.stoppedOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PreventiveRegimensTableOrderingComposer
+    extends Composer<_$MegrimDatabase, $PreventiveRegimensTable> {
+  $$PreventiveRegimensTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dose => $composableBuilder(
+    column: $table.dose,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get startedOn => $composableBuilder(
+    column: $table.startedOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stoppedOn => $composableBuilder(
+    column: $table.stoppedOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PreventiveRegimensTableAnnotationComposer
+    extends Composer<_$MegrimDatabase, $PreventiveRegimensTable> {
+  $$PreventiveRegimensTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get dose =>
+      $composableBuilder(column: $table.dose, builder: (column) => column);
+
+  GeneratedColumn<String> get startedOn =>
+      $composableBuilder(column: $table.startedOn, builder: (column) => column);
+
+  GeneratedColumn<String> get stoppedOn =>
+      $composableBuilder(column: $table.stoppedOn, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$PreventiveRegimensTableTableManager
+    extends
+        RootTableManager<
+          _$MegrimDatabase,
+          $PreventiveRegimensTable,
+          PreventiveRegimen,
+          $$PreventiveRegimensTableFilterComposer,
+          $$PreventiveRegimensTableOrderingComposer,
+          $$PreventiveRegimensTableAnnotationComposer,
+          $$PreventiveRegimensTableCreateCompanionBuilder,
+          $$PreventiveRegimensTableUpdateCompanionBuilder,
+          (
+            PreventiveRegimen,
+            BaseReferences<
+              _$MegrimDatabase,
+              $PreventiveRegimensTable,
+              PreventiveRegimen
+            >,
+          ),
+          PreventiveRegimen,
+          PrefetchHooks Function()
+        > {
+  $$PreventiveRegimensTableTableManager(
+    _$MegrimDatabase db,
+    $PreventiveRegimensTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PreventiveRegimensTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PreventiveRegimensTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PreventiveRegimensTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> dose = const Value.absent(),
+                Value<String> startedOn = const Value.absent(),
+                Value<String?> stoppedOn = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PreventiveRegimensCompanion(
+                id: id,
+                name: name,
+                dose: dose,
+                startedOn: startedOn,
+                stoppedOn: stoppedOn,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<String?> dose = const Value.absent(),
+                required String startedOn,
+                Value<String?> stoppedOn = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => PreventiveRegimensCompanion.insert(
+                id: id,
+                name: name,
+                dose: dose,
+                startedOn: startedOn,
+                stoppedOn: stoppedOn,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PreventiveRegimensTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MegrimDatabase,
+      $PreventiveRegimensTable,
+      PreventiveRegimen,
+      $$PreventiveRegimensTableFilterComposer,
+      $$PreventiveRegimensTableOrderingComposer,
+      $$PreventiveRegimensTableAnnotationComposer,
+      $$PreventiveRegimensTableCreateCompanionBuilder,
+      $$PreventiveRegimensTableUpdateCompanionBuilder,
+      (
+        PreventiveRegimen,
+        BaseReferences<
+          _$MegrimDatabase,
+          $PreventiveRegimensTable,
+          PreventiveRegimen
+        >,
+      ),
+      PreventiveRegimen,
+      PrefetchHooks Function()
+    >;
 
 class $MegrimDatabaseManager {
   final _$MegrimDatabase _db;
@@ -4509,4 +5751,8 @@ class $MegrimDatabaseManager {
       $$AppSettingsTableTableManager(_db, _db.appSettings);
   $$VocabulariesTableTableManager get vocabularies =>
       $$VocabulariesTableTableManager(_db, _db.vocabularies);
+  $$MedicationClassesTableTableManager get medicationClasses =>
+      $$MedicationClassesTableTableManager(_db, _db.medicationClasses);
+  $$PreventiveRegimensTableTableManager get preventiveRegimens =>
+      $$PreventiveRegimensTableTableManager(_db, _db.preventiveRegimens);
 }

@@ -212,6 +212,347 @@
     "migraine_days_without_headache_last_30": 0,
     "without_headache": null,
     "impact": null,
+    "medication_days": {
+      "days_last_30": 0,
+      "by_class_last_30": {},
+      "by_month": [
+        {
+          "month": "2024-01",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-02",
+          "days": 2,
+          "by_class": {
+            "unclassified": 2
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-03",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-04",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-05",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-06",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-07",
+          "days": 4,
+          "by_class": {
+            "unclassified": 4
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-08",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-09",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-10",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-11",
+          "days": 2,
+          "by_class": {
+            "unclassified": 2
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2024-12",
+          "days": 3,
+          "by_class": {
+            "unclassified": 3
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-01",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-02",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-03",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-04",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-05",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-06",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-07",
+          "days": 2,
+          "by_class": {
+            "unclassified": 2
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-08",
+          "days": 4,
+          "by_class": {
+            "unclassified": 4
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-09",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-10",
+          "days": 2,
+          "by_class": {
+            "unclassified": 2
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-11",
+          "days": 2,
+          "by_class": {
+            "unclassified": 2
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2025-12",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-01",
+          "days": 4,
+          "by_class": {
+            "unclassified": 4
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-02",
+          "days": 2,
+          "by_class": {
+            "unclassified": 2
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-03",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-04",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-05",
+          "days": 1,
+          "by_class": {
+            "unclassified": 1
+          },
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-06",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-07",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-08",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-09",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        },
+        {
+          "month": "2026-10",
+          "days": 0,
+          "by_class": {},
+          "overuse_class_days": 0,
+          "levels_reached": []
+        }
+      ],
+      "overuse_notice_months": null,
+      "unclassified_names": [
+        "Acetaminophen",
+        "Ibuprofen",
+        "Naproxen",
+        "Rizatriptan",
+        "Sumatriptan"
+      ]
+    },
+    "what_helped": [
+      {
+        "name": "Acetaminophen",
+        "kind": "medication",
+        "tried": 9,
+        "helped": 3,
+        "not_helped": 3,
+        "unknown": 3,
+        "helped_pct": 50
+      },
+      {
+        "name": "Rizatriptan",
+        "kind": "medication",
+        "tried": 9,
+        "helped": 5,
+        "not_helped": 2,
+        "unknown": 2,
+        "helped_pct": 71
+      },
+      {
+        "name": "Naproxen",
+        "kind": "medication",
+        "tried": 8,
+        "helped": 6,
+        "not_helped": 1,
+        "unknown": 1,
+        "helped_pct": 86
+      },
+      {
+        "name": "Ibuprofen",
+        "kind": "medication",
+        "tried": 6,
+        "helped": 1,
+        "not_helped": 3,
+        "unknown": 2,
+        "helped_pct": 25
+      },
+      {
+        "name": "Sumatriptan",
+        "kind": "medication",
+        "tried": 6,
+        "helped": 4,
+        "not_helped": 1,
+        "unknown": 1,
+        "helped_pct": 80
+      }
+    ],
     "by_day_of_week": [
       {
         "label": "Mon",
