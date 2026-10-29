@@ -254,16 +254,32 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       geoLon: Value(_geoLon),
       geoLabel: Value(_geoLabel),
     );
+    final String id;
     if (widget.draft != null) {
       // Draft mode: this is the first and only write for a new entry (issue #12). insertEvent
       // enqueues enrichment itself.
-      await widget.repo.insertEvent(fields);
+      id = await widget.repo.insertEvent(fields);
     } else {
-      await widget.repo.updateEvent(fields.copyWith(id: Value(widget.eventId!)));
+      id = widget.eventId!;
+      await widget.repo.updateEvent(fields.copyWith(id: Value(id)));
       // Date and/or location may change enrichment inputs — re-enqueue (local, not an API POST).
-      await widget.repo.enrichment.enqueue(widget.eventId!);
+      await widget.repo.enrichment.enqueue(id);
     }
     widget.repo.processEnrichmentQueue().catchError((_) {});
+    // An entry wins over a check-in for the same day (backlog #16): the check-ins on the days it
+    // covers go, with undo in case the dates were wrong.
+    final removed = await widget.repo.removeCheckinsCoveredBy(id);
+    if (removed.isNotEmpty) {
+      final n = removed.length;
+      messenger.showSnackBar(SnackBar(
+        content: Text(n == 1
+            ? 'Removed the "No migraine" check-in for that day.'
+            : 'Removed $n "No migraine" check-ins for those days.'),
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+            label: 'Undo', onPressed: () => widget.repo.restoreCheckins(removed)),
+      ));
+    }
     if (mounted) Navigator.of(context).pop();
   }
 

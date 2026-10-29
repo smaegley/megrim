@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:megrim/analytics/checkins.dart';
 import 'package:megrim/analytics/correlations.dart';
 import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
@@ -332,5 +333,59 @@ void main() {
       expect(c.medicationDays, isNotNull);
     });
   });
-}
 
+  group('check-ins (backlog #16)', () {
+    test('no check-in: neither the days-tracked line nor the section', () {
+      final c = build(events: [event(id: 'a', started: DateTime.utc(2026, 10, 1, 9))]);
+      expect(c.tracked, isNull);
+      expect(c.trackedFactors, isNull);
+    });
+
+    test('the days-tracked line and the section, below the gate', () {
+      final dash = computeDashboard(
+        [EventStat(startedAt: DateTime(2026, 10, 1, 9).toUtc())],
+        now: DateTime(2026, 10, 5),
+        checkins: [
+          CheckinStat(day: DateTime(2026, 9, 30)),
+          CheckinStat(day: DateTime(2026, 10, 2)),
+        ],
+      );
+      final c = build(dash: dash);
+      expect(c.tracked, startsWith('Days tracked, last 30 days: 3 (1 with a migraine, 2 checked '
+          'in as clear, 27 not recorded). Since the first check-in on 30 Sep 2026: 3 of 6 days.'));
+      expect(c.trackedFactors!.available, isFalse);
+      expect(c.trackedFactors!.reason, contains('So far: 3 tracked, 1 migraine, 2 clear'));
+    });
+
+    test('the section carries every factor and marks the headline rows', () {
+      final start = DateTime(2026, 8, 1);
+      DateTime d(int i) => DateTime(start.year, start.month, start.day + i);
+      final dash = computeDashboard(
+        [
+          for (var i = 1; i <= 10; i++)
+            EventStat(
+                startedAt: DateTime(d(i).year, d(i).month, d(i).day, 9).toUtc(),
+                triggers: i <= 8 ? const ['Bright light'] : const [],
+                sleepHoursPrior: 5),
+        ],
+        now: DateTime(2026, 10, 5),
+        checkins: [
+          for (var i = 0; i < 40; i++)
+            CheckinStat(
+                day: d(i == 0 ? 0 : 10 + i),
+                triggers: i < 4 ? const ['Bright light'] : const [],
+                sleepHours: 7),
+        ],
+      );
+      final t = build(dash: dash).trackedFactors!;
+      expect(t.available, isTrue);
+      expect(t.window, '10 migraine days and 40 clear days since the first check-in '
+          '(50 tracked days).');
+      final triggers = t.groups.singleWhere((g) => g.name == kTriggerFactor);
+      expect(triggers.rows.single.bucket, 'Bright light');
+      expect(triggers.rows.single.isTop, isTrue);
+      expect(t.groups.map((g) => g.name), contains(kSleepFactor));
+      expect(t.caveats.join(' '), contains('Recall bias'));
+    });
+  });
+}

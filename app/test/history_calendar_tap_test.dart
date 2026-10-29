@@ -19,7 +19,8 @@ Future<void> disposeAndDrain(WidgetTester tester) async {
 }
 
 /// Backlog #9: tapping a Calendar day opens its entry directly (one entry), offers a picker
-/// (several entries), or starts a new past entry pre-dated to that day (none).
+/// (several entries), or starts a new past entry pre-dated to that day (none; since backlog #16,
+/// after asking whether to log a migraine or mark the day clear).
 void main() {
   late MegrimDatabase db;
   late MegrimRepository repo;
@@ -178,6 +179,9 @@ void main() {
         findsOneWidget);
 
     await tester.tap(find.widgetWithText(InkWell, '15'));
+    await tester.pumpAndSettle();
+    // A day without an entry asks first: log one, or mark it clear (backlog #16).
+    await tester.tap(find.text('Log a migraine on this day'));
     await tester.pumpAndSettle();
 
     expect(find.byType(EventDetailScreen), findsOneWidget);

@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
@@ -210,8 +211,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 // Backlog #17: right after Summary — the headline clinical number.
                 MonthlyDaysCard(dash: dash),
                 const SizedBox(height: 16),
+                // Backlog #16.
+                _TrackedDaysCard(dash: dash),
                 _CorrelationsCard(corr: corr, weatherEnabled: weatherOn),
                 const SizedBox(height: 16),
+                _TrackedFactorsCard(dash: dash),
                 _FrequencyCard(
                   title: 'Most-tagged triggers',
                   description: 'How often you tagged each trigger, across '
@@ -219,10 +223,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   items: dash.triggerFrequency,
                   total: dash.summary.totalEvents,
                   noun: 'triggers',
-                  note: 'This is a frequency count of what you noted — not a correlation. '
-                      'Self-reported triggers are only recorded on migraine days, so there '
-                      'is no non-migraine baseline to test them against. Treat these as '
-                      'personal notes, not evidence of cause.',
+                  note: dash.trackedFactors == null
+                      ? 'This is a frequency count of what you noted — not a correlation. '
+                          'Self-reported triggers are only recorded on migraine days, so there '
+                          'is no non-migraine baseline to test them against. Treat these as '
+                          'personal notes, not evidence of cause. Checking in on days without '
+                          'a migraine (Log › No migraine today) gives them one.'
+                      : 'This is a frequency count of what you noted — not a correlation. '
+                          '"Migraine days vs clear days" compares them with the days you '
+                          'checked in as clear.',
                 ),
                 const SizedBox(height: 16),
                 // Backlog #20.
@@ -700,40 +709,40 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
       ),
     );
   }
+}
 
-  /// One suspected factor rendered as a horizontal bar whose length encodes the odds ratio relative
-  /// to the strongest shown factor, shaded by the same magnitude (backlog #1b/#3). The OR value and
-  /// factor:condition label are kept as text — the bar is an addition, not a replacement.
-  Widget _factorBar(BuildContext context, TopFactor t, double maxOr) {
-    final frac = maxOr <= 0 ? 0.0 : (t.oddsRatio / maxOr).clamp(0.0, 1.0);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(child: Text('${t.factor}: ${t.condition}')),
-              const SizedBox(width: 8),
-              Text('OR ${t.oddsRatio}',
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
+/// One suspected factor rendered as a horizontal bar whose length encodes the odds ratio relative
+/// to the strongest shown factor, shaded by the same magnitude (backlog #1b/#3). The OR value and
+/// factor:condition label are kept as text — the bar is an addition, not a replacement.
+Widget _factorBar(BuildContext context, TopFactor t, double maxOr) {
+  final frac = maxOr <= 0 ? 0.0 : (t.oddsRatio / maxOr).clamp(0.0, 1.0);
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(child: Text('${t.factor}: ${t.condition}')),
+            const SizedBox(width: 8),
+            Text('OR ${t.oddsRatio}',
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        const SizedBox(height: 4),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: frac,
+            minHeight: 8,
+            backgroundColor:
+                Theme.of(context).colorScheme.surfaceContainerHighest,
+            color: _magnitudeColor(frac, Theme.of(context).brightness),
           ),
-          const SizedBox(height: 4),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: frac,
-              minHeight: 8,
-              backgroundColor:
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
-              color: _magnitudeColor(frac, Theme.of(context).brightness),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 /// Most-tagged triggers (review items #7, #11) and most common symptoms (backlog #20).
@@ -841,6 +850,144 @@ class _FrequencyCardState extends State<_FrequencyCard> {
 /// "Impact on the day" (backlog #22a): migraine days on which the user couldn't function, or
 /// functioned less, on the same day rule as Migraine days per month. Renders nothing until an
 /// entry has an impact recorded.
+/// "Days tracked" (backlog #16): how many recent days have an entry or a check-in, so the user can
+/// see how much of the calendar the numbers rest on. Renders nothing until there is a check-in.
+class _TrackedDaysCard extends StatelessWidget {
+  final DashboardResult dash;
+  const _TrackedDaysCard({required this.dash});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = dash.tracked;
+    if (t == null) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final small = theme.textTheme.bodySmall;
+    final unrecorded = 30 - t.last30;
+    final f = DateFormat('d MMM yyyy');
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Days tracked', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 4),
+              Text('Days with an entry or a "No migraine" check-in.', style: small),
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    '${t.last30}',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text('of the last 30 days', style: small)),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text('${t.migraineLast30} with a migraine, ${t.clearLast30} without, '
+                  '$unrecorded not recorded.'),
+              const SizedBox(height: 8),
+              Text(
+                '${t.sinceFirstCheckin} of ${t.daysSinceFirstCheckin} days since your first '
+                'check-in (${f.format(t.firstCheckin)}). A day with nothing recorded could '
+                'have been either, so the more days are tracked, the more the numbers here '
+                'can be trusted.',
+                style: small,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Migraine days vs clear days" (backlog #16): the self-reported factors over tracked days.
+/// Renders nothing until there is a check-in; until the gate is met it says what is needed.
+class _TrackedFactorsCard extends StatefulWidget {
+  final DashboardResult dash;
+  const _TrackedFactorsCard({required this.dash});
+
+  @override
+  State<_TrackedFactorsCard> createState() => _TrackedFactorsCardState();
+}
+
+class _TrackedFactorsCardState extends State<_TrackedFactorsCard> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = widget.dash.trackedFactors;
+    if (t == null) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final small = theme.textTheme.bodySmall;
+    final shown = _expanded ? t.topFactors : t.topFactors.take(3).toList();
+    final maxOr = shown.fold<double>(1, (m, x) => x.oddsRatio > m ? x.oddsRatio : m);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Migraine days vs clear days', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 4),
+              Text(
+                'What you recorded on days a migraine started, compared with days you checked '
+                'in as clear: sleep, stress, triggers and foods.',
+                style: small,
+              ),
+              const SizedBox(height: 12),
+              if (!t.available)
+                Text(t.reason ?? 'Not enough data yet.')
+              else ...[
+                Text(
+                  '${t.migraineDays} migraine days and ${t.clearDays} clear days since your '
+                  'first check-in.',
+                  style: small,
+                ),
+                const SizedBox(height: 8),
+                if (t.topFactors.isEmpty)
+                  const Text('Nothing you recorded stands out above chance yet.')
+                else
+                  for (final f in shown) _factorBar(context, f, maxOr),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: () => setState(() => _expanded = !_expanded),
+                    child: Text(_expanded
+                        ? 'Show less'
+                        : t.topFactors.length > shown.length
+                            ? 'Show all ${t.topFactors.length} and the caveats'
+                            : 'Show the caveats'),
+                  ),
+                ),
+                if (_expanded) ...[
+                  const Divider(height: 24),
+                  for (final c in t.caveats)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Text('• $c', style: small),
+                    ),
+                ],
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ImpactCard extends StatelessWidget {
   final DashboardResult dash;
   const _ImpactCard({required this.dash});

@@ -8,9 +8,11 @@ import '../database/database.dart';
 import '../legal.dart';
 import '../models/attack_details.dart';
 import '../models/backup_status.dart';
+import '../models/event_time.dart' show daysCovered;
 import '../repositories/megrim_repository.dart';
 import '../widgets/severity_badge.dart' show StatusColors;
 import '../widgets/days_since_card.dart';
+import 'checkin_screen.dart';
 import 'event_detail_screen.dart';
 
 /// Quick Log (SPEC §4.2): one tap to start a migraine; an active view with an elapsed timer,
@@ -50,6 +52,11 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   Timer? _ticker;
   final _notes = TextEditingController();
 
+  /// Today's "No migraine today" check-in (backlog #16), and whether an entry covers today (then
+  /// the button is hidden: an entry wins over a check-in).
+  DayCheckin? _checkin;
+  bool _todayHasEntry = false;
+
   /// Backup reminder (backlog #14); only rendered once the user has opted in to an interval.
   BackupStatus _backup = const BackupStatus(
       lastBackupAt: null, reminderDays: kBackupReminderOff, daysSince: null);
@@ -68,7 +75,11 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   @override
   void didUpdateWidget(QuickLogScreen old) {
     super.didUpdateWidget(old);
-    if (old.refreshToken != widget.refreshToken) _loadBackup();
+    if (old.refreshToken != widget.refreshToken) {
+      _loadBackup();
+      // A check-in or entry for today may have been added on the History tab.
+      _loadActive();
+    }
     if (old.startToken != widget.startToken) _startFromShortcut();
   }
 
@@ -88,11 +99,39 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     final events = await widget.repo.db.select(widget.repo.db.migraineEvents).get();
     final ongoing = events.where((e) => e.endedAt == null).toList()
       ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+    final today = _today();
+    final checkin = await widget.repo.checkinOn(today);
     if (!mounted) return;
     setState(() {
       _active = ongoing.isNotEmpty ? ongoing.first : null;
       _notes.text = _active?.notes ?? '';
+      _checkin = checkin;
+      _todayHasEntry = events.any((e) =>
+          daysCovered(e.startedAt, e.startedAtOffsetMin, e.endedAt, e.endedAtOffsetMin)
+              .contains(today));
     });
+  }
+
+  static DateTime _today() {
+    final n = DateTime.now();
+    return DateTime(n.year, n.month, n.day);
+  }
+
+  Future<void> _checkIn() async {
+    await widget.repo.checkIn(_today());
+    await _loadActive();
+  }
+
+  Future<void> _undoCheckIn() async {
+    await widget.repo.removeCheckin(_today());
+    await _loadActive();
+  }
+
+  Future<void> _openCheckin() async {
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => CheckinScreen(repo: widget.repo, day: _today()),
+    ));
+    await _loadActive();
   }
 
   /// The app-icon shortcut: start a migraine, or just show the one already in progress.
@@ -106,13 +145,20 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
 
   Future<void> _start() async {
     final home = await widget.repo.homeLocation;
-    await widget.repo.startEvent(
+    final id = await widget.repo.startEvent(
       severity: 5,
       lat: home?.lat,
       lon: home?.lon,
       label: home?.label,
     );
+    // An entry wins over a check-in for the same day (backlog #16).
+    final removed = await widget.repo.removeCheckinsCoveredBy(id);
     await _loadActive();
+    if (removed.isNotEmpty && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Today\'s "No migraine" check-in was removed.'),
+      ));
+    }
   }
 
   Future<void> _end() async {
@@ -278,10 +324,49 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
             const SizedBox(height: 12),
             Text('Tap to start. You can add details any time.',
                 style: Theme.of(context).textTheme.bodySmall),
+            if (!_todayHasEntry) ...[
+              const SizedBox(height: 32),
+              _checkinView(),
+            ],
             const SizedBox(height: 24),
           ],
         ),
       );
+
+  /// "No migraine today" (backlog #16): one tap records a clear day; details are optional.
+  Widget _checkinView() {
+    final theme = Theme.of(context);
+    if (_checkin == null) {
+      return SizedBox(
+        width: double.infinity,
+        height: 48,
+        child: OutlinedButton.icon(
+          onPressed: _checkIn,
+          icon: const Icon(Icons.check),
+          label: const Text('NO MIGRAINE TODAY'),
+        ),
+      );
+    }
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.check_circle, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Flexible(child: Text('No migraine today', style: theme.textTheme.titleSmall)),
+          ],
+        ),
+        Wrap(
+          alignment: WrapAlignment.center,
+          children: [
+            TextButton(onPressed: _openCheckin, child: const Text('Add details')),
+            TextButton(onPressed: _undoCheckIn, child: const Text('Undo')),
+          ],
+        ),
+      ],
+    );
+  }
 
   Widget _activeView() {
     final elapsed = DateTime.now().toUtc().difference(_active!.startedAt.toUtc());
