@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
+import '../analytics/checkins.dart';
 import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
 import '../analytics/pressure_baseline.dart';
@@ -11,6 +12,7 @@ import '../models/backup_status.dart';
 import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
+import '../models/medications.dart' show isoDay, parseIsoDay;
 import '../legal.dart' show kAppVersion;
 import '../services/analytics_export.dart';
 import '../services/report_content.dart';
@@ -184,6 +186,80 @@ class MegrimRepository {
     }
   }
 
+  // ── "No migraine today" check-ins (backlog #16) ────────────────────────
+  Stream<List<DayCheckin>> watchCheckins() => db.select(db.dayCheckins).watch();
+
+  Future<List<DayCheckin>> checkins() => db.select(db.dayCheckins).get();
+
+  Future<DayCheckin?> checkinOn(DateTime day) =>
+      (db.select(db.dayCheckins)..where((t) => t.localDate.equals(isoDay(day)))).getSingleOrNull();
+
+  /// Mark [day] (a local calendar date) clear. Idempotent: an existing check-in keeps its details.
+  /// The offset is the phone's for that date, as an event logged then would have had.
+  Future<void> checkIn(DateTime day) async {
+    final now = DateTime.now().toUtc();
+    await db.into(db.dayCheckins).insert(
+          DayCheckinsCompanion.insert(
+            localDate: isoDay(day),
+            offsetMin: Value(offsetMinutesOf(DateTime(day.year, day.month, day.day, 12))),
+            createdAt: now,
+            updatedAt: now,
+          ),
+          mode: InsertMode.insertOrIgnore,
+        );
+  }
+
+  /// The optional self-report fields of [day]'s check-in. Empty lists are stored as null.
+  Future<void> saveCheckinDetails(
+    DateTime day, {
+    List<String> triggers = const [],
+    double? sleepHours,
+    int? stress,
+    List<String> foods = const [],
+  }) async {
+    await checkIn(day);
+    await (db.update(db.dayCheckins)..where((t) => t.localDate.equals(isoDay(day)))).write(
+      DayCheckinsCompanion(
+        triggersSuspected: Value(encodeStringList(triggers)),
+        sleepHoursPrior: Value(sleepHours),
+        stressLevel: Value(stress),
+        foodsNotable: Value(encodeStringList(foods)),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+  }
+
+  /// Returns the removed row so the UI can offer undo.
+  Future<DayCheckin?> removeCheckin(DateTime day) async {
+    final row = await checkinOn(day);
+    if (row != null) {
+      await (db.delete(db.dayCheckins)..where((t) => t.localDate.equals(row.localDate))).go();
+    }
+    return row;
+  }
+
+  Future<void> restoreCheckins(Iterable<DayCheckin> rows) async {
+    for (final r in rows) {
+      await db.into(db.dayCheckins).insertOnConflictUpdate(r.toCompanion(true));
+    }
+  }
+
+  /// A migraine entry wins over a check-in for the same day, so once one is saved the check-ins on
+  /// the days it covers are removed. Returned so the UI can say so and offer undo.
+  Future<List<DayCheckin>> removeCheckinsCoveredBy(String eventId) async {
+    final e = await getEvent(eventId);
+    if (e == null) return const [];
+    final days = {
+      for (final d in daysCovered(e.startedAt, e.startedAtOffsetMin, e.endedAt, e.endedAtOffsetMin))
+        isoDay(d),
+    };
+    final rows = await (db.select(db.dayCheckins)..where((t) => t.localDate.isIn(days))).get();
+    if (rows.isNotEmpty) {
+      await (db.delete(db.dayCheckins)..where((t) => t.localDate.isIn(days))).go();
+    }
+    return rows;
+  }
+
   // ── Locations ────────────────────────────────────────────────────────────
   Future<List<HomeLocation>> recentLocations({int limit = 3}) async {
     final lat = db.migraineEvents.geoLat;
@@ -232,6 +308,9 @@ class MegrimRepository {
               pressureDelta24h: dById[e.id]?.pressureDelta24h,
               daylightHours: dById[e.id]?.daylightHours,
               triggers: decodeStringList(e.triggersSuspected),
+              sleepHoursPrior: e.sleepHoursPrior,
+              stressLevel: e.stressLevel,
+              foods: decodeStringList(e.foodsNotable),
               headachePresent: e.headachePresent,
               aura: e.auraPresent,
               symptoms: decodeStringList(e.symptoms),
@@ -249,7 +328,18 @@ class MegrimRepository {
         homeLon: home?.lon,
         now: now,
         medClasses: await db.medicationClassMap(),
-        preventives: await preventives());
+        preventives: await preventives(),
+        checkins: [
+          for (final c in await checkins())
+            if (parseIsoDay(c.localDate) case final day?)
+              CheckinStat(
+                day: day,
+                triggers: decodeStringList(c.triggersSuspected),
+                sleepHours: c.sleepHoursPrior,
+                stress: c.stressLevel,
+                foods: decodeStringList(c.foodsNotable),
+              ),
+        ]);
   }
 
   Future<CorrelationResult> correlations(

@@ -21,6 +21,7 @@ import json
 import math
 import os
 import random
+import sys
 from datetime import date, datetime, timedelta, timezone
 
 # Home location (northern hemisphere -> meteorological winter = Dec/Jan/Feb). Mountain time.
@@ -177,8 +178,8 @@ def build_event(rng, i, d):
     }
 
 
-def doc_for(events):
-    return {
+def doc_for(events, checkins=None):
+    doc = {
         "format": "megrim-export",
         "format_version": 1,
         "exported_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
@@ -191,6 +192,59 @@ def doc_for(events):
         },
         "events": events,
     }
+    if checkins is not None:
+        doc["checkins"] = checkins
+    return doc
+
+
+def make_tracked(seed, signal, mig_rate, clear_rate):
+    """60 tracked days ending at END (schema v6, backlog #16): a migraine every 4th day, a
+    "No migraine today" check-in on every other day. `signal` is ticked on a share `mig_rate` of
+    migraine days and `clear_rate` of clear days; everything else is drawn the same way on both, so
+    only `signal` can stand out. Every day records sleep, so each counts for the trigger table."""
+    rng = random.Random(seed)
+    others = [t for t in TRIGGERS if t != signal]
+    days = [END - timedelta(days=i) for i in range(59, -1, -1)]
+    # Starting on the second day: migraines before the first check-in aren't compared.
+    mig_days = days[1::4]
+    clear_days = [d for d in days if d not in mig_days]
+
+    def triggers(rate, count, index):
+        # Exactly round(rate * count) days carry the signal, spread through the list.
+        hits = round(rate * count)
+        picked = [t for t in rng.sample(others, rng.randint(0, 2))]
+        if index * hits // count != (index + 1) * hits // count:
+            picked.append(signal)
+        return picked
+
+    events = []
+    for i, d in enumerate(mig_days):
+        e = build_event(rng, i, d)
+        # Short attacks, so no migraine covers a check-in day.
+        started = datetime.fromisoformat(e["started_at"].replace("Z", "+00:00"))
+        e["ended_at"] = (started + timedelta(hours=3)).isoformat().replace("+00:00", "Z")
+        # Offsets, so the days are read in Boulder whatever zone the test runs in.
+        e["started_at_offset_minutes"] = TZ_OFFSET_HOURS * 60
+        e["ended_at_offset_minutes"] = TZ_OFFSET_HOURS * 60
+        e["triggers_suspected"] = triggers(mig_rate, len(mig_days), i)
+        e["sleep_hours_prior"] = round(rng.gauss(7, 1), 1)
+        e["stress_level"] = rng.randint(1, 5)
+        events.append(e)
+    checkins = []
+    for i, d in enumerate(clear_days):
+        checkins.append({
+            "local_date": d.isoformat(),
+            "offset_minutes": TZ_OFFSET_HOURS * 60,
+            "triggers_suspected": triggers(clear_rate, len(clear_days), i),
+            "sleep_hours_prior": round(rng.gauss(7, 1), 1),
+            "stress_level": rng.randint(1, 5),
+            # Drawn as build_event draws them for entries, so foods carry no signal either.
+            "foods_notable": rng.sample(["Cheese", "Red wine", "Chocolate", "Citrus"],
+                                        rng.randint(0, 2)),
+            "created_at": f"{d.isoformat()}T20:00:00Z",
+            "updated_at": f"{d.isoformat()}T20:00:00Z",
+        })
+    return events, checkins
 
 
 def days_back(pool_days, predicate, count, rng):
@@ -215,10 +269,16 @@ def main():
 
     written = []
 
-    def write(name, events):
+    # Optional name prefixes: `generate_test_datasets.py 07 08` rewrites only those files, so the
+    # others keep their exported_at stamps.
+    only = sys.argv[1:]
+
+    def write(name, events, checkins=None):
+        if only and not any(name.startswith(p) for p in only):
+            return
         path = os.path.join(out_dir, name)
         with open(path, "w") as fh:
-            json.dump(doc_for(events), fh, indent=2)
+            json.dump(doc_for(events, checkins), fh, indent=2)
         rel = os.path.relpath(path, os.path.join(here, ".."))
         written.append((rel, len(events)))
 
@@ -265,6 +325,12 @@ def main():
     short_day = spread(band, 22, 10)
     long_day = days_back(pool, lambda d: daylight_hours(d, HOME["lat"]) >= 14.0, 8, None)
     write("06-daylight-short.json", make_events(short_day, long_day, seed=6))
+
+    # 07 / 08 — check-ins (backlog #16): "Bright light" planted on 12 of 15 migraine days and 4 of
+    # 45 clear days, so it surfaces in the tracked-days comparison; then the same trigger equally
+    # common on both (a third of each), which must not.
+    write("07-checkins-planted-trigger.json", *make_tracked(7, "Bright light", 0.8, 4 / 45))
+    write("08-checkins-no-signal.json", *make_tracked(8, "Bright light", 1 / 3, 1 / 3))
 
     for rel, n in written:
         print(f"wrote {rel:48s} {n} events")

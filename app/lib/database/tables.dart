@@ -170,3 +170,30 @@ class PreventiveRegimens extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+/// Schema v6 (backlog #16): a "No migraine today" check-in. A row's presence means the day was
+/// clear; a day with a migraine entry wins over a check-in for the same date everywhere. Carries
+/// the same optional self-report fields as an event, so they have a clear-day baseline.
+class DayCheckins extends Table {
+  /// The wall-clock date, `yyyy-MM-dd`, in the zone it was logged in.
+  TextColumn get localDate => text()();
+
+  /// UTC offset (minutes east) of that zone, as on events (issue #17).
+  IntColumn get offsetMin => integer().nullable()();
+
+  /// JSON array of strings (vocab: trigger).
+  TextColumn get triggersSuspected => text().nullable()();
+  RealColumn get sleepHoursPrior => real().nullable()();
+
+  /// 1–5.
+  IntColumn get stressLevel => integer().nullable()();
+
+  /// JSON array of strings.
+  TextColumn get foodsNotable => text().nullable()();
+
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {localDate};
+}

@@ -265,7 +265,7 @@ void main() {
       expect(await upgraded.vocabValues(VocabKind.relief), kDefaultRelief);
       expect(await upgraded.medicationClassMap(), isEmpty);
       expect(await upgraded.select(upgraded.preventiveRegimens).get(), isEmpty);
-      expect(await upgraded.getSetting('schema_version'), '5');
+      expect(await upgraded.getSetting('schema_version'), '${upgraded.schemaVersion}');
       await upgraded.close();
       dir.deleteSync(recursive: true);
     });

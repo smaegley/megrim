@@ -553,6 +553,8 @@
         "helped_pct": 80
       }
     ],
+    "days_tracked": null,
+    "tracked_factors": null,
     "by_day_of_week": [
       {
         "label": "Mon",

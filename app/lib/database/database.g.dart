@@ -3688,6 +3688,564 @@ class PreventiveRegimensCompanion extends UpdateCompanion<PreventiveRegimen> {
   }
 }
 
+class $DayCheckinsTable extends DayCheckins
+    with TableInfo<$DayCheckinsTable, DayCheckin> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DayCheckinsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _localDateMeta = const VerificationMeta(
+    'localDate',
+  );
+  @override
+  late final GeneratedColumn<String> localDate = GeneratedColumn<String>(
+    'local_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _offsetMinMeta = const VerificationMeta(
+    'offsetMin',
+  );
+  @override
+  late final GeneratedColumn<int> offsetMin = GeneratedColumn<int>(
+    'offset_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _triggersSuspectedMeta = const VerificationMeta(
+    'triggersSuspected',
+  );
+  @override
+  late final GeneratedColumn<String> triggersSuspected =
+      GeneratedColumn<String>(
+        'triggers_suspected',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _sleepHoursPriorMeta = const VerificationMeta(
+    'sleepHoursPrior',
+  );
+  @override
+  late final GeneratedColumn<double> sleepHoursPrior = GeneratedColumn<double>(
+    'sleep_hours_prior',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stressLevelMeta = const VerificationMeta(
+    'stressLevel',
+  );
+  @override
+  late final GeneratedColumn<int> stressLevel = GeneratedColumn<int>(
+    'stress_level',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _foodsNotableMeta = const VerificationMeta(
+    'foodsNotable',
+  );
+  @override
+  late final GeneratedColumn<String> foodsNotable = GeneratedColumn<String>(
+    'foods_notable',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    localDate,
+    offsetMin,
+    triggersSuspected,
+    sleepHoursPrior,
+    stressLevel,
+    foodsNotable,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'day_checkins';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DayCheckin> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('local_date')) {
+      context.handle(
+        _localDateMeta,
+        localDate.isAcceptableOrUnknown(data['local_date']!, _localDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_localDateMeta);
+    }
+    if (data.containsKey('offset_min')) {
+      context.handle(
+        _offsetMinMeta,
+        offsetMin.isAcceptableOrUnknown(data['offset_min']!, _offsetMinMeta),
+      );
+    }
+    if (data.containsKey('triggers_suspected')) {
+      context.handle(
+        _triggersSuspectedMeta,
+        triggersSuspected.isAcceptableOrUnknown(
+          data['triggers_suspected']!,
+          _triggersSuspectedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sleep_hours_prior')) {
+      context.handle(
+        _sleepHoursPriorMeta,
+        sleepHoursPrior.isAcceptableOrUnknown(
+          data['sleep_hours_prior']!,
+          _sleepHoursPriorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('stress_level')) {
+      context.handle(
+        _stressLevelMeta,
+        stressLevel.isAcceptableOrUnknown(
+          data['stress_level']!,
+          _stressLevelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('foods_notable')) {
+      context.handle(
+        _foodsNotableMeta,
+        foodsNotable.isAcceptableOrUnknown(
+          data['foods_notable']!,
+          _foodsNotableMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {localDate};
+  @override
+  DayCheckin map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DayCheckin(
+      localDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_date'],
+      )!,
+      offsetMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}offset_min'],
+      ),
+      triggersSuspected: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}triggers_suspected'],
+      ),
+      sleepHoursPrior: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}sleep_hours_prior'],
+      ),
+      stressLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stress_level'],
+      ),
+      foodsNotable: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}foods_notable'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DayCheckinsTable createAlias(String alias) {
+    return $DayCheckinsTable(attachedDatabase, alias);
+  }
+}
+
+class DayCheckin extends DataClass implements Insertable<DayCheckin> {
+  /// The wall-clock date, `yyyy-MM-dd`, in the zone it was logged in.
+  final String localDate;
+
+  /// UTC offset (minutes east) of that zone, as on events (issue #17).
+  final int? offsetMin;
+
+  /// JSON array of strings (vocab: trigger).
+  final String? triggersSuspected;
+  final double? sleepHoursPrior;
+
+  /// 1–5.
+  final int? stressLevel;
+
+  /// JSON array of strings.
+  final String? foodsNotable;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const DayCheckin({
+    required this.localDate,
+    this.offsetMin,
+    this.triggersSuspected,
+    this.sleepHoursPrior,
+    this.stressLevel,
+    this.foodsNotable,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['local_date'] = Variable<String>(localDate);
+    if (!nullToAbsent || offsetMin != null) {
+      map['offset_min'] = Variable<int>(offsetMin);
+    }
+    if (!nullToAbsent || triggersSuspected != null) {
+      map['triggers_suspected'] = Variable<String>(triggersSuspected);
+    }
+    if (!nullToAbsent || sleepHoursPrior != null) {
+      map['sleep_hours_prior'] = Variable<double>(sleepHoursPrior);
+    }
+    if (!nullToAbsent || stressLevel != null) {
+      map['stress_level'] = Variable<int>(stressLevel);
+    }
+    if (!nullToAbsent || foodsNotable != null) {
+      map['foods_notable'] = Variable<String>(foodsNotable);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  DayCheckinsCompanion toCompanion(bool nullToAbsent) {
+    return DayCheckinsCompanion(
+      localDate: Value(localDate),
+      offsetMin: offsetMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(offsetMin),
+      triggersSuspected: triggersSuspected == null && nullToAbsent
+          ? const Value.absent()
+          : Value(triggersSuspected),
+      sleepHoursPrior: sleepHoursPrior == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sleepHoursPrior),
+      stressLevel: stressLevel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stressLevel),
+      foodsNotable: foodsNotable == null && nullToAbsent
+          ? const Value.absent()
+          : Value(foodsNotable),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DayCheckin.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DayCheckin(
+      localDate: serializer.fromJson<String>(json['localDate']),
+      offsetMin: serializer.fromJson<int?>(json['offsetMin']),
+      triggersSuspected: serializer.fromJson<String?>(
+        json['triggersSuspected'],
+      ),
+      sleepHoursPrior: serializer.fromJson<double?>(json['sleepHoursPrior']),
+      stressLevel: serializer.fromJson<int?>(json['stressLevel']),
+      foodsNotable: serializer.fromJson<String?>(json['foodsNotable']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'localDate': serializer.toJson<String>(localDate),
+      'offsetMin': serializer.toJson<int?>(offsetMin),
+      'triggersSuspected': serializer.toJson<String?>(triggersSuspected),
+      'sleepHoursPrior': serializer.toJson<double?>(sleepHoursPrior),
+      'stressLevel': serializer.toJson<int?>(stressLevel),
+      'foodsNotable': serializer.toJson<String?>(foodsNotable),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  DayCheckin copyWith({
+    String? localDate,
+    Value<int?> offsetMin = const Value.absent(),
+    Value<String?> triggersSuspected = const Value.absent(),
+    Value<double?> sleepHoursPrior = const Value.absent(),
+    Value<int?> stressLevel = const Value.absent(),
+    Value<String?> foodsNotable = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => DayCheckin(
+    localDate: localDate ?? this.localDate,
+    offsetMin: offsetMin.present ? offsetMin.value : this.offsetMin,
+    triggersSuspected: triggersSuspected.present
+        ? triggersSuspected.value
+        : this.triggersSuspected,
+    sleepHoursPrior: sleepHoursPrior.present
+        ? sleepHoursPrior.value
+        : this.sleepHoursPrior,
+    stressLevel: stressLevel.present ? stressLevel.value : this.stressLevel,
+    foodsNotable: foodsNotable.present ? foodsNotable.value : this.foodsNotable,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  DayCheckin copyWithCompanion(DayCheckinsCompanion data) {
+    return DayCheckin(
+      localDate: data.localDate.present ? data.localDate.value : this.localDate,
+      offsetMin: data.offsetMin.present ? data.offsetMin.value : this.offsetMin,
+      triggersSuspected: data.triggersSuspected.present
+          ? data.triggersSuspected.value
+          : this.triggersSuspected,
+      sleepHoursPrior: data.sleepHoursPrior.present
+          ? data.sleepHoursPrior.value
+          : this.sleepHoursPrior,
+      stressLevel: data.stressLevel.present
+          ? data.stressLevel.value
+          : this.stressLevel,
+      foodsNotable: data.foodsNotable.present
+          ? data.foodsNotable.value
+          : this.foodsNotable,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DayCheckin(')
+          ..write('localDate: $localDate, ')
+          ..write('offsetMin: $offsetMin, ')
+          ..write('triggersSuspected: $triggersSuspected, ')
+          ..write('sleepHoursPrior: $sleepHoursPrior, ')
+          ..write('stressLevel: $stressLevel, ')
+          ..write('foodsNotable: $foodsNotable, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    localDate,
+    offsetMin,
+    triggersSuspected,
+    sleepHoursPrior,
+    stressLevel,
+    foodsNotable,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DayCheckin &&
+          other.localDate == this.localDate &&
+          other.offsetMin == this.offsetMin &&
+          other.triggersSuspected == this.triggersSuspected &&
+          other.sleepHoursPrior == this.sleepHoursPrior &&
+          other.stressLevel == this.stressLevel &&
+          other.foodsNotable == this.foodsNotable &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DayCheckinsCompanion extends UpdateCompanion<DayCheckin> {
+  final Value<String> localDate;
+  final Value<int?> offsetMin;
+  final Value<String?> triggersSuspected;
+  final Value<double?> sleepHoursPrior;
+  final Value<int?> stressLevel;
+  final Value<String?> foodsNotable;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const DayCheckinsCompanion({
+    this.localDate = const Value.absent(),
+    this.offsetMin = const Value.absent(),
+    this.triggersSuspected = const Value.absent(),
+    this.sleepHoursPrior = const Value.absent(),
+    this.stressLevel = const Value.absent(),
+    this.foodsNotable = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DayCheckinsCompanion.insert({
+    required String localDate,
+    this.offsetMin = const Value.absent(),
+    this.triggersSuspected = const Value.absent(),
+    this.sleepHoursPrior = const Value.absent(),
+    this.stressLevel = const Value.absent(),
+    this.foodsNotable = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : localDate = Value(localDate),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<DayCheckin> custom({
+    Expression<String>? localDate,
+    Expression<int>? offsetMin,
+    Expression<String>? triggersSuspected,
+    Expression<double>? sleepHoursPrior,
+    Expression<int>? stressLevel,
+    Expression<String>? foodsNotable,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (localDate != null) 'local_date': localDate,
+      if (offsetMin != null) 'offset_min': offsetMin,
+      if (triggersSuspected != null) 'triggers_suspected': triggersSuspected,
+      if (sleepHoursPrior != null) 'sleep_hours_prior': sleepHoursPrior,
+      if (stressLevel != null) 'stress_level': stressLevel,
+      if (foodsNotable != null) 'foods_notable': foodsNotable,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DayCheckinsCompanion copyWith({
+    Value<String>? localDate,
+    Value<int?>? offsetMin,
+    Value<String?>? triggersSuspected,
+    Value<double?>? sleepHoursPrior,
+    Value<int?>? stressLevel,
+    Value<String?>? foodsNotable,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return DayCheckinsCompanion(
+      localDate: localDate ?? this.localDate,
+      offsetMin: offsetMin ?? this.offsetMin,
+      triggersSuspected: triggersSuspected ?? this.triggersSuspected,
+      sleepHoursPrior: sleepHoursPrior ?? this.sleepHoursPrior,
+      stressLevel: stressLevel ?? this.stressLevel,
+      foodsNotable: foodsNotable ?? this.foodsNotable,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (localDate.present) {
+      map['local_date'] = Variable<String>(localDate.value);
+    }
+    if (offsetMin.present) {
+      map['offset_min'] = Variable<int>(offsetMin.value);
+    }
+    if (triggersSuspected.present) {
+      map['triggers_suspected'] = Variable<String>(triggersSuspected.value);
+    }
+    if (sleepHoursPrior.present) {
+      map['sleep_hours_prior'] = Variable<double>(sleepHoursPrior.value);
+    }
+    if (stressLevel.present) {
+      map['stress_level'] = Variable<int>(stressLevel.value);
+    }
+    if (foodsNotable.present) {
+      map['foods_notable'] = Variable<String>(foodsNotable.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DayCheckinsCompanion(')
+          ..write('localDate: $localDate, ')
+          ..write('offsetMin: $offsetMin, ')
+          ..write('triggersSuspected: $triggersSuspected, ')
+          ..write('sleepHoursPrior: $sleepHoursPrior, ')
+          ..write('stressLevel: $stressLevel, ')
+          ..write('foodsNotable: $foodsNotable, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MegrimDatabase extends GeneratedDatabase {
   _$MegrimDatabase(QueryExecutor e) : super(e);
   $MegrimDatabaseManager get managers => $MegrimDatabaseManager(this);
@@ -3699,6 +4257,7 @@ abstract class _$MegrimDatabase extends GeneratedDatabase {
       $MedicationClassesTable(this);
   late final $PreventiveRegimensTable preventiveRegimens =
       $PreventiveRegimensTable(this);
+  late final $DayCheckinsTable dayCheckins = $DayCheckinsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3710,6 +4269,7 @@ abstract class _$MegrimDatabase extends GeneratedDatabase {
     vocabularies,
     medicationClasses,
     preventiveRegimens,
+    dayCheckins,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -5739,6 +6299,271 @@ typedef $$PreventiveRegimensTableProcessedTableManager =
       PreventiveRegimen,
       PrefetchHooks Function()
     >;
+typedef $$DayCheckinsTableCreateCompanionBuilder =
+    DayCheckinsCompanion Function({
+      required String localDate,
+      Value<int?> offsetMin,
+      Value<String?> triggersSuspected,
+      Value<double?> sleepHoursPrior,
+      Value<int?> stressLevel,
+      Value<String?> foodsNotable,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$DayCheckinsTableUpdateCompanionBuilder =
+    DayCheckinsCompanion Function({
+      Value<String> localDate,
+      Value<int?> offsetMin,
+      Value<String?> triggersSuspected,
+      Value<double?> sleepHoursPrior,
+      Value<int?> stressLevel,
+      Value<String?> foodsNotable,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$DayCheckinsTableFilterComposer
+    extends Composer<_$MegrimDatabase, $DayCheckinsTable> {
+  $$DayCheckinsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get localDate => $composableBuilder(
+    column: $table.localDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get offsetMin => $composableBuilder(
+    column: $table.offsetMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get triggersSuspected => $composableBuilder(
+    column: $table.triggersSuspected,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get sleepHoursPrior => $composableBuilder(
+    column: $table.sleepHoursPrior,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get stressLevel => $composableBuilder(
+    column: $table.stressLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get foodsNotable => $composableBuilder(
+    column: $table.foodsNotable,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DayCheckinsTableOrderingComposer
+    extends Composer<_$MegrimDatabase, $DayCheckinsTable> {
+  $$DayCheckinsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get localDate => $composableBuilder(
+    column: $table.localDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get offsetMin => $composableBuilder(
+    column: $table.offsetMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get triggersSuspected => $composableBuilder(
+    column: $table.triggersSuspected,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get sleepHoursPrior => $composableBuilder(
+    column: $table.sleepHoursPrior,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get stressLevel => $composableBuilder(
+    column: $table.stressLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get foodsNotable => $composableBuilder(
+    column: $table.foodsNotable,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DayCheckinsTableAnnotationComposer
+    extends Composer<_$MegrimDatabase, $DayCheckinsTable> {
+  $$DayCheckinsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get localDate =>
+      $composableBuilder(column: $table.localDate, builder: (column) => column);
+
+  GeneratedColumn<int> get offsetMin =>
+      $composableBuilder(column: $table.offsetMin, builder: (column) => column);
+
+  GeneratedColumn<String> get triggersSuspected => $composableBuilder(
+    column: $table.triggersSuspected,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get sleepHoursPrior => $composableBuilder(
+    column: $table.sleepHoursPrior,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get stressLevel => $composableBuilder(
+    column: $table.stressLevel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get foodsNotable => $composableBuilder(
+    column: $table.foodsNotable,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$DayCheckinsTableTableManager
+    extends
+        RootTableManager<
+          _$MegrimDatabase,
+          $DayCheckinsTable,
+          DayCheckin,
+          $$DayCheckinsTableFilterComposer,
+          $$DayCheckinsTableOrderingComposer,
+          $$DayCheckinsTableAnnotationComposer,
+          $$DayCheckinsTableCreateCompanionBuilder,
+          $$DayCheckinsTableUpdateCompanionBuilder,
+          (
+            DayCheckin,
+            BaseReferences<_$MegrimDatabase, $DayCheckinsTable, DayCheckin>,
+          ),
+          DayCheckin,
+          PrefetchHooks Function()
+        > {
+  $$DayCheckinsTableTableManager(_$MegrimDatabase db, $DayCheckinsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DayCheckinsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DayCheckinsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DayCheckinsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> localDate = const Value.absent(),
+                Value<int?> offsetMin = const Value.absent(),
+                Value<String?> triggersSuspected = const Value.absent(),
+                Value<double?> sleepHoursPrior = const Value.absent(),
+                Value<int?> stressLevel = const Value.absent(),
+                Value<String?> foodsNotable = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DayCheckinsCompanion(
+                localDate: localDate,
+                offsetMin: offsetMin,
+                triggersSuspected: triggersSuspected,
+                sleepHoursPrior: sleepHoursPrior,
+                stressLevel: stressLevel,
+                foodsNotable: foodsNotable,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String localDate,
+                Value<int?> offsetMin = const Value.absent(),
+                Value<String?> triggersSuspected = const Value.absent(),
+                Value<double?> sleepHoursPrior = const Value.absent(),
+                Value<int?> stressLevel = const Value.absent(),
+                Value<String?> foodsNotable = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => DayCheckinsCompanion.insert(
+                localDate: localDate,
+                offsetMin: offsetMin,
+                triggersSuspected: triggersSuspected,
+                sleepHoursPrior: sleepHoursPrior,
+                stressLevel: stressLevel,
+                foodsNotable: foodsNotable,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DayCheckinsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MegrimDatabase,
+      $DayCheckinsTable,
+      DayCheckin,
+      $$DayCheckinsTableFilterComposer,
+      $$DayCheckinsTableOrderingComposer,
+      $$DayCheckinsTableAnnotationComposer,
+      $$DayCheckinsTableCreateCompanionBuilder,
+      $$DayCheckinsTableUpdateCompanionBuilder,
+      (
+        DayCheckin,
+        BaseReferences<_$MegrimDatabase, $DayCheckinsTable, DayCheckin>,
+      ),
+      DayCheckin,
+      PrefetchHooks Function()
+    >;
 
 class $MegrimDatabaseManager {
   final _$MegrimDatabase _db;
@@ -5755,4 +6580,6 @@ class $MegrimDatabaseManager {
       $$MedicationClassesTableTableManager(_db, _db.medicationClasses);
   $$PreventiveRegimensTableTableManager get preventiveRegimens =>
       $$PreventiveRegimensTableTableManager(_db, _db.preventiveRegimens);
+  $$DayCheckinsTableTableManager get dayCheckins =>
+      $$DayCheckinsTableTableManager(_db, _db.dayCheckins);
 }

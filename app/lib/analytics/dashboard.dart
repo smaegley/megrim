@@ -4,6 +4,7 @@ import '../models/attack_details.dart';
 import '../models/event_time.dart' show daysCovered, wallClock, wallDate;
 import '../models/med_entry.dart';
 import '../models/relief_entry.dart';
+import 'checkins.dart';
 import 'geo_distance.dart';
 import 'medications.dart';
 
@@ -42,8 +43,12 @@ class EventStat {
   final double? pressureDelta24h;
   final double? daylightHours;
 
-  /// Self-reported triggers tagged on this event (descriptive only — not correlated).
+  /// Self-reported triggers tagged on this event. Descriptive on their own; compared with clear
+  /// days only over tracked days (backlog #16, `checkins.dart`), as are sleep, stress and foods.
   final List<String> triggers;
+  final double? sleepHoursPrior;
+  final int? stressLevel;
+  final List<String> foods;
 
   /// Schema v4 (backlog #26): false = an attack without headache; null counts as a headache.
   final bool? headachePresent;
@@ -75,6 +80,9 @@ class EventStat {
     this.pressureDelta24h,
     this.daylightHours,
     this.triggers = const [],
+    this.sleepHoursPrior,
+    this.stressLevel,
+    this.foods = const [],
     this.headachePresent,
     this.aura,
     this.symptoms = const [],
@@ -250,7 +258,8 @@ class DashboardResult {
   final List<LabeledCount> byDaylight;
 
   /// Frequency of self-reported triggers, most-tagged first. Descriptive only — NOT a correlation
-  /// (there is no non-migraine-day baseline for self-reported triggers). See SPEC §6.2.
+  /// (there is no non-migraine-day baseline for self-reported triggers; [trackedFactors] is the
+  /// comparison with clear days, once there are check-ins). See SPEC §6.2.
   final List<LabeledCount> triggerFrequency;
 
   /// Frequency of symptoms (backlog #20), most-ticked first. Descriptive only, like triggers.
@@ -294,6 +303,13 @@ class DashboardResult {
   /// the export and the report all show the same list.
   final List<PreventiveRegimen> preventives;
 
+  /// Days tracked (backlog #16): null until there is a check-in.
+  final TrackedDays? tracked;
+
+  /// Self-reported factors on migraine days vs clear days (backlog #16): null until there is a
+  /// check-in; not [TrackedFactors.available] until the gate is met.
+  final TrackedFactors? trackedFactors;
+
   const DashboardResult({
     required this.summary,
     this.byYear = const [],
@@ -316,6 +332,8 @@ class DashboardResult {
     this.medicationDays,
     this.whatHelped = const [],
     this.preventives = const [],
+    this.tracked,
+    this.trackedFactors,
   });
 
   bool get isEmpty => summary.totalEvents == 0;
@@ -334,12 +352,18 @@ DashboardResult computeDashboard(
   DateTime? now,
   Map<String, String> medClasses = const {},
   List<PreventiveRegimen> preventives = const [],
+  List<CheckinStat> checkins = const [],
 }) {
   final sortedPreventives = [...preventives]
     ..sort((a, b) => a.startedOn.compareTo(b.startedOn));
+  final tracked = trackedDays(events, checkins, now ?? DateTime.now());
+  final trackedFactors = checkins.isEmpty ? null : computeTrackedFactors(events, checkins);
   if (events.isEmpty) {
     return DashboardResult(
-        summary: const Summary(totalEvents: 0), preventives: sortedPreventives);
+        summary: const Summary(totalEvents: 0),
+        preventives: sortedPreventives,
+        tracked: tracked,
+        trackedFactors: trackedFactors);
   }
 
   final sorted = [...events]..sort((a, b) => a.startedAt.compareTo(b.startedAt));
@@ -563,6 +587,8 @@ DashboardResult computeDashboard(
     medicationDays: medicationDays(medInputs, medClasses, now ?? DateTime.now()),
     whatHelped: whatHelped(medInputs),
     preventives: sortedPreventives,
+    tracked: tracked,
+    trackedFactors: trackedFactors,
   );
 }
 

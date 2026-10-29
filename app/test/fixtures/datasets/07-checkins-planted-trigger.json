@@ -1,0 +1,1444 @@
+{
+  "format": "megrim-export",
+  "format_version": 1,
+  "exported_at": "2026-10-29T20:04:19.056570Z",
+  "app_version": "1.0.0",
+  "settings": {
+    "home_location": {
+      "lat": 39.96,
+      "lon": -105.05,
+      "label": "Boulder, Colorado, United States"
+    }
+  },
+  "vocabularies": {
+    "trigger": [
+      "Stress",
+      "Sleep change",
+      "Bright light",
+      "Exercise",
+      "Weather / pressure",
+      "Alcohol",
+      "Caffeine",
+      "Food",
+      "Hormonal",
+      "Strong smell",
+      "Screen time"
+    ],
+    "head_location": [
+      "Left temple",
+      "Right temple",
+      "Behind left eye",
+      "Behind right eye",
+      "Forehead",
+      "Top of head",
+      "Back of head",
+      "Neck",
+      "Both sides"
+    ],
+    "medication": [
+      "Sumatriptan",
+      "Rizatriptan",
+      "Ibuprofen",
+      "Naproxen",
+      "Acetaminophen"
+    ]
+  },
+  "events": [
+    {
+      "id": "000-20260508",
+      "started_at": "2026-05-08T18:15:00Z",
+      "ended_at": "2026-05-08T21:15:00Z",
+      "severity": 5,
+      "location_head": [
+        "Both sides"
+      ],
+      "aura_present": false,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Sumatriptan",
+          "dose": "10mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Exercise"
+      ],
+      "sleep_hours_prior": 7.6,
+      "stress_level": 5,
+      "foods_notable": [
+        "Cheese",
+        "Citrus"
+      ],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-05-08T18:15:00Z",
+      "updated_at": "2026-05-08T18:15:00Z",
+      "derived": {
+        "day_of_week": 4,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.1,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Last Quarter",
+        "moon_illumination": 0.562,
+        "temp_c": 24.6,
+        "humidity_pct": 77.0,
+        "pressure_hpa": 1009.6,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 8.3,
+        "pressure_delta_48h": 11.4,
+        "aqi": 52,
+        "enriched_at": "2026-05-08T18:15:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "001-20260512",
+      "started_at": "2026-05-12T14:30:00Z",
+      "ended_at": "2026-05-12T17:30:00Z",
+      "severity": 4,
+      "location_head": [
+        "Behind right eye"
+      ],
+      "aura_present": false,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Strong smell",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 6.3,
+      "stress_level": 4,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-05-12T14:30:00Z",
+      "updated_at": "2026-05-12T14:30:00Z",
+      "derived": {
+        "day_of_week": 1,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.3,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Crescent",
+        "moon_illumination": 0.181,
+        "temp_c": 4.0,
+        "humidity_pct": 38.0,
+        "pressure_hpa": 1008.5,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 8.5,
+        "pressure_delta_48h": -1.4,
+        "aqi": 88,
+        "enriched_at": "2026-05-12T14:30:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "002-20260516",
+      "started_at": "2026-05-16T18:45:00Z",
+      "ended_at": "2026-05-16T21:45:00Z",
+      "severity": 4,
+      "location_head": [
+        "Behind left eye",
+        "Neck"
+      ],
+      "aura_present": null,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Sumatriptan",
+          "dose": "50mg",
+          "helped": null
+        }
+      ],
+      "triggers_suspected": [
+        "Food",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 5.6,
+      "stress_level": 3,
+      "foods_notable": [
+        "Citrus",
+        "Cheese"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-05-16T18:45:00Z",
+      "updated_at": "2026-05-16T18:45:00Z",
+      "derived": {
+        "day_of_week": 5,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.4,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "New Moon",
+        "moon_illumination": 0.0,
+        "temp_c": 19.8,
+        "humidity_pct": 74.0,
+        "pressure_hpa": 1009.9,
+        "precipitation_mm": 0.1,
+        "pressure_delta_24h": -1.5,
+        "pressure_delta_48h": -2.6,
+        "aqi": 72,
+        "enriched_at": "2026-05-16T18:45:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "003-20260520",
+      "started_at": "2026-05-20T13:45:00Z",
+      "ended_at": "2026-05-20T16:45:00Z",
+      "severity": 4,
+      "location_head": [
+        "Behind left eye",
+        "Behind right eye"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Sumatriptan",
+          "dose": "400mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Bright light"
+      ],
+      "sleep_hours_prior": 7.3,
+      "stress_level": 4,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-05-20T13:45:00Z",
+      "updated_at": "2026-05-20T13:45:00Z",
+      "derived": {
+        "day_of_week": 2,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.5,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Crescent",
+        "moon_illumination": 0.158,
+        "temp_c": 16.0,
+        "humidity_pct": 82.0,
+        "pressure_hpa": 1012.0,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 2.5,
+        "pressure_delta_48h": 3.0,
+        "aqi": 44,
+        "enriched_at": "2026-05-20T13:45:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "004-20260524",
+      "started_at": "2026-05-24T23:15:00Z",
+      "ended_at": "2026-05-25T02:15:00Z",
+      "severity": 7,
+      "location_head": [
+        "Behind left eye",
+        "Left temple"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Rizatriptan",
+          "dose": "400mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Sleep change",
+        "Caffeine",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 7.0,
+      "stress_level": 5,
+      "foods_notable": [],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-05-24T23:15:00Z",
+      "updated_at": "2026-05-24T23:15:00Z",
+      "derived": {
+        "day_of_week": 6,
+        "season": "Spring",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 14.6,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "First Quarter",
+        "moon_illumination": 0.59,
+        "temp_c": 14.8,
+        "humidity_pct": 66.0,
+        "pressure_hpa": 1015.2,
+        "precipitation_mm": 1.5,
+        "pressure_delta_24h": 3.9,
+        "pressure_delta_48h": 0.1,
+        "aqi": 34,
+        "enriched_at": "2026-05-24T23:15:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "005-20260528",
+      "started_at": "2026-05-28T13:00:00Z",
+      "ended_at": "2026-05-28T16:00:00Z",
+      "severity": 7,
+      "location_head": [
+        "Neck",
+        "Right temple"
+      ],
+      "aura_present": true,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Rizatriptan",
+          "dose": "200mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Sleep change"
+      ],
+      "sleep_hours_prior": 4.9,
+      "stress_level": 3,
+      "foods_notable": [
+        "Chocolate",
+        "Red wine"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-05-28T13:00:00Z",
+      "updated_at": "2026-05-28T13:00:00Z",
+      "derived": {
+        "day_of_week": 3,
+        "season": "Spring",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.7,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Gibbous",
+        "moon_illumination": 0.904,
+        "temp_c": 17.2,
+        "humidity_pct": 43.0,
+        "pressure_hpa": 1012.4,
+        "precipitation_mm": 2.3,
+        "pressure_delta_24h": -1.4,
+        "pressure_delta_48h": -4.9,
+        "aqi": 82,
+        "enriched_at": "2026-05-28T13:00:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "006-20260601",
+      "started_at": "2026-06-01T22:30:00Z",
+      "ended_at": "2026-06-02T01:30:00Z",
+      "severity": 8,
+      "location_head": [
+        "Behind right eye"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Rizatriptan",
+          "dose": "10mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Bright light"
+      ],
+      "sleep_hours_prior": 6.1,
+      "stress_level": 2,
+      "foods_notable": [
+        "Citrus"
+      ],
+      "notes": "rough day",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-06-01T22:30:00Z",
+      "updated_at": "2026-06-01T22:30:00Z",
+      "derived": {
+        "day_of_week": 0,
+        "season": "Summer",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 14.8,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Full Moon",
+        "moon_illumination": 0.977,
+        "temp_c": 12.7,
+        "humidity_pct": 64.0,
+        "pressure_hpa": 1023.2,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 7.5,
+        "pressure_delta_48h": -0.9,
+        "aqi": 61,
+        "enriched_at": "2026-06-01T22:30:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "007-20260605",
+      "started_at": "2026-06-05T14:15:00Z",
+      "ended_at": "2026-06-05T17:15:00Z",
+      "severity": 6,
+      "location_head": [
+        "Right temple",
+        "Both sides"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Rizatriptan",
+          "dose": "400mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Exercise",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 7.0,
+      "stress_level": 5,
+      "foods_notable": [],
+      "notes": "woke up with it",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-06-05T14:15:00Z",
+      "updated_at": "2026-06-05T14:15:00Z",
+      "derived": {
+        "day_of_week": 4,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.9,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Gibbous",
+        "moon_illumination": 0.734,
+        "temp_c": 5.1,
+        "humidity_pct": 26.0,
+        "pressure_hpa": 1016.0,
+        "precipitation_mm": 1.5,
+        "pressure_delta_24h": 1.5,
+        "pressure_delta_48h": 1.4,
+        "aqi": 90,
+        "enriched_at": "2026-06-05T14:15:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "008-20260609",
+      "started_at": "2026-06-09T23:45:00Z",
+      "ended_at": "2026-06-10T02:45:00Z",
+      "severity": 3,
+      "location_head": [
+        "Both sides"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Acetaminophen",
+          "dose": "100mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Food",
+        "Strong smell",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 4.9,
+      "stress_level": 2,
+      "foods_notable": [],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-06-09T23:45:00Z",
+      "updated_at": "2026-06-09T23:45:00Z",
+      "derived": {
+        "day_of_week": 1,
+        "season": "Summer",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 14.9,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Crescent",
+        "moon_illumination": 0.283,
+        "temp_c": 13.2,
+        "humidity_pct": 45.0,
+        "pressure_hpa": 1021.9,
+        "precipitation_mm": 0.9,
+        "pressure_delta_24h": -1.5,
+        "pressure_delta_48h": -0.8,
+        "aqi": 89,
+        "enriched_at": "2026-06-09T23:45:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "009-20260613",
+      "started_at": "2026-06-13T22:15:00Z",
+      "ended_at": "2026-06-14T01:15:00Z",
+      "severity": 9,
+      "location_head": [
+        "Behind left eye"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Naproxen",
+          "dose": "100mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Caffeine",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 7.1,
+      "stress_level": 5,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "notes": "worse than usual",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-06-13T22:15:00Z",
+      "updated_at": "2026-06-13T22:15:00Z",
+      "derived": {
+        "day_of_week": 5,
+        "season": "Summer",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 15.0,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "New Moon",
+        "moon_illumination": 0.02,
+        "temp_c": 22.7,
+        "humidity_pct": 66.0,
+        "pressure_hpa": 1014.8,
+        "precipitation_mm": 1.4,
+        "pressure_delta_24h": 0.6,
+        "pressure_delta_48h": -1.4,
+        "aqi": 23,
+        "enriched_at": "2026-06-13T22:15:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "010-20260617",
+      "started_at": "2026-06-17T22:15:00Z",
+      "ended_at": "2026-06-18T01:15:00Z",
+      "severity": 8,
+      "location_head": [
+        "Both sides",
+        "Behind right eye"
+      ],
+      "aura_present": null,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Acetaminophen",
+          "dose": "400mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Exercise"
+      ],
+      "sleep_hours_prior": 5.6,
+      "stress_level": 4,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-06-17T22:15:00Z",
+      "updated_at": "2026-06-17T22:15:00Z",
+      "derived": {
+        "day_of_week": 2,
+        "season": "Summer",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 15.0,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Crescent",
+        "moon_illumination": 0.078,
+        "temp_c": 13.4,
+        "humidity_pct": 40.0,
+        "pressure_hpa": 1000.8,
+        "precipitation_mm": 1.4,
+        "pressure_delta_24h": -1.7,
+        "pressure_delta_48h": -1.9,
+        "aqi": 33,
+        "enriched_at": "2026-06-17T22:15:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "011-20260621",
+      "started_at": "2026-06-21T16:00:00Z",
+      "ended_at": "2026-06-21T19:00:00Z",
+      "severity": 4,
+      "location_head": [
+        "Behind left eye"
+      ],
+      "aura_present": null,
+      "aura_description": null,
+      "meds_taken": [],
+      "triggers_suspected": [
+        "Bright light"
+      ],
+      "sleep_hours_prior": 6.2,
+      "stress_level": 2,
+      "foods_notable": [],
+      "notes": "rough day",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-06-21T16:00:00Z",
+      "updated_at": "2026-06-21T16:00:00Z",
+      "derived": {
+        "day_of_week": 6,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 15.0,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "First Quarter",
+        "moon_illumination": 0.397,
+        "temp_c": 20.3,
+        "humidity_pct": 37.0,
+        "pressure_hpa": 1010.1,
+        "precipitation_mm": 2.3,
+        "pressure_delta_24h": 0.5,
+        "pressure_delta_48h": -5.1,
+        "aqi": 23,
+        "enriched_at": "2026-06-21T16:00:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "012-20260625",
+      "started_at": "2026-06-25T14:00:00Z",
+      "ended_at": "2026-06-25T17:00:00Z",
+      "severity": 9,
+      "location_head": [
+        "Forehead",
+        "Back of head"
+      ],
+      "aura_present": false,
+      "aura_description": null,
+      "meds_taken": [
+        {
+          "name": "Rizatriptan",
+          "dose": "200mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Stress",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 6.7,
+      "stress_level": 3,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "notes": "rough day",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-06-25T14:00:00Z",
+      "updated_at": "2026-06-25T14:00:00Z",
+      "derived": {
+        "day_of_week": 3,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 15.0,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waxing Gibbous",
+        "moon_illumination": 0.793,
+        "temp_c": 13.8,
+        "humidity_pct": 79.0,
+        "pressure_hpa": 1008.7,
+        "precipitation_mm": 0.8,
+        "pressure_delta_24h": -2.0,
+        "pressure_delta_48h": 1.4,
+        "aqi": 30,
+        "enriched_at": "2026-06-25T14:00:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "013-20260629",
+      "started_at": "2026-06-29T22:45:00Z",
+      "ended_at": "2026-06-30T01:45:00Z",
+      "severity": 3,
+      "location_head": [
+        "Forehead"
+      ],
+      "aura_present": true,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Sumatriptan",
+          "dose": "10mg",
+          "helped": true
+        }
+      ],
+      "triggers_suspected": [
+        "Weather / pressure",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 6.9,
+      "stress_level": 4,
+      "foods_notable": [
+        "Red wine",
+        "Citrus"
+      ],
+      "notes": "rough day",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-06-29T22:45:00Z",
+      "updated_at": "2026-06-29T22:45:00Z",
+      "derived": {
+        "day_of_week": 0,
+        "season": "Summer",
+        "time_of_day_bucket": "afternoon",
+        "daylight_hours": 15.0,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Full Moon",
+        "moon_illumination": 1.0,
+        "temp_c": 10.7,
+        "humidity_pct": 74.0,
+        "pressure_hpa": 988.6,
+        "precipitation_mm": 0.9,
+        "pressure_delta_24h": 0.2,
+        "pressure_delta_48h": -16.6,
+        "aqi": 80,
+        "enriched_at": "2026-06-29T22:45:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    },
+    {
+      "id": "014-20260703",
+      "started_at": "2026-07-03T14:45:00Z",
+      "ended_at": "2026-07-03T17:45:00Z",
+      "severity": 8,
+      "location_head": [
+        "Behind right eye"
+      ],
+      "aura_present": false,
+      "aura_description": "shimmering zigzag",
+      "meds_taken": [
+        {
+          "name": "Naproxen",
+          "dose": "10mg",
+          "helped": false
+        }
+      ],
+      "triggers_suspected": [
+        "Alcohol",
+        "Weather / pressure",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 6.2,
+      "stress_level": 3,
+      "foods_notable": [],
+      "notes": "",
+      "geo_lat": 39.96,
+      "geo_lon": -105.05,
+      "geo_label": "Boulder, Colorado, United States",
+      "created_at": "2026-07-03T14:45:00Z",
+      "updated_at": "2026-07-03T14:45:00Z",
+      "derived": {
+        "day_of_week": 4,
+        "season": "Summer",
+        "time_of_day_bucket": "morning",
+        "daylight_hours": 14.9,
+        "sunrise_utc": null,
+        "sunset_utc": null,
+        "moon_phase": "Waning Gibbous",
+        "moon_illumination": 0.861,
+        "temp_c": 10.1,
+        "humidity_pct": 29.0,
+        "pressure_hpa": 1001.3,
+        "precipitation_mm": 0,
+        "pressure_delta_24h": 0.7,
+        "pressure_delta_48h": -3.0,
+        "aqi": 79,
+        "enriched_at": "2026-07-03T14:45:00Z",
+        "enrich_error": null
+      },
+      "started_at_offset_minutes": -420,
+      "ended_at_offset_minutes": -420
+    }
+  ],
+  "checkins": [
+    {
+      "local_date": "2026-05-07",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 6.4,
+      "stress_level": 4,
+      "foods_notable": [],
+      "created_at": "2026-05-07T20:00:00Z",
+      "updated_at": "2026-05-07T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-09",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Caffeine"
+      ],
+      "sleep_hours_prior": 7.1,
+      "stress_level": 3,
+      "foods_notable": [
+        "Chocolate",
+        "Cheese"
+      ],
+      "created_at": "2026-05-09T20:00:00Z",
+      "updated_at": "2026-05-09T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-10",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 7.8,
+      "stress_level": 3,
+      "foods_notable": [],
+      "created_at": "2026-05-10T20:00:00Z",
+      "updated_at": "2026-05-10T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-11",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 6.8,
+      "stress_level": 3,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "created_at": "2026-05-11T20:00:00Z",
+      "updated_at": "2026-05-11T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-13",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Alcohol"
+      ],
+      "sleep_hours_prior": 6.3,
+      "stress_level": 5,
+      "foods_notable": [],
+      "created_at": "2026-05-13T20:00:00Z",
+      "updated_at": "2026-05-13T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-14",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 7.0,
+      "stress_level": 3,
+      "foods_notable": [],
+      "created_at": "2026-05-14T20:00:00Z",
+      "updated_at": "2026-05-14T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-15",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 6.8,
+      "stress_level": 1,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "created_at": "2026-05-15T20:00:00Z",
+      "updated_at": "2026-05-15T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-17",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Weather / pressure",
+        "Sleep change"
+      ],
+      "sleep_hours_prior": 7.2,
+      "stress_level": 5,
+      "foods_notable": [
+        "Red wine",
+        "Chocolate"
+      ],
+      "created_at": "2026-05-17T20:00:00Z",
+      "updated_at": "2026-05-17T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-18",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Screen time",
+        "Food"
+      ],
+      "sleep_hours_prior": 7.1,
+      "stress_level": 4,
+      "foods_notable": [],
+      "created_at": "2026-05-18T20:00:00Z",
+      "updated_at": "2026-05-18T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-19",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Screen time"
+      ],
+      "sleep_hours_prior": 5.4,
+      "stress_level": 2,
+      "foods_notable": [],
+      "created_at": "2026-05-19T20:00:00Z",
+      "updated_at": "2026-05-19T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-21",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Strong smell",
+        "Food"
+      ],
+      "sleep_hours_prior": 6.8,
+      "stress_level": 2,
+      "foods_notable": [
+        "Cheese",
+        "Chocolate"
+      ],
+      "created_at": "2026-05-21T20:00:00Z",
+      "updated_at": "2026-05-21T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-22",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Weather / pressure",
+        "Sleep change",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 5.2,
+      "stress_level": 1,
+      "foods_notable": [],
+      "created_at": "2026-05-22T20:00:00Z",
+      "updated_at": "2026-05-22T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-23",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 5.4,
+      "stress_level": 4,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "created_at": "2026-05-23T20:00:00Z",
+      "updated_at": "2026-05-23T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-25",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Stress",
+        "Strong smell"
+      ],
+      "sleep_hours_prior": 5.1,
+      "stress_level": 2,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "created_at": "2026-05-25T20:00:00Z",
+      "updated_at": "2026-05-25T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-26",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 6.6,
+      "stress_level": 5,
+      "foods_notable": [
+        "Cheese",
+        "Chocolate"
+      ],
+      "created_at": "2026-05-26T20:00:00Z",
+      "updated_at": "2026-05-26T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-27",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Sleep change",
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 7.1,
+      "stress_level": 3,
+      "foods_notable": [],
+      "created_at": "2026-05-27T20:00:00Z",
+      "updated_at": "2026-05-27T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-29",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Weather / pressure"
+      ],
+      "sleep_hours_prior": 6.9,
+      "stress_level": 4,
+      "foods_notable": [
+        "Citrus"
+      ],
+      "created_at": "2026-05-29T20:00:00Z",
+      "updated_at": "2026-05-29T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-30",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 6.3,
+      "stress_level": 4,
+      "foods_notable": [
+        "Chocolate",
+        "Cheese"
+      ],
+      "created_at": "2026-05-30T20:00:00Z",
+      "updated_at": "2026-05-30T20:00:00Z"
+    },
+    {
+      "local_date": "2026-05-31",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Weather / pressure",
+        "Sleep change"
+      ],
+      "sleep_hours_prior": 6.3,
+      "stress_level": 3,
+      "foods_notable": [
+        "Red wine",
+        "Cheese"
+      ],
+      "created_at": "2026-05-31T20:00:00Z",
+      "updated_at": "2026-05-31T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-02",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Stress"
+      ],
+      "sleep_hours_prior": 6.5,
+      "stress_level": 4,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "created_at": "2026-06-02T20:00:00Z",
+      "updated_at": "2026-06-02T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-03",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Weather / pressure",
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 6.7,
+      "stress_level": 4,
+      "foods_notable": [
+        "Citrus"
+      ],
+      "created_at": "2026-06-03T20:00:00Z",
+      "updated_at": "2026-06-03T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-04",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 8.2,
+      "stress_level": 5,
+      "foods_notable": [],
+      "created_at": "2026-06-04T20:00:00Z",
+      "updated_at": "2026-06-04T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-06",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Sleep change",
+        "Bright light"
+      ],
+      "sleep_hours_prior": 7.2,
+      "stress_level": 4,
+      "foods_notable": [],
+      "created_at": "2026-06-06T20:00:00Z",
+      "updated_at": "2026-06-06T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-07",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Hormonal",
+        "Alcohol"
+      ],
+      "sleep_hours_prior": 6.9,
+      "stress_level": 4,
+      "foods_notable": [],
+      "created_at": "2026-06-07T20:00:00Z",
+      "updated_at": "2026-06-07T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-08",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 7.4,
+      "stress_level": 5,
+      "foods_notable": [
+        "Chocolate"
+      ],
+      "created_at": "2026-06-08T20:00:00Z",
+      "updated_at": "2026-06-08T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-10",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 7.2,
+      "stress_level": 5,
+      "foods_notable": [
+        "Chocolate",
+        "Cheese"
+      ],
+      "created_at": "2026-06-10T20:00:00Z",
+      "updated_at": "2026-06-10T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-11",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Caffeine",
+        "Weather / pressure"
+      ],
+      "sleep_hours_prior": 5.0,
+      "stress_level": 4,
+      "foods_notable": [],
+      "created_at": "2026-06-11T20:00:00Z",
+      "updated_at": "2026-06-11T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-12",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 7.0,
+      "stress_level": 1,
+      "foods_notable": [
+        "Citrus"
+      ],
+      "created_at": "2026-06-12T20:00:00Z",
+      "updated_at": "2026-06-12T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-14",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Alcohol"
+      ],
+      "sleep_hours_prior": 6.9,
+      "stress_level": 4,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "created_at": "2026-06-14T20:00:00Z",
+      "updated_at": "2026-06-14T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-15",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Stress"
+      ],
+      "sleep_hours_prior": 6.0,
+      "stress_level": 3,
+      "foods_notable": [
+        "Citrus"
+      ],
+      "created_at": "2026-06-15T20:00:00Z",
+      "updated_at": "2026-06-15T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-16",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 7.6,
+      "stress_level": 1,
+      "foods_notable": [
+        "Chocolate",
+        "Red wine"
+      ],
+      "created_at": "2026-06-16T20:00:00Z",
+      "updated_at": "2026-06-16T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-18",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Sleep change"
+      ],
+      "sleep_hours_prior": 6.8,
+      "stress_level": 4,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "created_at": "2026-06-18T20:00:00Z",
+      "updated_at": "2026-06-18T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-19",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Food"
+      ],
+      "sleep_hours_prior": 7.1,
+      "stress_level": 3,
+      "foods_notable": [],
+      "created_at": "2026-06-19T20:00:00Z",
+      "updated_at": "2026-06-19T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-20",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Bright light"
+      ],
+      "sleep_hours_prior": 5.0,
+      "stress_level": 3,
+      "foods_notable": [
+        "Red wine",
+        "Cheese"
+      ],
+      "created_at": "2026-06-20T20:00:00Z",
+      "updated_at": "2026-06-20T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-22",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Food"
+      ],
+      "sleep_hours_prior": 6.4,
+      "stress_level": 3,
+      "foods_notable": [
+        "Cheese"
+      ],
+      "created_at": "2026-06-22T20:00:00Z",
+      "updated_at": "2026-06-22T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-23",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Food",
+        "Strong smell"
+      ],
+      "sleep_hours_prior": 7.0,
+      "stress_level": 5,
+      "foods_notable": [],
+      "created_at": "2026-06-23T20:00:00Z",
+      "updated_at": "2026-06-23T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-24",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Sleep change",
+        "Stress"
+      ],
+      "sleep_hours_prior": 7.9,
+      "stress_level": 5,
+      "foods_notable": [],
+      "created_at": "2026-06-24T20:00:00Z",
+      "updated_at": "2026-06-24T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-26",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Alcohol",
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 6.6,
+      "stress_level": 1,
+      "foods_notable": [
+        "Red wine",
+        "Cheese"
+      ],
+      "created_at": "2026-06-26T20:00:00Z",
+      "updated_at": "2026-06-26T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-27",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Food"
+      ],
+      "sleep_hours_prior": 6.5,
+      "stress_level": 3,
+      "foods_notable": [
+        "Red wine"
+      ],
+      "created_at": "2026-06-27T20:00:00Z",
+      "updated_at": "2026-06-27T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-28",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Hormonal"
+      ],
+      "sleep_hours_prior": 7.7,
+      "stress_level": 5,
+      "foods_notable": [
+        "Citrus",
+        "Cheese"
+      ],
+      "created_at": "2026-06-28T20:00:00Z",
+      "updated_at": "2026-06-28T20:00:00Z"
+    },
+    {
+      "local_date": "2026-06-30",
+      "offset_minutes": -420,
+      "triggers_suspected": [],
+      "sleep_hours_prior": 6.8,
+      "stress_level": 5,
+      "foods_notable": [
+        "Red wine"
+      ],
+      "created_at": "2026-06-30T20:00:00Z",
+      "updated_at": "2026-06-30T20:00:00Z"
+    },
+    {
+      "local_date": "2026-07-01",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Caffeine"
+      ],
+      "sleep_hours_prior": 6.7,
+      "stress_level": 4,
+      "foods_notable": [
+        "Red wine"
+      ],
+      "created_at": "2026-07-01T20:00:00Z",
+      "updated_at": "2026-07-01T20:00:00Z"
+    },
+    {
+      "local_date": "2026-07-02",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Weather / pressure",
+        "Screen time"
+      ],
+      "sleep_hours_prior": 7.8,
+      "stress_level": 1,
+      "foods_notable": [
+        "Red wine"
+      ],
+      "created_at": "2026-07-02T20:00:00Z",
+      "updated_at": "2026-07-02T20:00:00Z"
+    },
+    {
+      "local_date": "2026-07-04",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Alcohol"
+      ],
+      "sleep_hours_prior": 7.5,
+      "stress_level": 5,
+      "foods_notable": [],
+      "created_at": "2026-07-04T20:00:00Z",
+      "updated_at": "2026-07-04T20:00:00Z"
+    },
+    {
+      "local_date": "2026-07-05",
+      "offset_minutes": -420,
+      "triggers_suspected": [
+        "Bright light"
+      ],
+      "sleep_hours_prior": 7.0,
+      "stress_level": 4,
+      "foods_notable": [
+        "Red wine",
+        "Citrus"
+      ],
+      "created_at": "2026-07-05T20:00:00Z",
+      "updated_at": "2026-07-05T20:00:00Z"
+    }
+  ]
+}
