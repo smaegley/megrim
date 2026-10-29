@@ -11,7 +11,7 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 > DONE**, shipped in `v1.0.7` (2026-10-08); #23 steps (2)–(3) remain proposed.
 > **#25 (move UI text into a message file, prep for translations) is PROPOSED** (2026-10-27, from
 > issue #19). **#20 (symptoms), #22(a) (impact) and #26 (attacks without headache) are BUILT**
-> together on `feat/attack-details` (schema v4, 2026-10-27); Steve's test passed 2026-10-28
+> together on `feat/attack-details` (schema v4, 2026-10-27); Steve's test passed 2026-10-28, merged 2026-10-29
 > (one wording fix, the Impact hint). They ship in **1.0.8**.
 > Add new items as they come up.
 
@@ -520,7 +520,7 @@ non-pharmacologic).
 **Verification:** migration test; export/import round-trip of both new structures; unit test for
 the helped-rate computation including unknowns.
 
-### 20. Symptoms — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, ships in 1.0.8)*
+### 20. Symptoms — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, ships in 1.0.8)*
 
 **Want:** a symptom chip set on Event Detail (and optionally on the active Quick Log view):
 nausea, vomiting, light sensitivity, sound sensitivity, smell sensitivity, neck pain, dizziness,
@@ -581,7 +581,7 @@ month's 30th = day −2, in window); the gap rule (a 70-day gap excludes that cy
 a planted fixture; export test that cycle dates are absent by default and present when ticked;
 disabled-state test that no cycle UI or report section renders.
 
-### 22. Functional impact and an optional disability score — **(a) BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, ships in 1.0.8)*; (b) **PROPOSED** (licensing first)
+### 22. Functional impact and an optional disability score — **(a) BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, ships in 1.0.8)*; (b) **PROPOSED** (licensing first)
 
 **Want:** (a) a per-event "impact" field — *able to function normally / reduced / unable* — and
 (b) optionally, a periodic disability questionnaire.
@@ -754,7 +754,7 @@ database through OS backup). Steve judged it not worth it.
 the device-credential fallback (no biometric enrolled) on both platforms; manifest inspection of
 the release build.
 
-### 26. Attacks without headache ("silent" and vestibular migraine) — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, ships in 1.0.8)*
+### 26. Attacks without headache ("silent" and vestibular migraine) — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, ships in 1.0.8)*
 
 **Want:** a way to log a migraine attack that had **no headache**: aura only, vertigo/dizziness
 only, or the fatigue / brain-fog phase with the pain never arriving. Today every entry

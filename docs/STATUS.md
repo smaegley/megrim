@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-29: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; its first branch, `feat/attack-details` (schema v4), **passed Steve's test** and is ready to merge._
+_Last updated: 2026-10-29: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19) is next._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -12,12 +12,14 @@ all three channels match.
 
 **Next release: 1.0.8** (Steve 2026-10-28: a patch bump, not 1.1.0, and probably several branches
 bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
-1. **`feat/attack-details`: tested, ready to merge.** Steve's run on the Android emulator passed
+1. **`feat/attack-details`: tested and merged to `main` (2026-10-29, `3c6cfc0`).** Steve's run on the Android emulator passed
    every test in Parts A–G on 2026-10-28 (including the v3 → v4 upgrade keeping old numbers). It
    turned up one wording problem: the Impact hint "How much did it stop you?" made "Unable" read as
    "unable to stop me". Fixed in `55deb8a` (hint "How well could you do your usual things?", the
-   chosen level explained under the buttons); re-test R1 in the script. Not merged yet: PR or
-   direct merge to decide. Backlog #20 (symptoms),
+   chosen level explained under the buttons); R1 re-test passed.
+   **`main` now carries schema v4, so the next release from `main` is 1.0.8 with everything
+   merged by then; there's no small fix from `main` before it.** An urgent fix to the shipped app
+   would have to be a branch off the `v1.0.7` tag. Backlog #20 (symptoms),
    #22(a) (impact on the day) and #26 (attacks without headache: silent / vestibular migraine) in one
    schema v4 upgrade. Event Detail and Quick Log get "Headache? Yes / No / Not sure" (existing
    entries read Not sure and count as headache, so old numbers don't change); Impact and Symptoms
@@ -49,7 +51,9 @@ which showed Steve's real last-migraine date, is gone. To retake: `tools/screens
 changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DUO`).
 
 **Backlog still open** (details in `docs/BACKLOG.md`). Agreed order, 2026-10-27:
-- ~~**A: #26 + #20 + #22(a)**~~: built on `feat/attack-details` (above).
+- ~~**A: #26 + #20 + #22(a)**~~: merged to `main` 2026-10-29 (above).
+- **B: #18 + #19 is next** (Steve, 2026-10-29: taken ahead of #25 and C). Its database changes
+  are a **v5** upgrade step on top of v4.
 - **#25** move UI text into a message file (ARB): groundwork for translations. GitHub **issue #19**
   (a Simplified Chinese request) depends on it; no reply posted on the issue yet. Note that issue
   #19 and backlog #19 are different things.
@@ -58,8 +62,8 @@ changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DU
   "migraine in progress" ongoing notification on Android (Live Activity on iOS); and an opt-in
   daily reminder to log. The last three were asked for in GitHub discussion #21 (Krackmou,
   2026-10-28). Both notifications need `POST_NOTIFICATIONS`, so add the permission once.
-- **B: #18 + #19**: acute-medication days with a medication-overuse notice; preventive
-  medications and non-drug relief.
+- (B, #18 + #19: acute-medication days with a medication-overuse notice; preventive
+  medications and non-drug relief. Now next, above.)
 - **D: #21** opt-in menstrual cycle log.
 - **E: #23 step 3** (iOS Live Activity) and **#15** (remember export location / automatic backups).
 - **#22(b)** validated impact questionnaire: blocked on licensing.
