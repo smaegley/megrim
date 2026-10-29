@@ -8,6 +8,7 @@ import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
 import '../models/med_entry.dart';
+import '../models/medications.dart' show medClassName;
 import '../models/relief_entry.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/location_picker.dart';
@@ -708,7 +709,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     final m = _meds[index];
     final cls = _medClasses[m.name];
     final parts = <String>[
-      if (cls != null) medClassLabel(cls),
+      if (cls != null) medClassName(cls),
       if (m.dose != null && m.dose!.isNotEmpty) m.dose!,
       if (m.time != null) _fmtMedTime(m.time!),
     ];

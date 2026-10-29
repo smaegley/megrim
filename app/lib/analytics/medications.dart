@@ -4,14 +4,11 @@ import '../models/med_entry.dart';
 import '../models/medications.dart';
 import '../models/relief_entry.dart';
 
+export '../models/medications.dart' show kMixedClasses, kUnclassified;
+
 /// Acute-medication days and the overuse notice (backlog #18), and the "what helped" table
 /// (backlog #19). Pure functions over events; the dashboard calls them.
 
-/// The key under which meds without a class are counted.
-const String kUnclassified = 'unclassified';
-
-/// The reason a month reached a reference level: a [MedClass] value, or this for ICHD-3 8.2.6.
-const String kMixedClasses = 'mixed';
 
 /// One event's medication and relief fields, in the zone it was logged in.
 class MedEventInput {
@@ -102,6 +99,13 @@ DateTime doseDay(MedEntry m, DateTime startedAt, int? startOffsetMin) {
   final t = m.time == null ? null : DateTime.tryParse(m.time!);
   return wallDate(t ?? startedAt, startOffsetMin);
 }
+
+/// One reason [m] reached a reference level, with its count and the level:
+/// "Triptan on 11 days (level 10)".
+String levelReason(MedMonth m, String reason) => reason == kMixedClasses
+    ? 'A mix of classes on ${m.overuseClassDays} days in total (level $kMixedOveruseDaysPerMonth)'
+    : '${kMedClassLabels[reason]} on ${m.byClass[reason]} days '
+          '(level ${kOveruseDaysPerMonth[reason]})';
 
 int _monthIndex(DateTime d) => d.year * 12 + d.month - 1;
 

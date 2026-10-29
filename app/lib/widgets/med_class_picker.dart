@@ -34,6 +34,3 @@ Widget _option(BuildContext context, String? cls, String? current) => ListTile(
       selected: cls == current,
       onTap: () => Navigator.pop(context, (cls: cls)),
     );
-
-/// "Triptan", or "No class set".
-String medClassLabel(String? cls) => cls == null ? 'No class set' : kMedClassLabels[cls]!;

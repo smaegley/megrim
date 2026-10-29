@@ -6,30 +6,6 @@ import '../analytics/medications.dart';
 import '../models/medications.dart';
 import 'monthly_days_card.dart';
 
-/// Short label for a class key, [kUnclassified] included.
-String medClassName(String key) =>
-    key == kUnclassified ? 'No class set' : kMedClassLabels[key] ?? key;
-
-/// One reason a month reached a reference level, with its count and the level:
-/// "Triptan on 11 days (level 10)".
-String levelReason(MedMonth m, String reason) => reason == kMixedClasses
-    ? 'A mix of classes on ${m.overuseClassDays} days in total '
-          '(level $kMixedOveruseDaysPerMonth)'
-    : '${kMedClassLabels[reason]} on ${m.byClass[reason]} days '
-          '(level ${kOveruseDaysPerMonth[reason]})';
-
-/// The overuse notice (backlog #18), as both the card and the report word it. States the counts
-/// and the reference level and suggests a clinician; it never says the user has
-/// medication-overuse headache and never tells them to stop or change a medication.
-const String kOveruseNoticeTitle = 'Medication days at a reference level';
-
-const String kOveruseNoticeBody =
-    'In each of the last 3 complete months, your days with acute medication reached a level that '
-    'headache guidelines (ICHD-3) use when looking at medication-overuse headache, where frequent '
-    'use of acute medication can make headaches more frequent. This is a count of what you '
-    'logged, not a diagnosis. Don\'t change how you take a medication because of it; it may be '
-    'worth discussing with your doctor. The PDF report includes these counts.';
-
 /// "Acute medication days" (backlog #18): days with medication taken for an attack, in the last
 /// 30 days and per class, a bar per month, and the overuse notice when the last 3 complete months
 /// each reached a level. Renders nothing until an entry has a medication.
@@ -181,7 +157,7 @@ class _OveruseNotice extends StatelessWidget {
                   Text('${f.format(DateTime(m.year, m.month))}: ${levelReason(m, r)}'),
               const SizedBox(height: 8),
               Text(
-                kOveruseNoticeBody,
+                '$kOveruseNoticeBody The PDF report includes these counts.',
                 style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSecondaryContainer),
               ),
             ],

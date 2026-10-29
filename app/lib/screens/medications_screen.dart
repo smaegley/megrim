@@ -141,7 +141,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 for (final name in _acute)
                   ListTile(
                     title: Text(name),
-                    subtitle: Text(medClassLabel(_classes[name])),
+                    subtitle: Text(medClassName(_classes[name])),
                     onTap: () => _setClass(name),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,

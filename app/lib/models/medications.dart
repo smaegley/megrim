@@ -51,6 +51,28 @@ const int kOveruseMonths = 3;
 
 bool isOveruseClass(String? medClass) => kOveruseDaysPerMonth.containsKey(medClass);
 
+/// The key under which medications without a class are counted.
+const String kUnclassified = 'unclassified';
+
+/// The reason a month reached a reference level: a [MedClass] value, or this for ICHD-3 8.2.6.
+const String kMixedClasses = 'mixed';
+
+/// "Triptan", or "No class set" for null and [kUnclassified].
+String medClassName(String? key) =>
+    key == null || key == kUnclassified ? 'No class set' : kMedClassLabels[key] ?? key;
+
+/// The overuse notice (backlog #18), as the Analytics card and the report word it. It states the
+/// counts and the reference level and suggests a doctor; it never says the user has
+/// medication-overuse headache and never tells them to stop or change a medication.
+const String kOveruseNoticeTitle = 'Medication days at a reference level';
+
+const String kOveruseNoticeBody =
+    'In each of the last 3 complete months, your days with acute medication reached a level that '
+    'headache guidelines (ICHD-3) use when looking at medication-overuse headache, where frequent '
+    'use of acute medication can make headaches more frequent. This is a count of what you '
+    'logged, not a diagnosis. Don\'t change how you take a medication because of it; it may be '
+    'worth discussing with your doctor.';
+
 /// `yyyy-MM-dd` for a calendar date (preventive start/stop, schema v5).
 String isoDay(DateTime d) =>
     '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-'

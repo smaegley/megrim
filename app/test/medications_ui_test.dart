@@ -9,6 +9,7 @@ import 'package:megrim/screens/event_detail_screen.dart';
 import 'package:megrim/screens/medications_screen.dart';
 import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/models/med_entry.dart';
+import 'package:megrim/models/medications.dart';
 import 'package:megrim/models/relief_entry.dart';
 import 'package:megrim/widgets/medication_cards.dart';
 import 'package:megrim/widgets/monthly_days_card.dart';
