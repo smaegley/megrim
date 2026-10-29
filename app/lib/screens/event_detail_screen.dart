@@ -8,10 +8,13 @@ import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
 import '../models/med_entry.dart';
+import '../models/relief_entry.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/location_picker.dart';
+import '../widgets/med_class_picker.dart';
 import '../widgets/severity_badge.dart' show StatusColors;
 import 'manage_vocab_screen.dart';
+import 'medications_screen.dart';
 
 /// Seed for an entry that does not exist yet (issue #12). Event Detail opens on it and inserts the
 /// row only when the user taps Save, so backing out of "Add past entry" or an empty Calendar day
@@ -72,6 +75,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   List<String> _locationVocab = const [];
   List<String> _medVocab = const [];
   List<String> _symptomVocab = const [];
+  List<String> _reliefVocab = const [];
+  Map<String, String> _medClasses = const {};
 
   // Wall-clock times in the zone the entry belongs to (issue #17): an entry keeps the zone it was
   // logged in, so editing it abroad adjusts its wall clock there rather than re-basing it on the
@@ -101,6 +106,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   final Set<String> _triggers = {};
   final Set<String> _symptoms = {};
   final List<MedEntry> _meds = [];
+  final List<ReliefEntry> _relief = [];
   final List<String> _foods = [];
 
   @override
@@ -183,6 +189,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       _meds
         ..clear()
         ..addAll(decodeMeds(e.medsTaken));
+      _relief
+        ..clear()
+        ..addAll(decodeRelief(e.reliefTried));
     });
   }
 
@@ -194,9 +203,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     final locations = await widget.repo.vocab(VocabKind.headLocation);
     final meds = await widget.repo.vocab(VocabKind.medication);
     final symptoms = await widget.repo.vocab(VocabKind.symptom);
+    final relief = await widget.repo.vocab(VocabKind.relief);
+    final classes = await widget.repo.medicationClasses();
     if (!mounted) return;
     setState(() {
       _symptomVocab = symptoms;
+      _reliefVocab = relief;
+      _medClasses = classes;
       _triggerVocab = triggers;
       _locationVocab = locations;
       _medVocab = meds;
@@ -235,6 +248,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       triggersSuspected: Value(encodeStringList(_triggers.toList())),
       foodsNotable: Value(encodeStringList(_foods)),
       medsTaken: Value(encodeMeds(_meds)),
+      reliefTried: Value(encodeRelief(_relief)),
       geoLat: Value(_geoLat),
       geoLon: Value(_geoLon),
       geoLabel: Value(_geoLabel),
@@ -493,6 +507,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           _sectionHeader('Medications', VocabKind.medication),
           _medsSection(),
 
+          _sectionHeader('Relief tried', VocabKind.relief),
+          _reliefSection(),
+
           const SizedBox(height: 16),
           TextField(
             controller: _sleep,
@@ -575,8 +592,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             TextButton(
               onPressed: () async {
                 await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) =>
-                      ManageVocabScreen(repo: widget.repo, kind: kind, title: title),
+                  builder: (_) => kind == VocabKind.medication
+                      ? MedicationsScreen(repo: widget.repo)
+                      : ManageVocabScreen(repo: widget.repo, kind: kind, title: title),
                 ));
                 await _loadVocab();
               },
@@ -688,7 +706,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   Widget _medTile(int index) {
     final m = _meds[index];
+    final cls = _medClasses[m.name];
     final parts = <String>[
+      if (cls != null) medClassLabel(cls),
       if (m.dose != null && m.dose!.isNotEmpty) m.dose!,
       if (m.time != null) _fmtMedTime(m.time!),
     ];
@@ -717,11 +737,24 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
-  /// Format an ISO-8601 UTC med time for display in the device's local zone.
+  /// Format an ISO-8601 UTC med time for display in the device's local zone, with the date when
+  /// it isn't the entry's start day (a dose on day 2 of a long attack).
   String _fmtMedTime(String iso) {
     final dt = DateTime.tryParse(iso);
     if (dt == null) return iso;
-    return DateFormat('HH:mm').format(dt.toLocal());
+    final local = dt.toLocal();
+    final sameDay = local.year == _startedAt.year &&
+        local.month == _startedAt.month &&
+        local.day == _startedAt.day;
+    return DateFormat(sameDay ? 'HH:mm' : 'EEE d MMM, HH:mm').format(local);
+  }
+
+  /// The last day a dose can fall on: the end's day, or today for an ongoing entry.
+  DateTime get _lastDoseDay {
+    final end = _endedAt ?? DateTime.now();
+    final last = DateTime(end.year, end.month, end.day);
+    final first = DateTime(_startedAt.year, _startedAt.month, _startedAt.day);
+    return last.isBefore(first) ? first : last;
   }
 
   /// Add (index null) or edit an existing medication entry. New names are learned into the
@@ -733,6 +766,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         vocab: _medVocab,
         initial: index == null ? null : _meds[index],
         eventDay: _startedAt,
+        lastDay: _lastDoseDay,
       ),
     );
     if (result == null || !mounted) return;
@@ -741,12 +775,92 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       await widget.repo.addVocab(VocabKind.medication, result.name);
       if (!mounted) return;
       setState(() => _medVocab = [..._medVocab, result.name]);
+      // The first time a name is entered, ask for its class (backlog #18). Skippable: dismiss it
+      // or pick "Not set", and Settings › Medications or the Analytics card can set it later.
+      if (await widget.repo.medicationClassOf(result.name) == null && mounted) {
+        final picked = await showMedClassPicker(context, name: result.name);
+        if (picked?.cls != null) {
+          await widget.repo.setMedicationClass(result.name, picked!.cls);
+          final classes = await widget.repo.medicationClasses();
+          if (mounted) setState(() => _medClasses = classes);
+        }
+      }
+      if (!mounted) return;
     }
     setState(() {
       if (index == null) {
         _meds.add(result);
       } else {
         _meds[index] = result;
+      }
+    });
+  }
+
+  /// Non-drug relief tried for this event (backlog #19), laid out like Medications: one tile per
+  /// method with its "helped?" answer. Backed by the `relief` vocab; new names are learned.
+  Widget _reliefSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < _relief.length; i++) _reliefTile(i),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: () => _editRelief(),
+            icon: const Icon(Icons.add, size: 18),
+            label: const Text('Add relief'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _reliefTile(int index) {
+    final r = _relief[index];
+    final (helpIcon, helpColor) = switch (r.helped) {
+      true => (Icons.thumb_up_outlined, StatusColors.good),
+      false => (Icons.thumb_down_outlined, StatusColors.serious),
+      null => (Icons.help_outline, Theme.of(context).colorScheme.onSurfaceVariant),
+    };
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        dense: true,
+        leading: Icon(helpIcon, color: helpColor),
+        title: Text(r.name),
+        trailing: IconButton(
+          icon: const Icon(Icons.close),
+          tooltip: 'Remove relief',
+          onPressed: () => setState(() => _relief.removeAt(index)),
+        ),
+        onTap: () => _editRelief(index: index),
+      ),
+    );
+  }
+
+  Future<void> _editRelief({int? index}) async {
+    final result = await showDialog<ReliefEntry>(
+      context: context,
+      builder: (_) => _ReliefEditDialog(
+        vocab: _reliefVocab,
+        taken: [
+          for (var i = 0; i < _relief.length; i++)
+            if (i != index) _relief[i].name,
+        ],
+        initial: index == null ? null : _relief[index],
+      ),
+    );
+    if (result == null || !mounted) return;
+    if (!_reliefVocab.contains(result.name)) {
+      await widget.repo.addVocab(VocabKind.relief, result.name);
+      if (!mounted) return;
+      setState(() => _reliefVocab = [..._reliefVocab, result.name]);
+    }
+    setState(() {
+      if (index == null) {
+        _relief.add(result);
+      } else {
+        _relief[index] = result;
       }
     });
   }
@@ -859,10 +973,15 @@ class _MedEditDialog extends StatefulWidget {
   /// The event's start day, used to anchor a picked time-of-day to a concrete date.
   final DateTime eventDay;
 
+  /// The last day a dose can be on. Later than [eventDay] for a multi-day entry, and then the
+  /// time picker asks for the day first, so each dose counts on the day it was taken (#18).
+  final DateTime lastDay;
+
   const _MedEditDialog({
     required this.vocab,
     required this.initial,
     required this.eventDay,
+    required this.lastDay,
   });
 
   @override
@@ -873,7 +992,12 @@ class _MedEditDialogState extends State<_MedEditDialog> {
   late final TextEditingController _name;
   late final TextEditingController _dose;
   TimeOfDay? _time;
+  late DateTime _day;
   bool? _helped;
+
+  DateTime get _firstDay =>
+      DateTime(widget.eventDay.year, widget.eventDay.month, widget.eventDay.day);
+  bool get _multiDay => widget.lastDay.isAfter(_firstDay);
 
   @override
   void initState() {
@@ -882,10 +1006,15 @@ class _MedEditDialogState extends State<_MedEditDialog> {
     _name = TextEditingController(text: m?.name ?? '');
     _dose = TextEditingController(text: m?.dose ?? '');
     _helped = m?.helped;
+    _day = _firstDay;
     final iso = m?.time;
     if (iso != null) {
       final dt = DateTime.tryParse(iso);
-      if (dt != null) _time = TimeOfDay.fromDateTime(dt.toLocal());
+      if (dt != null) {
+        final local = dt.toLocal();
+        _time = TimeOfDay.fromDateTime(local);
+        _day = DateTime(local.year, local.month, local.day);
+      }
     }
   }
 
@@ -896,13 +1025,44 @@ class _MedEditDialogState extends State<_MedEditDialog> {
     super.dispose();
   }
 
-  /// Combine the picked time-of-day with the event's date, return as an ISO-8601 UTC string.
+  /// Combine the picked time-of-day with its day (the event's date unless another was picked),
+  /// return as an ISO-8601 UTC string.
   String? _isoTime() {
     if (_time == null) return null;
-    final d = widget.eventDay;
+    final d = _day;
     return DateTime(d.year, d.month, d.day, _time!.hour, _time!.minute)
         .toUtc()
         .toIso8601String();
+  }
+
+  Future<void> _pickTime() async {
+    var day = _day;
+    if (_multiDay) {
+      final picked = await showDatePicker(
+        context: context,
+        // Clamped: the entry's dates may have moved since this dose was saved.
+        initialDate: day.isBefore(_firstDay)
+            ? _firstDay
+            : day.isAfter(widget.lastDay)
+                ? widget.lastDay
+                : day,
+        firstDate: _firstDay,
+        lastDate: widget.lastDay,
+        helpText: 'Day taken',
+      );
+      if (picked == null || !mounted) return;
+      day = picked;
+    }
+    final time = await showTimePicker(
+      context: context,
+      initialTime: _time ?? TimeOfDay.now(),
+    );
+    if (time != null) {
+      setState(() {
+        _day = day;
+        _time = time;
+      });
+    }
   }
 
   @override
@@ -952,7 +1112,11 @@ class _MedEditDialogState extends State<_MedEditDialog> {
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.schedule),
                 title: const Text('Time taken'),
-                subtitle: Text(_time == null ? 'Not set' : _time!.format(context)),
+                subtitle: Text(_time == null
+                    ? 'Not set'
+                    : _multiDay
+                        ? '${DateFormat('EEE d MMM').format(_day)}, ${_time!.format(context)}'
+                        : _time!.format(context)),
                 trailing: _time == null
                     ? const Icon(Icons.edit_outlined)
                     : IconButton(
@@ -960,13 +1124,7 @@ class _MedEditDialogState extends State<_MedEditDialog> {
                         tooltip: 'Clear time',
                         onPressed: () => setState(() => _time = null),
                       ),
-                onTap: () async {
-                  final picked = await showTimePicker(
-                    context: context,
-                    initialTime: _time ?? TimeOfDay.now(),
-                  );
-                  if (picked != null) setState(() => _time = picked);
-                },
+                onTap: _pickTime,
               ),
               const SizedBox(height: 8),
               const Text('Helped?'),
@@ -1005,6 +1163,106 @@ class _MedEditDialogState extends State<_MedEditDialog> {
                 helped: _helped,
               ),
             );
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
+}
+
+/// Add/edit one relief method: a name (chosen from the `relief` vocab or typed) and "helped?".
+class _ReliefEditDialog extends StatefulWidget {
+  final List<String> vocab;
+
+  /// Names already on this entry, left out of the suggestions.
+  final List<String> taken;
+  final ReliefEntry? initial;
+
+  const _ReliefEditDialog({required this.vocab, required this.taken, required this.initial});
+
+  @override
+  State<_ReliefEditDialog> createState() => _ReliefEditDialogState();
+}
+
+class _ReliefEditDialogState extends State<_ReliefEditDialog> {
+  late final TextEditingController _name;
+  bool? _helped;
+
+  @override
+  void initState() {
+    super.initState();
+    _name = TextEditingController(text: widget.initial?.name ?? '');
+    _helped = widget.initial?.helped;
+  }
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final suggestions = widget.vocab.where((v) => !widget.taken.contains(v)).toList();
+    return AlertDialog(
+      title: Text(widget.initial == null ? 'Add relief' : 'Edit relief'),
+      content: SizedBox(
+        width: 400,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _name,
+                autofocus: widget.initial == null,
+                decoration: const InputDecoration(
+                    labelText: 'What did you try?',
+                    hintText: 'e.g. dark room, cold pack',
+                    border: OutlineInputBorder()),
+                onChanged: (_) => setState(() {}),
+              ),
+              if (suggestions.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final v in suggestions)
+                      ChoiceChip(
+                        label: Text(v),
+                        selected: _name.text.trim() == v,
+                        onSelected: (_) => setState(() => _name.text = v),
+                      ),
+                  ],
+                ),
+              ],
+              const SizedBox(height: 12),
+              const Text('Helped?'),
+              const SizedBox(height: 4),
+              SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(value: 1, label: Text('Yes')),
+                  ButtonSegment(value: 0, label: Text('No')),
+                  ButtonSegment(value: -1, label: Text('Unknown')),
+                ],
+                selected: {_helped == null ? -1 : (_helped! ? 1 : 0)},
+                onSelectionChanged: (s) => setState(() {
+                  final v = s.first;
+                  _helped = v == -1 ? null : v == 1;
+                }),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () {
+            final name = _name.text.trim();
+            if (name.isEmpty) return;
+            Navigator.pop(context, ReliefEntry(name: name, helped: _helped));
           },
           child: const Text('Save'),
         ),
