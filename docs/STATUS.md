@@ -35,7 +35,7 @@ bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
      with the real error instead of uninstalling.
 2. **`feat/medications` (group B: backlog #18 + #19, schema v5): built 2026-10-29, awaiting
    Steve's test** (`.claude/test-medications.md`; made-up import data in
-   `.claude/test-medications-data.json`). Acute medications get a class (asked once when a new
+   `app/test/fixtures/sample-data.medications.json`). Acute medications get a class (asked once when a new
    name is entered, skippable; Settings › Medications); Analytics counts medication days per class
    and shows a calm notice when each of the last 3 complete months reached an ICHD-3 8.2 level;
    preventive medications with start/stop dates, marked on the monthly chart; "Relief tried" on
