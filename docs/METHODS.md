@@ -223,6 +223,53 @@ least 3 of your migraine-days and its OR is above 1.0; the strongest 8 are shown
 The bars encode each OR relative to the strongest one shown. Buckets below the threshold aren't
 "disproven" — there just isn't enough data to say anything.
 
+## Check-ins and the tracked-days comparison
+
+A **"No migraine today" check-in** (Log tab, or an empty past day on the History calendar)
+records that a day was clear, optionally with the same sleep, stress, triggers and foods an entry
+can carry. Without check-ins, a day with no entry could have been clear or simply not logged; with
+them, Megrim can tell the two apart. A day with a migraine entry always wins: a check-in on a day
+any entry covers is ignored, and saving such an entry removes it.
+
+**Days tracked** (Analytics and the PDF, once you have checked in at least once) counts the days
+in the last 30 that have an entry or a check-in, split into migraine days and clear days, and the
+same since your first check-in. Days with neither are "not recorded". The more days are tracked,
+the more every other figure can be trusted.
+
+**Migraine days vs clear days** compares what you *recorded yourself* on migraine days with what
+you recorded on clear days. Suspected Factors can't do this: it compares migraine days with every
+day, which works for the weekday or the moon because they are known for every day, but your sleep
+or triggers are known only on days you recorded them. So this comparison uses **tracked days
+only**:
+
+- **Migraine days** are the days a migraine started, as in Suspected Factors: later days of a
+  multi-day migraine are left out, and so is a check-in on any day a migraine covers. When two
+  migraines start on one day, the day takes the union of their triggers and foods, the first
+  one's sleep, and the higher stress.
+- **Clear days** are check-in days.
+- **The window starts at your first check-in.** Migraines logged before you started checking in
+  have no clear days to be compared with, so they are left out. This differs from Suspected
+  Factors, whose window is first to last migraine.
+- **Each factor counts only the days it could be read on.** Sleep and stress: the days they were
+  recorded. Triggers and foods: the days on which *anything* was recorded (a trigger, a food, sleep
+  or stress). A bare one-tap check-in is a tracked day, but it says nothing about triggers;
+  counting it as "no triggers" would make every trigger look like a cause.
+- **Numbers are bucketed** so they fit a 2×2 table: sleep the night before `< 6 h`, `6–8 h`
+  (6 and 8 included), `> 8 h`; stress `1–2`, `3`, `4–5`. Each trigger and each food is its own
+  table (recorded that day, or not).
+- **The same statistics as Suspected Factors:** a Haldane–Anscombe corrected odds ratio per
+  bucket, and a bucket is listed only with at least 3 migraine days in it and an OR above 1.0
+  (the strongest 8).
+- **It waits for enough data:** at least **30 tracked days, with at least 5 migraine days and 5
+  clear days** since your first check-in, and each factor's table needs 5 of each among its own
+  days. Until then the card says what is still needed.
+
+**Recall bias is the known weakness of this design.** After a migraine, people look harder for a
+cause than they do on a good day, so triggers can be over-recorded on migraine days and look more
+linked than they are. Recording the same things on clear days as on migraine days, every time,
+is what reduces it. Everything under "What this can and cannot tell you" applies here too, and
+more so: the samples are usually smaller.
+
 ## What this can and cannot tell you
 
 - **Association is not causation.** A high OR for Fridays doesn't mean Fridays cause migraines —

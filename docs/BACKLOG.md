@@ -350,7 +350,7 @@ current set. Anything that adds one must update README, PRIVACY and the F-Droid 
 same change, verified by inspecting the merged manifest of a release build (as was done for
 backlog #5).
 
-### 16. Headache-free days: a one-tap "No migraine today" check-in — **PROPOSED** *(2026-10-06)*
+### 16. Headache-free days: a one-tap "No migraine today" check-in — **BUILT** *(2026-10-29, branch `feat/checkins` with #27 and #23 step 3 on Android, group C1, schema v6; awaiting Steve's test, ships in 1.0.8)*
 
 **Want:** a way to record that a day was migraine-free — a one-tap button on Quick Log, plus a
 long-press / tap on a past History Calendar day to mark it clear — optionally carrying the same
@@ -404,6 +404,23 @@ tracked window; a fixture dataset in `test/fixtures/datasets/` where a trigger i
 migraine days and absent on clear days, asserting it surfaces, plus one where it's equally common
 on both and must not.
 
+**As built (2026-10-29, schema v6; Steve's choices (a)–(d) of 2026-10-29):** `day_checkins` keyed
+by the local date, with its offset and the four optional self-report fields. Quick Log has a NO
+MIGRAINE TODAY button under LOG MIGRAINE (hidden when an entry covers today); one tap saves a bare
+check-in, then *Add details* (a details screen) and *Undo*. On the History calendar, tapping an
+empty past day (or today) opens a sheet: *No migraine this day* / *Log a migraine on this day*
+(a checked-in day offers details and removal instead); a future day still goes straight to a new
+entry. Clear days get a small tick and stay grey, since green is the mild-severity colour. An
+entry wins: saving one (or starting one on Quick Log) removes the check-ins on the days it covers,
+with undo, rather than asking first. Analytics: *Days tracked* (last 30, and since the first
+check-in) and *Migraine days vs clear days*, both hidden until the first check-in; the PDF has
+the line and the section; the export has `checkins` and two analytics keys. Decided while
+building: the comparison's window starts at the **first check-in** (not the first tracked day,
+which would bring in every migraine logged before check-ins existed, with no clear days to
+compare against), and each factor counts only the days it was recorded on (a bare check-in
+counts as tracked but not as "no triggers"). Details in `docs/METHODS.md`. The List view still
+shows entries only.
+
 ### 17. Monthly migraine days and their trend — **DONE** *(shipped in `v1.0.7`)*
 
 **Want:** a "migraine days per month" bar chart on Analytics (last 12 months, scrollable back to
@@ -441,7 +458,7 @@ months) first under Patterns, plus a "Migraine days, last 30 d" summary tile. Th
 to `daysCovered()` in `event_time.dart`, shared with the History calendar. Export:
 `migraine_days_last_30`, `migraine_days_avg_last_3_months`, `migraine_days_by_month`.
 
-### 18. Acute-medication days and a medication-overuse notice — **BUILT** *(2026-10-29, branch `feat/medications` with #19, schema v5; awaiting Steve's test, ships in 1.0.8)*
+### 18. Acute-medication days and a medication-overuse notice — **BUILT** *(2026-10-29, branch `feat/medications` with #19, schema v5; Steve's test passed and merged to `main` 2026-10-29, ships in 1.0.8)*
 
 **Want:** count the days per month on which acute medication was taken, by medication class,
 and show a calm, informational notice when the count reaches the levels headache guidelines
@@ -510,7 +527,7 @@ now records its day (the time picker asks for the day first), since the dialog c
 dose on the start day before. Steve approved the notice copy 2026-10-29. All of this is in
 `docs/METHODS.md`.
 
-### 19. Acute vs preventive medications, and non-drug relief — **BUILT** *(2026-10-29, branch `feat/medications` with #18, schema v5; awaiting Steve's test, ships in 1.0.8)*
+### 19. Acute vs preventive medications, and non-drug relief — **BUILT** *(2026-10-29, branch `feat/medications` with #18, schema v5; Steve's test passed and merged to `main` 2026-10-29, ships in 1.0.8)*
 
 **Want:** (a) a list of **preventive** medications with start and stop dates (not per-attack),
 and (b) a per-event "what else did you try" list for non-drug relief (dark room, sleep,
@@ -633,7 +650,7 @@ once it exists; "impact recorded on N of M migraine days") and the same as one l
 PDF summary. Export: `impact` per event (unknown values dropped on import) and an `impact` object
 in the analytics block.
 
-### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; (2)–(3) **PROPOSED**
+### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; **(3) on Android BUILT** *(2026-10-29, branch `feat/checkins`, group C1)*; (2) and (3) on iOS **PROPOSED** (group C2)
 
 **Want:** start a migraine without navigating the app — in increasing cost: (1) long-press app
 icon → "Log migraine" / "No migraine today"; (2) a home-screen widget showing days since last
@@ -693,7 +710,18 @@ ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others pus
 **Verification:** widget/shortcut deep links covered by integration tests where possible;
 manual release-build smoke test on a real device (minification note in STATUS "Known gaps").
 
-### 27. Daily reminder to log (opt-in local notification) — **PROPOSED** *(2026-10-28)*
+**As built, (3) on Android (2026-10-29, with #27):** `flutter_local_notifications` shows "Migraine
+in progress" with a native running clock (`usesChronometer`, `when` = the start, so no background
+work) and an *End* button that opens the app, which ends the migraine once it is in the foreground
+and unlocked (the shortcut's queue). Off by default: a Settings row, and offered once when the
+first migraine is started. It follows the data, not the screen: a controller watching the events
+table posts it while any migraine is open and clears it on end, discard or delete, from any screen
+or an import, and re-posts it when the app resumes (Android 14+ lets it be swiped away). Lock
+screen: `VISIBILITY_SECRET`, not shown on a secure lock screen, because the plugin can't set a
+separate public version, and with `VISIBILITY_PRIVATE` a phone on its default settings would show
+the text. (2) and (3) on iOS are group C2.
+
+### 27. Daily reminder to log (opt-in local notification) — **BUILT** *(2026-10-29, branch `feat/checkins`, group C1; awaiting Steve's test, ships in 1.0.8)*
 
 **Want:** a notification once a day at a time the user picks (e.g. 8:00 AM or 8:00 PM) reminding
 them to log the day while they remember it: a migraine, or a "No migraine today" check-in (#16).
@@ -728,6 +756,20 @@ together in **group C** (**C1** since the 2026-10-29 split).
 days, time-zone change); widget test of the Settings row; manual test on a real Android 13+ phone
 (permission prompt, deny path, notification arrives, reboot behaviour, lock-screen privacy) and on
 iOS from the Mac build.
+
+**As built (2026-10-29, with #23 step 3 on Android and #16):** Settings › *Daily reminder*: Off or a
+time (time picker, 20:00 suggested); the permission is asked for only when turned on, and a
+refusal leaves it off with a message. Title "Megrim", text "How was today?", buttons *No migraine
+today* (checks today in, unless an entry covers it) and *Log* (opens the Log tab); both open the
+app and act through the shortcut's queue, after app lock. Scheduled as **14 one-off reminders**
+at local wall-clock times rather than one daily repeat: the plugin's repeat is pinned to a fixed
+UTC time and would drift an hour at each DST change until the app was opened. They are rebuilt
+whenever the app resumes or the events or check-ins change, so they skip a day already logged and
+only stop if the app goes unopened for 14 days. Inexact (no exact-alarm permission);
+`RECEIVE_BOOT_COMPLETED` keeps them after a reboot (Steve, 2026-10-29). Not shown on a secure lock
+screen (`VISIBILITY_SECRET`), like (3) above. New permissions: `POST_NOTIFICATIONS` (runtime),
+`VIBRATE` (merged by the plugin) and `RECEIVE_BOOT_COMPLETED`; PRIVACY and SPEC updated, F-Droid
+listing at release.
 
 ### 24. App lock with the phone's own unlock, and hide from the app switcher — **DONE** *(shipped in `v1.0.7`; all Android tests passed, iOS to check in TestFlight)*
 

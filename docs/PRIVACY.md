@@ -32,8 +32,9 @@ device** with no network call.
 There isn't one. The app **declares no location permission at all** and never reads your
 device's location — it cannot, even in principle. Your home location is whatever you type
 during setup: a place-name search, GPS coordinates, or a Plus Code. (The APK's permissions are
-INTERNET, the system's network-state check used to detect being offline, and the biometric /
-fingerprint permissions the optional app lock uses — see below. None of them is location.)
+INTERNET, the system's network-state check used to detect being offline, the biometric /
+fingerprint permissions the optional app lock uses, and the notification permissions the optional
+reminders use — see below. None of them is location.)
 
 ## App lock
 
@@ -50,6 +51,23 @@ encryption: your data is protected at rest by the phone's own storage encryption
 **Hide in recent apps** (also optional, off by default) blanks Megrim in the app switcher. On
 Android it also blocks screenshots of the app; turn it off if you want to screenshot something
 for your doctor.
+
+## Notifications
+
+Optional, off by default. **Settings › Daily reminder** sends one notification a day at a time you
+pick, asking "How was today?", with *No migraine today* and *Log* buttons; it is skipped on days
+you've already logged. On Android, **Settings › Notification during a migraine** shows a running
+clock and an *End* button while a migraine is in progress. Your phone schedules and shows them:
+there is no server and no push service, and nothing leaves the device.
+
+Neither appears on a locked phone's lock screen, so nothing on it says you track migraines. The
+buttons only open Megrim; nothing is recorded until the app is open (and unlocked, if app lock is
+on).
+
+The phone asks for permission to show notifications only when you turn one of these on. On
+Android this is the `POST_NOTIFICATIONS` permission; the APK also declares `VIBRATE` and
+`RECEIVE_BOOT_COMPLETED` (so the reminder is put back after the phone restarts), both granted at
+install with no prompt and unused unless you turn a notification on.
 
 ## Backups
 

@@ -206,8 +206,10 @@ from them, and CI checks they're in step.
 
 See [`docs/PRIVACY.md`](docs/PRIVACY.md). Short version: all data stays on your device; we
 operate no servers and collect nothing. The Android app's permissions are `INTERNET` (weather and
-place search, only when you use them), the network-state check used to detect being offline, and
-`USE_BIOMETRIC` / `USE_FINGERPRINT` for the optional app lock. There is no location permission.
+place search, only when you use them), the network-state check used to detect being offline,
+`USE_BIOMETRIC` / `USE_FINGERPRINT` for the optional app lock, and, from 1.0.8,
+`POST_NOTIFICATIONS` / `VIBRATE` / `RECEIVE_BOOT_COMPLETED` for the optional reminders (asked for
+only when you turn one on). There is no location permission.
 
 ## How the analytics work
 

@@ -35,6 +35,7 @@ automatically after import. A converter only has to carry over what a human actu
 | `vocabularies` | no | `{"trigger": [...], "head_location": [...], "medication": [...], "symptom": [...], "relief": [...]}` — string arrays that seed the autocomplete suggestion lists. Merged; duplicates ignored. |
 | `medication_classes` | no | App v1.0.8+. `{"Sumatriptan": "triptan", "Ibuprofen": "simple_analgesic"}`: the class of each acute medication, by the name used in `meds_taken`. Classes: `triptan`, `ergot`, `opioid`, `combination_analgesic`, `simple_analgesic`, `gepant`, `ditan`, `antiemetic`, `other`; any other value is dropped. On **Replace** a class from the file overwrites the app's for that name; on **Merge** it only fills in names the app hasn't classified. See [Preventives and medication classes](#preventives-and-medication-classes). |
 | `preventives` | no | App v1.0.8+. Array of preventive-medication objects (below). On **Replace** the file's list replaces the app's; on **Merge**, ids not already present are added. |
+| `checkins` | no | App v1.0.8+. Array of "No migraine today" check-in objects (below). On **Replace** the file's list replaces the app's; on **Merge**, dates not already checked in are added and existing ones are left alone. See [Check-ins](#check-ins). |
 | `exported_at`, `app_version` | no | Written by Megrim's own exports; ignored on import. |
 | `analytics` | no | Written by Megrim's own exports: the app's **computed** dashboard and odds-ratio results, for renderers. Ignored on import. See [The `analytics` block](#the-analytics-block-megrim-computed--ignored-on-import). |
 
@@ -117,6 +118,23 @@ one, or with a `started_on` that isn't a `yyyy-MM-dd` date, is skipped. `stopped
 not a date) = still taking it. `dose` and `notes` are optional free text. Dates are calendar
 dates with no time zone.
 
+### Check-ins
+
+A check-in records that a day had **no migraine** (backlog #16). Days with neither an event nor a
+check-in are "not recorded", so a converter from an app that tracks headache-free days should
+write one per such day:
+
+```json
+{"local_date": "2026-10-28", "offset_minutes": -360, "triggers_suspected": ["Screen time"],
+ "sleep_hours_prior": 7.5, "stress_level": 2, "foods_notable": []}
+```
+
+Only `local_date` (a `yyyy-MM-dd` calendar date, where the day was lived) is required; an entry
+without a valid one is skipped. `offset_minutes` is that place's UTC offset, as on events. The
+self-report fields are optional and shaped as on events; a `stress_level` outside 1–5 is
+dropped. One check-in per date. A check-in on a day an event covers is kept but ignored: the
+event wins.
+
 ### The `derived` block (Megrim-computed — omit it)
 
 Written by Megrim's own exports so a backup restores without re-enrichment. If you must
@@ -175,6 +193,16 @@ reference produced from the sample data lives at
                          "unclassified_names": [ "Ibuprofen" ] },
     "what_helped": [ { "name": "Rizatriptan", "kind": "medication", "tried": 48, "helped": 23,
                        "not_helped": 23, "unknown": 2, "helped_pct": 50 }, … ],
+    "days_tracked": { "last_30": 26, "clear_last_30": 24, "migraine_last_30": 2,
+                      "first_checkin": "2026-09-01", "since_first_checkin": 52,
+                      "days_since_first_checkin": 59 },
+    "tracked_factors": { "available": true, "reason": null, "tracked_days": 52,
+                         "migraine_days": 6, "clear_days": 46,
+                         "top_factors": [ { "factor": "Sleep the night before",
+                                            "condition": "< 6 h", "odds_ratio": 4.1, … }, … ],
+                         "factors": { "Sleep the night before": [ … ], "Stress": [ … ],
+                                      "Trigger noted": [ … ], "Food noted": [ … ] },
+                         "caveats": [ "…" ] },
     "away_from_home": { "located_events": 55, "away_events": 3, "away_pct": 5.5,
                         "threshold_km": 100.0, "farthest_km": 7853.8,
                         "away_places": [ { "label": "Paris", "count": 2 }, … ] }
