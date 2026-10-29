@@ -367,7 +367,7 @@ one-tap "No Headache Today".
 
 **Shape:**
 
-- New table `day_checkins` (v4): `local_date` (PK, the wall-clock date in the zone it was logged)
+- New table `day_checkins` (**v6**: v4 and v5 went to groups A and B; noted 2026-10-29): `local_date` (PK, the wall-clock date in the zone it was logged)
   plus `offset_min` (as issue #17 does for events). A row's presence means "clear". It also
   carries the same nullable self-report fields as `migraine_events` (`triggers_suspected`,
   `sleep_hours_prior`, `stress_level`, `foods_notable`), and `created_at` / `updated_at`. No
@@ -644,7 +644,9 @@ Activity / Dynamic Island timer, on Android an ongoing notification.
 **Requested again (2026-10-28):** GitHub discussion #21 (Krackmou) asked for a home-screen widget
 to start a log with one tap, and a constant notification while a headache is ongoing "so that we
 don't forget that the timer is on". Steve replied that a widget is planned and that he likes the
-timer idea. Steps (2)–(3) are in **group C** with #16 and #27.
+timer idea. Steps (2)–(3) are in **group C** with #16 and #27. **Split 2026-10-29:** the Android ongoing
+notification goes in **C1** with #16 and #27, since it shares their plugin and permission; the widget (2) on both
+platforms and the iOS Live Activity are **C2**.
 
 **Why:** the moment of logging is the worst moment to navigate an app. Migraine Attack Diary
 ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others push quick entry.
@@ -699,7 +701,7 @@ them to log the day while they remember it: a migraine, or a "No migraine today"
 **Why:** asked for in GitHub discussion #21 (Krackmou, 2026-10-28), coming from Apo, which has it.
 It's also what makes #16 work: a clear-day baseline is only as good as check-in adherence, and the
 2026-10-06 review had parked reminders as "revisit after #16" for exactly that reason. Build them
-together in **group C**.
+together in **group C** (**C1** since the 2026-10-29 split).
 
 **Shape:**
 
