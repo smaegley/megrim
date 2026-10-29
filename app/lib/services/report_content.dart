@@ -12,11 +12,13 @@ import 'package:intl/intl.dart';
 
 import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
+import '../analytics/medications.dart';
 import '../database/database.dart';
 import '../legal.dart' show kMedicalDisclaimer, kWeatherAttribution;
 import '../models/attack_details.dart';
 import '../models/event_time.dart';
 import '../models/json_fields.dart';
+import '../models/medications.dart';
 
 
 class ReportStat {
@@ -54,6 +56,32 @@ class ReportMedRow {
     required this.notHelped,
     required this.unknown,
     required this.helpedPct,
+  });
+}
+
+/// "Acute medication days" (backlog #18). Null on [ReportContent] until an entry has a
+/// medication, and the section is left out.
+class ReportMedicationDays {
+  /// The last 30 days, in all and per class.
+  final String summary;
+
+  /// Month, then "Any", then one column per class seen in those months.
+  final List<String> headers;
+  final List<List<String>> rows;
+
+  /// The overuse notice as lines (title, one per qualifying month, the explanation); empty when
+  /// it isn't raised.
+  final List<String> notice;
+
+  /// Says which medications have no class; null when all do.
+  final String? unclassified;
+
+  const ReportMedicationDays({
+    required this.summary,
+    required this.headers,
+    required this.rows,
+    this.notice = const [],
+    this.unclassified,
   });
 }
 
@@ -143,6 +171,15 @@ class ReportContent {
   final List<ReportBar> symptomFrequency;
   final List<ReportMedRow> medications;
 
+  /// Backlog #19: non-drug relief, in the same shape as [medications].
+  final List<ReportMedRow> relief;
+
+  /// Backlog #18.
+  final ReportMedicationDays? medicationDays;
+
+  /// Backlog #19: one line per preventive regimen, oldest first.
+  final List<String> preventives;
+
   /// False when there are too few events; [factorsReason] then says why.
   final bool factorsAvailable;
   final String? factorsReason;
@@ -169,6 +206,9 @@ class ReportContent {
     required this.triggerFrequency,
     this.symptomFrequency = const [],
     required this.medications,
+    this.relief = const [],
+    this.medicationDays,
+    this.preventives = const [],
     required this.factorsAvailable,
     required this.factorsReason,
     required this.factorsWindow,
@@ -368,34 +408,72 @@ ReportContent buildReportContent({
     );
   }
 
-  // Medications, tallied across every event (the dashboard doesn't carry these).
-  final medTally = <String, List<int>>{}; // name -> [taken, helped, notHelped, unknown]
-  for (final e in events) {
-    for (final m in decodeMeds(e.medsTaken)) {
-      if (m.name.isEmpty) continue;
-      final row = medTally.putIfAbsent(m.name, () => [0, 0, 0, 0]);
-      row[0]++;
-      if (m.helped == true) {
-        row[1]++;
-      } else if (m.helped == false) {
-        row[2]++;
-      } else {
-        row[3]++;
-      }
-    }
-  }
-  final medications = medTally.entries.map((e) {
-    final recorded = e.value[1] + e.value[2];
-    return ReportMedRow(
-      name: clean(e.key),
-      taken: e.value[0],
-      helped: e.value[1],
-      notHelped: e.value[2],
-      unknown: e.value[3],
-      helpedPct: recorded == 0 ? null : (100 * e.value[1] / recorded).round(),
+  // Medications and relief (backlog #19), from the dashboard so the report and the Analytics tab
+  // count them the same way.
+  ReportMedRow medRow(HelpedRow r) => ReportMedRow(
+        name: clean(r.name),
+        taken: r.tried,
+        helped: r.helped,
+        notHelped: r.notHelped,
+        unknown: r.unknown,
+        helpedPct: r.helpedPct,
+      );
+  final medications = [for (final r in dash.whatHelped) if (!r.relief) medRow(r)];
+  final relief = [for (final r in dash.whatHelped) if (r.relief) medRow(r)];
+
+  // Acute-medication days (backlog #18): the last 12 months as a table, one column per class.
+  ReportMedicationDays? medicationDays;
+  final md = dash.medicationDays;
+  if (md != null) {
+    String days(int n) => '$n ${n == 1 ? 'day' : 'days'}';
+    final months = md.byMonth.length > 12 ? md.byMonth.sublist(md.byMonth.length - 12) : md.byMonth;
+    final classes = [
+      for (final c in [...kMedClassLabels.keys, kUnclassified])
+        if (months.any((m) => m.byClass.containsKey(c))) c,
+    ];
+    final breakdown = md.byClassLast30.entries.map((e) => '${medClassName(e.key)} ${e.value}');
+    final f = DateFormat('MMM yyyy');
+    medicationDays = ReportMedicationDays(
+      summary: 'Days with acute medication, last 30 days: ${days(md.last30)}'
+          '${breakdown.isEmpty ? '.' : ' (${breakdown.join(', ')}).'}',
+      headers: ['Month', 'Any', for (final c in classes) medClassName(c)],
+      rows: [
+        for (final m in months)
+          [
+            '${f.format(DateTime(m.year, m.month))}'
+                '${DateTime(m.year, m.month) == DateTime(now.year, now.month) ? ' *' : ''}',
+            '${m.days}',
+            for (final c in classes) '${m.byClass[c] ?? 0}',
+          ],
+      ],
+      notice: md.notice == null
+          ? const []
+          : [
+              kOveruseNoticeTitle,
+              for (final m in md.notice!)
+                for (final r in m.levelsReached)
+                  '${f.format(DateTime(m.year, m.month))}: ${levelReason(m, r)}',
+              kOveruseNoticeBody,
+            ],
+      unclassified: md.unclassifiedNames.isEmpty
+          ? null
+          : 'No class set for ${md.unclassifiedNames.map(clean).join(', ')}: counted in "Any" '
+              'but not checked against the reference levels.',
     );
-  }).toList()
-    ..sort((x, y) => y.taken.compareTo(x.taken));
+  }
+
+  final dfDay = DateFormat('d MMM yyyy');
+  String day(String iso) {
+    final d = parseIsoDay(iso);
+    return d == null ? iso : dfDay.format(d);
+  }
+
+  final preventives = [
+    for (final p in dash.preventives)
+      '${clean(p.name)}${p.dose == null ? '' : ' ${clean(p.dose)}'}: '
+          '${p.stoppedOn == null ? 'since ${day(p.startedOn)}' : '${day(p.startedOn)} to ${day(p.stoppedOn!)}'}'
+          '${p.notes == null || p.notes!.trim().isEmpty ? '' : '. ${clean(p.notes)}'}',
+  ];
 
   // Factors: every bucket row, with the app's own headline rows marked rather than repeated in a
   // second table. Matches what tools/report.html settled on after review.
@@ -439,9 +517,14 @@ ReportContent buildReportContent({
         headLocations: clean(decodeStringList(e.locationHead).join(', ')),
         symptoms: clean(decodeStringList(e.symptoms).join(', ')),
         triggers: clean(decodeStringList(e.triggersSuspected).join(', ')),
-        meds: clean(decodeMeds(e.medsTaken)
-            .map((m) => [m.name, if (m.dose != null && m.dose!.isNotEmpty) m.dose!].join(' '))
-            .join(', ')),
+        meds: clean([
+          decodeMeds(e.medsTaken)
+              .map((m) => [m.name, if (m.dose != null && m.dose!.isNotEmpty) m.dose!].join(' '))
+              .join(', '),
+          // Non-drug relief (backlog #19) shares the column, on its own line.
+          if (decodeRelief(e.reliefTried).isNotEmpty)
+            'Relief: ${decodeRelief(e.reliefTried).map((r) => r.name).join(', ')}',
+        ].where((x) => x.isNotEmpty).join('\n')),
         notes: clean(e.notes),
       ),
   ];
@@ -474,6 +557,9 @@ ReportContent buildReportContent({
     triggerFrequency: bars(dash.triggerFrequency),
     symptomFrequency: bars(dash.symptomFrequency),
     medications: medications,
+    relief: relief,
+    medicationDays: medicationDays,
+    preventives: preventives,
     factorsAvailable: corr.available,
     factorsReason: corr.reason,
     factorsWindow: corr.available

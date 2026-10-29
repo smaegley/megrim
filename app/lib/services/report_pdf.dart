@@ -148,6 +148,23 @@ Future<Uint8List> renderReportPdf(
     );
   }
 
+  pw.Widget helpedTable(String what, List<ReportMedRow> rows) => table(
+        [what, 'Taken', 'Helped', "Didn't", 'Unknown', 'Helped %'],
+        [
+          for (final m in rows)
+            [
+              m.name,
+              '${m.taken}',
+              '${m.helped}',
+              '${m.notHelped}',
+              '${m.unknown}',
+              m.helpedPct == null ? '-' : '${m.helpedPct}%',
+            ],
+        ],
+        flex: const [4, 1, 1, 1, 1, 1],
+        rightAlign: const [false, true, true, true, true, true],
+      );
+
   final pages = <pw.Widget>[
     // ── header ──────────────────────────────────────────────────────────────
     pw.Text(c.title, style: pw.TextStyle(font: fontBold, fontSize: 20)),
@@ -235,25 +252,65 @@ Future<Uint8List> renderReportPdf(
       barChart(c.symptomFrequency),
     ],
 
+    // ── acute-medication days (backlog #18) ─────────────────────────────────
+    if (c.medicationDays != null) ...[
+      heading('Acute medication days'),
+      pw.Text(c.medicationDays!.summary, style: const pw.TextStyle(fontSize: 8.5)),
+      if (c.medicationDays!.notice.isNotEmpty) ...[
+        pw.SizedBox(height: 4),
+        pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.all(6),
+          color: _panel,
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(c.medicationDays!.notice.first,
+                  style: pw.TextStyle(font: fontBold, fontSize: 9)),
+              for (final line in c.medicationDays!.notice.skip(1))
+                pw.Padding(
+                  padding: const pw.EdgeInsets.only(top: 2),
+                  child: pw.Text(line, style: const pw.TextStyle(fontSize: 8)),
+                ),
+            ],
+          ),
+        ),
+      ],
+      pw.SizedBox(height: 4),
+      table(
+        c.medicationDays!.headers,
+        c.medicationDays!.rows,
+        flex: [3, for (var i = 1; i < c.medicationDays!.headers.length; i++) 2],
+        rightAlign: [false, for (var i = 1; i < c.medicationDays!.headers.length; i++) true],
+      ),
+      note('Distinct days per month with at least one dose; a day with two classes counts once '
+          'under "Any". Reference levels (ICHD-3 8.2): 10 days a month for triptans, ergots, '
+          'opioids and combination pain relievers; 15 for simple pain relievers; 10 in total for '
+          'a mix of these. Gepants, ditans and anti-nausea medication are counted but not '
+          'checked. * month in progress.'),
+      if (c.medicationDays!.unclassified != null) note(c.medicationDays!.unclassified!),
+    ],
+
+    if (c.preventives.isNotEmpty) ...[
+      heading('Preventive medications'),
+      for (final line in c.preventives)
+        pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 2),
+          child: pw.Text(line, style: const pw.TextStyle(fontSize: 8.5)),
+        ),
+    ],
+
     if (c.medications.isNotEmpty) ...[
       heading('Medications'),
-      table(
-        const ['Medication', 'Taken', 'Helped', "Didn't", 'Unknown', 'Helped %'],
-        [
-          for (final m in c.medications)
-            [
-              m.name,
-              '${m.taken}',
-              '${m.helped}',
-              '${m.notHelped}',
-              '${m.unknown}',
-              m.helpedPct == null ? '-' : '${m.helpedPct}%',
-            ],
-        ],
-        flex: const [4, 1, 1, 1, 1, 1],
-        rightAlign: const [false, true, true, true, true, true],
-      ),
+      helpedTable('Medication', c.medications),
       note('"Helped %" excludes unknowns. Personal observation, not a clinical trial.'),
+    ],
+
+    // ── non-drug relief (backlog #19) ───────────────────────────────────────
+    if (c.relief.isNotEmpty) ...[
+      heading('Relief tried'),
+      helpedTable('Relief', c.relief),
+      note('Non-drug relief recorded on entries. "Helped %" excludes unknowns.'),
     ],
   ];
 
@@ -331,8 +388,10 @@ Future<Uint8List> renderReportPdf(
       // their columns are any narrower, which looks like a defect even though the data fits.
       // In points across the 531pt A4 text width, measured against Noto Sans at 8pt plus the 6pt
       // cell padding: "28 Sep 2026" needs ~52, the bold "Duration" header ~42, "none" (Sev for an
-      // attack without headache) ~26, the "Symptoms" header ~48. Narrower and they wrap.
-      flex: const [54, 28, 27, 43, 27, 60, 74, 72, 66, 80],
+      // attack without headache) ~26, the "Symptoms" header ~48. Narrower and they wrap. Meds
+      // needs ~80 for a long generic name ("Metoclopramide") without breaking mid-word, and holds
+      // the relief line too (backlog #19).
+      flex: const [54, 28, 27, 43, 27, 60, 74, 72, 80, 66],
       rightAlign: const [false, false, true, false, false, false, false, false, false, false],
     ),
   ];
