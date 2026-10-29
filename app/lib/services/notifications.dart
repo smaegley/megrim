@@ -149,8 +149,10 @@ class PluginNotificationBackend implements NotificationBackend {
         'daily_reminder',
         'Daily reminder',
         channelDescription: 'The once-a-day reminder to log the day',
-        // Nothing about health on a locked screen: Android shows "Contents hidden".
-        visibility: NotificationVisibility.private,
+        // Not on a secure lock screen at all: "private" would still show the text and buttons
+        // unless the user has set the phone to hide sensitive content, and the plugin can't give
+        // a separate lock-screen version.
+        visibility: NotificationVisibility.secret,
         actions: [
           AndroidNotificationAction(
             kCheckinTodayAction,
@@ -202,7 +204,8 @@ class PluginNotificationBackend implements NotificationBackend {
         usesChronometer: true,
         showWhen: true,
         when: startedAt.millisecondsSinceEpoch,
-        visibility: NotificationVisibility.private,
+        // As the reminder: hidden on a secure lock screen.
+        visibility: NotificationVisibility.secret,
         actions: const [
           AndroidNotificationAction(
             kEndMigraineAction,

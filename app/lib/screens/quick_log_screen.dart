@@ -205,8 +205,8 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
         title: const Text('Show a notification while it lasts?'),
         content: const Text(
             'A "Migraine in progress" notification with a running clock and an End button, so '
-            'you don\'t forget the timer is on. On a locked phone it shows only "Megrim". You can '
-            'change this in Settings.'),
+            'you don\'t forget the timer is on. It isn\'t shown on the lock screen. You can change '
+            'this in Settings.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Not now')),
           FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Show it')),
