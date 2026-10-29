@@ -9,8 +9,10 @@ import '../legal.dart';
 import '../repositories/megrim_repository.dart';
 import '../services/connectivity_monitor.dart';
 import '../widgets/days_since_card.dart';
+import '../widgets/medication_cards.dart';
 import '../widgets/monthly_days_card.dart';
 import '../widgets/severity_badge.dart' show onStatusColor;
+import 'medications_screen.dart';
 
 /// x-axis glyphs for the moon-phase chart — icons in place of text labels (review item #6).
 const Map<String, String> _moonGlyphs = {
@@ -237,6 +239,17 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 16),
                 // Backlog #22a.
                 _ImpactCard(dash: dash),
+                // Backlog #18, #19.
+                MedicationDaysCard(
+                  dash: dash,
+                  onSetClasses: () async {
+                    await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => MedicationsScreen(repo: widget.repo),
+                    ));
+                    _reload();
+                  },
+                ),
+                WhatHelpedCard(dash: dash),
                 _AwayFromHomeCard(dash: dash),
                 _collapsibleChart(
                   title: 'By year',
