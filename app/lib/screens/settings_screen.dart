@@ -24,6 +24,7 @@ import '../services/report_pdf.dart';
 import '../widgets/location_picker.dart';
 import '../widgets/severity_badge.dart' show StatusColors;
 import 'manage_vocab_screen.dart';
+import 'medications_screen.dart';
 
 enum _ExportAction { share, save }
 
@@ -155,7 +156,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           _vocabTile(context, 'Triggers', VocabKind.trigger),
           _vocabTile(context, 'Head locations', VocabKind.headLocation),
-          _vocabTile(context, 'Medications', VocabKind.medication),
+          ListTile(
+            leading: const Icon(Icons.medication_outlined),
+            title: const Text('Manage Medications'),
+            subtitle: const Text('Classes, and preventive medications'),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => MedicationsScreen(repo: repo),
+            )),
+          ),
           const Divider(),
           ListTile(
             leading: Icon(

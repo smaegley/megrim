@@ -59,7 +59,7 @@ void main() {
       expect(old.symptoms, isNull);
       expect(old.impact, isNull);
       expect(await upgraded.vocabValues(VocabKind.symptom), kDefaultSymptoms);
-      expect(await upgraded.getSetting('schema_version'), '4');
+      expect(await upgraded.getSetting('schema_version'), '${upgraded.schemaVersion}');
       await upgraded.close();
       dir.deleteSync(recursive: true);
     });
@@ -143,8 +143,8 @@ void main() {
       await db.into(db.migraineEvents).insert(
           ev('a', headache: false, symptoms: ['Vertigo', 'Nausea'], impact: EventImpact.unable));
       final lines = (await ExportService(db: db).toCsv()).trim().split('\n');
-      expect(lines.first, endsWith('ended_at_offset_minutes,headache_present,symptoms,impact'));
-      expect(lines[1], endsWith(',false,Vertigo;Nausea,unable'));
+      expect(lines.first, contains('ended_at_offset_minutes,headache_present,symptoms,impact,'));
+      expect(lines[1], endsWith(',false,Vertigo;Nausea,unable,'));
       await db.close();
     });
   });

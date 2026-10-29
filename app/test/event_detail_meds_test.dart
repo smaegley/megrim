@@ -51,11 +51,17 @@ void main() {
 
     await tester.tap(find.widgetWithText(FilledButton, 'Save'));
     await tester.pumpAndSettle();
+    // A new name asks for its class once (backlog #18).
+    await tester.ensureVisible(find.text('Triptan'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Triptan'));
+    await tester.pumpAndSettle();
 
-    // Tile shows name + dose; the name was learned into the medication vocab.
+    // Tile shows name, class + dose; the name was learned into the medication vocab.
     expect(find.text('Sumatriptan'), findsOneWidget);
-    expect(find.text('50 mg'), findsOneWidget);
+    expect(find.text('Triptan · 50 mg'), findsOneWidget);
     expect(await repo.vocab(VocabKind.medication), contains('Sumatriptan'));
+    expect(await repo.medicationClassOf('Sumatriptan'), MedClass.triptan);
   });
 
   testWidgets('remove a medication clears its tile', (tester) async {
@@ -66,6 +72,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.enterText(find.widgetWithText(TextField, 'Name'), 'Ibuprofen');
     await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Not set'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Not set'));
     await tester.pumpAndSettle();
     expect(find.text('Ibuprofen'), findsOneWidget);
 

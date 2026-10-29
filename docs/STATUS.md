@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-29: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19) is next._
+_Last updated: 2026-10-29: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19, schema v5) is **built on `feat/medications`**, awaiting Steve's test._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -33,12 +33,26 @@ bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
      have the same version and Android setup. Workaround and diagnosis: `flutter build apk
      --debug` then `adb install -r -t build/app/outputs/flutter-apk/app-debug.apk`, which fails
      with the real error instead of uninstalling.
-2. **Screenshots wait for the release** (Steve, 2026-10-28). After all 1.0.8 branches are
+2. **`feat/medications` (group B: backlog #18 + #19, schema v5): built 2026-10-29, awaiting
+   Steve's test** (`.claude/test-medications.md`; made-up import data in
+   `app/test/fixtures/sample-data.medications.json`). Acute medications get a class (asked once when a new
+   name is entered, skippable; Settings › Medications); Analytics counts medication days per class
+   and shows a calm notice when each of the last 3 complete months reached an ICHD-3 8.2 level;
+   preventive medications with start/stop dates, marked on the monthly chart; "Relief tried" on
+   entries; a "What helped" card; all of it in export/import and the PDF. ICHD-3 checked
+   2026-10-29, which corrected three details of the backlog plan (see BACKLOG #18 "As built").
+   **Notice wording approved by Steve 2026-10-29.** 386 tests pass (UTC and Denver).
+   Also on the branch: a dose on a multi-day entry now records its day (before, the dialog could
+   only place it on the start day).
+3. **Screenshots wait for the release** (Steve, 2026-10-28). After all 1.0.8 branches are
    tested, retake the store screenshots on both platforms
    (`tools/screenshots.sh all-android` and `all-ios`) before the 1.0.8 tag; attack-details changes
    shot 07 at least. Open question: extend the made-up demo data with symptoms, impact and a
    headache-free attack so the shots show the feature (recommended; ask before doing it).
-3. **Upload the iOS screenshots with 1.0.8** in App Store Connect: the fresh set from step 2
+4. **Release text for 1.0.8:** README's feature list and the F-Droid / App Store descriptions
+   don't mention symptoms, impact, attacks without headache (group A) or the medication features
+   (group B) yet; update them, and the release notes, when 1.0.8 is cut.
+5. **Upload the iOS screenshots with 1.0.8** in App Store Connect: the fresh set from step 2
    replaces the 2026-10-09 set that couldn't be attached to the already-released 1.0.7. (Also
    raised automatically at release prep from `.claude/reminders/release.md`.)
 
@@ -52,8 +66,8 @@ changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DU
 
 **Backlog still open** (details in `docs/BACKLOG.md`). Agreed order, 2026-10-27:
 - ~~**A: #26 + #20 + #22(a)**~~: merged to `main` 2026-10-29 (above).
-- **B: #18 + #19 is next** (Steve, 2026-10-29: taken ahead of #25 and C). Its database changes
-  are a **v5** upgrade step on top of v4.
+- **B: #18 + #19**: built on `feat/medications` (2026-10-29), schema **v5** on top of v4;
+  awaiting Steve's test (above).
 - **#25** move UI text into a message file (ARB): groundwork for translations. GitHub **issue #19**
   (a Simplified Chinese request) depends on it; no reply posted on the issue yet. Note that issue
   #19 and backlog #19 are different things.
@@ -62,8 +76,6 @@ changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DU
   "migraine in progress" ongoing notification on Android (Live Activity on iOS); and an opt-in
   daily reminder to log. The last three were asked for in GitHub discussion #21 (Krackmou,
   2026-10-28). Both notifications need `POST_NOTIFICATIONS`, so add the permission once.
-- (B, #18 + #19: acute-medication days with a medication-overuse notice; preventive
-  medications and non-drug relief. Now next, above.)
 - **D: #21** opt-in menstrual cycle log.
 - **E: #23 step 3** (iOS Live Activity) and **#15** (remember export location / automatic backups).
 - **#22(b)** validated impact questionnaire: blocked on licensing.

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../analytics/dashboard.dart';
+import '../models/medications.dart' show parseIsoDay;
 
 /// "Migraine days per month" (backlog #17): the number neurologists track. Two figures — the
 /// rolling last 30 days and the average over the last 3 complete months — over a bar per calendar
@@ -11,6 +12,9 @@ import '../analytics/dashboard.dart';
 ///
 /// Attacks without headache (backlog #26) are migraine days too: they are counted, said so under
 /// the last-30-days figure, and drawn as the lighter lower part of each month's bar.
+///
+/// Preventive medications (backlog #19) are marked above the month they started (▲) and stopped
+/// (▼), so a change in the bars can be read against a change in treatment.
 class MonthlyDaysCard extends StatelessWidget {
   final DashboardResult dash;
 
@@ -29,6 +33,30 @@ class MonthlyDaysCard extends StatelessWidget {
     final avg = dash.avgMigraineDaysLast3Months;
     final without = dash.migraineDaysWithoutHeadacheLast30;
     final anyWithout = months.any((m) => m.daysWithoutHeadache > 0);
+    final f = DateFormat('MMM yyyy');
+    final starts = <int>{}, stops = <int>{};
+    final notes = <String>[];
+    int? indexOf(DateTime? d) {
+      if (d == null) return null;
+      final i = months.indexWhere((m) => m.year == d.year && m.month == d.month);
+      return i < 0 ? null : i;
+    }
+
+    for (final p in dash.preventives) {
+      final start = parseIsoDay(p.startedOn);
+      final stop = parseIsoDay(p.stoppedOn);
+      final si = indexOf(start), ei = indexOf(stop);
+      if (si != null) starts.add(si);
+      if (ei != null) stops.add(ei);
+      if (start == null) continue;
+      notes.add(stop == null
+          ? '${p.name} from ${f.format(start)}'
+          : '${p.name} ${f.format(start)} – ${f.format(stop)}');
+    }
+    final markers = {
+      for (final i in {...starts, ...stops})
+        i: '${starts.contains(i) ? '▲' : ''}${stops.contains(i) ? '▼' : ''}',
+    };
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -57,13 +85,30 @@ class MonthlyDaysCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            _MonthChart(months: months, now: now ?? DateTime.now()),
+            MonthBarChart(
+              months: [
+                for (final m in months)
+                  MonthBar(m.year, m.month, m.days, lower: m.daysWithoutHeadache),
+              ],
+              now: now ?? DateTime.now(),
+              title: 'Migraine days per month',
+              describeLower: (n) => '$n without headache',
+              markers: markers,
+            ),
             const SizedBox(height: 4),
             Text(
               'Days with a migraine, not entries. * month in progress.'
               '${anyWithout ? ' Lower part of a bar: days with only attacks without headache.' : ''}',
               style: theme.textTheme.bodySmall,
             ),
+            if (notes.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'Preventives (▲ started, ▼ stopped): ${notes.join('; ')}.',
+                  style: theme.textTheme.bodySmall,
+                ),
+              ),
           ],
         ),
       ),
@@ -95,14 +140,41 @@ class MonthlyDaysCard extends StatelessWidget {
   }
 }
 
-class _MonthChart extends StatelessWidget {
-  final List<MonthDays> months;
+/// One month's bar: [value] in all, of which [lower] is drawn as a lighter base.
+class MonthBar {
+  final int year;
+  final int month;
+  final int value;
+  final int lower;
+  const MonthBar(this.year, this.month, this.value, {this.lower = 0});
+}
+
+/// A bar per calendar month, every bar labelled, scrolling sideways and opening on the latest
+/// [MonthlyDaysCard.visibleMonths]. Shared by migraine days (backlog #17) and medication days
+/// (#18). [markers] puts a short glyph above a month's bar, by index into [months].
+class MonthBarChart extends StatelessWidget {
+  final List<MonthBar> months;
   final DateTime now;
-  const _MonthChart({required this.months, required this.now});
 
-  bool _inProgress(MonthDays m) => m.year == now.year && m.month == now.month;
+  /// Read first by screen readers, before the months.
+  final String title;
 
-  Color _shade(Color c, MonthDays m) => _inProgress(m) ? c.withValues(alpha: 0.45) : c;
+  /// How a bar's [MonthBar.lower] part is spoken, e.g. "2 without headache".
+  final String Function(int)? describeLower;
+  final Map<int, String> markers;
+
+  const MonthBarChart({
+    super.key,
+    required this.months,
+    required this.now,
+    required this.title,
+    this.describeLower,
+    this.markers = const {},
+  });
+
+  bool _inProgress(MonthBar m) => m.year == now.year && m.month == now.month;
+
+  Color _shade(Color c, MonthBar m) => _inProgress(m) ? c.withValues(alpha: 0.45) : c;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +182,7 @@ class _MonthChart extends StatelessWidget {
     final labelColor = theme.textTheme.bodySmall?.color ?? theme.colorScheme.onSurface;
     final barColor = theme.colorScheme.primary;
     final withoutColor = theme.colorScheme.tertiary;
-    final maxDays = months.fold<int>(0, (m, e) => e.days > m ? e.days : m);
+    final maxDays = months.fold<int>(0, (m, e) => e.value > m ? e.value : m);
     final abbrev = DateFormat('MMM');
     final full = DateFormat('MMM yyyy');
 
@@ -118,9 +190,10 @@ class _MonthChart extends StatelessWidget {
     final spoken = [
       for (final m in months.reversed.take(MonthlyDaysCard.visibleMonths))
         '${full.format(DateTime(m.year, m.month))}${_inProgress(m) ? ' so far' : ''}: '
-            '${m.days} ${m.days == 1 ? 'day' : 'days'}'
-            '${m.daysWithoutHeadache == 0 ? '' : ', ${m.daysWithoutHeadache} without headache'}',
+            '${m.value} ${m.value == 1 ? 'day' : 'days'}'
+            '${m.lower == 0 || describeLower == null ? '' : ', ${describeLower!(m.lower)}'}',
     ].join('; ');
+    final markerColor = theme.colorScheme.secondary;
 
     return LayoutBuilder(
       builder: (context, box) {
@@ -151,7 +224,18 @@ class _MonthChart extends StatelessWidget {
               ),
               titlesData: FlTitlesData(
                 leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: markers.isEmpty
+                    ? const AxisTitles(sideTitles: SideTitles(showTitles: false))
+                    : AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 14,
+                          getTitlesWidget: (v, meta) => Text(
+                            markers[v.toInt()] ?? '',
+                            style: TextStyle(fontSize: 10, color: markerColor, height: 1),
+                          ),
+                        ),
+                      ),
                 rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
@@ -187,19 +271,19 @@ class _MonthChart extends StatelessWidget {
                     showingTooltipIndicators: const [0],
                     barRods: [
                       BarChartRodData(
-                        toY: months[i].days.toDouble(),
+                        toY: months[i].value.toDouble(),
                         width: (slot * 0.55).clamp(6, 18),
                         // The unfinished month is drawn lighter so it doesn't read as a low month.
                         color: _shade(barColor, months[i]),
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
-                        // Headache-free days at the bottom, headache days stacked on top (#26).
-                        rodStackItems: months[i].daysWithoutHeadache == 0
+                        // The lower part at the bottom (headache-free days, #26), the rest on top.
+                        rodStackItems: months[i].lower == 0
                             ? const []
                             : [
-                                BarChartRodStackItem(0, months[i].daysWithoutHeadache.toDouble(),
+                                BarChartRodStackItem(0, months[i].lower.toDouble(),
                                     _shade(withoutColor, months[i])),
-                                BarChartRodStackItem(months[i].daysWithoutHeadache.toDouble(),
-                                    months[i].days.toDouble(), _shade(barColor, months[i])),
+                                BarChartRodStackItem(months[i].lower.toDouble(),
+                                    months[i].value.toDouble(), _shade(barColor, months[i])),
                               ],
                       ),
                     ],
@@ -209,7 +293,8 @@ class _MonthChart extends StatelessWidget {
           ),
         );
         return Semantics(
-          label: 'Migraine days per month, newest first. $spoken',
+          label: '$title, newest first. $spoken'
+              '${markers.isEmpty ? '' : '. Treatment changes are marked.'}',
           // Its own node, so TalkBack reads the chart as one stop instead of merging it into the card.
           container: true,
           excludeSemantics: true,

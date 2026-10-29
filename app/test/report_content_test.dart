@@ -2,6 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:megrim/analytics/correlations.dart';
 import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
+import 'package:megrim/models/json_fields.dart';
+import 'package:megrim/models/med_entry.dart';
+import 'package:megrim/models/medications.dart';
+import 'package:megrim/models/relief_entry.dart';
 import 'package:megrim/services/report_content.dart';
 
 /// Backlog #12: everything the printable report says is decided here, where it can be asserted
@@ -37,7 +41,12 @@ ReportContent build({
   bool Function(int)? canRender,
 }) =>
     buildReportContent(
-      dash: dash ?? const DashboardResult(summary: Summary(totalEvents: 0)),
+      // By default the dashboard of the same events, as the repository builds it.
+      dash: dash ??
+          computeDashboard([
+            for (final e in events)
+              EventStat(startedAt: e.startedAt, endedAt: e.endedAt, meds: decodeMeds(e.medsTaken)),
+          ], now: DateTime(2026, 10, 5)),
       corr: corr ?? const CorrelationResult(available: true),
       events: events,
       appVersion: '1.0.6',
@@ -249,4 +258,79 @@ void main() {
       expect(build().awayFromHome, isNull, reason: 'no home location, no line');
     });
   });
+
+  group('medications (backlog #18, #19)', () {
+    final now = DateTime(2026, 10, 15, 12);
+    EventStat triptanDay(int month, int day) => EventStat(
+          startedAt: DateTime(2026, month, day, 12).toUtc(),
+          meds: const [MedEntry(name: 'Suma', helped: true)],
+          relief: day.isEven ? const [ReliefEntry(name: 'Dark room', helped: false)] : const [],
+        );
+    ReportContent withMeds({int perMonth = 10}) => buildReportContent(
+          dash: computeDashboard([
+            for (final m in [7, 8, 9])
+              for (var d = 1; d <= perMonth; d++) triptanDay(m, d),
+            EventStat(
+                startedAt: DateTime(2026, 10, 3, 12).toUtc(),
+                meds: const [MedEntry(name: 'Mystery pill')]),
+          ], now: now, medClasses: const {'Suma': MedClass.triptan}, preventives: [
+            PreventiveRegimen(
+                id: 'p',
+                name: 'Propranolol',
+                dose: '40 mg',
+                startedOn: '2026-08-04',
+                notes: 'for prevention',
+                createdAt: now,
+                updatedAt: now),
+          ]),
+          corr: const CorrelationResult(available: true),
+          events: const [],
+          appVersion: '1.0.8',
+          now: now,
+        );
+
+    test('medication days: a month table with a column per class seen', () {
+      final m = withMeds().medicationDays!;
+      expect(m.summary, 'Days with acute medication, last 30 days: 1 day (No class set 1).');
+      expect(m.headers, ['Month', 'Any', 'Triptan', 'No class set']);
+      expect(m.rows.first, ['Jul 2026', '10', '10', '0']);
+      expect(m.rows.last, ['Oct 2026 *', '1', '0', '1']);
+      expect(m.unclassified, contains('Mystery pill'));
+    });
+
+    test('the notice lists each qualifying month, and only when all three qualify', () {
+      expect(withMeds().medicationDays!.notice, [
+        kOveruseNoticeTitle,
+        'Jul 2026: Triptan on 10 days (level 10)',
+        'Aug 2026: Triptan on 10 days (level 10)',
+        'Sep 2026: Triptan on 10 days (level 10)',
+        kOveruseNoticeBody,
+      ]);
+      expect(withMeds(perMonth: 9).medicationDays!.notice, isEmpty);
+    });
+
+    test('preventives and relief are listed', () {
+      final c = withMeds();
+      expect(c.preventives, ['Propranolol 40 mg: since 4 Aug 2026. for prevention']);
+      expect(c.relief.single.name, 'Dark room');
+      expect(c.relief.single.helpedPct, 0);
+      expect(c.medications.first.name, 'Suma');
+    });
+
+    test('the entry log puts relief under the medications', () {
+      final c = build(events: [
+        MigraineEvent(
+          id: 'a',
+          startedAt: DateTime.utc(2026, 1, 1),
+          medsTaken: '[{"name":"Ibuprofen","dose":"400 mg"}]',
+          reliefTried: '[{"name":"Dark room"},{"name":"Cold pack"}]',
+          createdAt: DateTime.utc(2026, 1, 1),
+          updatedAt: DateTime.utc(2026, 1, 1),
+        ),
+      ]);
+      expect(c.events.single.meds, 'Ibuprofen 400 mg\nRelief: Dark room, Cold pack');
+      expect(c.medicationDays, isNotNull);
+    });
+  });
 }
+

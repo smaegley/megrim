@@ -73,6 +73,7 @@ class ImportService {
       if (replace) {
         await db.delete(db.derivedFactors).go();
         await db.delete(db.migraineEvents).go();
+        await db.delete(db.preventiveRegimens).go();
       }
 
       final existing = replace
@@ -105,6 +106,7 @@ class ImportService {
 
       // Settings + vocab are applied on replace, or filled in if missing on merge.
       await _applySettingsAndVocab(doc, replace: replace);
+      await _applyMedications(doc, replace: replace);
     });
 
     return ImportResult(imported: imported, skipped: skipped, replaced: replace);
@@ -128,6 +130,7 @@ class ImportService {
         'head_location': VocabKind.headLocation,
         'medication': VocabKind.medication,
         'symptom': VocabKind.symptom,
+        'relief': VocabKind.relief,
       }.entries) {
         final values = vocab[entry.key];
         if (values is List) {
@@ -143,6 +146,27 @@ class ImportService {
           }
         }
       }
+    }
+  }
+
+  /// Medication classes and preventives (schema v5). A class from the file overwrites the same
+  /// name's on replace and fills in a missing one on merge; preventives are user data like events,
+  /// so replace swaps the whole list (cleared above) and merge adds the ids not already present.
+  Future<void> _applyMedications(Map<String, dynamic> doc, {required bool replace}) async {
+    final classes = medicationClassesFromJson(doc['medication_classes']);
+    final have = await db.medicationClassMap();
+    for (final MapEntry(key: name, value: cls) in classes.entries) {
+      if (replace || !have.containsKey(name)) await db.setMedicationClass(name, cls);
+    }
+
+    final preventives = doc['preventives'];
+    if (preventives is! List) return;
+    final ids = (await db.select(db.preventiveRegimens).map((p) => p.id).get()).toSet();
+    for (final raw in preventives) {
+      if (raw is! Map) continue;
+      final p = preventiveFromJson(Map<String, dynamic>.from(raw));
+      if (p == null || !ids.add(p.id.value)) continue;
+      await db.into(db.preventiveRegimens).insert(p);
     }
   }
 }

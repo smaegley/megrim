@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 
 import '../database/database.dart';
 import '../models/json_fields.dart';
+import '../models/medications.dart' show isoDay, parseIsoDay;
 
 /// Pure (de)serialization for the Megrim export format (SPEC §7.1). Kept separate from file/IO so
 /// the DB → JSON → DB round-trip can be property-tested with no filesystem or network.
@@ -48,6 +49,7 @@ Map<String, dynamic> eventToJson(MigraineEvent e, DerivedFactor? d) {
     'symptoms': decodeStringList(e.symptoms),
     'impact': e.impact,
     'meds_taken': decodeMeds(e.medsTaken).map((m) => m.toJson()).toList(),
+    'relief_tried': decodeRelief(e.reliefTried).map((r) => r.toJson()).toList(),
     'triggers_suspected': decodeStringList(e.triggersSuspected),
     'sleep_hours_prior': e.sleepHoursPrior,
     'stress_level': e.stressLevel,
@@ -101,6 +103,7 @@ Map<String, dynamic> _derivedToJson(DerivedFactor d) => {
     symptoms: Value(encodeStringList(_strList(j['symptoms']))),
     impact: Value(_impact(j['impact'])),
     medsTaken: Value(_encodeMedsRaw(j['meds_taken'])),
+    reliefTried: Value(_encodeMedsRaw(j['relief_tried'])),
     triggersSuspected: Value(encodeStringList(_strList(j['triggers_suspected']))),
     sleepHoursPrior: Value((j['sleep_hours_prior'] as num?)?.toDouble()),
     stressLevel: Value(j['stress_level'] as int?),
@@ -147,6 +150,51 @@ String? _impact(dynamic v) => EventImpact.all.contains(v) ? v as String : null;
 
 List<String> _strList(dynamic v) =>
     v is List ? v.map((e) => e.toString()).toList() : const [];
+
+/// Medication classes (schema v5, backlog #18) as exported: name → class. Unknown classes are
+/// dropped, like an unknown impact.
+Map<String, dynamic> medicationClassesToJson(Map<String, String> classes) =>
+    {for (final name in classes.keys.toList()..sort()) name: classes[name]};
+
+Map<String, String> medicationClassesFromJson(dynamic v) => {
+      if (v is Map)
+        for (final MapEntry(:key, :value) in v.entries)
+          if (MedClass.all.contains(value)) key.toString(): value as String,
+    };
+
+/// A preventive regimen (schema v5, backlog #19). Dates stay `yyyy-MM-dd`.
+Map<String, dynamic> preventiveToJson(PreventiveRegimen p) => {
+      'id': p.id,
+      'name': p.name,
+      'dose': p.dose,
+      'started_on': p.startedOn,
+      'stopped_on': p.stoppedOn,
+      'notes': p.notes,
+      'created_at': _iso(p.createdAt),
+      'updated_at': _iso(p.updatedAt),
+    };
+
+/// Null when the entry lacks an id, a name or a valid start date.
+PreventiveRegimensCompanion? preventiveFromJson(Map<String, dynamic> j) {
+  final id = j['id'], name = j['name'];
+  final started = _isoDayOrNull(j['started_on']);
+  if (id is! String || name is! String || name.trim().isEmpty || started == null) return null;
+  return PreventiveRegimensCompanion.insert(
+    id: id,
+    name: name.trim(),
+    dose: Value(j['dose'] as String?),
+    startedOn: started,
+    stoppedOn: Value(_isoDayOrNull(j['stopped_on'])),
+    notes: Value(j['notes'] as String?),
+    createdAt: _parseIso(j['created_at']) ?? DateTime.now().toUtc(),
+    updatedAt: _parseIso(j['updated_at']) ?? DateTime.now().toUtc(),
+  );
+}
+
+String? _isoDayOrNull(dynamic v) {
+  final d = v is String ? parseIsoDay(v) : null;
+  return d == null ? null : isoDay(d);
+}
 
 String? _encodeMedsRaw(dynamic v) {
   if (v is! List || v.isEmpty) return null;

@@ -32,7 +32,9 @@ automatically after import. A converter only has to carry over what a human actu
 | `format_version` | yes | Must be the integer `1`. |
 | `events` | yes | Array of event objects (below). May be empty. |
 | `settings` | no | `{"home_location": {"lat": …, "lon": …, "label": "…"}}`. Applied only on a **Replace** import, or when the app has no home location yet. |
-| `vocabularies` | no | `{"trigger": [...], "head_location": [...], "medication": [...], "symptom": [...]}` — string arrays that seed the autocomplete suggestion lists. Merged; duplicates ignored. |
+| `vocabularies` | no | `{"trigger": [...], "head_location": [...], "medication": [...], "symptom": [...], "relief": [...]}` — string arrays that seed the autocomplete suggestion lists. Merged; duplicates ignored. |
+| `medication_classes` | no | App v1.0.8+. `{"Sumatriptan": "triptan", "Ibuprofen": "simple_analgesic"}`: the class of each acute medication, by the name used in `meds_taken`. Classes: `triptan`, `ergot`, `opioid`, `combination_analgesic`, `simple_analgesic`, `gepant`, `ditan`, `antiemetic`, `other`; any other value is dropped. On **Replace** a class from the file overwrites the app's for that name; on **Merge** it only fills in names the app hasn't classified. See [Preventives and medication classes](#preventives-and-medication-classes). |
+| `preventives` | no | App v1.0.8+. Array of preventive-medication objects (below). On **Replace** the file's list replaces the app's; on **Merge**, ids not already present are added. |
 | `exported_at`, `app_version` | no | Written by Megrim's own exports; ignored on import. |
 | `analytics` | no | Written by Megrim's own exports: the app's **computed** dashboard and odds-ratio results, for renderers. Ignored on import. See [The `analytics` block](#the-analytics-block-megrim-computed--ignored-on-import). |
 
@@ -71,6 +73,7 @@ the app.
 | `symptoms` | array of strings | App v1.0.8+. E.g. `["Nausea", "Vertigo"]`. Free text. |
 | `impact` | `"normal"`, `"reduced"`, `"unable"` or null | App v1.0.8+. How far the attack stopped the user that day. Any other value is dropped on import. |
 | `meds_taken` | array of med objects | See below. |
+| `relief_tried` | array of relief objects | App v1.0.8+. Non-drug relief: `[{"name": "Dark room", "helped": true}]`. `name` is required; `helped` as for meds (true / false / null or omitted = unknown). |
 | `triggers_suspected` | array of strings | Self-reported, e.g. `["Stress", "Red wine"]`. Free text. |
 | `sleep_hours_prior` | number or null | Hours slept the night before, e.g. `5.5`. |
 | `stress_level` | integer 1–10 or null | |
@@ -91,6 +94,28 @@ the app.
 (true = helped / false = didn't / null or omitted = unknown) are optional and nullable.
 Use ISO-8601 UTC for `time` where you have it — that lets the app's edit dialog prefill its
 time picker — but any string (e.g. `"within 5 min"`) is tolerated and displayed as-is.
+
+### Preventives and medication classes
+
+Acute medications (taken for an attack) stay on each event in `meds_taken`. Two things live at
+the top level instead, because they belong to a medication rather than to an attack:
+
+- **`medication_classes`** gives a med name its class. The app counts acute-medication days per
+  class and checks them against the medication-overuse reference levels in
+  [`METHODS.md`](METHODS.md); a name with no class is still counted, but never checked. A
+  converter that knows its drugs' classes should fill this in; one that doesn't can leave it out
+  and the user classifies them in Settings › Medications.
+- **`preventives`** are medications taken daily to prevent attacks, judged over months:
+
+```json
+{"id": "6f1c…", "name": "Propranolol", "dose": "40 mg", "started_on": "2026-03-01",
+ "stopped_on": null, "notes": "Stopped: tiredness"}
+```
+
+`id` (any unique string; a UUID is best), `name` and `started_on` are required; an entry missing
+one, or with a `started_on` that isn't a `yyyy-MM-dd` date, is skipped. `stopped_on` null (or
+not a date) = still taking it. `dose` and `notes` are optional free text. Dates are calendar
+dates with no time zone.
 
 ### The `derived` block (Megrim-computed — omit it)
 
@@ -141,6 +166,15 @@ reference produced from the sample data lives at
     "by_daylight":     [ … ], "pressure_delta": [ … ],
     "trigger_frequency": [ { "label": "Food", "count": 14 }, … ],
     "symptom_frequency": [ { "label": "Nausea", "count": 9 }, … ],
+    "medication_days": { "days_last_30": 7, "by_class_last_30": { "triptan": 7, "unclassified": 2 },
+                         "by_month": [ { "month": "2026-07", "days": 11,
+                                         "by_class": { "triptan": 11, "unclassified": 3 },
+                                         "overuse_class_days": 11,
+                                         "levels_reached": [ "triptan" ] }, … ],
+                         "overuse_notice_months": [ "2026-07", "2026-08", "2026-09" ],
+                         "unclassified_names": [ "Ibuprofen" ] },
+    "what_helped": [ { "name": "Rizatriptan", "kind": "medication", "tried": 48, "helped": 23,
+                       "not_helped": 23, "unknown": 2, "helped_pct": 50 }, … ],
     "away_from_home": { "located_events": 55, "away_events": 3, "away_pct": 5.5,
                         "threshold_km": 100.0, "farthest_km": 7853.8,
                         "away_places": [ { "label": "Paris", "count": 2 }, … ] }
@@ -202,6 +236,16 @@ Notes for renderers:
   some entry has one.
 - `symptom_frequency` is descriptive, like `trigger_frequency`: each symptom counted once per
   entry.
+- **`medication_days`** (app v1.0.8+) counts distinct local days with at least one dose, per
+  class (`unclassified` for names without one), from each dose's own `time` when it has one.
+  `by_month` runs from the first medication through the export month. `overuse_class_days` is
+  the days with any of the five overuse classes, and `levels_reached` says why a month reached a
+  reference level: a class name, or `"mixed"`. `overuse_notice_months` lists the last 3 complete
+  months when each reached a level (the app then shows its notice), and is null otherwise. The
+  whole block is null until an entry has a medication. Rules in [`METHODS.md`](METHODS.md).
+- **`what_helped`** (app v1.0.8+) has a row per medication and per relief method (`kind`), names
+  grouped ignoring case. `helped_pct` is over the tries with an answer, so unknowns are left out;
+  null when none has one. Descriptive only.
 - In `correlations`, `total_migraine_days` counts **onset** days (the day each migraine
   started), and `total_days_in_range` is the number of days compared: the study window minus
   `excluded_mid_attack_days`, the days in the middle of a multi-day migraine, which are left out
