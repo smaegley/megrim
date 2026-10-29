@@ -30,8 +30,19 @@
         "trigger": { "$ref": "#/$defs/stringArray" },
         "head_location": { "$ref": "#/$defs/stringArray" },
         "medication": { "$ref": "#/$defs/stringArray" },
-        "symptom": { "$ref": "#/$defs/stringArray" }
+        "symptom": { "$ref": "#/$defs/stringArray" },
+        "relief": { "$ref": "#/$defs/stringArray" }
       }
+    },
+    "medication_classes": {
+      "type": "object",
+      "description": "The class of each acute medication, keyed by the name used in meds_taken (app v1.0.8+, schema v5). Unknown classes are dropped on import.",
+      "additionalProperties": { "$ref": "#/$defs/medClass" }
+    },
+    "preventives": {
+      "type": "array",
+      "description": "Preventive medications, taken daily and judged over months (app v1.0.8+, schema v5).",
+      "items": { "$ref": "#/$defs/preventive" }
     },
     "events": {
       "type": "array",
@@ -104,6 +115,52 @@
               }
             },
             "symptom_frequency": { "$ref": "#/$defs/labeledCounts" },
+            "medication_days": {
+              "type": ["object", "null"],
+              "description": "Distinct days with acute medication, per class (app v1.0.8+). Null until an entry has a medication. See docs/METHODS.md.",
+              "properties": {
+                "days_last_30": { "type": "integer" },
+                "by_class_last_30": { "$ref": "#/$defs/classDays" },
+                "by_month": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "month": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
+                      "days": { "type": "integer" },
+                      "by_class": { "$ref": "#/$defs/classDays" },
+                      "overuse_class_days": { "type": "integer", "description": "Days with any of triptan, ergot, opioid, combination_analgesic, simple_analgesic." },
+                      "levels_reached": {
+                        "type": "array",
+                        "items": { "enum": ["triptan", "ergot", "opioid", "combination_analgesic", "simple_analgesic", "mixed"] }
+                      }
+                    }
+                  }
+                },
+                "overuse_notice_months": {
+                  "type": ["array", "null"],
+                  "items": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
+                  "description": "The last 3 complete months, when each reached a reference level; null otherwise."
+                },
+                "unclassified_names": { "$ref": "#/$defs/stringArray" }
+              }
+            },
+            "what_helped": {
+              "type": "array",
+              "description": "Per medication and relief method: helped / not helped / unknown (app v1.0.8+). helped_pct leaves unknowns out.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "kind": { "enum": ["medication", "relief"] },
+                  "tried": { "type": "integer" },
+                  "helped": { "type": "integer" },
+                  "not_helped": { "type": "integer" },
+                  "unknown": { "type": "integer" },
+                  "helped_pct": { "type": ["integer", "null"] }
+                }
+              }
+            },
             "by_day_of_week": { "$ref": "#/$defs/labeledCounts" },
             "by_time_of_day": { "$ref": "#/$defs/labeledCounts" },
             "by_season": { "$ref": "#/$defs/labeledCounts" },
@@ -247,6 +304,11 @@
           "type": "array",
           "items": { "$ref": "#/$defs/med" }
         },
+        "relief_tried": {
+          "type": "array",
+          "description": "Non-drug relief tried for this attack. App v1.0.8+ (schema v5).",
+          "items": { "$ref": "#/$defs/relief" }
+        },
         "triggers_suspected": { "$ref": "#/$defs/stringArray" },
         "sleep_hours_prior": {
           "anyOf": [
@@ -297,6 +359,45 @@
           "type": ["boolean", "null"],
           "description": "true = helped, false = didn't; null or omitted = unknown."
         }
+      }
+    },
+    "relief": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "helped": {
+          "type": ["boolean", "null"],
+          "description": "true = helped, false = didn't; null or omitted = unknown."
+        }
+      }
+    },
+    "medClass": {
+      "enum": ["triptan", "ergot", "opioid", "combination_analgesic", "simple_analgesic", "gepant", "ditan", "antiemetic", "other"]
+    },
+    "classDays": {
+      "type": "object",
+      "description": "Days per class; the key unclassified counts medications with no class.",
+      "additionalProperties": { "type": "integer" }
+    },
+    "preventive": {
+      "type": "object",
+      "required": ["id", "name", "started_on"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "dose": { "type": ["string", "null"] },
+        "started_on": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "stopped_on": {
+          "anyOf": [
+            { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+            { "type": "null" }
+          ],
+          "description": "Null = still taking it."
+        },
+        "notes": { "type": ["string", "null"] },
+        "created_at": { "$ref": "#/$defs/isoTimestamp" },
+        "updated_at": { "$ref": "#/$defs/isoTimestamp" }
       }
     },
     "derived": {

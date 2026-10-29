@@ -150,6 +150,7 @@ All timestamps stored UTC (ISO-8601 in exports); all display in local time.
 | symptoms | TEXT nullable | schema v4 (backlog #20): JSON array of strings (vocab §3.4) |
 | impact | TEXT nullable | schema v4 (backlog #22a): `normal` / `reduced` / `unable` |
 | meds_taken | TEXT nullable | JSON `[{name, dose, time, helped}]` |
+| relief_tried | TEXT nullable | schema v5 (backlog #19): JSON `[{name, helped}]`, non-drug relief (vocab §3.4) |
 | triggers_suspected | TEXT nullable | JSON array of strings (vocab §3.4) |
 | sleep_hours_prior | REAL nullable | |
 | stress_level | INTEGER 1–5 nullable | |
@@ -191,9 +192,23 @@ a Snackbar-undo grace instead of tombstones), `needs_review`, `synced_to_server`
 One table `vocab(kind TEXT, value TEXT, sort INTEGER, PRIMARY KEY(kind, value))`, seeded on
 first run. Kinds: `trigger` (the 11 defaults from the private app), `head_location` (the 9
 defaults), `medication` (empty; learned from entries as suggestions), `symptom` (12 defaults, schema v4 —
-seeded on create and once on upgrade, backlog #20). Manage screens = the
+seeded on create and once on upgrade, backlog #20), `relief` (7 defaults, schema v5, seeded the
+same way, backlog #19). Manage screens = the
 "Manage triggers" pattern already built in the private app (add/rename/delete; renames do **not**
-rewrite historical events; chips shown = vocab ∪ values present on the open event).
+rewrite historical events; chips shown = vocab ∪ values present on the open event). Medications
+are managed in Settings › Medications instead, which also sets their class (§3.5).
+
+### 3.5 Medication classes and preventives (schema v5, backlog #18 / #19)
+
+`medication_classes(name TEXT PRIMARY KEY, med_class TEXT)`: the class of an acute medication,
+keyed by the name used in `meds_taken` (`triptan`, `ergot`, `opioid`, `combination_analgesic`,
+`simple_analgesic`, `gepant`, `ditan`, `antiemetic`, `other`). Separate from the vocabulary so a
+rename or delete never loses the class past entries are counted by; a rename copies the class to
+the new name and the old name keeps it. No class = counted, never checked against the
+medication-overuse levels (`docs/METHODS.md`).
+
+`preventive_regimens(id TEXT PK, name, dose?, started_on TEXT yyyy-MM-dd, stopped_on?, notes?,
+created_at, updated_at)`: preventive medications with their dates. Calendar dates, no zone.
 
 ---
 
@@ -855,3 +870,13 @@ Three nullable columns and a seeded `symptom` vocabulary; Event Detail gets "Hea
 Not sure, Impact and Symptoms, and Quick Log gets "Headache?". Headache-free attacks count as
 migraine days (split out on the monthly card), stay in Suspected Factors, have no severity, and
 get their own report section. Rules in `docs/METHODS.md`; export fields in `docs/IMPORT.md`.
+
+**2026-10-29 (branch `feat/medications`, schema v5, not yet released; ships in 1.0.8):** backlog
+**#18 (acute-medication days and the medication-overuse notice)** and **#19 (preventives and
+non-drug relief)** built together, on top of v4. One nullable column (`relief_tried`), two tables
+(`medication_classes`, `preventive_regimens`, §3.5) and a seeded `relief` vocabulary. A new
+medication name asks once for its class (skippable); Settings › Medications lists classes and
+preventives; a dose on a multi-day entry records its day. Analytics gets Acute medication days
+(with the notice when each of the last 3 complete months reached an ICHD-3 8.2 level) and What
+helped; the monthly chart marks preventive start/stop months; the PDF carries all of it. ICHD-3
+checked 2026-10-29; rules and the decisions taken in `docs/METHODS.md`.

@@ -334,7 +334,8 @@ recent-locations picker). In this section a bare number never appears: it is alw
 2. Backlog #23 step (1), the app-icon shortcut — small, no schema, no new permission.
 3. Backlog #16 and #18 — make the existing analytics more correct and add the medication-overuse
    numbers.
-4. Backlog #19–#21 — data-model additions; batch into one v4 bump.
+4. Backlog #19–#21 — data-model additions; batch into one v4 bump. *(As it turned out, #20/#22a/#26
+   took v4 and #18/#19 took v5.)*
 5. Backlog #22, #24, and #23 steps (2)–(3).
 
 **Common to every item that adds data:** a schema bump with an additive, nullable `onUpgrade`
@@ -440,7 +441,7 @@ months) first under Patterns, plus a "Migraine days, last 30 d" summary tile. Th
 to `daysCovered()` in `event_time.dart`, shared with the History calendar. Export:
 `migraine_days_last_30`, `migraine_days_avg_last_3_months`, `migraine_days_by_month`.
 
-### 18. Acute-medication days and a medication-overuse notice — **PROPOSED** *(2026-10-06)*
+### 18. Acute-medication days and a medication-overuse notice — **BUILT** *(2026-10-29, branch `feat/medications` with #19, schema v5; awaiting Steve's test, ships in 1.0.8)*
 
 **Want:** count the days per month on which acute medication was taken, by medication class,
 and show a calm, informational notice when the count reaches the levels headache guidelines
@@ -496,7 +497,20 @@ threshold edge cases at 9/10 and 14/15; the 8.2.6 mixed rule (e.g. 6 triptan + 5
 days = 11, notice); the 3-month rule (3 qualifying months = notice, 2 then 1 non-qualifying = no
 notice); widget test that the notice copy renders and contains no diagnostic phrasing.
 
-### 19. Acute vs preventive medications, and non-drug relief — **PROPOSED** *(2026-10-06)*
+**As built (2026-10-29, with #19, schema v5 rather than v4):** classes live in their own
+`medication_classes` table keyed by name (not a vocab column), so a rename or delete never loses
+the class past entries are counted by. The class picker appears once when a new name is entered
+on Event Detail (dismiss or "Not set" to skip); Settings › Medications lists every name with its
+class. **ICHD-3 checked 2026-10-29; three corrections to the plan above:** simple analgesics are
+ICHD-3's single "non-opioid analgesic" class (paracetamol + ibuprofen days add up); the 8.2.6
+total counts **days with any** of the classes, so two classes on one day count once (the 6 + 5 =
+11 example holds only on different days), and it needs two or more classes in the month; 8.2.8
+("other medication") exists but "other" is deliberately not checked. A dose on a multi-day entry
+now records its day (the time picker asks for the day first), since the dialog could only place a
+dose on the start day before. The notice copy is a draft for Steve's review. All of this is in
+`docs/METHODS.md`.
+
+### 19. Acute vs preventive medications, and non-drug relief — **BUILT** *(2026-10-29, branch `feat/medications` with #18, schema v5; awaiting Steve's test, ships in 1.0.8)*
 
 **Want:** (a) a list of **preventive** medications with start and stop dates (not per-attack),
 and (b) a per-event "what else did you try" list for non-drug relief (dark room, sleep,
@@ -519,6 +533,14 @@ non-pharmacologic).
 
 **Verification:** migration test; export/import round-trip of both new structures; unit test for
 the helped-rate computation including unknowns.
+
+**As built (2026-10-29):** `preventive_regimens` with `yyyy-MM-dd` dates (no zone), edited in
+Settings › Medications; start ▲ / stop ▼ marked above the migraine-days chart and listed under
+it. `relief_tried` with 7 seeded relief methods (Dark room, Sleep, Cold pack, Heat, Caffeine,
+Hydration, Rest), a "Relief tried" section on Event Detail (not Quick Log). "What helped" covers
+medications and relief; the share leaves unknowns out. The PDF gains Acute medication days,
+Preventive medications and Relief tried, and its Medications table now comes from the same rows
+as the card.
 
 ### 20. Symptoms — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, ships in 1.0.8)*
 

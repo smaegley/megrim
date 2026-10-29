@@ -85,6 +85,77 @@ apart from a field that is rarely filled in.
 symptom was ticked on. It is not a correlation, because symptoms are only recorded on migraine
 days.
 
+## Medications
+
+### Acute medication days and the overuse notice
+
+Medications logged on entries are the ones taken **for an attack** (acute). Each can be given a
+**class** in Settings › Medications, or when its name is first entered: triptan, ergot, opioid,
+combination pain reliever, simple pain reliever, gepant, ditan, anti-nausea, or other. A name
+with no class is counted but never checked against the levels below. Classes are kept by name,
+apart from the suggestion list, so renaming a suggestion gives the new name the class and the old
+name keeps it for the entries that still carry it.
+
+A **medication day** is a local calendar day with at least one dose of that class. A dose
+counts on the day of its own recorded time, read in the zone its entry was logged in; a dose
+with no time counts on the entry's start day. Two doses on one day count once, and a day with
+two classes counts once under "Any". The card shows the last 30 days (today and the 29 before)
+and a bar per calendar month.
+
+**The reference levels are ICHD-3's criteria for medication-overuse headache (8.2),** checked
+against [ichd-3.org](https://ichd-3.org/8-headache-attributed-to-a-substance-or-its-withdrawal/8-2-medication-overuse-headache-moh/)
+on 2026-10-29:
+
+| ICHD-3 | class | days per month |
+|---|---|---|
+| 8.2.1 | ergotamine | 10 or more |
+| 8.2.2 | triptans | 10 or more |
+| 8.2.3 | non-opioid analgesics ("simple pain relievers": paracetamol, NSAIDs, aspirin) | 15 or more |
+| 8.2.4 | opioids | 10 or more |
+| 8.2.5 | combination analgesics | 10 or more |
+| 8.2.6 | two or more of the above, none at its own level | 10 or more in total |
+
+How they are applied, and where that took a decision:
+
+- **Simple pain relievers are one class.** ICHD-3 treats all non-opioid analgesics as a single
+  class whose days add up, so paracetamol on some days and ibuprofen on others count together
+  toward 15. A product combining only two of them (aspirin with paracetamol, nothing else) is a
+  simple pain reliever too, not a combination; "combination" means one with codeine, caffeine,
+  butalbital or another adjuvant.
+- **The mixed total counts days, not class-days.** 8.2.6 counts days on which any of the classes
+  was taken, so a triptan and an NSAID on the same day make one day. It needs at least two of
+  the classes in the month: one class under its own level (simple pain relievers on 12 days) is
+  not overuse. Combination pain relievers count toward the total; 8.2.6 names ergotamine,
+  triptans, non-opioid analgesics and opioids, which is what a combination product is made of.
+- **Gepants, ditans, anti-nausea and "other" never raise the notice.** Gepants and ditans postdate
+  ICHD-3 and aren't currently thought to cause medication overuse. ICHD-3 also has 8.2.8 for
+  "other medication" on 10 or more days, but the class "other" is a catch-all that may hold
+  things not taken for the headache itself, so it isn't checked. These are still counted and
+  shown.
+- **The notice needs 3 months, not a bad 30 days.** ICHD-3 requires regular use for more than 3
+  months. The notice appears only when **each of the last 3 complete calendar months** reached a
+  level (by any of the rules; a different one each month still counts). The current month never
+  counts, and the last-30-days figure is a plain count with no notice attached.
+- **It is a count, not a diagnosis.** Medication-overuse headache also requires headache on 15 or
+  more days a month and a clinician's judgement. The notice states the counts and the reference
+  level, says that it isn't a diagnosis, and suggests discussing it with a doctor. It never says
+  to stop or change a medication.
+
+### Preventive medications
+
+Preventives are taken daily and judged over months, so they are recorded once, with start and
+stop dates, rather than on each entry. Their start (▲) and stop (▼) months are marked above the
+Migraine days per month chart, so a change in the bars can be read against a change in
+treatment. The app computes nothing from them; it only shows when they started and stopped.
+
+### What helped
+
+For each medication and each non-drug relief method, the times it was recorded and how many
+times "Helped?" was answered yes or no. The share is over the answered tries only: an unknown is
+not counted as "didn't help". Names are grouped ignoring case and surrounding spaces. Like the
+trigger counts, it is descriptive: it records what you noted, and says nothing about which
+treatment works better, which depends on when and how each was taken.
+
 ## How Suspected Factors are calculated
 
 **Migraine-days are the days a migraine *started*.** The question here is "what tends to come
