@@ -405,7 +405,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     final isDraft = widget.draft != null;
     return Scaffold(
       appBar: AppBar(
-        title: Text(isDraft ? 'New past entry' : 'Event detail'),
+        title: Text(isDraft ? 'New entry' : 'Event detail'),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),

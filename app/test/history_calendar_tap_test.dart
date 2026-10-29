@@ -94,7 +94,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(EventDetailScreen), findsOneWidget);
-    expect(find.text('New past entry'), findsOneWidget);
+    expect(find.text('New entry'), findsOneWidget);
     // Issue #12: opening the editor must not create a row.
     expect(await db.select(db.migraineEvents).get(), hasLength(1));
 
