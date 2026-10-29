@@ -507,7 +507,7 @@ total counts **days with any** of the classes, so two classes on one day count o
 11 example holds only on different days), and it needs two or more classes in the month; 8.2.8
 ("other medication") exists but "other" is deliberately not checked. A dose on a multi-day entry
 now records its day (the time picker asks for the day first), since the dialog could only place a
-dose on the start day before. The notice copy is a draft for Steve's review. All of this is in
+dose on the start day before. Steve approved the notice copy 2026-10-29. All of this is in
 `docs/METHODS.md`.
 
 ### 19. Acute vs preventive medications, and non-drug relief — **BUILT** *(2026-10-29, branch `feat/medications` with #18, schema v5; awaiting Steve's test, ships in 1.0.8)*

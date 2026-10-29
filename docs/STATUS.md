@@ -41,7 +41,7 @@ bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
    preventive medications with start/stop dates, marked on the monthly chart; "Relief tried" on
    entries; a "What helped" card; all of it in export/import and the PDF. ICHD-3 checked
    2026-10-29, which corrected three details of the backlog plan (see BACKLOG #18 "As built").
-   **The notice wording is a draft for Steve's review** (test D2). 386 tests pass (UTC and Denver).
+   **Notice wording approved by Steve 2026-10-29.** 386 tests pass (UTC and Denver).
    Also on the branch: a dose on a multi-day entry now records its day (before, the dialog could
    only place it on the start day).
 3. **Screenshots wait for the release** (Steve, 2026-10-28). After all 1.0.8 branches are
