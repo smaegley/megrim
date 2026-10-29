@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:uuid/uuid.dart';
 
 import '../analytics/checkins.dart';
@@ -18,6 +19,7 @@ import '../services/analytics_export.dart';
 import '../services/report_content.dart';
 import '../services/export_service.dart';
 import '../services/import_service.dart';
+import '../services/notifications.dart' show decodeTimeOfDay, encodeTimeOfDay;
 
 /// Single entry point the UI uses to reach data + services. Keeps widgets free of Drift details.
 class MegrimRepository {
@@ -99,6 +101,26 @@ class MegrimRepository {
 
   Future<void> setHideInSwitcher(bool enabled) =>
       db.setSetting('hide_in_switcher', enabled ? '1' : '0');
+
+  // ── Notifications (backlog #27, #23 step 3) ─────────────────────────────
+  /// The daily reminder's time; null (the default) means off.
+  Future<TimeOfDay?> get dailyReminder async =>
+      decodeTimeOfDay(await db.getSetting('daily_reminder'));
+
+  Future<void> setDailyReminder(TimeOfDay? at) =>
+      db.setSetting('daily_reminder', at == null ? '' : encodeTimeOfDay(at));
+
+  /// The "Migraine in progress" notification (Android). OFF by default.
+  Future<bool> get ongoingNotification async =>
+      (await db.getSetting('ongoing_notification')) == '1';
+
+  Future<void> setOngoingNotification(bool on) =>
+      db.setSetting('ongoing_notification', on ? '1' : '0');
+
+  /// Whether the ongoing notification has been offered (once, on the first migraine started).
+  Future<bool> get ongoingOffered async => (await db.getSetting('ongoing_offered')) == '1';
+
+  Future<void> markOngoingOffered() => db.setSetting('ongoing_offered', '1');
 
   // ── Events ──────────────────────────────────────────────────────────────
   Stream<List<MigraineEvent>> watchEvents() {

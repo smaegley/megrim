@@ -6,6 +6,7 @@ import 'screens/onboarding_screen.dart';
 import 'services/app_lock.dart';
 import 'services/app_shortcuts.dart';
 import 'services/connectivity_monitor.dart';
+import 'services/notifications.dart';
 import 'services/geocoder.dart';
 import 'theme.dart';
 import 'widgets/app_lock_gate.dart';
@@ -23,8 +24,17 @@ class MegrimApp extends StatefulWidget {
 
   /// The app-icon shortcut (backlog #23). Injectable for tests; defaults to the platform channel.
   final AppShortcuts? shortcuts;
+
+  /// The daily reminder and ongoing notification (backlog #27, #23 step 3). Injectable for tests;
+  /// defaults to one using the platform's notifications.
+  final NotificationsController? notifications;
   const MegrimApp(
-      {super.key, required this.repo, this.geocoder, this.appLock, this.shortcuts});
+      {super.key,
+      required this.repo,
+      this.geocoder,
+      this.appLock,
+      this.shortcuts,
+      this.notifications});
 
   @override
   State<MegrimApp> createState() => _MegrimAppState();
@@ -43,6 +53,7 @@ class _MegrimAppState extends State<MegrimApp> {
   final ConnectivityMonitor _connectivity = ConnectivityMonitor();
   late final AppLockController _appLock;
   late final AppShortcuts _shortcuts;
+  late final NotificationsController _notifications;
 
   /// Null until the onboarding check returns. While false, a shortcut tap is dropped: there is no
   /// home location yet, and onboarding comes first (Steve, 2026-10-08).
@@ -61,6 +72,10 @@ class _MegrimAppState extends State<MegrimApp> {
     _shortcuts = widget.shortcuts ?? AppShortcuts();
     _shortcuts.addListener(_dropShortcutDuringOnboarding);
     _shortcuts.init();
+    // After the shortcut queue exists: a notification that launched the app is queued in it.
+    _notifications = widget.notifications ??
+        NotificationsController(repo: widget.repo, shortcuts: _shortcuts);
+    _notifications.init();
     // Drain the enrichment queue on cold start, and again whenever connectivity returns so events
     // logged offline get their weather as soon as the network is back (SPEC §5.1).
     _drainEnrichment();
@@ -73,6 +88,7 @@ class _MegrimAppState extends State<MegrimApp> {
     if (widget.appLock == null) _appLock.dispose();
     _shortcuts.removeListener(_dropShortcutDuringOnboarding);
     if (widget.shortcuts == null) _shortcuts.dispose();
+    if (widget.notifications == null) _notifications.dispose();
     super.dispose();
   }
 
@@ -106,9 +122,12 @@ class _MegrimAppState extends State<MegrimApp> {
       // the scope makes the controller reachable from Settings and the export/import paths.
       builder: (context, child) => AppShortcutsScope(
         shortcuts: _shortcuts,
-        child: AppLockScope(
-          controller: _appLock,
-          child: AppLockGate(controller: _appLock, child: child ?? const SizedBox.shrink()),
+        child: NotificationsScope(
+          controller: _notifications,
+          child: AppLockScope(
+            controller: _appLock,
+            child: AppLockGate(controller: _appLock, child: child ?? const SizedBox.shrink()),
+          ),
         ),
       ),
       home: _onboardedOverride == true

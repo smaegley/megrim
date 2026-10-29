@@ -20,6 +20,7 @@ import '../models/home_location.dart';
 import '../repositories/megrim_repository.dart';
 import '../services/app_lock.dart';
 import '../services/import_service.dart';
+import '../services/notifications.dart';
 import '../services/report_pdf.dart';
 import '../widgets/location_picker.dart';
 import '../widgets/severity_badge.dart' show StatusColors;
@@ -164,6 +165,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               builder: (_) => MedicationsScreen(repo: repo),
             )),
           ),
+          if (NotificationsScope.maybeOf(context) case final n?) ...[
+            const Divider(),
+            ..._notificationTiles(context, n),
+          ],
           const Divider(),
           ListTile(
             leading: Icon(
@@ -232,6 +237,84 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+
+  /// The daily reminder (backlog #27) and the ongoing notification (backlog #23 step 3, Android).
+  List<Widget> _notificationTiles(BuildContext context, NotificationsController n) => [
+        ListTile(
+          leading: const Icon(Icons.notifications_outlined),
+          title: const Text('Daily reminder'),
+          subtitle: Text(n.reminder == null
+              ? 'Off'
+              : 'Every day at ${n.reminder!.format(context)}, unless the day is already logged'),
+          trailing: const Icon(Icons.edit_outlined),
+          onTap: () => _pickReminder(context, n),
+        ),
+        if (n.supportsOngoing)
+          SwitchListTile(
+            secondary: const Icon(Icons.timer_outlined),
+            title: const Text('Notification during a migraine'),
+            subtitle: const Text('A running clock and an End button while one is in progress'),
+            value: n.ongoingEnabled,
+            onChanged: (on) async {
+              if (!await n.setOngoing(on) && context.mounted) _notificationsRefused(context);
+            },
+          ),
+      ];
+
+  Future<void> _pickReminder(BuildContext context, NotificationsController n) async {
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: const Text('Daily reminder'),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+            child: Text(
+              'One notification a day asking how the day was, with "No migraine today" and '
+              '"Log". It says nothing about your health, and nothing leaves the phone.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, 'off'),
+            child: ListTile(
+              leading: Icon(
+                  n.reminder == null ? Icons.radio_button_checked : Icons.radio_button_unchecked),
+              title: const Text('Off'),
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, 'time'),
+            child: ListTile(
+              leading: Icon(
+                  n.reminder != null ? Icons.radio_button_checked : Icons.radio_button_unchecked),
+              title: Text(n.reminder == null
+                  ? 'Choose a time…'
+                  : 'At ${n.reminder!.format(context)} (change…)'),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (choice == null || !context.mounted) return;
+    if (choice == 'off') {
+      await n.setReminder(null);
+      return;
+    }
+    final t = await showTimePicker(
+      context: context,
+      initialTime: n.reminder ?? const TimeOfDay(hour: 20, minute: 0),
+      helpText: 'Remind me at',
+    );
+    if (t == null || !context.mounted) return;
+    if (!await n.setReminder(t) && context.mounted) _notificationsRefused(context);
+  }
+
+  void _notificationsRefused(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Notifications are off for Megrim in the phone\'s settings, so this '
+            'stays off. Allow them there, then try again.')));
   }
 
   /// Privacy (backlog #24): app lock with the phone's own unlock, and hide from recent apps.

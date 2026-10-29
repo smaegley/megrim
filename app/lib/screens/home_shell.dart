@@ -22,6 +22,10 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   int _index = 0;
   // Bumped when an app-icon shortcut tap is acted on (backlog #23): Quick Log starts a migraine.
   int _shortcutToken = 0;
+  // Bumped for the notification buttons (backlog #27, #23 step 3): Quick Log checks today in, or
+  // ends the migraine in progress.
+  int _checkinToken = 0;
+  int _endToken = 0;
   AppShortcuts? _shortcuts;
   AppLockController? _lock;
   bool _shortcutScheduled = false;
@@ -68,7 +72,7 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
     return lock == null || (lock.loaded && !lock.locked);
   }
 
-  /// Act on a waiting "Log migraine" shortcut tap — only in the foreground and, with app lock on,
+  /// Act on a waiting "Log migraine" shortcut tap, or a notification button, — only in the foreground and, with app lock on,
   /// once unlocked. Deferred to after the frame: Android can deliver the shortcut just before the
   /// app reports it has resumed, and app lock must get the chance to re-lock on that resume
   /// first; otherwise a migraine could be started behind a lock that is about to appear.
@@ -77,12 +81,21 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
     _shortcutScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _shortcutScheduled = false;
-      if (!mounted || !_readyForShortcut || !(_shortcuts?.take() ?? false)) return;
+      if (!mounted || !_readyForShortcut) return;
+      final action = _shortcuts?.takeAction();
+      if (action == null) return;
       ScaffoldMessenger.maybeOf(context)?.clearSnackBars();
       setState(() {
         _index = 0;
         _logToken++;
-        _shortcutToken++;
+        switch (action) {
+          case kLogMigraineShortcut:
+            _shortcutToken++;
+          case kCheckinTodayAction:
+            _checkinToken++;
+          case kEndMigraineAction:
+            _endToken++;
+        }
       });
     });
     WidgetsBinding.instance.scheduleFrame();
@@ -100,6 +113,8 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
         repo: widget.repo,
         refreshToken: _logToken,
         startToken: _shortcutToken,
+        checkinToken: _checkinToken,
+        endToken: _endToken,
         onOpenSettings: () => setState(() => _index = 3),
       ),
       HistoryScreen(repo: widget.repo),

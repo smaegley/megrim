@@ -10,6 +10,7 @@ import '../models/attack_details.dart';
 import '../models/backup_status.dart';
 import '../models/event_time.dart' show daysCovered;
 import '../repositories/megrim_repository.dart';
+import '../services/notifications.dart';
 import '../widgets/severity_badge.dart' show StatusColors;
 import '../widgets/days_since_card.dart';
 import 'checkin_screen.dart';
@@ -28,6 +29,14 @@ class QuickLogScreen extends StatefulWidget {
   /// a migraine, unless one is already in progress.
   final int startToken;
 
+  /// Bumped by [HomeShell] for the reminder's "No migraine today" (backlog #27): check today in,
+  /// unless it already has an entry.
+  final int checkinToken;
+
+  /// Bumped by [HomeShell] for End on the ongoing notification (backlog #23 step 3): end the
+  /// migraine in progress.
+  final int endToken;
+
   /// Switches the shell to the Settings tab — tapping the backup line goes there.
   final VoidCallback? onOpenSettings;
   final MegrimRepository repo;
@@ -36,6 +45,8 @@ class QuickLogScreen extends StatefulWidget {
     required this.repo,
     this.refreshToken = 0,
     this.startToken = 0,
+    this.checkinToken = 0,
+    this.endToken = 0,
     this.onOpenSettings,
   });
 
@@ -67,6 +78,8 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     _activeLoaded = _loadActive();
     _loadBackup();
     if (widget.startToken > 0) _startFromShortcut();
+    if (widget.checkinToken > 0) _checkInFromNotification();
+    if (widget.endToken > 0) _endFromNotification();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (_active != null && mounted) setState(() {});
     });
@@ -81,6 +94,8 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
       _loadActive();
     }
     if (old.startToken != widget.startToken) _startFromShortcut();
+    if (old.checkinToken != widget.checkinToken) _checkInFromNotification();
+    if (old.endToken != widget.endToken) _endFromNotification();
   }
 
   Future<void> _loadBackup() async {
@@ -143,6 +158,24 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     await started;
   }
 
+  Future<void> _checkInFromNotification() async {
+    await _activeLoaded;
+    await _loadActive();
+    if (!mounted) return;
+    if (_todayHasEntry) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Today already has a migraine entry, so it wasn\'t marked clear.')));
+      return;
+    }
+    await _checkIn();
+  }
+
+  Future<void> _endFromNotification() async {
+    await _activeLoaded;
+    await _loadActive();
+    if (mounted && _active != null) await _end();
+  }
+
   Future<void> _start() async {
     final home = await widget.repo.homeLocation;
     final id = await widget.repo.startEvent(
@@ -158,6 +191,35 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Today\'s "No migraine" check-in was removed.'),
       ));
+    }
+    await _offerOngoing();
+  }
+
+  /// Once, on the first migraine started (Android): offer the "Migraine in progress" notification.
+  Future<void> _offerOngoing() async {
+    final n = NotificationsScope.maybeOf(context);
+    if (n == null || !await n.shouldOfferOngoing() || !mounted) return;
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Show a notification while it lasts?'),
+        content: const Text(
+            'A "Migraine in progress" notification with a running clock and an End button, so '
+            'you don\'t forget the timer is on. On a locked phone it shows only "Megrim". You can '
+            'change this in Settings.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Not now')),
+          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Show it')),
+        ],
+      ),
+    );
+    if (yes == true) {
+      if (!await n.setOngoing(true) && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Notifications are off for Megrim in the phone\'s settings.')));
+      }
+    } else {
+      await n.declineOngoing();
     }
   }
 

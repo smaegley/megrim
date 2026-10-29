@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Resources referenced only by name at runtime, which shrinkResources would otherwise remove
+     from the release build: the notification icon is named from Dart (lib/services/
+     notifications.dart), so without this the release app's notifications would silently fail. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_megrim" />
