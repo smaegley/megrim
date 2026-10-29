@@ -1,18 +1,23 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-28: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release will be **1.0.8**; its first branch, `feat/attack-details` (schema v4), is built and waiting for Steve's test._
+_Last updated: 2026-10-29: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; its first branch, `feat/attack-details` (schema v4), **passed Steve's test** and is ready to merge._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
 
-## Next steps (as of 2026-10-28)
+## Next steps (as of 2026-10-29)
 
 **1.0.7 is done everywhere.** F-Droid serves 1.0.7 (versionCodes 121–123, checked 2026-10-28), so
 all three channels match.
 
 **Next release: 1.0.8** (Steve 2026-10-28: a patch bump, not 1.1.0, and probably several branches
 bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
-1. **`feat/attack-details`: built, pushed, waiting for Steve's test.** Backlog #20 (symptoms),
+1. **`feat/attack-details`: tested, ready to merge.** Steve's run on the Android emulator passed
+   every test in Parts A–G on 2026-10-28 (including the v3 → v4 upgrade keeping old numbers). It
+   turned up one wording problem: the Impact hint "How much did it stop you?" made "Unable" read as
+   "unable to stop me". Fixed in `55deb8a` (hint "How well could you do your usual things?", the
+   chosen level explained under the buttons); re-test R1 in the script. Not merged yet: PR or
+   direct merge to decide. Backlog #20 (symptoms),
    #22(a) (impact on the day) and #26 (attacks without headache: silent / vestibular migraine) in one
    schema v4 upgrade. Event Detail and Quick Log get "Headache? Yes / No / Not sure" (existing
    entries read Not sure and count as headache, so old numbers don't change); Impact and Symptoms
@@ -20,9 +25,14 @@ bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
    monthly days "including N without headache", Symptoms and Impact cards; the PDF has an
    "Attacks without headache" section and a Symptoms column; export/import and the schema carry the
    new fields (docs say "app v1.0.8+"). 337 tests pass. Script: `.claude/test-attack-details.md`
-   (Part A starts on `main` to test the upgrade). The PDF column layout was only checked through
-   text extraction (test F2).
-2. **After all branch testing, retake the store screenshots on both platforms**
+   (Part A starts on `main` to test the upgrade).
+   - **Unexplained, watch for it:** switching the emulator from a `main` build to the branch,
+     `flutter run` printed "Uninstalling old version..." and wiped Megrim dev's data, though both
+     have the same version and Android setup. Workaround and diagnosis: `flutter build apk
+     --debug` then `adb install -r -t build/app/outputs/flutter-apk/app-debug.apk`, which fails
+     with the real error instead of uninstalling.
+2. **Screenshots wait for the release** (Steve, 2026-10-28). After all 1.0.8 branches are
+   tested, retake the store screenshots on both platforms
    (`tools/screenshots.sh all-android` and `all-ios`) before the 1.0.8 tag; attack-details changes
    shot 07 at least. Open question: extend the made-up demo data with symptoms, impact and a
    headache-free attack so the shots show the feature (recommended; ask before doing it).
@@ -53,6 +63,12 @@ changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DU
 - **D: #21** opt-in menstrual cycle log.
 - **E: #23 step 3** (iOS Live Activity) and **#15** (remember export location / automatic backups).
 - **#22(b)** validated impact questionnaire: blocked on licensing.
+
+**Dev machine (2026-10-28):** Steve moved from the M4 Mac mini to an **M6 Mac mini (32 GB)**.
+The AVDs came across; `megrim_phone` crashed once on first launch (most likely its M4 quick-boot
+snapshot) and then ran fine, with the hardware keyboard now on. `Pixel_7` failed to start; not
+looked into. Cold-boot each AVD once on the new Mac (`emulator -avd <name> -no-snapshot-load`),
+especially `megrim_phone` and `megrim_fold` before the screenshot run.
 
 **Housekeeping (optional)**
 - The erased commit `a056b55` (a personal export committed by mistake, removed from history
