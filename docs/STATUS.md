@@ -485,3 +485,19 @@ please keep that precision if editing the privacy copy.
 - Changelogs: write `docs/release-notes/<version>.txt` and run `tools/sync_changelogs.py`, which
   generates the per-ABI files F-Droid reads (see *Done: F-Droid inclusion* above). Don't hand-write
   files under `fastlane/.../changelogs/`.
+- **Release checklist (every release; written down 2026-10-30):**
+  1. README features and release history, the F-Droid description
+     (`fastlane/.../full_description.txt`) and `docs/release-notes/<version>.txt` (500 characters
+     at most), on a docs branch for Steve to review.
+  2. Retake the store screenshots if `tools/screenshots.py --stale` says so, and commit the Android
+     set before the tag (F-Droid reads the tagged commit).
+  3. Release commit: `pubspec.yaml` version and build, `kAppVersion` in `app/lib/legal.dart`,
+     `tools/sync_changelogs.py`, and "ships in" → "shipped in" across README, STATUS, SPEC and
+     BACKLOG. Build a release APK locally and check its version and permissions.
+  4. Steve tags `v<version>`; `release.yml` publishes the APK and AAB. Check the published APK
+     (version, signer `c316cce2…`, permissions).
+  5. **Fill in the GitHub release description** on the Releases page (`release.yml` leaves it
+     empty). First done for v1.0.8; every earlier release on GitHub is blank.
+  6. iOS: `flutter build ipa --build-number=<last + 1>`, upload via the Xcode Organizer, What's
+     New (the notes minus Android-only lines), screenshots, review notes, submit.
+  7. Update this file once each store has it; F-Droid takes about a week after the tag.
