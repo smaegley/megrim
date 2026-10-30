@@ -21,6 +21,8 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
    the first archive from Xcode 27.
 3. After release: update this file (released dates, F-Droid serving), and move on to the backlog
    below.
+4. **Next release: spend a cycle on the App Store product page** (Steve, 2026-10-30): the new
+   custom header and iPhone Duo screenshots, backlog #29.
 
 ## `v1.0.8` (versionCode 13, prepared 2026-10-30)
 

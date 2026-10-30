@@ -995,7 +995,25 @@ Generate a PDF report and check it matches. Optional check: a throwaway pseudo-l
 
 ## Release / infra
 
-### 28. Update `share_plus` before Flutter drops plugins that apply the Kotlin Gradle Plugin — **PROPOSED** *(2026-10-30)*
+### 29. App Store product page: custom header, and iPhone Duo screenshots — **PLANNED for the next release** *(2026-10-30; Steve: spend a cycle on it)*
+
+**Found:** setting up iOS 1.0.8, App Store Connect offered two new things: a **custom header**
+for the product page and search results ("0 of 1 Header Asset"; sizes 5244 × 2950 and
+3840 × 1646 px), and **app previews and screenshots for iPhone Duo**. Skipped for 1.0.8 so the
+release wasn't held up.
+
+**Shape:**
+
+- **Header:** a branded asset: the logo on Megrim's purple, the name, and a short line (e.g.
+  "Private, offline, open source"), perhaps with a phone showing Analytics. Made-up data only, as
+  with the screenshots. Check Apple's best-practices and template pages first, and whether a
+  header can be changed without a new app version.
+- **Duo screenshots:** Xcode 27 now has an **iPhone Duo** Simulator, so `tools/screenshots.sh
+  duo-inner` / `duo-outer` can finally run (set `MEGRIM_SIM_DUO`; the target in `screenshots.py`
+  needs the accepted sizes). Also check how the shots look on the Duo's two screens.
+- Ships with the next release's listing update (1.1.0 unless something sooner).
+
+ before Flutter drops plugins that apply the Kotlin Gradle Plugin — **PROPOSED** *(2026-10-30)*
 
 **Found:** the 1.0.8 screenshot build (Flutter 3.44.5) warned that `share_plus` (10.1.4) applies
 the Kotlin Gradle Plugin and that "future versions of Flutter will fail to build" with such
