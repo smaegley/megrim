@@ -1013,6 +1013,26 @@ release wasn't held up.
   needs the accepted sizes). Also check how the shots look on the Duo's two screens.
 - Ships with the next release's listing update (1.1.0 unless something sooner).
 
+**Apple's guidance** ([asset best practices](https://developer.apple.com/app-store/asset-best-practices/),
+read 2026-10-30; the page gives no pixel sizes or safe-area numbers, those are in its templates
+and the creative-assets specifications):
+
+- There are **two** creative assets: the product-page **header** and a **search results** asset
+  (shown in search on iOS / iPadOS 27 and later). One **universal** asset can serve both. Without
+  a search asset, screenshots and previews show instead, so the search asset is optional.
+- Header: one clear idea, not cluttered, aimed at someone new to the app. Search asset: make the
+  purpose obvious at a glance and show the real interface.
+- Short text that adds to the picture rather than describing it; the focal point centred and key
+  parts inside the template's safe area (templates for Figma, Photoshop, Pixelmator, Sketch).
+  Check with the product page preview tool.
+- Not allowed: prices, URLs, the © symbol, unearned awards, **logos or mentions of other
+  platforms or stores** (so no Android or F-Droid), Apple accolades. Must suit a 4+ rating.
+  Localise any text into every language the app supports (English only, until backlog #25).
+- Apple says assets can go in "alongside a new app version, or in your Asset Library"; whether
+  the Asset Library route avoids a new version isn't stated, so check in App Store Connect.
+- Product page optimization can A/B test header variants later.
+- iPhone Duo: the page only points to the screenshot and preview specifications.
+
  before Flutter drops plugins that apply the Kotlin Gradle Plugin — **PROPOSED** *(2026-10-30)*
 
 **Found:** the 1.0.8 screenshot build (Flutter 3.44.5) warned that `share_plus` (10.1.4) applies
