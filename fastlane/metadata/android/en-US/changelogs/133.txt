@@ -1,0 +1,5 @@
+• New: "No migraine today" check-ins. Analytics compares migraine days with clear days.
+• New: optional daily reminder, and a Migraine in progress notification. Adds 3 permissions, used only if you turn them on.
+• New: symptoms, impact, and attacks without headache.
+• New: medication classes, an overuse notice, preventives, relief tried and what helped.
+• All in the PDF report and export.

@@ -429,7 +429,7 @@ emit `megrim-export` JSON → import on phone. ~50 lines of Python against
 - **Permissions manifest (complete list):** *current (2026-10):* `INTERNET`;
   `ACCESS_NETWORK_STATE` (merged in by connectivity_plus); and, since v1.0.7,
   `USE_BIOMETRIC` + `USE_FINGERPRINT` (merged in by local_auth / androidx.biometric, used only
-  when app lock is on); from 1.0.8, `POST_NOTIFICATIONS` (runtime prompt, asked only when the
+  when app lock is on); since v1.0.8, `POST_NOTIFICATIONS` (runtime prompt, asked only when the
   daily reminder or the "Migraine in progress" notification is turned on) and `VIBRATE` (merged in
   by flutter_local_notifications), and `RECEIVE_BOOT_COMPLETED` (so scheduled reminders survive a
   reboot). No location permission (the original `ACCESS_COARSE/FINE_LOCATION` were removed in
@@ -879,14 +879,14 @@ plugin), the **Android backup fix** (§7.4), and two **Suspected Factors correct
 onset days with mid-attack days left out, and pressure read from one daily-mean series on both
 sides. Each was tested by Steve from a written test script; 312 tests on `main`.
 
-**2026-10-27 (branch `feat/attack-details`, schema v4, not yet released):** backlog **#20
+**2026-10-27 (branch `feat/attack-details`, schema v4; shipped in `v1.0.8`, tagged 2026-10-30):** backlog **#20
 (symptoms)**, **#22a (impact on the day)** and **#26 (attacks without headache)** built together.
 Three nullable columns and a seeded `symptom` vocabulary; Event Detail gets "Headache?" Yes / No /
 Not sure, Impact and Symptoms, and Quick Log gets "Headache?". Headache-free attacks count as
 migraine days (split out on the monthly card), stay in Suspected Factors, have no severity, and
 get their own report section. Rules in `docs/METHODS.md`; export fields in `docs/IMPORT.md`.
 
-**2026-10-29 (branch `feat/medications`, schema v5, not yet released; ships in 1.0.8):** backlog
+**2026-10-29 (branch `feat/medications`, schema v5; shipped in `v1.0.8`, tagged 2026-10-30):** backlog
 **#18 (acute-medication days and the medication-overuse notice)** and **#19 (preventives and
 non-drug relief)** built together, on top of v4. One nullable column (`relief_tried`), two tables
 (`medication_classes`, `preventive_regimens`, §3.5) and a seeded `relief` vocabulary. A new
@@ -896,7 +896,7 @@ preventives; a dose on a multi-day entry records its day. Analytics gets Acute m
 helped; the monthly chart marks preventive start/stop months; the PDF carries all of it. ICHD-3
 checked 2026-10-29; rules and the decisions taken in `docs/METHODS.md`.
 
-**2026-10-29 (branch `feat/checkins`, schema v6, not yet released; ships in 1.0.8):** group C1.
+**2026-10-29 (branch `feat/checkins`, schema v6; shipped in `v1.0.8`, tagged 2026-10-30):** group C1.
 Backlog **#16 ("No migraine today" check-ins)**: the `day_checkins` table (§3.6), a button on
 Quick Log, and a sheet on an empty past calendar day (log a migraine, or mark it clear; clear days
 get a tick). Analytics gets *Days tracked* and *Migraine days vs clear days*, the self-reported

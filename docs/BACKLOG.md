@@ -12,7 +12,7 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 > **#25 (move UI text into a message file, prep for translations) is PROPOSED** (2026-10-27, from
 > issue #19). **#20 (symptoms), #22(a) (impact) and #26 (attacks without headache) are BUILT**
 > together on `feat/attack-details` (schema v4, 2026-10-27); Steve's test passed 2026-10-28, merged 2026-10-29
-> (one wording fix, the Impact hint). They ship in **1.0.8**.
+> (one wording fix, the Impact hint). They shipped in `v1.0.8` (2026-10-30).
 > Add new items as they come up.
 
 ## UI / UX
@@ -350,7 +350,7 @@ current set. Anything that adds one must update README, PRIVACY and the F-Droid 
 same change, verified by inspecting the merged manifest of a release build (as was done for
 backlog #5).
 
-### 16. Headache-free days: a one-tap "No migraine today" check-in — **BUILT** *(2026-10-29, branch `feat/checkins` with #27 and #23 step 3 on Android, group C1, schema v6; passed Steve's test and merged to `main` 2026-10-30, `d3620d3`; ships in 1.0.8)*
+### 16. Headache-free days: a one-tap "No migraine today" check-in — **BUILT** *(2026-10-29, branch `feat/checkins` with #27 and #23 step 3 on Android, group C1, schema v6; passed Steve's test and merged to `main` 2026-10-30, `d3620d3`; shipped in `v1.0.8`)*
 
 **Want:** a way to record that a day was migraine-free — a one-tap button on Quick Log, plus a
 long-press / tap on a past History Calendar day to mark it clear — optionally carrying the same
@@ -458,7 +458,7 @@ months) first under Patterns, plus a "Migraine days, last 30 d" summary tile. Th
 to `daysCovered()` in `event_time.dart`, shared with the History calendar. Export:
 `migraine_days_last_30`, `migraine_days_avg_last_3_months`, `migraine_days_by_month`.
 
-### 18. Acute-medication days and a medication-overuse notice — **BUILT** *(2026-10-29, branch `feat/medications` with #19, schema v5; Steve's test passed and merged to `main` 2026-10-29, ships in 1.0.8)*
+### 18. Acute-medication days and a medication-overuse notice — **BUILT** *(2026-10-29, branch `feat/medications` with #19, schema v5; Steve's test passed and merged to `main` 2026-10-29, shipped in `v1.0.8`)*
 
 **Want:** count the days per month on which acute medication was taken, by medication class,
 and show a calm, informational notice when the count reaches the levels headache guidelines
@@ -527,7 +527,7 @@ now records its day (the time picker asks for the day first), since the dialog c
 dose on the start day before. Steve approved the notice copy 2026-10-29. All of this is in
 `docs/METHODS.md`.
 
-### 19. Acute vs preventive medications, and non-drug relief — **BUILT** *(2026-10-29, branch `feat/medications` with #18, schema v5; Steve's test passed and merged to `main` 2026-10-29, ships in 1.0.8)*
+### 19. Acute vs preventive medications, and non-drug relief — **BUILT** *(2026-10-29, branch `feat/medications` with #18, schema v5; Steve's test passed and merged to `main` 2026-10-29, shipped in `v1.0.8`)*
 
 **Want:** (a) a list of **preventive** medications with start and stop dates (not per-attack),
 and (b) a per-event "what else did you try" list for non-drug relief (dark room, sleep,
@@ -559,7 +559,7 @@ medications and relief; the share leaves unknowns out. The PDF gains Acute medic
 Preventive medications and Relief tried, and its Medications table now comes from the same rows
 as the card.
 
-### 20. Symptoms — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, ships in 1.0.8)*
+### 20. Symptoms — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, shipped in `v1.0.8`)*
 
 **Want:** a symptom chip set on Event Detail (and optionally on the active Quick Log view):
 nausea, vomiting, light sensitivity, sound sensitivity, smell sensitivity, neck pain, dizziness,
@@ -620,7 +620,7 @@ month's 30th = day −2, in window); the gap rule (a 70-day gap excludes that cy
 a planted fixture; export test that cycle dates are absent by default and present when ticked;
 disabled-state test that no cycle UI or report section renders.
 
-### 22. Functional impact and an optional disability score — **(a) BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, ships in 1.0.8)*; (b) **PROPOSED** (licensing first)
+### 22. Functional impact and an optional disability score — **(a) BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, shipped in `v1.0.8`)*; (b) **PROPOSED** (licensing first)
 
 **Want:** (a) a per-event "impact" field — *able to function normally / reduced / unable* — and
 (b) optionally, a periodic disability questionnaire.
@@ -650,7 +650,7 @@ once it exists; "impact recorded on N of M migraine days") and the same as one l
 PDF summary. Export: `impact` per event (unknown values dropped on import) and an `impact` object
 in the analytics block.
 
-### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; **(3) on Android BUILT** *(2026-10-29, group C1; merged to `main` 2026-10-30)*; (2) and (3) on iOS **DEFERRED to 1.1.0** (group C2, Steve 2026-10-30)
+### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; **(3) on Android DONE** *(group C1; shipped in `v1.0.8`)*; (2) and (3) on iOS **DEFERRED to 1.1.0** (group C2, Steve 2026-10-30)
 
 **Want:** start a migraine without navigating the app — in increasing cost: (1) long-press app
 icon → "Log migraine" / "No migraine today"; (2) a home-screen widget showing days since last
@@ -711,7 +711,7 @@ ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others pus
 manual release-build smoke test on a real device (minification note in STATUS "Known gaps").
 
 **Deferred (Steve, 2026-10-30):** C2 (the widget on both platforms and the iOS Live Activity)
-moves to **1.1.0**; 1.0.8 ships groups A, B and C1. Decided for C2: the Live Activity shows only
+moves to **1.1.0**; `v1.0.8` shipped groups A, B and C1. Decided for C2: the Live Activity shows only
 "Megrim" and a timer on the lock screen and Dynamic Island, never the word "migraine" (option (i);
 it also keeps the brand in view). Proposed, not yet confirmed: with app lock on, the widget shows
 no days-since figure or timer, just "Megrim" and its buttons; and the Android widget goes on its
@@ -728,7 +728,7 @@ screen: `VISIBILITY_SECRET`, not shown on a secure lock screen, because the plug
 separate public version, and with `VISIBILITY_PRIVATE` a phone on its default settings would show
 the text. (2) and (3) on iOS are group C2.
 
-### 27. Daily reminder to log (opt-in local notification) — **BUILT** *(2026-10-29, branch `feat/checkins`, group C1; passed Steve's test and merged to `main` 2026-10-30; ships in 1.0.8)*
+### 27. Daily reminder to log (opt-in local notification) — **BUILT** *(2026-10-29, branch `feat/checkins`, group C1; passed Steve's test and merged to `main` 2026-10-30; shipped in `v1.0.8`)*
 
 **Want:** a notification once a day at a time the user picks (e.g. 8:00 AM or 8:00 PM) reminding
 them to log the day while they remember it: a migraine, or a "No migraine today" check-in (#16).
@@ -827,7 +827,7 @@ database through OS backup). Steve judged it not worth it.
 the device-credential fallback (no biometric enrolled) on both platforms; manifest inspection of
 the release build.
 
-### 26. Attacks without headache ("silent" and vestibular migraine) — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, ships in 1.0.8)*
+### 26. Attacks without headache ("silent" and vestibular migraine) — **BUILT** *(2026-10-27, branch `feat/attack-details`; Steve's test passed 2026-10-28, merged to `main` 2026-10-29, shipped in `v1.0.8`)*
 
 **Want:** a way to log a migraine attack that had **no headache**: aura only, vertigo/dizziness
 only, or the fatigue / brain-fog phase with the pain never arriving. Today every entry

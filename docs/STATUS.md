@@ -1,17 +1,33 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-30: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19, schema v5) passed Steve's test and is **merged to `main`** (2026-10-29). Group C is split into C1 and C2; **C1 (#16, #27, #23 step 3 on Android, schema v6) passed Steve's test and is merged to `main`** (2026-10-30). **C2 is deferred to 1.1.0** (Steve, 2026-10-30); next is the 1.0.8 screenshot retake._
+_Last updated: 2026-10-30: **v1.0.8 (versionCode 13) is prepared for tagging**: groups A, B and C1 (schema v6). v1.0.7 is live everywhere (GitHub, App Store, F-Droid). C2 (widget, iOS Live Activity) is deferred to 1.1.0._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
 
-## Next steps (as of 2026-10-29)
+## Next steps (as of 2026-10-30)
 
-**1.0.7 is done everywhere.** F-Droid serves 1.0.7 (versionCodes 121–123, checked 2026-10-28), so
-all three channels match.
+1. **Tag `v1.0.8`** (Steve), once `chore/release-1.0.8` is merged to `main`:
+   `git tag v1.0.8 && git push origin v1.0.8`. `release.yml` builds and publishes the signed APK
+   and AAB. Then check the published APK: versionCode 13, versionName 1.0.8, signed
+   `CN=Steve Maegley`, and the permissions INTERNET, ACCESS_NETWORK_STATE, USE_BIOMETRIC,
+   USE_FINGERPRINT plus the new POST_NOTIFICATIONS, VIBRATE and RECEIVE_BOOT_COMPLETED. Paste the
+   GitHub release body from `.claude/release-1.0.8-drafts.md` (on the VM). F-Droid follows by
+   itself (versionCodes 131–133).
+2. **iOS 1.0.8:** `flutter build ipa --build-number=14` from `~/megrim/app` (1.0.7 was build 13),
+   upload via the Xcode Organizer, What's New from the drafts file (no Android notification),
+   upload the 1.0.8 screenshots from `screenshots/ios/`, and add the notifications line now in
+   `docs/APP_STORE.md` to the review notes. First iOS release with a notification permission and
+   the first archive from Xcode 27.
+3. After release: update this file (released dates, F-Droid serving), and move on to the backlog
+   below.
 
-**Next release: 1.0.8** (Steve 2026-10-28: a patch bump, not 1.1.0, and probably several branches
-bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
+## `v1.0.8` (versionCode 13, prepared 2026-10-30)
+
+Groups A, B and C1, each tested by Steve from a script (emulator, a real Android phone where
+native code changed, and the iOS Simulator), all passed. Schema v3 → v6, additive. Notes:
+`docs/release-notes/1.0.8.txt`; README's release history has the long version.
+
 1. **`feat/attack-details`: tested and merged to `main` (2026-10-29, `3c6cfc0`).** Steve's run on the Android emulator passed
    every test in Parts A–G on 2026-10-28 (including the v3 → v4 upgrade keeping old numbers). It
    turned up one wording problem: the Impact hint "How much did it stop you?" made "Unable" read as
@@ -69,17 +85,12 @@ bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
    `screenshots/ios/`, to upload in App Store Connect with 1.0.8. On Xcode 27, the Simulators are
    the 18-series: `MEGRIM_SIM_IPHONE_69="iPhone 18 Pro Max" MEGRIM_SIM_IPHONE_63="iPhone 18 Pro"
    MEGRIM_SIM_IPAD_13="iPad Pro 13-inch (M5)"`.
-5. **Release text for 1.0.8:** README's feature list and the F-Droid / App Store descriptions
-   don't mention symptoms, impact, attacks without headache (group A) or the medication features
-   (group B) yet; update them, and the release notes, when 1.0.8 is cut.
-6. **Upload the iOS screenshots with 1.0.8** in App Store Connect: the fresh set from step 2
-   replaces the 2026-10-09 set that couldn't be attached to the already-released 1.0.7. (Also
-   raised automatically at release prep from `.claude/reminders/release.md`.)
 
-**Store screenshots: refreshed 2026-10-09** with the new automated capture: 10 shots (Log with the
-backup line, Analytics overview with migraine days per month, factors, a chart, History list and
-calendar, entry detail, Settings › Privacy, two dark) for Android phone + Pixel Fold (F-Droid,
-committed) and iPhone 6.9" / 6.3" / iPad 13" (uploaded in App Store Connect). The old F-Droid set,
+**Store screenshots: retaken 2026-10-30 for 1.0.8** with the automated capture (first taken
+2026-10-09): 10 shots (Log with the backup line, Analytics overview with migraine days per month,
+factors, Migraine days vs clear days, History list and calendar, entry detail, Settings ›
+Privacy, two dark) for Android phone + Pixel Fold (F-Droid,
+committed) and iPhone 6.9" / 6.3" / iPad 13" (to upload in App Store Connect with 1.0.8). The old F-Droid set,
 which showed Steve's real last-migraine date, is gone. To retake: `tools/screenshots.sh <target>`
 (guide `.claude/test-store-screenshots.md`); `tools/screenshots.py --stale` says whether screens
 changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DUO`).
@@ -92,11 +103,6 @@ changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DU
   #19 and backlog #19 are different things.
 - ~~**C1**~~: merged to `main` 2026-10-30 (above). **C2** (the widget, #23 step 2 on both
   platforms, and the iOS Live Activity, #23 step 3) is **deferred to 1.1.0** (Steve, 2026-10-30).
-- **C (as first planned): #16 + #23 steps 2–3 + #27**: "No migraine today" check-ins (the biggest analytics
-  improvement); the home-screen widget, now with a running timer during a migraine; the
-  "migraine in progress" ongoing notification on Android (Live Activity on iOS); and an opt-in
-  daily reminder to log. The last three were asked for in GitHub discussion #21 (Krackmou,
-  2026-10-28). Both notifications need `POST_NOTIFICATIONS`, so add the permission once.
 - **D: #21** opt-in menstrual cycle log.
 - **E: #23 step 3** (iOS Live Activity) and **#15** (remember export location / automatic backups).
 - **#22(b)** validated impact questionnaire: blocked on licensing.
@@ -211,7 +217,7 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 
 | | |
 |---|---|
-| Latest release | **`v1.0.7`** (versionCode 12, tagged 2026-10-08): app lock, migraine days per month, the "Log migraine" shortcut, the Android backup fix and the Suspected Factors corrections (see the section above); no schema change. Previous: **`v1.0.6`** (versionCode 11, tagged 2026-10-05), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.6); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`) with the permission list unchanged. Contents: the in-app PDF report (backlog #12) and the opt-in backup reminder (#14). No schema change. Previous: **`v1.0.5`** (versionCode 10, tagged 2026-09-29), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.5); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
+| Latest release | **`v1.0.8`** (versionCode 13, prepared 2026-10-30; tag pending): check-ins with Days tracked and Migraine days vs clear days, the daily reminder and the Android Migraine in progress notification, symptoms, impact and attacks without headache, medication classes, preventives and relief (see the section above); schema v3 → v6. Previous: **`v1.0.7`** (versionCode 12, tagged 2026-10-08): app lock, migraine days per month, the "Log migraine" shortcut, the Android backup fix and the Suspected Factors corrections (see the section above); no schema change. Previous: **`v1.0.6`** (versionCode 11, tagged 2026-10-05), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.6); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`) with the permission list unchanged. Contents: the in-app PDF report (backlog #12) and the opt-in backup reminder (#14). No schema change. Previous: **`v1.0.5`** (versionCode 10, tagged 2026-09-29), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.5); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
 | Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
 | Permissions | `INTERNET`, `ACCESS_NETWORK_STATE` (connectivity_plus), and since v1.0.7 `USE_BIOMETRIC` + `USE_FINGERPRINT` (local_auth / androidx.biometric, for the optional app lock; install-time, no prompt). No location permission at all |

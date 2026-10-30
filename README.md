@@ -99,9 +99,8 @@ come before them.
 
 ## Status
 
-**Latest release: [`v1.0.7`](https://github.com/smaegley/megrim/releases/tag/v1.0.7)**
-(2026-10-08). **Next: `v1.0.8`**, being prepared (see the release history below). App id
-`org.maegley.megrim`.
+**Latest release: [`v1.0.8`](https://github.com/smaegley/megrim/releases/tag/v1.0.8)**
+(2026-10-30). App id `org.maegley.megrim`.
 
 - **F-Droid:** in the catalogue since 2026-08-23
   ([!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692)); new `v*` tags are
@@ -120,7 +119,7 @@ planned and proposed work is in [`docs/BACKLOG.md`](docs/BACKLOG.md).
 Newest first. Full notes for each release are on the
 [Releases page](https://github.com/smaegley/megrim/releases).
 
-- **`v1.0.8`** (in preparation):
+- **`v1.0.8`** (2026-10-30):
   - **"No migraine today" check-ins**, from the Log tab, the calendar or the daily reminder.
     They make **Days tracked** and **Migraine days vs clear days** possible, the latter comparing
     your sleep, stress, triggers and foods on migraine days against clear days.
@@ -248,7 +247,7 @@ from them, and CI checks they're in step.
 See [`docs/PRIVACY.md`](docs/PRIVACY.md). Short version: all data stays on your device; we
 operate no servers and collect nothing. The Android app's permissions are `INTERNET` (weather and
 place search, only when you use them), the network-state check used to detect being offline,
-`USE_BIOMETRIC` / `USE_FINGERPRINT` for the optional app lock, and, from 1.0.8,
+`USE_BIOMETRIC` / `USE_FINGERPRINT` for the optional app lock, and, since v1.0.8,
 `POST_NOTIFICATIONS` / `VIBRATE` / `RECEIVE_BOOT_COMPLETED` for the optional reminder and
 Migraine in progress notification (the notification permission is asked for only when you turn
 one on). There is no location permission.
