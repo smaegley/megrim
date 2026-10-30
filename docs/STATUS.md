@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-29: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19, schema v5) passed Steve's test and is **merged to `main`** (2026-10-29). Group C is split into C1 and C2; **C1 (#16, #27, #23 step 3 on Android, schema v6) is built on `feat/checkins`**, awaiting Steve's test._
+_Last updated: 2026-10-30: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19, schema v5) passed Steve's test and is **merged to `main`** (2026-10-29). Group C is split into C1 and C2; **C1 (#16, #27, #23 step 3 on Android, schema v6) passed Steve's test and is merged to `main`** (2026-10-30). C2 is next._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -34,8 +34,8 @@ bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
      --debug` then `adb install -r -t build/app/outputs/flutter-apk/app-debug.apk`, which fails
      with the real error instead of uninstalling.
 2. **`feat/medications` (group B: backlog #18 + #19, schema v5): tested and merged to `main`
-   (2026-10-29, `2107a55`).** Steve's run passed every part; Part G (iOS) is deferred to the
-   pre-1.0.8 iOS check, since it uses the same Material pickers and dialogs as before (`.claude/test-medications.md`; made-up import data in
+   (2026-10-29, `2107a55`).** Steve's run passed every part; Part G (iOS) was run later and passed
+   (2026-10-30) (`.claude/test-medications.md`; made-up import data in
    `app/test/fixtures/sample-data.medications.json`). Acute medications get a class (asked once when a new
    name is entered, skippable; Settings › Medications); Analytics counts medication days per class
    and shows a calm notice when each of the last 3 complete months reached an ICHD-3 8.2 level;
@@ -46,7 +46,9 @@ bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
    Also on the branch: a dose on a multi-day entry now records its day (before, the dialog could
    only place it on the start day).
 3. **Group C, split in two (Steve, 2026-10-29):**
-   - **C1: built 2026-10-29 on `feat/checkins`, awaiting Steve's test**
+   - **C1: tested and merged to `main` (2026-10-30, `d3620d3`).** Every part passed, including
+     the real Android phone (Part G) and the iOS Simulator (Part H); the iOS build compiled on
+     Xcode 27.1, which replaces Simulator.app with Device Hub.
      (`.claude/test-checkins.md`). Backlog #16 (the "No migraine today" check-in, schema **v6**:
      Quick Log button, calendar sheet, Days tracked, Migraine days vs clear days, PDF, export),
      #27 (daily reminder) and #23 (3) on Android (the "Migraine in progress" notification). The
@@ -82,12 +84,13 @@ changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DU
 
 **Backlog still open** (details in `docs/BACKLOG.md`). Agreed order, 2026-10-27:
 - ~~**A: #26 + #20 + #22(a)**~~: merged to `main` 2026-10-29 (above).
-- **B: #18 + #19**: built on `feat/medications` (2026-10-29), schema **v5** on top of v4;
-  awaiting Steve's test (above).
+- ~~**B: #18 + #19**~~: merged to `main` 2026-10-29 (above).
 - **#25** move UI text into a message file (ARB): groundwork for translations. GitHub **issue #19**
   (a Simplified Chinese request) depends on it; no reply posted on the issue yet. Note that issue
   #19 and backlog #19 are different things.
-- **C: #16 + #23 steps 2–3 + #27**: "No migraine today" check-ins (the biggest analytics
+- ~~**C1**~~: merged to `main` 2026-10-30 (above). **C2** (the widget, #23 step 2 on both
+  platforms, and the iOS Live Activity, #23 step 3) is still open.
+- **C (as first planned): #16 + #23 steps 2–3 + #27**: "No migraine today" check-ins (the biggest analytics
   improvement); the home-screen widget, now with a running timer during a migraine; the
   "migraine in progress" ongoing notification on Android (Live Activity on iOS); and an opt-in
   daily reminder to log. The last three were asked for in GitHub discussion #21 (Krackmou,

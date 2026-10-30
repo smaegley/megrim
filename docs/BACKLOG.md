@@ -350,7 +350,7 @@ current set. Anything that adds one must update README, PRIVACY and the F-Droid 
 same change, verified by inspecting the merged manifest of a release build (as was done for
 backlog #5).
 
-### 16. Headache-free days: a one-tap "No migraine today" check-in — **BUILT** *(2026-10-29, branch `feat/checkins` with #27 and #23 step 3 on Android, group C1, schema v6; awaiting Steve's test, ships in 1.0.8)*
+### 16. Headache-free days: a one-tap "No migraine today" check-in — **BUILT** *(2026-10-29, branch `feat/checkins` with #27 and #23 step 3 on Android, group C1, schema v6; passed Steve's test and merged to `main` 2026-10-30, `d3620d3`; ships in 1.0.8)*
 
 **Want:** a way to record that a day was migraine-free — a one-tap button on Quick Log, plus a
 long-press / tap on a past History Calendar day to mark it clear — optionally carrying the same
@@ -650,7 +650,7 @@ once it exists; "impact recorded on N of M migraine days") and the same as one l
 PDF summary. Export: `impact` per event (unknown values dropped on import) and an `impact` object
 in the analytics block.
 
-### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; **(3) on Android BUILT** *(2026-10-29, branch `feat/checkins`, group C1)*; (2) and (3) on iOS **PROPOSED** (group C2)
+### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; **(3) on Android BUILT** *(2026-10-29, group C1; merged to `main` 2026-10-30)*; (2) and (3) on iOS **PROPOSED** (group C2)
 
 **Want:** start a migraine without navigating the app — in increasing cost: (1) long-press app
 icon → "Log migraine" / "No migraine today"; (2) a home-screen widget showing days since last
@@ -721,7 +721,7 @@ screen: `VISIBILITY_SECRET`, not shown on a secure lock screen, because the plug
 separate public version, and with `VISIBILITY_PRIVATE` a phone on its default settings would show
 the text. (2) and (3) on iOS are group C2.
 
-### 27. Daily reminder to log (opt-in local notification) — **BUILT** *(2026-10-29, branch `feat/checkins`, group C1; awaiting Steve's test, ships in 1.0.8)*
+### 27. Daily reminder to log (opt-in local notification) — **BUILT** *(2026-10-29, branch `feat/checkins`, group C1; passed Steve's test and merged to `main` 2026-10-30; ships in 1.0.8)*
 
 **Want:** a notification once a day at a time the user picks (e.g. 8:00 AM or 8:00 PM) reminding
 them to log the day while they remember it: a migraine, or a "No migraine today" check-in (#16).
