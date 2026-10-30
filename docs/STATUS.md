@@ -23,6 +23,30 @@ retaken; README, F-Droid description and release notes refreshed; a release chec
 3. Then mark 1.0.8 released everywhere in this file.
 
 **Next release (number to decide; 1.1.0 if C2 goes in):**
+0. **Remove the Donate tile from the iOS build** (decided 2026-10-30). This prepares the App
+   Store for countries beyond the US: the Ko-fi link
+   (`app/lib/screens/settings_screen.dart`, the `Donate` tile) is allowed only on the US storefront
+   (guideline 3.1.1). Everywhere else, tips to the developer must go through in-app purchase
+   (3.2.2). One binary serves every storefront, so the tile goes on iOS entirely (a platform
+   check, not storefront detection). Android, F-Droid and GitHub keep it. Also update
+   `docs/APP_STORE.md`: the availability decision (Option A → B) and review-note answers #4
+   (Ko-fi link) and #5 ("US storefront only").
+   **Then expand availability**, only *after* that build is live on the App Store: the UK,
+   the EU, Ireland, Canada, Australia, New Zealand and other English-speaking regions. Steps in
+   App Store Connect:
+   - **EU only, before adding EU countries: set the DSA trader status.** Planned: **non-trader**
+     (free, no ads, no IAP, no donation link on iOS). A trader has their address, phone and
+     email shown publicly on the EU listing.
+   - **Regulated medical device declaration** for the EEA and UK, if App Store Connect asks
+     (answer "not a device", as for the US; the case rests on METHODS.md's "descriptive only,
+     no prediction" and the in-app disclaimer in `legal.dart`).
+   - Pricing and Availability → add the countries.
+   - Optional: one line in `docs/PRIVACY.md` for EU/UK readers: the developer receives no
+     personal data (so there is nothing for a data access or deletion request to cover); Open-Meteo sees the
+     device's IP address and the rounded location.
+   - No other work found: the app already uses d-M dates, 24-hour time, °C and hPa; the
+     encryption answer (`ITSAppUsesNonExemptEncryption=false`) and the 12+ age rating carry
+     over; English-only is fine for these regions; the app is free, so no tax or Paid Apps agreement.
 1. **#29, the App Store product page**: custom header (and the optional search-results asset)
    and iPhone Duo screenshots. Steve wants a full cycle on it. Apple's guidance is already in
    BACKLOG #29.
