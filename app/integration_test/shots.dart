@@ -5,10 +5,14 @@
 /// Data: the 55 made-up migraines of `test/fixtures/sample-data.json`, moved forward by whole
 /// weeks (weekdays stay put) so the latest one was a few days ago, relocated to a New York decoy
 /// home (three of them in Chicago, for the Away-from-home card), with weather enrichment OFF so no
-/// shot touches the network. Nothing here is real data.
+/// shot touches the network. On top of the sample, [demoExportJson] makes up the 1.0.8 features:
+/// about five months of "No migraine" check-ins, medication classes, a preventive, and symptoms,
+/// impact and relief on recent entries, with screen time, stress and short sleep planted on
+/// migraine days so "Migraine days vs clear days" has something to show. Nothing here is real data.
 library;
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -29,7 +33,7 @@ const List<String> kShotNames = [
   '01-log',
   '02-analytics-overview',
   '03-suspected-factors',
-  '04-analytics-charts',
+  '04-clear-days',
   '05-history-list',
   '06-history-calendar',
   '07-entry-detail',
@@ -66,13 +70,45 @@ String demoExportJson(DateTime now) {
     e['geo_label'] = away ? _awayLabel : kDemoHome.label;
   }
 
+  // Entries since check-ins began: the same self-report pattern every time (screen time, stress
+  // and short sleep on most), plus symptoms, impact and relief.
+  final today = DateTime(now.toLocal().year, now.toLocal().month, now.toLocal().day);
+  final firstCheckin = today.subtract(const Duration(days: _checkinDays));
+  final recent = events
+      .where((e) => !DateTime.parse(e['started_at'] as String).toLocal().isBefore(firstCheckin))
+      .toList();
+  for (var k = 0; k < recent.length; k++) {
+    final e = recent[k];
+    e['triggers_suspected'] = [
+      if (k % 3 != 2) 'Screen time',
+      if (k.isEven) 'Stress',
+      if (k == 1) 'Caffeine',
+    ];
+    e['sleep_hours_prior'] = k % 3 == 1 ? 6.8 : 5.4;
+    e['stress_level'] = k.isEven ? 4 : 3;
+    e['foods_notable'] = <String>[];
+    e['symptoms'] = [
+      'Light sensitivity',
+      if (k.isEven) 'Nausea',
+      if (k % 3 == 0) 'Sound sensitivity',
+      if (k == 2) 'Brain fog',
+    ];
+    e['impact'] = k % 3 == 0 ? EventImpact.unable : EventImpact.reduced;
+    e['relief_tried'] = [
+      {'name': 'Dark room', 'helped': true},
+      if (k.isOdd) {'name': 'Cold pack', 'helped': k % 4 == 1},
+    ];
+  }
+
   // The most recent migraine runs into a second day and carries details, so the calendar shows a
   // multi-day migraine and the entry-detail shot has medications to show.
   final last = events.last;
   final start = DateTime.parse(last['started_at'] as String);
   last['ended_at'] = start.add(const Duration(hours: 30)).toIso8601String();
   last['severity'] = 7;
-  last['triggers_suspected'] = ['Poor sleep', 'Stress', 'Weather / pressure'];
+  last['triggers_suspected'] = ['Screen time', 'Stress', 'Sleep change'];
+  last['sleep_hours_prior'] = 5.2;
+  last['stress_level'] = 4;
   last['meds_taken'] = [
     {'name': 'Sumatriptan', 'dose': '50 mg', 'helped': true},
     {'name': 'Ibuprofen', 'dose': '400 mg', 'helped': false},
@@ -80,9 +116,75 @@ String demoExportJson(DateTime now) {
   last['notes'] = 'Started after a long day at the screen.';
 
   doc['events'] = events;
+  doc['checkins'] = _demoCheckins(events, firstCheckin, today);
+  doc['medication_classes'] = {
+    'Sumatriptan': MedClass.triptan,
+    'Rizatriptan': MedClass.triptan,
+    'Ibuprofen': MedClass.simpleAnalgesic,
+    'Naproxen': MedClass.simpleAnalgesic,
+    'Acetaminophen': MedClass.simpleAnalgesic,
+  };
+  doc['preventives'] = [
+    {
+      'id': 'demo-preventive-1',
+      'name': 'Propranolol',
+      'dose': '40 mg',
+      'started_on': _ymd(firstCheckin.subtract(const Duration(days: 60))),
+      'stopped_on': null,
+      'notes': null,
+    },
+  ];
   doc['settings'] = {'home_location': kDemoHome.toJson()};
   doc['exported_at'] = now.toUtc().toIso8601String();
   return jsonEncode(doc);
+}
+
+/// How far back the made-up check-ins go.
+const _checkinDays = 150;
+
+String _ymd(DateTime d) =>
+    '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+/// A check-in on most days from [first] to yesterday that no entry covers; today is left open so
+/// the Log shot shows NO MIGRAINE TODAY. About two in three carry details, with screen time,
+/// stress and short sleep much rarer than on the migraine days. Seeded, so every run is the same.
+List<Map<String, dynamic>> _demoCheckins(
+  List<Map<String, dynamic>> events,
+  DateTime first,
+  DateTime today,
+) {
+  final covered = <String>{};
+  for (final e in events) {
+    final s = DateTime.parse(e['started_at'] as String).toLocal();
+    final end = e['ended_at'] == null ? s : DateTime.parse(e['ended_at'] as String).toLocal();
+    var d = DateTime(s.year, s.month, s.day);
+    for (; !d.isAfter(end); d = DateTime(d.year, d.month, d.day + 1)) {
+      covered.add(_ymd(d));
+    }
+  }
+  final rng = Random(1008);
+  final out = <Map<String, dynamic>>[];
+  for (var d = first; d.isBefore(today); d = DateTime(d.year, d.month, d.day + 1)) {
+    final skipped = rng.nextDouble() < 0.12;
+    final detailed = rng.nextDouble() < 0.65;
+    final r = [for (var i = 0; i < 4; i++) rng.nextDouble()];
+    if (skipped || covered.contains(_ymd(d))) continue;
+    final noon = DateTime(d.year, d.month, d.day, 12);
+    final at = DateTime(d.year, d.month, d.day, 20).toUtc().toIso8601String();
+    out.add({
+      'local_date': _ymd(d),
+      'offset_minutes': noon.timeZoneOffset.inMinutes,
+      'triggers_suspected': detailed
+          ? [if (r[0] < 0.10) 'Screen time', if (r[1] < 0.08) 'Stress', if (r[2] < 0.15) 'Caffeine']
+          : <String>[],
+      'sleep_hours_prior': detailed ? (r[3] < 0.1 ? 5.6 : (64 + r[3] * 18).round() / 10) : null,
+      'stress_level': detailed ? (r[1] < 0.12 ? 4 : 1 + (r[2] * 3).floor()) : null,
+      'foods_notable': <String>[],
+      'created_at': at,
+      'updated_at': at,
+    });
+  }
+  return out;
 }
 
 /// The sample export exactly as stored, for tests that compare before and after the move.
@@ -173,11 +275,9 @@ Future<void> runShots(
   await _bringToTop(tester, find.text('Top suspected factors'));
   await capture(kShotNames[2]);
 
-  // 04 — A descriptive chart, expanded.
-  final byWeekday = find.text('By day of week');
-  await _bringToTop(tester, byWeekday, alignment: 0.15);
-  await tester.tap(byWeekday);
-  await tester.pumpAndSettle();
+  // 04 — Migraine days vs clear days (the check-ins' tracked-day comparison).
+  await _bringToTop(tester, find.text('Migraine days vs clear days'));
+  expect(find.text('Screen time'), findsWidgets);
   await capture(kShotNames[3]);
 
   // 05 — History list.
@@ -193,7 +293,7 @@ Future<void> runShots(
   await settle(tester);
   await capture(kShotNames[5]);
 
-  // 07 — Entry detail of the latest migraine (triggers, medications).
+  // 07 — Entry detail of the latest migraine (triggers, medications, relief).
   await tester.tap(find.text('List'));
   await settle(tester);
   await tester.tap(tiles.first);
