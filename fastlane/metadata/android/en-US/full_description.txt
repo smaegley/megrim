@@ -6,7 +6,10 @@ What's inside:
 
 * Automatic on-device enrichment — daylight hours, time of day, season, and moon phase computed locally; opt in to add local weather and barometric-pressure change (24h/48h). No manual entry.
 * Real personal analytics — migraine days per month (the last 30 days, a 3-month average and a monthly chart), trends by day-of-week, time-of-day, season, daylight, pressure change, and moon phase, plus a "suspected factors" card that uses odds ratios over your own log.
-* Fast logging — one tap starts a migraine, or long-press the app icon and choose "Log migraine".
+* Clear days count too — tap "No migraine today" to record a good day, and Megrim compares your sleep, stress, triggers and foods on migraine days against clear days.
+* Fast logging — one tap starts a migraine, or long-press the app icon and choose "Log migraine". Record symptoms, how much it affected your day, attacks without headache, medications and non-drug relief.
+* Medications — classes for acute medications with a monthly medication-days count and a medication-overuse notice, preventives with start and stop dates, and what helped.
+* Optional reminders — a daily reminder to log, and a "Migraine in progress" notification with an End button. Off until you turn them on (the notification permission is asked for only then), and never shown on a secure lock screen.
 * Your data stays yours — on-device storage only, with full export and import (JSON and CSV), a printable PDF report for your doctor, and an optional backup reminder.
 * Optional app lock — open Megrim with your phone's own fingerprint, face or PIN, and hide it in the recent-apps switcher.
 * No accounts, no servers, no telemetry — by default the app makes no automatic network requests (the only exception is the place-name search you type when setting your home location). Weather enrichment is opt-in; when enabled, the only network request is to Open-Meteo.com, to fetch weather for the approximate (~1 km rounded) location and date of the entries you create.

@@ -30,21 +30,39 @@ come before them.
 ## Features
 
 **Logging**
+
 - **One tap to start a migraine**, one to end it; an elapsed timer, severity slider and notes
   while it's going, and **Discard** for an accidental tap. Or long-press the app icon and choose
   **Log migraine**.
-- Full entry details: start and end (in the time zone you logged in), severity, head location,
-  aura, medications with dose and whether each helped, suspected triggers (including "Travel"),
-  sleep, stress, notable foods, notes, and the recorded location (your home, a recent place, a
-  search, GPS coordinates or a Plus Code; never read from the device's GPS).
+- **No migraine today**: one tap on the Log tab records a clear day, with optional sleep, stress,
+  triggers and foods. Clear days are what let Analytics compare migraine days with ordinary ones.
+- Full entry details: start and end (in the time zone you logged in), severity, whether there
+  was a headache at all (for aura-only or vestibular attacks), symptoms, how much it affected
+  your day, head location, aura, medications with dose and whether each helped, non-drug relief
+  you tried (dark room, cold pack…), suspected triggers (including "Travel"), sleep, stress,
+  notable foods, notes, and the recorded location (your home, a recent place, a search, GPS
+  coordinates or a Plus Code; never read from the device's GPS).
 - **Add past entries** from History, including migraines that ran over several days.
-- Editable lists of triggers, head locations and medications.
+- **Medications**: give each acute medication a class (triptan, simple pain reliever…, asked once
+  and skippable), and record preventive medications with the dates you started and stopped them.
+- Editable lists of triggers, symptoms, relief methods, head locations and medications.
+
+**Reminders** (optional, off until you turn them on)
+
+- A **daily reminder** at a time you choose, asking how today was, with **No migraine today** and
+  **Log** buttons. It skips a day you've already logged.
+- On Android, a **Migraine in progress** notification with a running clock and an **End** button,
+  so a migraine timer isn't left running by mistake.
+- Neither shows on a secure lock screen.
 
 **History**
+
 - A list view and a weekday-aligned **calendar**, coloured by severity; multi-day migraines show
-  on every day they cover. Tap any day to open or add an entry.
+  on every day they cover, and clear days carry a tick. Tap a day to open its entry, or tap an
+  empty past day to mark it clear or log a migraine on it.
 
 **Analytics** (all computed on the device; see [`docs/METHODS.md`](docs/METHODS.md))
+
 - **Days since your last migraine**, coloured against your usual gap, and a summary (entries,
   years tracked, average severity, duration, interval, migraines per year).
 - **Migraine days per month**: the last 30 days, the average over the last 3 complete months, and
@@ -52,28 +70,38 @@ come before them.
   and treatment.
 - **Top Suspected Factors**: odds ratios for day of week, month, season, moon phase, daylight
   hours and (with weather on) pressure change, with the caveats spelled out.
+- **Days tracked** and **Migraine days vs clear days**: once you check in on clear days, how much
+  of your time is recorded, and odds ratios for your sleep, stress, triggers and foods on the
+  days migraines started against clear days.
+- **Medications**: days with acute medication each month, by class, with a calm notice when the
+  last three complete months each reached the level the headache classification (ICHD-3)
+  associates with medication-overuse headache; preventives marked on the monthly chart; and **What helped**, from your own "helped" answers.
+- Symptoms, how migraines affected your day, and attacks without headache.
 - Descriptive charts by year, weekday, season, time of day, daylight, pressure change and moon
   phase; the most-tagged triggers; and an **Away from home** share.
 
 **Reports, export and backup**
-- **Export report (PDF)**: a printable summary for a clinician, built on the device.
-- Export to JSON (a full backup, including the computed analytics) or CSV; import JSON (merge or
-  replace). Your phone's own backup (Google on Android, iCloud or a computer on iPhone) includes
-  the diary too.
+
+- **Export report (PDF)**: a printable summary for a clinician, built on the device, now with
+  medication days, preventives, symptoms, impact and the clear-day comparison.
+- Export to JSON (a full backup, including the computed analytics) or CSV; import JSON (merge or replace). Your phone's own backup (Google on Android, iCloud or a computer on iPhone) includes the diary too.
 - An optional **backup reminder** that shows when you last exported and can warn you after an
   interval you choose.
 
 **Privacy and accessibility**
+
 - Optional **app lock** (Settings › Privacy) with your phone's own fingerprint, face or PIN, so
   there's no separate Megrim PIN to forget; it locks again after a time you choose. **Hide in
   recent apps** blanks Megrim in the app switcher (on Android it also blocks screenshots).
+- Reminders and notifications are opt-in, and kept off the lock screen.
 - Light and dark themes following the phone; tap targets, contrast and screen-reader labels
   checked by automated tests in both themes.
 
 ## Status
 
 **Latest release: [`v1.0.7`](https://github.com/smaegley/megrim/releases/tag/v1.0.7)**
-(2026-10-08). App id `org.maegley.megrim`.
+(2026-10-08). **Next: `v1.0.8`**, being prepared (see the release history below). App id
+`org.maegley.megrim`.
 
 - **F-Droid:** in the catalogue since 2026-08-23
   ([!43692](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/43692)); new `v*` tags are
@@ -92,6 +120,19 @@ planned and proposed work is in [`docs/BACKLOG.md`](docs/BACKLOG.md).
 Newest first. Full notes for each release are on the
 [Releases page](https://github.com/smaegley/megrim/releases).
 
+- **`v1.0.8`** (in preparation):
+  - **"No migraine today" check-ins**, from the Log tab, the calendar or the daily reminder.
+    They make **Days tracked** and **Migraine days vs clear days** possible, the latter comparing
+    your sleep, stress, triggers and foods on migraine days against clear days.
+  - An optional **daily reminder**, and on Android an optional **Migraine in progress**
+    notification with an End button. On Android this adds `POST_NOTIFICATIONS` (asked for only
+    when you turn one on), `VIBRATE` and `RECEIVE_BOOT_COMPLETED` (to keep the reminder after a restart).
+  - **Symptoms**, **impact** (how much the migraine affected your day) and **attacks without
+    headache** (aura-only or vestibular).
+  - **Medication classes** with a monthly medication-days count and an overuse notice,
+    **preventive medications** with start and stop dates, **relief tried**, and **What helped**.
+  - All of it in the PDF report, the JSON export and import. The database upgrades in place;
+    nothing you've logged changes.
 - **`v1.0.7`** (2026-10-08): **app lock** with the phone's own fingerprint, face or PIN, and
   **Hide in recent apps** (on Android this adds the `USE_BIOMETRIC` and `USE_FINGERPRINT`
   permissions, granted at install with no prompt and unused unless app lock is on); **migraine
@@ -208,16 +249,18 @@ See [`docs/PRIVACY.md`](docs/PRIVACY.md). Short version: all data stays on your 
 operate no servers and collect nothing. The Android app's permissions are `INTERNET` (weather and
 place search, only when you use them), the network-state check used to detect being offline,
 `USE_BIOMETRIC` / `USE_FINGERPRINT` for the optional app lock, and, from 1.0.8,
-`POST_NOTIFICATIONS` / `VIBRATE` / `RECEIVE_BOOT_COMPLETED` for the optional reminders (asked for
-only when you turn one on). There is no location permission.
+`POST_NOTIFICATIONS` / `VIBRATE` / `RECEIVE_BOOT_COMPLETED` for the optional reminder and
+Migraine in progress notification (the notification permission is asked for only when you turn
+one on). There is no location permission.
 
 ## How the analytics work
 
 See [`docs/METHODS.md`](docs/METHODS.md) for a plain-language explanation of every number on the
 Analytics tab: what an odds ratio means here, exactly how Top Suspected Factors is computed (a
 2×2 table per factor with a Haldane–Anscombe correction, counting the day each migraine started),
-how migraine days per month are counted, which thresholds decide what is shown, and the limits of
-what the analysis can tell you.
+how migraine days per month are counted, how clear days are compared with migraine days, how
+medication days and the overuse notice are counted, which thresholds decide what is shown, and
+the limits of what the analysis can tell you.
 
 ## Medical disclaimer
 
