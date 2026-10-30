@@ -30,6 +30,7 @@ come before them.
 ## Features
 
 **Logging**
+
 - **One tap to start a migraine**, one to end it; an elapsed timer, severity slider and notes
   while it's going, and **Discard** for an accidental tap. Or long-press the app icon and choose
   **Log migraine**.
@@ -47,6 +48,7 @@ come before them.
 - Editable lists of triggers, symptoms, relief methods, head locations and medications.
 
 **Reminders** (optional, off until you turn them on)
+
 - A **daily reminder** at a time you choose, asking how today was, with **No migraine today** and
   **Log** buttons. It skips a day you've already logged.
 - On Android, a **Migraine in progress** notification with a running clock and an **End** button,
@@ -54,11 +56,13 @@ come before them.
 - Neither shows on a secure lock screen.
 
 **History**
+
 - A list view and a weekday-aligned **calendar**, coloured by severity; multi-day migraines show
   on every day they cover, and clear days carry a tick. Tap a day to open its entry, or tap an
   empty past day to mark it clear or log a migraine on it.
 
 **Analytics** (all computed on the device; see [`docs/METHODS.md`](docs/METHODS.md))
+
 - **Days since your last migraine**, coloured against your usual gap, and a summary (entries,
   years tracked, average severity, duration, interval, migraines per year).
 - **Migraine days per month**: the last 30 days, the average over the last 3 complete months, and
@@ -71,22 +75,21 @@ come before them.
   days migraines started against clear days.
 - **Medications**: days with acute medication each month, by class, with a calm notice when the
   last three complete months each reached the level the headache classification (ICHD-3)
-  associates with medication-overuse headache; preventives marked on the monthly chart; and **What
-  helped**, from your own "helped" answers.
+  associates with medication-overuse headache; preventives marked on the monthly chart; and **What helped**, from your own "helped" answers.
 - Symptoms, how migraines affected your day, and attacks without headache.
 - Descriptive charts by year, weekday, season, time of day, daylight, pressure change and moon
   phase; the most-tagged triggers; and an **Away from home** share.
 
 **Reports, export and backup**
+
 - **Export report (PDF)**: a printable summary for a clinician, built on the device, now with
   medication days, preventives, symptoms, impact and the clear-day comparison.
-- Export to JSON (a full backup, including the computed analytics) or CSV; import JSON (merge or
-  replace). Your phone's own backup (Google on Android, iCloud or a computer on iPhone) includes
-  the diary too.
+- Export to JSON (a full backup, including the computed analytics) or CSV; import JSON (merge or replace). Your phone's own backup (Google on Android, iCloud or a computer on iPhone) includes the diary too.
 - An optional **backup reminder** that shows when you last exported and can warn you after an
   interval you choose.
 
 **Privacy and accessibility**
+
 - Optional **app lock** (Settings › Privacy) with your phone's own fingerprint, face or PIN, so
   there's no separate Megrim PIN to forget; it locks again after a time you choose. **Hide in
   recent apps** blanks Megrim in the app switcher (on Android it also blocks screenshots).
@@ -117,14 +120,13 @@ planned and proposed work is in [`docs/BACKLOG.md`](docs/BACKLOG.md).
 Newest first. Full notes for each release are on the
 [Releases page](https://github.com/smaegley/megrim/releases).
 
-- **`v1.0.8`** (in preparation), the biggest update since 1.0.0:
+- **`v1.0.8`** (in preparation):
   - **"No migraine today" check-ins**, from the Log tab, the calendar or the daily reminder.
     They make **Days tracked** and **Migraine days vs clear days** possible, the latter comparing
     your sleep, stress, triggers and foods on migraine days against clear days.
   - An optional **daily reminder**, and on Android an optional **Migraine in progress**
     notification with an End button. On Android this adds `POST_NOTIFICATIONS` (asked for only
-    when you turn one on), `VIBRATE` and `RECEIVE_BOOT_COMPLETED` (to keep the reminder after a
-    restart).
+    when you turn one on), `VIBRATE` and `RECEIVE_BOOT_COMPLETED` (to keep the reminder after a restart).
   - **Symptoms**, **impact** (how much the migraine affected your day) and **attacks without
     headache** (aura-only or vestibular).
   - **Medication classes** with a monthly medication-days count and an overuse notice,
