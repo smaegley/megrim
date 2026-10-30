@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-30: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19, schema v5) passed Steve's test and is **merged to `main`** (2026-10-29). Group C is split into C1 and C2; **C1 (#16, #27, #23 step 3 on Android, schema v6) passed Steve's test and is merged to `main`** (2026-10-30). C2 is next._
+_Last updated: 2026-10-30: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19, schema v5) passed Steve's test and is **merged to `main`** (2026-10-29). Group C is split into C1 and C2; **C1 (#16, #27, #23 step 3 on Android, schema v6) passed Steve's test and is merged to `main`** (2026-10-30). **C2 is deferred to 1.1.0** (Steve, 2026-10-30); next is the 1.0.8 screenshot retake._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -89,7 +89,7 @@ changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DU
   (a Simplified Chinese request) depends on it; no reply posted on the issue yet. Note that issue
   #19 and backlog #19 are different things.
 - ~~**C1**~~: merged to `main` 2026-10-30 (above). **C2** (the widget, #23 step 2 on both
-  platforms, and the iOS Live Activity, #23 step 3) is still open.
+  platforms, and the iOS Live Activity, #23 step 3) is **deferred to 1.1.0** (Steve, 2026-10-30).
 - **C (as first planned): #16 + #23 steps 2–3 + #27**: "No migraine today" check-ins (the biggest analytics
   improvement); the home-screen widget, now with a running timer during a migraine; the
   "migraine in progress" ongoing notification on Android (Live Activity on iOS); and an opt-in

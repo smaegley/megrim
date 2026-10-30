@@ -650,7 +650,7 @@ once it exists; "impact recorded on N of M migraine days") and the same as one l
 PDF summary. Export: `impact` per event (unknown values dropped on import) and an `impact` object
 in the analytics block.
 
-### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; **(3) on Android BUILT** *(2026-10-29, group C1; merged to `main` 2026-10-30)*; (2) and (3) on iOS **PROPOSED** (group C2)
+### 23. Faster capture: app shortcut, home-screen widget, iOS Live Activity — **(1) DONE** *(shipped in `v1.0.7`; tested on Android and the iOS Simulator)*; **(3) on Android BUILT** *(2026-10-29, group C1; merged to `main` 2026-10-30)*; (2) and (3) on iOS **DEFERRED to 1.1.0** (group C2, Steve 2026-10-30)
 
 **Want:** start a migraine without navigating the app — in increasing cost: (1) long-press app
 icon → "Log migraine" / "No migraine today"; (2) a home-screen widget showing days since last
@@ -709,6 +709,13 @@ ships widgets, Live Activities and Dynamic Island; Migraine Buddy and others pus
 
 **Verification:** widget/shortcut deep links covered by integration tests where possible;
 manual release-build smoke test on a real device (minification note in STATUS "Known gaps").
+
+**Deferred (Steve, 2026-10-30):** C2 (the widget on both platforms and the iOS Live Activity)
+moves to **1.1.0**; 1.0.8 ships groups A, B and C1. Decided for C2: the Live Activity shows only
+"Megrim" and a timer on the lock screen and Dynamic Island, never the word "migraine" (option (i);
+it also keeps the brand in view). Proposed, not yet confirmed: with app lock on, the widget shows
+no days-since figure or timer, just "Megrim" and its buttons; and the Android widget goes on its
+own branch ahead of the iOS widget and Live Activity.
 
 **As built, (3) on Android (2026-10-29, with #27):** `flutter_local_notifications` shows "Migraine
 in progress" with a native running clock (`usesChronometer`, `when` = the start, so no background
