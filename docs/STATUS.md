@@ -1,20 +1,20 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-30: **v1.0.8 (versionCode 13) is prepared for tagging**: groups A, B and C1 (schema v6). v1.0.7 is live everywhere (GitHub, App Store, F-Droid). C2 (widget, iOS Live Activity) is deferred to 1.1.0._
+_Last updated: 2026-10-30: **v1.0.8 (versionCode 13) tagged and published on GitHub; iOS 1.0.8 (build 14) submitted to App Review; F-Droid to follow by itself**: groups A, B and C1 (schema v6). v1.0.7 is live everywhere (GitHub, App Store, F-Droid). C2 (widget, iOS Live Activity) is deferred to 1.1.0._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
 
 ## Next steps (as of 2026-10-30)
 
-1. **Tag `v1.0.8`** (Steve), once `chore/release-1.0.8` is merged to `main`:
+1. ~~**Tag `v1.0.8`**~~ done 2026-10-30 (below); still to do: paste the GitHub release body. Was:
    `git tag v1.0.8 && git push origin v1.0.8`. `release.yml` builds and publishes the signed APK
    and AAB. Then check the published APK: versionCode 13, versionName 1.0.8, signed
    `CN=Steve Maegley`, and the permissions INTERNET, ACCESS_NETWORK_STATE, USE_BIOMETRIC,
    USE_FINGERPRINT plus the new POST_NOTIFICATIONS, VIBRATE and RECEIVE_BOOT_COMPLETED. Paste the
    GitHub release body from `.claude/release-1.0.8-drafts.md` (on the VM). F-Droid follows by
    itself (versionCodes 131–133).
-2. **iOS 1.0.8:** `flutter build ipa --build-number=14` from `~/megrim/app` (1.0.7 was build 13),
+2. ~~**iOS 1.0.8**~~ submitted 2026-10-30, waiting on App Review. Was: `flutter build ipa --build-number=14` from `~/megrim/app` (1.0.7 was build 13),
    upload via the Xcode Organizer, What's New from the drafts file (no Android notification),
    upload the 1.0.8 screenshots from `screenshots/ios/`, and add the notifications line now in
    `docs/APP_STORE.md` to the review notes. First iOS release with a notification permission and
@@ -24,7 +24,16 @@ A resume-here snapshot: what is shipped, what is in flight, and what the open th
 4. **Next release: spend a cycle on the App Store product page** (Steve, 2026-10-30): the new
    custom header and iPhone Duo screenshots, backlog #29.
 
-## `v1.0.8` (versionCode 13, prepared 2026-10-30)
+## `v1.0.8` (versionCode 13, tagged 2026-10-30)
+
+Android: **released 2026-10-30** (`release.yml` green in 7m20s, APK/AAB published, not
+draft/prerelease; the published APK verified: versionCode 13, versionName 1.0.8, signed
+`CN=Steve Maegley` SHA-256 `c316cce2…`, permissions INTERNET, ACCESS_NETWORK_STATE,
+USE_BIOMETRIC, USE_FINGERPRINT, POST_NOTIFICATIONS, VIBRATE, RECEIVE_BOOT_COMPLETED). F-Droid
+picks up the tag by itself (versionCodes 131–133, with the new description, screenshots and
+changelog from the tagged commit); the new plugin `flutter_local_notifications` ships no prebuilt
+binaries. **iOS 1.0.8 (build 14): submitted to App Review 2026-10-30** (first archive from
+Xcode 27; new screenshots, notifications line in the review notes).
 
 Groups A, B and C1, each tested by Steve from a script (emulator, a real Android phone where
 native code changed, and the iOS Simulator), all passed. Schema v3 → v6, additive. Notes:
