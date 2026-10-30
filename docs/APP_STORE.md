@@ -97,6 +97,9 @@ with enrichment, Settings/export.
   (`NSFaceIDUsageDescription` explains this).
 - A "Log migraine" Home Screen quick action (long-press the icon) starts logging; it waits for the
   unlock if app lock is on.
+- Notifications (from 1.0.8) are only the optional daily reminder to log, scheduled on the device
+  (no push server); the permission is asked for only when the user turns the reminder on in
+  Settings. Its text is generic ("How was today?") and it isn't shown on a locked screen.
 - The statistical methodology behind "Suspected Factors" is publicly documented in plain
   language: https://github.com/smaegley/megrim/blob/main/docs/METHODS.md (retrospective
   descriptive statistics only — no diagnosis, no prediction).
