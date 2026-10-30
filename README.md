@@ -238,9 +238,10 @@ Store screenshots are generated: `tools/screenshots.sh <target>` (e.g. `iphone-6
 shot list in `app/integration_test/shots.dart`, checks each image's size and files it for the
 store. `tools/screenshots.py --list` shows the targets.
 
-Release notes are written once per version in `docs/release-notes/<version>.txt` (500 characters
-at most, for F-Droid); `tools/sync_changelogs.py` generates F-Droid's per-ABI changelog files
-from them, and CI checks they're in step.
+Release notes are written once per version in `docs/release-notes/`: `<version>.txt` (500
+characters at most) is F-Droid's changelog, and `tools/sync_changelogs.py` generates F-Droid's
+per-ABI changelog files from it; `<version>.md` is the GitHub release description, which
+`release.yml` posts when the version is tagged. CI checks both exist and are in step.
 
 ## Privacy
 
