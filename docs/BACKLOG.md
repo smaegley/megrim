@@ -4,15 +4,16 @@
 Non-blocking improvements captured for later. Not committed to a release; groom as needed.
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
-> **Status (2026-10-07):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
-> record. #13 shipped in `v1.0.5`; #12 and #14 shipped in `v1.0.6`. **#15 is DEFERRED.**
-> **#16 and #18–#22 are PROPOSED** (2026-10-06, from a competitor feature review — see *Features*
-> below); **#17 (monthly migraine days), #23 step (1) (app-icon shortcut) and #24 (app lock) are
-> DONE**, shipped in `v1.0.7` (2026-10-08); #23 steps (2)–(3) remain proposed.
-> **#25 (move UI text into a message file, prep for translations) is PROPOSED** (2026-10-27, from
-> issue #19). **#20 (symptoms), #22(a) (impact) and #26 (attacks without headache) are BUILT**
-> together on `feat/attack-details` (schema v4, 2026-10-27); Steve's test passed 2026-10-28, merged 2026-10-29
-> (one wording fix, the Impact hint). They shipped in `v1.0.8` (2026-10-30).
+> **Status (2026-10-30):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
+> record. #17, #23 (1) and #24 shipped in `v1.0.7`. **`v1.0.8` (2026-10-30) shipped #16, #18,
+> #19, #20, #22(a), #26, #27 and #23 (3) on Android.** Still open:
+> - **Next release (planned):** **#29** (App Store custom header and iPhone Duo screenshots; Steve
+>   wants a cycle on it) and **#28** (`share_plus` before the next Flutter upgrade).
+> - **1.1.0:** #23 (2) home-screen widget on both platforms and #23 (3) iOS Live Activity (group
+>   C2, deferred by Steve 2026-10-30; the Live Activity shows only "Megrim" and a timer).
+> - **Proposed:** #25 (UI text into a message file, needed for issue #19's translation request),
+>   #21 (menstrual cycle log), #22(b) (blocked on licensing). **#15 is DEFERRED.**
+>
 > Add new items as they come up.
 
 ## UI / UX
@@ -1033,7 +1034,7 @@ and the creative-assets specifications):
 - Product page optimization can A/B test header variants later.
 - iPhone Duo: the page only points to the screenshot and preview specifications.
 
- before Flutter drops plugins that apply the Kotlin Gradle Plugin — **PROPOSED** *(2026-10-30)*
+### 28. Update `share_plus` before Flutter drops plugins that apply the Kotlin Gradle Plugin — **PROPOSED** *(2026-10-30)*
 
 **Found:** the 1.0.8 screenshot build (Flutter 3.44.5) warned that `share_plus` (10.1.4) applies
 the Kotlin Gradle Plugin and that "future versions of Flutter will fail to build" with such

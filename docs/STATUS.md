@@ -1,28 +1,39 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-30: **v1.0.8 (versionCode 13) tagged and published on GitHub; iOS 1.0.8 (build 14) submitted to App Review; F-Droid to follow by itself**: groups A, B and C1 (schema v6). v1.0.7 is live everywhere (GitHub, App Store, F-Droid). C2 (widget, iOS Live Activity) is deferred to 1.1.0._
+_Last updated: 2026-10-30, end of the 1.0.8 session: **v1.0.8 (versionCode 13) released on GitHub; iOS 1.0.8 (build 14) in App Review; F-Droid to follow by itself (expected about 6–7 November)**: groups A, B and C1 (schema v6). v1.0.7 is live everywhere until then. C2 (widget, iOS Live Activity) is deferred to 1.1.0. The GitHub release description is now posted automatically from `docs/release-notes/<version>.md`._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
 
 ## Next steps (as of 2026-10-30)
 
-1. ~~**Tag `v1.0.8`**~~ done 2026-10-30 (below); still to do: paste the GitHub release body. Was:
-   `git tag v1.0.8 && git push origin v1.0.8`. `release.yml` builds and publishes the signed APK
-   and AAB. Then check the published APK: versionCode 13, versionName 1.0.8, signed
-   `CN=Steve Maegley`, and the permissions INTERNET, ACCESS_NETWORK_STATE, USE_BIOMETRIC,
-   USE_FINGERPRINT plus the new POST_NOTIFICATIONS, VIBRATE and RECEIVE_BOOT_COMPLETED. Paste the
-   GitHub release body from `.claude/release-1.0.8-drafts.md` (on the VM). F-Droid follows by
-   itself (versionCodes 131–133).
-2. ~~**iOS 1.0.8**~~ submitted 2026-10-30, waiting on App Review. Was: `flutter build ipa --build-number=14` from `~/megrim/app` (1.0.7 was build 13),
-   upload via the Xcode Organizer, What's New from the drafts file (no Android notification),
-   upload the 1.0.8 screenshots from `screenshots/ios/`, and add the notifications line now in
-   `docs/APP_STORE.md` to the review notes. First iOS release with a notification permission and
-   the first archive from Xcode 27.
-3. After release: update this file (released dates, F-Droid serving), and move on to the backlog
-   below.
-4. **Next release: spend a cycle on the App Store product page** (Steve, 2026-10-30): the new
-   custom header and iPhone Duo screenshots, backlog #29.
+**Done this session:** v1.0.8 tagged and published on GitHub (published APK checked, release
+description pasted by Steve); iOS 1.0.8 build 14 submitted to App Review; store screenshots
+retaken; README, F-Droid description and release notes refreshed; a release checklist written
+(*Working notes* below); and `release.yml` now posts the GitHub release description from
+`docs/release-notes/<version>.md` (merged `b2b39f4`, CI green; first real run at the next tag).
+
+**Waiting on (Steve comes back when these land):**
+1. **App Review for iOS 1.0.8.** When it's live: upload the 1.0.8 screenshots from
+   `screenshots/ios/` if not already done with the submission, and mark iOS released here.
+2. **F-Droid 1.0.8** (versionCodes 131–133), about a week after the tag, so around 6–7
+   November. Check the listing shows 1.0.8 with the new description, screenshots and changelog;
+   if the build fails, look at the F-Droid build log first (the new plugin
+   `flutter_local_notifications` ships no binaries, so it shouldn't be that).
+3. Then mark 1.0.8 released everywhere in this file.
+
+**Next release (number to decide; 1.1.0 if C2 goes in):**
+1. **#29, the App Store product page**: custom header (and the optional search-results asset)
+   and iPhone Duo screenshots. Steve wants a full cycle on it. Apple's guidance is already in
+   BACKLOG #29.
+2. **#28**: move `share_plus` off the Kotlin Gradle Plugin before the next Flutter upgrade.
+3. **C2 for 1.1.0**: the home-screen widget (#23 (2), both platforms) and the iOS Live Activity
+   (#23 (3), showing only "Megrim" and a timer).
+4. After those, in the agreed order: #25 (UI text into ARB; unblocks issue #19), D (#21 cycle
+   log), #15, and #22(b) once licensing is settled.
+5. **First automated release description:** after tagging, check the Releases page shows the
+   `.md`. Optionally backfill the blank descriptions of releases before 1.0.8 from the README's
+   release history (Steve's call; not done).
 
 ## `v1.0.8` (versionCode 13, tagged 2026-10-30)
 
@@ -114,8 +125,11 @@ changed since. iPhone Duo sets wait for a Duo Simulator in Xcode (`MEGRIM_SIM_DU
   #19 and backlog #19 are different things.
 - ~~**C1**~~: merged to `main` 2026-10-30 (above). **C2** (the widget, #23 step 2 on both
   platforms, and the iOS Live Activity, #23 step 3) is **deferred to 1.1.0** (Steve, 2026-10-30).
+- **#29** App Store custom header and iPhone Duo screenshots, and **#28** `share_plus`: planned
+  for the next release (Next steps above).
 - **D: #21** opt-in menstrual cycle log.
-- **E: #23 step 3** (iOS Live Activity) and **#15** (remember export location / automatic backups).
+- **E: #15** (remember export location / automatic backups). The iOS Live Activity, once in E,
+  is now part of C2.
 - **#22(b)** validated impact questionnaire: blocked on licensing.
 
 **Dev machine (2026-10-28):** Steve moved from the M4 Mac mini to an **M6 Mac mini (32 GB)**.
