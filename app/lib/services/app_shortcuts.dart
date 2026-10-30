@@ -8,6 +8,18 @@ import 'package:flutter/widgets.dart';
 /// tap during onboarding is dropped. So the shortcut can never log anything behind the lock.
 const String kLogMigraineShortcut = 'log_migraine';
 
+/// Notification buttons (backlog #27, #23 step 3), queued the same way: "No migraine today" on the
+/// reminder checks today in, "Log" (and a tap on either notification) opens the Log tab, and End
+/// on the ongoing notification ends the migraine in progress.
+const String kCheckinTodayAction = 'checkin_today';
+const String kOpenLogAction = 'open_log';
+const String kEndMigraineAction = 'end_migraine';
+const Set<String> kNotificationActions = {
+  kCheckinTodayAction,
+  kOpenLogAction,
+  kEndMigraineAction,
+};
+
 /// Seam over the platform channel (MainActivity on Android, AppDelegate on iOS).
 abstract class ShortcutSource {
   /// The shortcut that launched the app, if any. Returns it once, then null.
@@ -43,29 +55,34 @@ class AppShortcuts extends ChangeNotifier {
   final ShortcutSource source;
   AppShortcuts({ShortcutSource? source}) : source = source ?? PlatformShortcutSource();
 
-  bool _pending = false;
+  String? _pending;
 
-  /// A "Log migraine" tap is waiting to be acted on.
-  bool get pending => _pending;
+  /// A shortcut or notification tap is waiting to be acted on.
+  bool get pending => _pending != null;
 
   Future<void> init() async {
-    source.listen(_onAction);
+    source.listen(dispatch);
     final initial = await source.initialAction();
-    if (initial != null) _onAction(initial);
+    if (initial != null) dispatch(initial);
   }
 
-  void _onAction(String action) {
-    if (action != kLogMigraineShortcut) return;
-    _pending = true;
+  /// Queue [action]. A later tap replaces an earlier one still waiting: it is what the user did
+  /// last.
+  void dispatch(String action) {
+    if (action != kLogMigraineShortcut && !kNotificationActions.contains(action)) return;
+    _pending = action;
     notifyListeners();
   }
 
-  /// Claim the waiting tap: true once per tap.
-  bool take() {
-    if (!_pending) return false;
-    _pending = false;
-    return true;
+  /// Claim the waiting action, once.
+  String? takeAction() {
+    final a = _pending;
+    _pending = null;
+    return a;
   }
+
+  /// Claim the waiting tap: true once per tap.
+  bool take() => takeAction() != null;
 }
 
 /// Makes [AppShortcuts] reachable from [HomeShell] and the onboarding gate.

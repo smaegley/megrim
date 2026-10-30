@@ -191,6 +191,35 @@ PreventiveRegimensCompanion? preventiveFromJson(Map<String, dynamic> j) {
   );
 }
 
+/// A "No migraine today" check-in (schema v6, backlog #16).
+Map<String, dynamic> checkinToJson(DayCheckin c) => {
+      'local_date': c.localDate,
+      'offset_minutes': c.offsetMin,
+      'triggers_suspected': decodeStringList(c.triggersSuspected),
+      'sleep_hours_prior': c.sleepHoursPrior,
+      'stress_level': c.stressLevel,
+      'foods_notable': decodeStringList(c.foodsNotable),
+      'created_at': _iso(c.createdAt),
+      'updated_at': _iso(c.updatedAt),
+    };
+
+/// Null when the entry lacks a valid `local_date`. A stress level outside 1–5 is dropped.
+DayCheckinsCompanion? checkinFromJson(Map<String, dynamic> j) {
+  final day = _isoDayOrNull(j['local_date']);
+  if (day == null) return null;
+  final stress = j['stress_level'];
+  return DayCheckinsCompanion.insert(
+    localDate: day,
+    offsetMin: Value((j['offset_minutes'] as num?)?.toInt()),
+    triggersSuspected: Value(encodeStringList(_strList(j['triggers_suspected']))),
+    sleepHoursPrior: Value((j['sleep_hours_prior'] as num?)?.toDouble()),
+    stressLevel: Value(stress is int && stress >= 1 && stress <= 5 ? stress : null),
+    foodsNotable: Value(encodeStringList(_strList(j['foods_notable']))),
+    createdAt: _parseIso(j['created_at']) ?? DateTime.now().toUtc(),
+    updatedAt: _parseIso(j['updated_at']) ?? DateTime.now().toUtc(),
+  );
+}
+
 String? _isoDayOrNull(dynamic v) {
   final d = v is String ? parseIsoDay(v) : null;
   return d == null ? null : isoDay(d);

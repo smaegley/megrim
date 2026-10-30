@@ -129,8 +129,10 @@ appears in the merged dependency graph (simple gradle-deps grep step).
 
 ## 3. Data model (Drift/SQLite, schema v1)
 
-*Now schema v3 (2026-09): v2 added per-event UTC offsets (issue #17), v3 the "Travel" trigger seed
-(backlog #13); both additive. Details in §12.*
+*Now schema v6 (2026-10): v2 added per-event UTC offsets (issue #17), v3 the "Travel" trigger seed
+(backlog #13), v4 symptoms, impact and attacks without headache (#20, #22a, #26), v5 medication
+classes, preventives and relief (#18, #19, §3.5), v6 "No migraine today" check-ins (#16, §3.6);
+all additive. Details in §12.*
 
 Carried from the private app with server-sync fields removed and vocab made user-editable.
 All timestamps stored UTC (ISO-8601 in exports); all display in local time.
@@ -209,6 +211,16 @@ medication-overuse levels (`docs/METHODS.md`).
 
 `preventive_regimens(id TEXT PK, name, dose?, started_on TEXT yyyy-MM-dd, stopped_on?, notes?,
 created_at, updated_at)`: preventive medications with their dates. Calendar dates, no zone.
+
+### 3.6 Check-ins (schema v6, backlog #16)
+
+`day_checkins(local_date TEXT PRIMARY KEY yyyy-MM-dd, offset_min INT?, triggers_suspected?,
+sleep_hours_prior?, stress_level?, foods_notable?, created_at, updated_at)`: a "No migraine today"
+check-in. A row's presence means the day was clear; the self-report fields are optional and
+shaped as on `migraine_events`. The date is the wall-clock date where it was logged, with that
+zone's offset (as issue #17 does for events). A day with a migraine entry wins everywhere: the
+calendar shows the entry, analytics ignore the check-in, and saving an entry removes the check-ins
+on the days it covers (with undo).
 
 ---
 
@@ -417,9 +429,12 @@ emit `megrim-export` JSON → import on phone. ~50 lines of Python against
 - **Permissions manifest (complete list):** *current (2026-10):* `INTERNET`;
   `ACCESS_NETWORK_STATE` (merged in by connectivity_plus); and, since v1.0.7,
   `USE_BIOMETRIC` + `USE_FINGERPRINT` (merged in by local_auth / androidx.biometric, used only
-  when app lock is on). No location permission (the original `ACCESS_COARSE/FINE_LOCATION` were
-  removed in v1.0.1), no background location, no notifications, no storage permission (SAF
-  handles it).
+  when app lock is on); from 1.0.8, `POST_NOTIFICATIONS` (runtime prompt, asked only when the
+  daily reminder or the "Migraine in progress" notification is turned on) and `VIBRATE` (merged in
+  by flutter_local_notifications), and `RECEIVE_BOOT_COMPLETED` (so scheduled reminders survive a
+  reboot). No location permission (the original `ACCESS_COARSE/FINE_LOCATION` were removed in
+  v1.0.1), no background location, no exact-alarm permission (reminders are inexact), no storage
+  permission (SAF handles it).
 
 ---
 
@@ -880,3 +895,15 @@ preventives; a dose on a multi-day entry records its day. Analytics gets Acute m
 (with the notice when each of the last 3 complete months reached an ICHD-3 8.2 level) and What
 helped; the monthly chart marks preventive start/stop months; the PDF carries all of it. ICHD-3
 checked 2026-10-29; rules and the decisions taken in `docs/METHODS.md`.
+
+**2026-10-29 (branch `feat/checkins`, schema v6, not yet released; ships in 1.0.8):** group C1.
+Backlog **#16 ("No migraine today" check-ins)**: the `day_checkins` table (§3.6), a button on
+Quick Log, and a sheet on an empty past calendar day (log a migraine, or mark it clear; clear days
+get a tick). Analytics gets *Days tracked* and *Migraine days vs clear days*, the self-reported
+factors compared over tracked days from the first check-in (gated at 30 tracked days with 5 of
+each; rules in `docs/METHODS.md`); the PDF carries both. **#27 (daily reminder)** and **#23 step 3
+on Android (the "Migraine in progress" notification)**: the first notification plugin,
+`flutter_local_notifications` (BSD-3; adds androidx.media and gson, both Apache-2.0; checked
+against the dependency ban). Both off by default; buttons open the app and act through the
+app-icon shortcut's queue, so nothing is written behind app lock. Neither shows on a secure lock
+screen.

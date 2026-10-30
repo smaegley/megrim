@@ -22,7 +22,8 @@ class ImportException implements Exception {
 
 /// Imports a Megrim JSON export (SPEC §7.3). v1 imports only this format.
 ///  - merge (default): insert events whose id is not already present; existing ids are skipped.
-///  - replace: destructive — wipe all events/derived first (double-confirm in the UI).
+///  - replace: destructive — wipe all events/derived, preventives and check-ins first
+///    (double-confirm in the UI).
 /// Events missing a `derived` block are left without a derived row, so the enrichment queue picks
 /// them up (a missing derived row counts as pending).
 class ImportService {
@@ -74,6 +75,7 @@ class ImportService {
         await db.delete(db.derivedFactors).go();
         await db.delete(db.migraineEvents).go();
         await db.delete(db.preventiveRegimens).go();
+        await db.delete(db.dayCheckins).go();
       }
 
       final existing = replace
@@ -107,6 +109,7 @@ class ImportService {
       // Settings + vocab are applied on replace, or filled in if missing on merge.
       await _applySettingsAndVocab(doc, replace: replace);
       await _applyMedications(doc, replace: replace);
+      await _applyCheckins(doc);
     });
 
     return ImportResult(imported: imported, skipped: skipped, replaced: replace);
@@ -146,6 +149,21 @@ class ImportService {
           }
         }
       }
+    }
+  }
+
+  /// Check-ins (schema v6) are user data like events: replace swaps the whole set (cleared above),
+  /// merge adds the dates not already checked in and leaves existing ones as they are.
+  Future<void> _applyCheckins(Map<String, dynamic> doc) async {
+    final checkins = doc['checkins'];
+    if (checkins is! List) return;
+    final have =
+        (await db.select(db.dayCheckins).map((c) => c.localDate).get()).toSet();
+    for (final raw in checkins) {
+      if (raw is! Map) continue;
+      final c = checkinFromJson(Map<String, dynamic>.from(raw));
+      if (c == null || !have.add(c.localDate.value)) continue;
+      await db.into(db.dayCheckins).insert(c);
     }
   }
 

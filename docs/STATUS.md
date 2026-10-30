@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-29: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19, schema v5) passed Steve's test and is **merged to `main`** (2026-10-29). Group C is split into C1 and C2; C1 is next._
+_Last updated: 2026-10-29: v1.0.7 is live everywhere (GitHub, App Store, F-Droid). Next release is **1.0.8**; `feat/attack-details` (schema v4) passed Steve's test and is **merged to `main`** (2026-10-29). Group B (#18 + #19, schema v5) passed Steve's test and is **merged to `main`** (2026-10-29). Group C is split into C1 and C2; **C1 (#16, #27, #23 step 3 on Android, schema v6) is built on `feat/checkins`**, awaiting Steve's test._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -46,10 +46,17 @@ bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
    Also on the branch: a dose on a multi-day entry now records its day (before, the dialog could
    only place it on the start day).
 3. **Group C, split in two (Steve, 2026-10-29):**
-   - **C1, next:** backlog #16 (the "No migraine today" check-in; schema **v6**, since v4 and v5
-     are taken), #27 (daily reminder) and #23 (3) on Android (ongoing notification while a migraine
-     is in progress). The first notification plugin and `POST_NOTIFICATIONS`, so PRIVACY and the
-     F-Droid listing change. Needs a real Android 13+ phone to test.
+   - **C1: built 2026-10-29 on `feat/checkins`, awaiting Steve's test**
+     (`.claude/test-checkins.md`). Backlog #16 (the "No migraine today" check-in, schema **v6**:
+     Quick Log button, calendar sheet, Days tracked, Migraine days vs clear days, PDF, export),
+     #27 (daily reminder) and #23 (3) on Android (the "Migraine in progress" notification). The
+     first notification plugin (`flutter_local_notifications`); new permissions
+     `POST_NOTIFICATIONS` (runtime), `VIBRATE`, `RECEIVE_BOOT_COMPLETED`. PRIVACY, SPEC, README's
+     permissions line, METHODS, IMPORT and the schema are updated; the **F-Droid listing text**
+     still needs the new permissions at release. Neither notification shows on a secure lock
+     screen. Release APK built and checked on the VM (permissions, icon kept, no banned
+     dependency). Needs a real Android 13+ phone for the notification tests, and `pod install` on
+     the Mac for iOS (new plugin).
    - **C2, after:** #23 (2), the home-screen widget on Android and iOS, and #23 (3) on iOS (Live
      Activity). It needs a WidgetKit extension and an App Group, which are written on the VM but
      compiled and tested on the Mac.

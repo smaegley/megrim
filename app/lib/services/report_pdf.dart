@@ -207,6 +207,10 @@ Future<Uint8List> renderReportPdf(
       pw.SizedBox(height: 6),
       pw.Text(c.impact!, style: const pw.TextStyle(fontSize: 8.5)),
     ],
+    if (c.tracked != null) ...[
+      pw.SizedBox(height: 6),
+      pw.Text(c.tracked!, style: const pw.TextStyle(fontSize: 8.5)),
+    ],
 
     // ── attacks without headache (backlog #26) ──────────────────────────────
     if (c.withoutHeadache != null) ...[
@@ -357,6 +361,49 @@ Future<Uint8List> renderReportPdf(
       note('* marks the rows the app highlights: at least 3 migraine-days in the bucket and an '
           'odds ratio above 1.'),
       for (final caveat in c.caveats) note('- $caveat'),
+    ],
+    // ── migraine days vs clear days (backlog #16) ─────────────────────────
+    if (c.trackedFactors case final t?) ...[
+      // One block, so the heading can't be left alone at the foot of a page.
+      pw.Inseparable(
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            heading('Migraine days vs clear days'),
+            note('Sleep, stress, triggers and foods as recorded on days a migraine started, '
+                'compared with days checked in as having no migraine. Only tracked days count, '
+                'and each factor only the days it was recorded on. The same caution applies as '
+                'above.'),
+            pw.SizedBox(height: 4),
+            pw.Text(t.available ? t.window : t.reason ?? 'Not enough data yet.',
+                style: const pw.TextStyle(fontSize: 8.5)),
+          ],
+        ),
+      ),
+      if (t.available) ...[
+        for (final g in t.groups) ...[
+          pw.SizedBox(height: 8),
+          pw.Text(g.name, style: pw.TextStyle(font: fontBold, fontSize: 9)),
+          pw.SizedBox(height: 2),
+          table(
+            const ['Recorded', 'Migraine-days', 'Tracked days', 'Rate', 'Odds ratio'],
+            [
+              for (final r in g.rows)
+                [
+                  '${r.bucket}${r.isTop ? '  *' : ''}',
+                  '${r.migraineDays}',
+                  '${r.totalDays}',
+                  '${r.ratePct}%',
+                  r.oddsRatio.toStringAsFixed(2),
+                ],
+            ],
+            flex: const [3, 2, 2, 2, 2],
+            rightAlign: const [false, true, true, true, true],
+          ),
+        ],
+        pw.SizedBox(height: 4),
+        for (final caveat in t.caveats) note('- $caveat'),
+      ],
     ],
   ];
 

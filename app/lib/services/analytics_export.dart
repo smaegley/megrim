@@ -1,7 +1,9 @@
+import '../analytics/checkins.dart';
 import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
 import '../analytics/medications.dart';
 import '../models/home_location.dart';
+import '../models/medications.dart' show isoDay;
 
 /// JSON serialization of the app's computed analytics for the `analytics` block of a
 /// `megrim-export` document (issue #16). Pure: no DB, no IO.
@@ -79,6 +81,20 @@ Map<String, dynamic> dashboardToJson(DashboardResult d) => {
             'helped_pct': r.helpedPct,
           },
       ],
+      // Backlog #16: days with an entry or a check-in; null until there is a check-in.
+      'days_tracked': d.tracked == null
+          ? null
+          : {
+              'last_30': d.tracked!.last30,
+              'clear_last_30': d.tracked!.clearLast30,
+              'migraine_last_30': d.tracked!.migraineLast30,
+              'first_checkin': isoDay(d.tracked!.firstCheckin),
+              'since_first_checkin': d.tracked!.sinceFirstCheckin,
+              'days_since_first_checkin': d.tracked!.daysSinceFirstCheckin,
+            },
+      // Backlog #16: self-reported factors, migraine days vs clear days over tracked days.
+      'tracked_factors':
+          d.trackedFactors == null ? null : _trackedFactors(d.trackedFactors!),
       'by_day_of_week': d.byDayOfWeek.map(_labeled).toList(),
       'by_time_of_day': d.byTimeOfDay.map(_labeled).toList(),
       'by_season': d.bySeason.map(_labeled).toList(),
@@ -116,6 +132,40 @@ Map<String, dynamic> _medicationDays(MedicationDays m) => {
       'unclassified_names': m.unclassifiedNames,
     };
 
+Map<String, dynamic> _topFactor(TopFactor t) => {
+      'factor': t.factor,
+      'condition': t.condition,
+      'odds_ratio': t.oddsRatio,
+      'migraine_days': t.migraineDays,
+      'total_days': t.totalDays,
+      'migraine_rate_pct': t.migraineRatePct,
+    };
+
+Map<String, dynamic> _factors(Map<String, List<FactorRow>> factors) => {
+      for (final entry in factors.entries)
+        entry.key: [
+          for (final r in entry.value)
+            {
+              'bucket': r.bucket,
+              'migraine_days': r.migraineDays,
+              'total_days': r.totalDays,
+              'migraine_rate_pct': r.migraineRatePct,
+              'odds_ratio': r.oddsRatio,
+            },
+        ],
+    };
+
+Map<String, dynamic> _trackedFactors(TrackedFactors t) => {
+      'available': t.available,
+      'reason': t.reason,
+      'tracked_days': t.trackedDays,
+      'migraine_days': t.migraineDays,
+      'clear_days': t.clearDays,
+      'top_factors': t.topFactors.map(_topFactor).toList(),
+      'factors': _factors(t.factors),
+      'caveats': t.caveats,
+    };
+
 /// `correlations` sub-block: the full odds-ratio result, every factor's per-bucket rows plus the
 /// gated top list — exactly what the Analytics tab shows, including the pressure factor when the
 /// app has a cached pressure baseline (external tools cannot compute that one).
@@ -127,30 +177,8 @@ Map<String, dynamic> correlationsToJson(CorrelationResult c) => {
       'total_days_in_range': c.totalDaysInRange,
       'excluded_mid_attack_days': c.excludedMidAttackDays,
       'base_rate_pct': c.baseRatePct,
-      'top_factors': [
-        for (final t in c.topFactors)
-          {
-            'factor': t.factor,
-            'condition': t.condition,
-            'odds_ratio': t.oddsRatio,
-            'migraine_days': t.migraineDays,
-            'total_days': t.totalDays,
-            'migraine_rate_pct': t.migraineRatePct,
-          },
-      ],
-      'factors': {
-        for (final entry in c.factors.entries)
-          entry.key: [
-            for (final r in entry.value)
-              {
-                'bucket': r.bucket,
-                'migraine_days': r.migraineDays,
-                'total_days': r.totalDays,
-                'migraine_rate_pct': r.migraineRatePct,
-                'odds_ratio': r.oddsRatio,
-              },
-          ],
-      },
+      'top_factors': c.topFactors.map(_topFactor).toList(),
+      'factors': _factors(c.factors),
       'caveats': c.caveats,
     };
 

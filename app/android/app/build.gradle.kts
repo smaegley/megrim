@@ -30,6 +30,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // Required by flutter_local_notifications (backlog #27) for its java.time scheduling on
+        // older Android versions.
+        isCoreLibraryDesugaringEnabled = true
     }
 
     defaultConfig {
@@ -115,4 +118,9 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // See isCoreLibraryDesugaringEnabled above. Apache-2.0, from Google's Maven (Android tools).
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

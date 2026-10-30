@@ -41,7 +41,10 @@ boot_sim() { # $1 = name; prints the UDID once booted
   local udid
   udid="$(sim_udid "$1")" || die "no Simulator named \"$1\" (see: xcrun simctl list devices available)"
   xcrun simctl boot "$udid" 2>/dev/null || true # already booted is fine
-  open -a Simulator
+  # Xcode 27 replaced Simulator.app with Device Hub; open whichever this Xcode has.
+  open -a Simulator 2>/dev/null || open -a "Device Hub" 2>/dev/null \
+    || open "$(xcode-select -p)/../Applications/DeviceHub.app" 2>/dev/null \
+    || echo "Open Device Hub (or Simulator) yourself to watch the run." >&2
   xcrun simctl bootstatus "$udid" -b >/dev/null
   echo "$udid"
 }

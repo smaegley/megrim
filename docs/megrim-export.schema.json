@@ -44,6 +44,11 @@
       "description": "Preventive medications, taken daily and judged over months (app v1.0.8+, schema v5).",
       "items": { "$ref": "#/$defs/preventive" }
     },
+    "checkins": {
+      "type": "array",
+      "description": "\"No migraine today\" check-ins, one per date (app v1.0.8+, schema v6). A check-in on a day an event covers is ignored.",
+      "items": { "$ref": "#/$defs/checkin" }
+    },
     "events": {
       "type": "array",
       "items": { "$ref": "#/$defs/event" }
@@ -159,6 +164,36 @@
                   "unknown": { "type": "integer" },
                   "helped_pct": { "type": ["integer", "null"] }
                 }
+              }
+            },
+            "days_tracked": {
+              "type": ["object", "null"],
+              "description": "Days with an event or a check-in (app v1.0.8+). Null until there is a check-in. See docs/METHODS.md.",
+              "properties": {
+                "last_30": { "type": "integer" },
+                "clear_last_30": { "type": "integer" },
+                "migraine_last_30": { "type": "integer" },
+                "first_checkin": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+                "since_first_checkin": { "type": "integer" },
+                "days_since_first_checkin": { "type": "integer" }
+              }
+            },
+            "tracked_factors": {
+              "type": ["object", "null"],
+              "description": "Self-reported factors on migraine days vs clear days, over tracked days from the first check-in (app v1.0.8+). Null until there is a check-in; available false until 30 tracked days with 5 migraine and 5 clear days. See docs/METHODS.md.",
+              "required": ["available"],
+              "properties": {
+                "available": { "type": "boolean" },
+                "reason": { "type": ["string", "null"] },
+                "tracked_days": { "type": "integer" },
+                "migraine_days": { "type": "integer" },
+                "clear_days": { "type": "integer" },
+                "top_factors": { "type": "array", "items": { "$ref": "#/$defs/topFactor" } },
+                "factors": {
+                  "type": "object",
+                  "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/factorRow" } }
+                },
+                "caveats": { "$ref": "#/$defs/stringArray" }
               }
             },
             "by_day_of_week": { "$ref": "#/$defs/labeledCounts" },
@@ -379,6 +414,20 @@
       "type": "object",
       "description": "Days per class; the key unclassified counts medications with no class.",
       "additionalProperties": { "type": "integer" }
+    },
+    "checkin": {
+      "type": "object",
+      "required": ["local_date"],
+      "properties": {
+        "local_date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "description": "The calendar date where the day was lived." },
+        "offset_minutes": { "type": ["integer", "null"], "description": "That place's UTC offset, minutes east." },
+        "triggers_suspected": { "$ref": "#/$defs/stringArray" },
+        "sleep_hours_prior": { "type": ["number", "null"], "minimum": 0, "maximum": 24 },
+        "stress_level": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "foods_notable": { "$ref": "#/$defs/stringArray" },
+        "created_at": { "$ref": "#/$defs/isoTimestamp" },
+        "updated_at": { "$ref": "#/$defs/isoTimestamp" }
+      }
     },
     "preventive": {
       "type": "object",

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:drift/drift.dart' show OrderingTerm;
+
 import '../database/database.dart';
 import '../legal.dart' show kAppVersion;
 import '../models/json_fields.dart';
@@ -44,6 +46,12 @@ class ExportService {
       ],
       'events': [
         for (final e in events) eventToJson(e, derivedById[e.id]),
+      ],
+      'checkins': [
+        for (final c in await (db.select(db.dayCheckins)
+              ..orderBy([(t) => OrderingTerm(expression: t.localDate)]))
+            .get())
+          checkinToJson(c),
       ],
       'analytics': ?analytics,
     };

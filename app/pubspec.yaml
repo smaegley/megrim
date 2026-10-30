@@ -43,6 +43,8 @@ dependencies:
   open_location_code: ^1.0.1
   pdf: ^3.13.1
   local_auth: ^3.0.2
+  flutter_local_notifications: ^22.3.3
+  timezone: ^0.11.2
 
 dev_dependencies:
   flutter_test:

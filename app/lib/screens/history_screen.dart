@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import '../database/database.dart';
 import '../models/attack_details.dart';
 import '../models/event_time.dart';
+import '../models/medications.dart' show isoDay;
 import '../repositories/megrim_repository.dart';
 import '../widgets/severity_badge.dart';
+import 'checkin_screen.dart';
 import 'event_detail_screen.dart';
 
 /// History (SPEC §4.3): a persistent List | Calendar segmented picker, a severity badge on each
@@ -26,6 +28,8 @@ class HistoryScreen extends StatefulWidget {
 
 enum _HistoryView { list, calendar }
 
+enum _DayAction { checkIn, details, remove, log }
+
 class _HistoryScreenState extends State<HistoryScreen> {
   _HistoryView _view = _HistoryView.list;
 
@@ -34,10 +38,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
   /// list at the top — the Calendar lost its scroll position after any rebuild (issue #13).
   late final Stream<List<MigraineEvent>> _events;
 
+  /// "No migraine today" check-ins (backlog #16), as `yyyy-MM-dd` dates, for the calendar marks.
+  late final Stream<Set<String>> _checkins;
+
   @override
   void initState() {
     super.initState();
     _events = widget.repo.watchEvents();
+    _checkins = widget.repo.watchCheckins().map((rows) => {for (final r in rows) r.localDate});
   }
 
   @override
@@ -89,10 +97,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   return const Center(child: Text('No migraines logged yet.'));
                 }
                 return _view == _HistoryView.calendar
-                    ? _CalendarView(
-                        events: events,
-                        onDayTap: _onCalendarDayTap,
-                        today: widget.todayOverride ?? DateTime.now(),
+                    ? StreamBuilder<Set<String>>(
+                        stream: _checkins,
+                        builder: (context, checkins) => _CalendarView(
+                          events: events,
+                          checkins: checkins.data ?? const {},
+                          onDayTap: _onCalendarDayTap,
+                          today: widget.todayOverride ?? DateTime.now(),
+                        ),
                       )
                     : _listView(events);
               },
@@ -173,12 +185,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
   /// Calendar day tap (backlog #9): exactly one entry that day opens it directly; several offer a
   /// picker to choose which one; none starts a new past entry pre-dated to the tapped day (instead
   /// of "now" — the whole point of tapping a specific day rather than using the FAB).
+  ///
+  /// A past or present day with no entry asks first (backlog #16): log a migraine, or mark it as a
+  /// day without one. A future day can only have an entry.
   Future<void> _onCalendarDayTap(
     DateTime localDay,
     List<MigraineEvent> dayEvents,
   ) async {
     if (dayEvents.isEmpty) {
-      await _addManualForDate(localDay);
+      final today = widget.todayOverride ?? DateTime.now();
+      if (localDay.isAfter(DateTime(today.year, today.month, today.day))) {
+        await _addManualForDate(localDay);
+      } else {
+        await _emptyDaySheet(localDay);
+      }
       return;
     }
     if (dayEvents.length == 1) {
@@ -221,6 +241,88 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
     );
     if (chosenId != null) await _openEvent(chosenId);
+  }
+
+  Future<void> _emptyDaySheet(DateTime localDay) async {
+    final checkin = await widget.repo.checkinOn(localDay);
+    if (!mounted) return;
+    final choice = await showModalBottomSheet<_DayAction>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                DateFormat('EEE d MMM yyyy').format(localDay),
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+            if (checkin == null)
+              ListTile(
+                leading: const Icon(Icons.check),
+                title: const Text('No migraine this day'),
+                onTap: () => Navigator.pop(context, _DayAction.checkIn),
+              )
+            else ...[
+              ListTile(
+                leading: const Icon(Icons.check_circle),
+                title: const Text('No migraine: details'),
+                subtitle: const Text('Sleep, stress, triggers and foods'),
+                onTap: () => Navigator.pop(context, _DayAction.details),
+              ),
+              ListTile(
+                leading: const Icon(Icons.remove_circle_outline),
+                title: const Text('Remove the check-in'),
+                onTap: () => Navigator.pop(context, _DayAction.remove),
+              ),
+            ],
+            ListTile(
+              leading: const Icon(Icons.add),
+              title: const Text('Log a migraine on this day'),
+              onTap: () => Navigator.pop(context, _DayAction.log),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted) return;
+    switch (choice) {
+      case _DayAction.checkIn:
+        await widget.repo.checkIn(localDay);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('Marked as a day without migraine'),
+          action: SnackBarAction(
+            label: 'Add details',
+            onPressed: () => _openCheckin(localDay),
+          ),
+        ));
+      case _DayAction.details:
+        await _openCheckin(localDay);
+      case _DayAction.remove:
+        final removed = await widget.repo.removeCheckin(localDay);
+        if (removed == null || !mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('Check-in removed'),
+          duration: const Duration(seconds: 5),
+          action: SnackBarAction(
+              label: 'Undo', onPressed: () => widget.repo.restoreCheckins([removed])),
+        ));
+      case _DayAction.log:
+        await _addManualForDate(localDay);
+      case null:
+        break;
+    }
+  }
+
+  Future<void> _openCheckin(DateTime localDay) async {
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => CheckinScreen(repo: widget.repo, day: localDay)),
+    );
   }
 
   Future<void> _addManualForDate(DateTime localDay) async {
@@ -352,11 +454,15 @@ Set<String> spanLinkKeys(Iterable<MigraineEvent> events) {
 
 class _CalendarView extends StatelessWidget {
   final List<MigraineEvent> events;
+
+  /// Days checked in as clear, `yyyy-MM-dd` (backlog #16).
+  final Set<String> checkins;
   final void Function(DateTime localDay, List<MigraineEvent> dayEvents)
   onDayTap;
   final DateTime today;
   const _CalendarView({
     required this.events,
+    required this.checkins,
     required this.onDayTap,
     required this.today,
   });
@@ -406,6 +512,7 @@ class _CalendarView extends StatelessWidget {
           severityByDay: severityByDay,
           eventsByDay: eventsByDay,
           linkDays: linkDays,
+          checkins: checkins,
           onDayTap: onDayTap,
           today: today,
         );
@@ -422,6 +529,9 @@ class _MonthGrid extends StatelessWidget {
 
   /// Days whose migraine continues into the next day — they draw a connecting bar.
   final Set<String> linkDays;
+
+  /// Days checked in as clear, `yyyy-MM-dd`; marked with a tick unless an entry covers them.
+  final Set<String> checkins;
   final void Function(DateTime localDay, List<MigraineEvent> dayEvents)
   onDayTap;
   final DateTime today;
@@ -431,6 +541,7 @@ class _MonthGrid extends StatelessWidget {
     required this.severityByDay,
     required this.eventsByDay,
     required this.linkDays,
+    required this.checkins,
     required this.onDayTap,
     required this.today,
   });
@@ -501,6 +612,8 @@ class _MonthGrid extends StatelessWidget {
         ? severityColor(sev)
         : Theme.of(context).colorScheme.surfaceContainerHighest;
     final isToday = year == today.year && mo == today.month && day == today.day;
+    // A clear day keeps the grey of a day without migraine: green is the mild-severity colour.
+    final clear = !hit && checkins.contains(isoDay(DateTime(year, mo, day)));
     // Multi-day migraines are tied together by a bar behind the dots: this cell draws its right
     // half when its migraine continues into the next day, and its left half when the previous
     // day's continues into it. Each half runs to the cell edge, so two adjacent cells meet and
@@ -574,6 +687,18 @@ class _MonthGrid extends StatelessWidget {
                 ),
               ),
             ),
+            if (clear)
+              // On the dot's bottom-right corner (the Stack centres it on the dot).
+              Transform.translate(
+                offset: const Offset(13, 13),
+                child: Icon(
+                  Icons.check_circle,
+                  key: ValueKey('checkin-$month-$day'),
+                  size: 14,
+                  color: Theme.of(context).colorScheme.primary,
+                  semanticLabel: 'no migraine',
+                ),
+              ),
           ],
         ),
       ),

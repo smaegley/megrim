@@ -110,6 +110,22 @@ class ReportFactorGroup {
   const ReportFactorGroup({required this.name, required this.rows});
 }
 
+/// Backlog #16: the self-reported factors, migraine days vs clear days over tracked days.
+class ReportTrackedFactors {
+  final bool available;
+  final String? reason;
+  final String window;
+  final List<ReportFactorGroup> groups;
+  final List<String> caveats;
+  const ReportTrackedFactors({
+    required this.available,
+    this.reason,
+    this.window = '',
+    this.groups = const [],
+    this.caveats = const [],
+  });
+}
+
 /// The "Attacks without headache" section (backlog #26). Null on [ReportContent] when there are
 /// none, and the section is left out.
 class ReportWithoutHeadache {
@@ -163,6 +179,12 @@ class ReportContent {
   /// One line of impact-day counts (backlog #22a); null until an entry has an impact recorded.
   final String? impact;
 
+  /// One line of days tracked (backlog #16); null until there is a check-in.
+  final String? tracked;
+
+  /// Backlog #16; null until there is a check-in.
+  final ReportTrackedFactors? trackedFactors;
+
   final ReportWithoutHeadache? withoutHeadache;
 
   final List<ReportBar> triggerFrequency;
@@ -202,6 +224,8 @@ class ReportContent {
     required this.charts,
     required this.awayFromHome,
     this.impact,
+    this.tracked,
+    this.trackedFactors,
     this.withoutHeadache,
     required this.triggerFrequency,
     this.symptomFrequency = const [],
@@ -477,27 +501,51 @@ ReportContent buildReportContent({
 
   // Factors: every bucket row, with the app's own headline rows marked rather than repeated in a
   // second table. Matches what tools/report.html settled on after review.
-  final topKeys = {
-    for (final t in corr.topFactors) '${t.factor}|${t.condition}',
-  };
-  final factorGroups = <ReportFactorGroup>[
-    for (final entry in corr.factors.entries)
-      if (entry.value.isNotEmpty)
-        ReportFactorGroup(
-          name: clean(entry.key),
-          rows: [
-            for (final r in entry.value)
-              ReportFactorRow(
-                bucket: clean(r.bucket),
-                migraineDays: r.migraineDays,
-                totalDays: r.totalDays,
-                ratePct: r.migraineRatePct,
-                oddsRatio: r.oddsRatio,
-                isTop: topKeys.contains('${entry.key}|${r.bucket}'),
-              ),
-          ],
-        ),
-  ];
+  List<ReportFactorGroup> groups(Map<String, List<FactorRow>> factors, List<TopFactor> top) {
+    final topKeys = {for (final t in top) '${t.factor}|${t.condition}'};
+    return [
+      for (final entry in factors.entries)
+        if (entry.value.isNotEmpty)
+          ReportFactorGroup(
+            name: clean(entry.key),
+            rows: [
+              for (final r in entry.value)
+                ReportFactorRow(
+                  bucket: clean(r.bucket),
+                  migraineDays: r.migraineDays,
+                  totalDays: r.totalDays,
+                  ratePct: r.migraineRatePct,
+                  oddsRatio: r.oddsRatio,
+                  isTop: topKeys.contains('${entry.key}|${r.bucket}'),
+                ),
+            ],
+          ),
+    ];
+  }
+
+  final factorGroups = groups(corr.factors, corr.topFactors);
+
+  // Days tracked and migraine days vs clear days (backlog #16).
+  String? tracked;
+  final tDays = dash.tracked;
+  if (tDays != null) {
+    tracked = 'Days tracked, last 30 days: ${tDays.last30} (${tDays.migraineLast30} with a migraine, '
+        '${tDays.clearLast30} checked in as clear, ${30 - tDays.last30} not recorded). Since the first '
+        'check-in on ${df.format(tDays.firstCheckin)}: ${tDays.sinceFirstCheckin} of '
+        '${tDays.daysSinceFirstCheckin} days.';
+  }
+  ReportTrackedFactors? trackedFactors;
+  final tFactors = dash.trackedFactors;
+  if (tFactors != null) {
+    trackedFactors = ReportTrackedFactors(
+      available: tFactors.available,
+      reason: tFactors.reason,
+      window: '${tFactors.migraineDays} migraine days and ${tFactors.clearDays} clear days since the first '
+          'check-in (${tFactors.trackedDays} tracked days).',
+      groups: groups(tFactors.factors, tFactors.topFactors),
+      caveats: tFactors.caveats,
+    );
+  }
 
   final sorted = [...events]..sort((x, y) => y.startedAt.compareTo(x.startedAt));
   final dfRow = DateFormat('d MMM yyyy');
@@ -553,6 +601,8 @@ ReportContent buildReportContent({
     charts: charts,
     awayFromHome: away,
     impact: impact,
+    tracked: tracked,
+    trackedFactors: trackedFactors,
     withoutHeadache: withoutHeadache,
     triggerFrequency: bars(dash.triggerFrequency),
     symptomFrequency: bars(dash.symptomFrequency),

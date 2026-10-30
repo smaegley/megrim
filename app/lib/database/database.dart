@@ -126,6 +126,7 @@ const List<String> kDefaultRelief = [
     Vocabularies,
     MedicationClasses,
     PreventiveRegimens,
+    DayCheckins,
   ],
 )
 class MegrimDatabase extends _$MegrimDatabase {
@@ -135,7 +136,7 @@ class MegrimDatabase extends _$MegrimDatabase {
   MegrimDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -205,6 +206,19 @@ class MegrimDatabase extends _$MegrimDatabase {
               await m.createTable(preventiveRegimens);
             }
             await _seedRelief();
+          }
+          if (from < 6) {
+            // v6 (backlog #16): "No migraine today" check-ins. A new table, so nothing existing
+            // changes; guarded like v5 for a user_version rolled back by hand.
+            final tables = {
+              for (final r in await customSelect(
+                      "SELECT name FROM sqlite_master WHERE type = 'table'")
+                  .get())
+                r.read<String>('name'),
+            };
+            if (!tables.contains(dayCheckins.actualTableName)) {
+              await m.createTable(dayCheckins);
+            }
           }
         },
         beforeOpen: (details) async {

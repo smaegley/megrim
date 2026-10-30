@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status-bar icon for the reminder and the ongoing notification (backlog #27, #23 step 3). The
+     system draws it in a single colour, so it is white on transparent: the shortcut's "+" in a
+     ring. Kept from resource shrinking by res/raw/keep.xml (it is only named from Dart). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,2a10,10 0 1,0 0.001,0zM12,4a8,8 0 1,1 -0.001,0z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M11,7h2v4h4v2h-4v4h-2v-4h-4v-2h4z" />
+</vector>

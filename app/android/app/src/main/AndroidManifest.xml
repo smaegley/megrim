@@ -4,9 +4,15 @@
          docs/PRIVACY.md. Deliberately NO location permissions: the app never reads device
          location — the home location is typed by the user (searched, GPS pair, or Plus Code).
          Merged in from plugins: ACCESS_NETWORK_STATE (connectivity_plus) and USE_BIOMETRIC +
-         USE_FINGERPRINT (local_auth / androidx.biometric, for the optional app lock, backlog #24).
-         All are install-time permissions with no user prompt. Keep docs/PRIVACY.md in step. -->
+         USE_FINGERPRINT (local_auth / androidx.biometric, for the optional app lock, backlog #24),
+         and POST_NOTIFICATIONS + VIBRATE (flutter_local_notifications, for the optional daily
+         reminder and "Migraine in progress" notification, backlog #27 / #23 step 3).
+         POST_NOTIFICATIONS is asked for at runtime, and only when the user turns one of those on;
+         the rest are install-time permissions with no user prompt. Keep docs/PRIVACY.md in step. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Reminders are scheduled with the OS and lost on a reboot; this lets them be put back
+         without the app having to be opened (backlog #27). Install-time, no prompt. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:label="${appLabel}"
@@ -40,6 +46,19 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- flutter_local_notifications (backlog #27): shows the scheduled reminders, and puts them
+             back after a reboot or an app update. Not exported. -->
+        <receiver android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
     </application>
     <queries>
         <intent>
