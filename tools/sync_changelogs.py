@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Generate F-Droid's per-ABI changelog files from a release-notes file named after the version.
 
+Each version has two notes files: `docs/release-notes/<version>.txt`, the short F-Droid changelog
+handled here, and `<version>.md`, the longer GitHub release description that `release.yml` posts.
+This script only checks that the .md exists and isn't empty, so CI catches a missing one before
+the tag.
+
 F-Droid names a changelog by the versionCode of the build it belongs to, and Megrim's recipe
 splits each release into three per-ABI builds (`VercodeOperation: %c * 10 + 1/2/3`). So release
 1.0.6, versionCode 11, needs identical files called 111.txt, 112.txt and 113.txt — numbers nobody
@@ -65,6 +70,14 @@ def main():
         sys.exit(
             f"{notes_path.relative_to(ROOT)} is {len(notes)} characters; "
             f"the limit is {MAX_CHARS}."
+        )
+
+    description = NOTES_DIR / f"{name}.md"
+    if not description.exists() or not description.read_text(encoding="utf-8").strip():
+        sys.exit(
+            f"Missing the GitHub release description for {name}.\n"
+            f"Create {description.relative_to(ROOT)} (Markdown; release.yml posts it as the "
+            f"release's description), then re-run."
         )
 
     targets = [CHANGELOG_DIR / f"{code * 10 + s}.txt" for s in ABI_SUFFIXES]

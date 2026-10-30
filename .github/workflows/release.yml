@@ -1,6 +1,8 @@
 name: Release
 
 # Tag a release (e.g. v1.0.0) to build a signed APK and attach it to a GitHub Release.
+# The release description comes from docs/release-notes/<version>.md (the short .txt beside it is
+# F-Droid's changelog); the job stops before building if the tag, pubspec and notes disagree.
 # Requires these repository secrets (SPEC §8):
 #   KEYSTORE_BASE64   - base64 of the release keystore (.jks)
 #   KEYSTORE_PASSWORD - store password
@@ -22,6 +24,21 @@ jobs:
         working-directory: app
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check the tag, the pubspec version and the release notes agree
+        working-directory: .
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          pubspec=$(sed -n -E 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+)\+[0-9]+[[:space:]]*$/\1/p' app/pubspec.yaml)
+          if [ "$version" != "$pubspec" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME doesn't match app/pubspec.yaml version $pubspec"
+            exit 1
+          fi
+          if [ ! -s "docs/release-notes/$version.md" ]; then
+            echo "::error::Missing docs/release-notes/$version.md (the GitHub release description)"
+            exit 1
+          fi
+          echo "NOTES=docs/release-notes/$version.md" >> "$GITHUB_ENV"
 
       - uses: actions/setup-java@v4
         with:
@@ -58,6 +75,7 @@ jobs:
       - name: Attach artifacts to the GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          body_path: ${{ env.NOTES }}
           files: |
             app/build/app/outputs/flutter-apk/app-release.apk
             app/build/app/outputs/bundle/release/app-release.aab
