@@ -995,6 +995,14 @@ Generate a PDF report and check it matches. Optional check: a throwaway pseudo-l
 
 ## Release / infra
 
+### 28. Update `share_plus` before Flutter drops plugins that apply the Kotlin Gradle Plugin — **PROPOSED** *(2026-10-30)*
+
+**Found:** the 1.0.8 screenshot build (Flutter 3.44.5) warned that `share_plus` (10.1.4) applies
+the Kotlin Gradle Plugin and that "future versions of Flutter will fail to build" with such
+plugins. Nothing breaks today. Before the next Flutter upgrade, move to a `share_plus` release
+that uses Flutter's built-in Kotlin (13.x is out; it is a major jump, so check its API and
+its Android dependencies against F-Droid's rules).
+
 ### 4. Donations — decide and wire up — **DONE**
 
 **Was:** the in-app Donate tile linked to a placeholder `https://liberapay.com/megrim`; `.github/FUNDING.yml` was fully commented out.

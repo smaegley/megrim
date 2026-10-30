@@ -62,11 +62,13 @@ bundled). `pubspec.yaml` is still 1.0.7+12; bump it when the release is cut.
    - **C2, after:** #23 (2), the home-screen widget on Android and iOS, and #23 (3) on iOS (Live
      Activity). It needs a WidgetKit extension and an App Group, which are written on the VM but
      compiled and tested on the Mac.
-4. **Screenshots wait for the release** (Steve, 2026-10-28). After all 1.0.8 branches are
-   tested, retake the store screenshots on both platforms
-   (`tools/screenshots.sh all-android` and `all-ios`) before the 1.0.8 tag; attack-details changes
-   shot 07 at least. Group B and C1 change Analytics and Quick Log too, so do one retake after C1. Open question: extend the made-up demo data with symptoms, impact and a
-   headache-free attack so the shots show the feature (recommended; ask before doing it).
+4. **Store screenshots for 1.0.8: retaken and merged** (2026-10-30, `81d996d`, merge `df027fd`).
+   The made-up demo data gained check-ins, medication classes, a preventive, and symptoms,
+   impact and relief; shot 04 is now "Migraine days vs clear days" (was By day of week). Android
+   sets are in the fastlane folders; the iOS sets (6.9", 6.3", 13" iPad) are on Steve's Mac in
+   `screenshots/ios/`, to upload in App Store Connect with 1.0.8. On Xcode 27, the Simulators are
+   the 18-series: `MEGRIM_SIM_IPHONE_69="iPhone 18 Pro Max" MEGRIM_SIM_IPHONE_63="iPhone 18 Pro"
+   MEGRIM_SIM_IPAD_13="iPad Pro 13-inch (M5)"`.
 5. **Release text for 1.0.8:** README's feature list and the F-Droid / App Store descriptions
    don't mention symptoms, impact, attacks without headache (group A) or the medication features
    (group B) yet; update them, and the release notes, when 1.0.8 is cut.
