@@ -1,6 +1,6 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-30, end of the 1.0.8 session: **v1.0.8 (versionCode 13) released on GitHub; iOS 1.0.8 (build 14) in App Review; F-Droid to follow by itself (expected about 6–7 November)**: groups A, B and C1 (schema v6). v1.0.7 is live everywhere until then. C2 (widget, iOS Live Activity) is deferred to 1.1.0. The GitHub release description is now posted automatically from `docs/release-notes/<version>.md`._
+_Last updated: 2026-10-31: **v1.0.8 (versionCode 13) released on GitHub and on the App Store (iOS build 14, approved and released 2026-10-31); F-Droid to follow by itself (expected about 6–7 November)**: groups A, B and C1 (schema v6). F-Droid serves v1.0.7 until then. C2 (widget, iOS Live Activity) is deferred to 1.1.0. The GitHub release description is now posted automatically from `docs/release-notes/<version>.md`._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
@@ -14,8 +14,8 @@ retaken; README, F-Droid description and release notes refreshed; a release chec
 `docs/release-notes/<version>.md` (merged `b2b39f4`, CI green; first real run at the next tag).
 
 **Waiting on (Steve comes back when these land):**
-1. **App Review for iOS 1.0.8.** When it's live: upload the 1.0.8 screenshots from
-   `screenshots/ios/` if not already done with the submission, and mark iOS released here.
+1. ~~App Review for iOS 1.0.8~~ **Done: approved and released 2026-10-31** (the 1.0.8
+   screenshots went up with the submission).
 2. **F-Droid 1.0.8** (versionCodes 131–133), about a week after the tag, so around 6–7
    November. Check the listing shows 1.0.8 with the new description, screenshots and changelog;
    if the build fails, look at the F-Droid build log first (the new plugin
@@ -67,7 +67,7 @@ draft/prerelease; the published APK verified: versionCode 13, versionName 1.0.8,
 USE_BIOMETRIC, USE_FINGERPRINT, POST_NOTIFICATIONS, VIBRATE, RECEIVE_BOOT_COMPLETED). F-Droid
 picks up the tag by itself (versionCodes 131–133, with the new description, screenshots and
 changelog from the tagged commit); the new plugin `flutter_local_notifications` ships no prebuilt
-binaries. **iOS 1.0.8 (build 14): submitted to App Review 2026-10-30** (first archive from
+binaries. **iOS 1.0.8 (build 14): submitted to App Review 2026-10-30, approved and released 2026-10-31** (first archive from
 Xcode 27; new screenshots, notifications line in the review notes).
 
 Groups A, B and C1, each tested by Steve from a script (emulator, a real Android phone where
