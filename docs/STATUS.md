@@ -55,6 +55,9 @@ retaken; README, F-Droid description and release notes refreshed; a release chec
    (#23 (3), showing only "Megrim" and a timer).
 4. After those, in the agreed order: #25 (UI text into ARB; unblocks issue #19), D (#21 cycle
    log), #15, and #22(b) once licensing is settled.
+   **New, 2026-11-02, place in the order to decide:** #30 (postdrome, "Headache ended") and #31
+   (a "needed care" impact level and impact per day), from a user email. The pain-curve request
+   was declined (BACKLOG "Reviewed, not planned").
 5. **First automated release description:** after tagging, check the Releases page shows the
    `.md`. Optionally backfill the blank descriptions of releases before 1.0.8 from the README's
    release history (Steve's call; not done).

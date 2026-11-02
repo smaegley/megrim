@@ -4,15 +4,17 @@
 Non-blocking improvements captured for later. Not committed to a release; groom as needed.
 (Product definition lives in [`SPEC.md`](SPEC.md); this is the running "would be nice" list.)
 
-> **Status (2026-10-30):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
+> **Status (2026-11-02):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
 > record. #17, #23 (1) and #24 shipped in `v1.0.7`. **`v1.0.8` (2026-10-30) shipped #16, #18,
 > #19, #20, #22(a), #26, #27 and #23 (3) on Android.** Still open:
 > - **Next release (planned):** **#29** (App Store custom header and iPhone Duo screenshots; Steve
 >   wants a cycle on it) and **#28** (`share_plus` before the next Flutter upgrade).
 > - **1.1.0:** #23 (2) home-screen widget on both platforms and #23 (3) iOS Live Activity (group
 >   C2, deferred by Steve 2026-10-30; the Live Activity shows only "Megrim" and a timer).
-> - **Proposed:** #25 (UI text into a message file, needed for issue #19's translation request),
->   #21 (menstrual cycle log), #22(b) (blocked on licensing). **#15 is DEFERRED.**
+> - **Proposed:** #30 (postdrome: "Headache ended" inside an attack, plus Aphasia as a default
+>   symptom), #31 (a "needed care" impact level, and impact per day on multi-day attacks), #25 (UI
+>   text into a message file, needed for issue #19's translation request), #21 (menstrual cycle
+>   log), #22(b) (blocked on licensing). **#15 is DEFERRED.**
 >
 > Add new items as they come up.
 
@@ -919,6 +921,76 @@ without headache" right after the summary, Sev "none" in the entries table. Shar
 `app/lib/models/attack_details.dart`; method in `docs/METHODS.md`; tests in
 `app/test/attack_details_test.dart` and `attack_details_ui_test.dart`.
 
+### 30. Postdrome: record when the headache ended, inside a longer attack — **PROPOSED** *(2026-11-02, from a user email)*
+
+**Want:** a way to say the pain stopped but the attack didn't. A user with multi-day attacks
+wrote that after the headache ends they can stay severely impaired for several days (aphasia,
+dizziness, extreme fatigue), so "pain-free does not mean migraine over". Today an entry has one
+start and one end. The user can stretch the entry over the postdrome and add symptoms, but
+nothing records when the pain stopped.
+
+**Why:** the postdrome is a recognised phase of the attack. About 72% of patients report
+postdromal fatigue (sources in #26). How long the headache lasts and how long the whole attack
+lasts are different numbers, and a clinician reading the PDF wants both. It fits the "record
+facts, not a self-diagnosis" approach from #26.
+
+**Shape (to agree with Steve before building):**
+
+- New `migraine_events.headache_ended_at` (schema v7, nullable, with its own UTC offset column as
+  in #17). It must fall between `started_at` and `ended_at`. From then until `ended_at` is the
+  postdrome. Null = no separate postdrome (every existing entry), so nothing changes for old
+  data. It's hidden when `headache_present == false`, because there's no headache to end.
+- Event Detail: an optional "Headache ended" date and time under Start/End ("the attack went on
+  after the pain stopped"). Retrospective entry works the same as for every other field.
+- History: the multi-day bar draws the postdrome part lighter. Event Detail shows "Headache 1 d
+  4 h · attack 3 d 2 h".
+- Analytics / PDF: typical headache duration vs total attack duration. The PDF entries table
+  gains a postdrome length. METHODS.md says how each is computed.
+- **Decision needed:** do postdrome days count as migraine days? Proposed **yes**, because they
+  fall inside the attack, which is how they count today when the entry is stretched. If so, no
+  existing count changes.
+- Optional, same bump: a matching `headache_started_at` for a prodrome (attack begins before the
+  pain). Only if it falls out cheaply. It wasn't asked for.
+- Same bump: add **Aphasia** to the default symptoms (`insertOrIgnore`, the #13 "Travel"
+  pattern). The same user named it, it's a common aura and postdrome symptom, and it's missing
+  from #20's defaults.
+- Export: optional `headache_ended_at` per event, plus the schema and IMPORT.md ("app v1.x+").
+  Older files import it as null.
+
+**Verification:** migration test (old rows null, counts unchanged); validation (rejects a time
+outside start..end); duration helpers with and without a postdrome, across a zone change;
+migraine-day count identical whether or not the postdrome is marked; export/import round-trip;
+report test for the postdrome column; widget test that the field hides for "No headache".
+
+### 31. Care status: a level beyond "Unable", and impact per day on multi-day attacks — **PROPOSED** *(2026-11-02, from the same user email)*
+
+**Want:** the same user asked for a functional/care status: *independent / limited / needs
+assistance / fully dependent on care*. In their worst phase they depend completely on someone
+else for 10–24 hours. #22(a)'s Impact (Normal / Reduced / Unable) has two gaps for them:
+
+- (a) **No level for needing care.** "Needs assistance" and "fully dependent" both land on
+  "Unable".
+- (b) **Impact is recorded once per entry.** On a multi-day attack, every day takes the entry's
+  one (worst) value. A day of full dependence then marks the postdrome days "Unable" too, when
+  they were "limited". #30 makes this more visible, not less.
+
+**Shape (options; decide before building):**
+
+- (a) is cheap: a fourth `impact` value, e.g. `needs_care`, labelled "Needed help or care"
+  (softer than "fully dependent on care", which would read heavily for most users). It sorts
+  above `unable` when a day takes its worst impact. Analytics and PDF count it as its own row
+  ("days needing care"). Catch: the 1.0.8 importer drops unknown impact values, so a file exported
+  from a newer version and imported into 1.0.8 loses it. Note that in the release notes.
+- (b) is bigger: a per-day impact on entries spanning several days, e.g. a small table
+  `event_day_impact(event_id, local_day, impact)` and a "Day by day" section on Event Detail.
+  Days left blank fall back to the entry's impact. Analytics already computes impact per day, so
+  it uses the real per-day values. Export gains an optional per-event array.
+- Ship (a) alone if (b) isn't wanted. They don't depend on each other.
+
+**Verification:** (a) worst-of-day ordering with the new level, Analytics/PDF counts, an import
+of an unknown value still dropped cleanly. (b) migration, per-day fallback to the entry value,
+monthly impact counts, export/import round-trip.
+
 ### Reviewed, not planned *(2026-10-06)*
 
 Seen in competitors, deliberately left out because they conflict with SPEC §1.3 non-goals or the
@@ -932,6 +1004,11 @@ locked decisions. Recorded so the question isn't re-litigated from scratch:
   background network call and edges into prediction claims; both are non-goals.
 - **AI coaching, community, in-app research questionnaires, voice logging.** Out of scope for a
   serverless, telemetry-free app.
+- **Pain intensity curve over time** (several severity readings per attack, drawn as a graph).
+  Asked for in the same user email as #30/#31, ranked lowest by them. Steve, 2026-11-02: not
+  needed if #30 (postdrome) goes in. It's unclear what the data would be used for, or whether it
+  helps the user afterwards. It would also mean logging during the phase when people are least
+  able to use a phone.
 
 ## Localization
 
