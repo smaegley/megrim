@@ -12,8 +12,8 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 > - **1.1.0:** #23 (2) home-screen widget on both platforms and #23 (3) iOS Live Activity (group
 >   C2, deferred by Steve 2026-10-30; the Live Activity shows only "Megrim" and a timer).
 > - **Proposed:** #30 (postdrome: "Headache ended" inside an attack, plus Aphasia as a default
->   symptom), #31 (a "needed care" impact level, and impact per day on multi-day attacks), #25 (UI
->   text into a message file, needed for issue #19's translation request), #21 (menstrual cycle
+>   symptom), #31 (a "needed care" impact level, and impact per day on multi-day attacks), #25 (translations, **next**;
+>   design in `TRANSLATIONS.md`, GitHub #22/#19), #21 (menstrual cycle
 >   log), #22(b) (blocked on licensing). **#15 is DEFERRED.**
 >
 > Add new items as they come up.
@@ -1013,6 +1013,11 @@ locked decisions. Recorded so the question isn't re-litigated from scratch:
 ## Localization
 
 ### 25. Move the UI's English text into a message file (prep for translations) — **PROPOSED** *(2026-10-27)*
+
+> **2026-11-09: superseded by [`TRANSLATIONS.md`](TRANSLATIONS.md).** Translations are next
+> (GitHub #22, with #19 as a sub-issue). This item is now phase 1 of that design, with updated
+> counts (about 550–600 strings after 1.0.8), notifications and native strings added, and
+> decisions D1–D7 for Steve. The text below is kept as the original note.
 
 **Want:** every user-visible English string pulled out of the Dart code into a Flutter ARB file
 (`app_en.arb`), using the standard `flutter_localizations` + `gen-l10n` setup. **No visible
