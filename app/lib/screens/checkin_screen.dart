@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../database/database.dart';
+import '../l10n/data_labels.dart';
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import '../models/decimal_input.dart';
 import '../models/json_fields.dart';
 import '../repositories/megrim_repository.dart';
@@ -70,16 +72,17 @@ class _CheckinScreenState extends State<CheckinScreen> {
 
   Future<void> _remove() async {
     final messenger = ScaffoldMessenger.of(context);
+    final l = context.l10n;
     final removed = await widget.repo.removeCheckin(widget.day);
     if (!mounted) return;
     Navigator.of(context).pop();
     if (removed != null) {
       messenger.showSnackBar(
         SnackBar(
-          content: const Text('Check-in removed'),
+          content: Text(l.checkinRemoved),
           duration: const Duration(seconds: 5),
           action: SnackBarAction(
-            label: 'Undo',
+            label: l.commonUndo,
             onPressed: () => widget.repo.restoreCheckins([removed]),
           ),
         ),
@@ -92,17 +95,19 @@ class _CheckinScreenState extends State<CheckinScreen> {
     final value = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add food'),
+        title: Text(context.l10n.entryAddFood),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(hintText: 'e.g. chocolate, red wine'),
+          decoration: InputDecoration(hintText: context.l10n.entryFoodHint),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
           FilledButton(
             onPressed: () => Navigator.pop(context, controller.text.trim()),
-            child: const Text('Add'),
+            child: Text(context.l10n.commonAdd),
           ),
         ],
       ),
@@ -115,6 +120,8 @@ class _CheckinScreenState extends State<CheckinScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = context.l10n;
+    final save = MaterialLocalizations.of(context).saveButtonLabel;
     Widget header(String title, {Widget? trailing}) => Padding(
       padding: const EdgeInsets.only(top: 16, bottom: 4),
       child: Row(
@@ -128,14 +135,14 @@ class _CheckinScreenState extends State<CheckinScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('No migraine'),
+        title: Text(l.checkinTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            tooltip: 'Remove check-in',
+            tooltip: l.checkinRemove,
             onPressed: _remove,
           ),
-          TextButton(onPressed: _save, child: const Text('Save')),
+          TextButton(onPressed: _save, child: Text(save)),
         ],
       ),
       body: !_loaded
@@ -144,17 +151,16 @@ class _CheckinScreenState extends State<CheckinScreen> {
               padding: const EdgeInsets.all(16),
               children: [
                 Text(
-                  DateFormat('EEEE d MMMM yyyy').format(widget.day),
+                  Formats.of(context).dateLong(widget.day),
                   style: theme.textTheme.titleMedium,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'All optional. Recording the same things on clear days as on migraine days is '
-                  'what lets Analytics compare the two.',
+                  l.checkinIntro,
                   style: theme.textTheme.bodySmall,
                 ),
                 header(
-                  'Possible triggers',
+                  l.checkinTriggers,
                   trailing: TextButton(
                     onPressed: () async {
                       await Navigator.of(context).push(
@@ -162,13 +168,13 @@ class _CheckinScreenState extends State<CheckinScreen> {
                           builder: (_) => ManageVocabScreen(
                             repo: widget.repo,
                             kind: VocabKind.trigger,
-                            title: 'Suspected triggers',
+                            title: l.entryTriggers,
                           ),
                         ),
                       );
                       await _load();
                     },
-                    child: const Text('Manage'),
+                    child: Text(l.commonManage),
                   ),
                 ),
                 Wrap(
@@ -176,7 +182,7 @@ class _CheckinScreenState extends State<CheckinScreen> {
                   children: [
                     for (final v in {..._triggerVocab, ..._triggers})
                       FilterChip(
-                        label: Text(v),
+                        label: Text(dataLabel(l, v)),
                         selected: _triggers.contains(v),
                         onSelected: (on) => setState(() {
                           if (on) {
@@ -188,7 +194,7 @@ class _CheckinScreenState extends State<CheckinScreen> {
                       ),
                   ],
                 ),
-                header('Foods notable'),
+                header(l.entryFoods),
                 Wrap(
                   spacing: 8,
                   runSpacing: 4,
@@ -200,7 +206,7 @@ class _CheckinScreenState extends State<CheckinScreen> {
                       ),
                     ActionChip(
                       avatar: const Icon(Icons.add, size: 18),
-                      label: const Text('Add food'),
+                      label: Text(l.entryAddFood),
                       onPressed: _addFood,
                     ),
                   ],
@@ -209,13 +215,13 @@ class _CheckinScreenState extends State<CheckinScreen> {
                 TextField(
                   controller: _sleep,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Sleep hours (prior night)',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l.entrySleepHours,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text('Stress level: ${_stress ?? '—'} / 5'),
+                Text(l.entryStressValue('${_stress ?? '—'}')),
                 Slider(
                   value: (_stress ?? 3).toDouble(),
                   min: 1,
@@ -225,7 +231,7 @@ class _CheckinScreenState extends State<CheckinScreen> {
                   onChanged: (v) => setState(() => _stress = v.round()),
                 ),
                 const SizedBox(height: 24),
-                FilledButton(onPressed: _save, child: const Text('Save')),
+                FilledButton(onPressed: _save, child: Text(save)),
               ],
             ),
     );

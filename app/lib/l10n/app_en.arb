@@ -1000,5 +1000,25 @@
   "quickLogMoreDetails": "Add more details",
   "@quickLogMoreDetails": {
     "description": "Button: open the full entry to add details."
+  },
+  "checkinRemoved": "Check-in removed",
+  "@checkinRemoved": {
+    "description": "Snack bar after a day's 'No migraine' check-in was removed (with Undo)."
+  },
+  "checkinTitle": "No migraine",
+  "@checkinTitle": {
+    "description": "Screen title: a day checked in as migraine-free, with optional details."
+  },
+  "checkinRemove": "Remove check-in",
+  "@checkinRemove": {
+    "description": "Tooltip: remove this day's 'No migraine' check-in."
+  },
+  "checkinIntro": "All optional. Recording the same things on clear days as on migraine days is what lets Analytics compare the two.",
+  "@checkinIntro": {
+    "description": "Hint at the top of the check-in screen. A 'clear day' is a migraine-free day."
+  },
+  "checkinTriggers": "Possible triggers",
+  "@checkinTriggers": {
+    "description": "Section heading on a migraine-free day: things that might have triggered a migraine, noted for comparison."
   }
 }
