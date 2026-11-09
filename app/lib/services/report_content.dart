@@ -14,13 +14,14 @@ import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
 import '../analytics/medications.dart';
 import '../database/database.dart';
+import '../l10n/data_labels.dart';
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import '../legal.dart' show kMedicalDisclaimer, kWeatherAttribution;
 import '../models/attack_details.dart';
 import '../models/event_time.dart';
 import '../models/json_fields.dart';
 import '../models/medications.dart';
-import '../l10n/l10n.dart';
-
 
 class ReportStat {
   final String label;
@@ -246,15 +247,6 @@ class ReportContent {
   });
 }
 
-const String kReportMethods =
-    'Descriptive charts are plain counts of logged entries: a tall bar means more migraines were '
-    'logged there, nothing more. Suspected factors use the unit of a migraine-day, and every day '
-    'between the first and last migraine is a baseline day. For each bucket a 2x2 table is built '
-    'and a Haldane-Anscombe corrected odds ratio computed (0.5 added to every cell). A factor is '
-    'marked as a headline row only if its bucket covers at least 3 migraine-days and its odds '
-    'ratio exceeds 1. Moon phase and daylight are computed astronomically from the home location; '
-    'season is hemisphere-corrected.';
-
 /// Readable stand-ins for symbols the report font lacks. Noto Sans (Latin/Greek/Cyrillic) has no
 /// U+2265, which the app's own daylight bucket "≥ 14 h" uses — ">= 14 h" reads fine, where the
 /// "?" fallback below would not. These are faithful, so they do NOT count as a lost character.
@@ -293,13 +285,19 @@ const Map<int, String> kFontTransliterations = {
   return (text: out.toString(), substituted: substituted);
 }
 
-String _fmtDuration(Duration d) {
+/// A computed decimal (already rounded to a few places), as the report prints it: always at least
+/// one decimal ("3.0", "12.5", "33.33"), with the locale's separator.
+String reportDecimal(Formats f, double v) => NumberFormat('0.0##', f.locale).format(v);
+
+String _fmtDuration(AppLocalizations l, Formats f, Duration d) {
   final h = d.inMinutes / 60.0;
-  if (h < 1) return '${d.inMinutes}m';
-  if (h < 24) return '${(h * 10).round() / 10}h';
-  return '${d.inDays}d ${(d.inHours % 24)}h';
+  if (h < 1) return l.reportMinutesShort(d.inMinutes);
+  if (h < 24) return l.reportHoursShort(reportDecimal(f, (h * 10).round() / 10));
+  return l.reportDaysHoursShort(d.inDays, d.inHours % 24);
 }
 
+/// The report in [l10n]'s language (decision D1: the app's own), English when null. Stored
+/// values (default triggers, symptoms, factor buckets) are translated for display only.
 ReportContent buildReportContent({
   required DashboardResult dash,
   required CorrelationResult corr,
@@ -309,7 +307,13 @@ ReportContent buildReportContent({
   String? homeLabel,
   bool weatherEnabled = true,
   bool Function(int rune)? canRender,
+  AppLocalizations? l10n,
 }) {
+  final l = l10n ?? englishL10n;
+  final fmt = Formats.forL10n(l);
+  String dec(double v) => reportDecimal(fmt, v);
+  String label(String v) => dataLabel(l, v);
+
   var anySubstituted = false;
   String clean(String? s) {
     if (s == null || s.isEmpty) return '';
@@ -319,74 +323,74 @@ ReportContent buildReportContent({
     return r.text;
   }
 
-  final df = DateFormat('d MMM yyyy');
   final s = dash.summary;
 
   final subtitleParts = <String>[
-    '${s.totalEvents} ${s.totalEvents == 1 ? 'entry' : 'entries'}',
+    l.reportEntryCount(s.totalEvents),
     if (homeLabel != null && homeLabel.isNotEmpty) clean(homeLabel),
     if (s.firstEvent != null && s.lastEvent != null)
-      '${df.format(s.firstEvent!)} to ${df.format(s.lastEvent!)}',
-    'generated ${df.format(now)}',
-    'Megrim $appVersion',
+      l.reportDateRange(fmt.date(s.firstEvent!), fmt.date(s.lastEvent!)),
+    l.reportGenerated(fmt.date(now)),
+    l.reportAppVersion(appVersion),
   ];
 
   final summary = <ReportStat>[
-    ReportStat('Entries', '${s.totalEvents}'),
-    ReportStat('Years tracked', '${s.yearsTracked}'),
-    ReportStat('Avg severity', s.avgSeverity != null ? '${s.avgSeverity}/10' : '-'),
-    ReportStat('Avg duration',
-        s.avgDurationHours != null ? '${s.avgDurationHours}h' : '-'),
-    ReportStat(
-        'Avg interval', s.avgIntervalDays != null ? '${s.avgIntervalDays}d' : '-'),
-    ReportStat('Per year', '${s.eventsPerYear}'),
+    ReportStat(l.reportStatEntries, '${s.totalEvents}'),
+    ReportStat(l.reportStatYearsTracked, dec(s.yearsTracked)),
+    ReportStat(l.reportStatAvgSeverity,
+        s.avgSeverity != null ? l.reportSeverityOutOf10(dec(s.avgSeverity!)) : '-'),
+    ReportStat(l.reportStatAvgDuration,
+        s.avgDurationHours != null ? l.reportHoursShort(dec(s.avgDurationHours!)) : '-'),
+    ReportStat(l.reportStatAvgInterval,
+        s.avgIntervalDays != null ? l.reportDaysShort(dec(s.avgIntervalDays!)) : '-'),
+    ReportStat(l.reportStatPerYear, dec(s.eventsPerYear)),
     // Backlog #17: days, not entries — the figure a clinician asks for first.
-    ReportStat('Migraine days, last 30 d', '${dash.migraineDaysLast30}'),
+    ReportStat(l.reportStatMigraineDays30, '${dash.migraineDaysLast30}'),
   ];
 
-  List<ReportBar> bars(List<LabeledCount> l) =>
-      [for (final c in l) ReportBar(clean(c.label), c.count)];
+  List<ReportBar> bars(List<LabeledCount> list) =>
+      [for (final c in list) ReportBar(clean(label(c.label)), c.count)];
+
+  String monthLabel(int year, int month) {
+    final m = DateTime(year, month);
+    final text = fmt.monthYearShort(m);
+    return m == DateTime(now.year, now.month) ? l.reportMonthMarkedInProgress(text) : text;
+  }
 
   // Last 12 months of migraine days (backlog #17), the current month marked as unfinished.
   final recentMonths = dash.migraineDaysByMonth.length > 12
       ? dash.migraineDaysByMonth.sublist(dash.migraineDaysByMonth.length - 12)
       : dash.migraineDaysByMonth;
-  final thisMonth = DateTime(now.year, now.month);
-  final monthLabel = DateFormat('MMM yyyy');
   final recentWithout = recentMonths.fold<int>(0, (n, m) => n + m.daysWithoutHeadache);
 
   final charts = <ReportChart>[
     if (recentMonths.isNotEmpty)
       ReportChart(
-        title: 'Migraine days per month',
-        note: 'Days with a migraine, not entries; a multi-day migraine counts each day. '
-            '${dash.avgMigraineDaysLast3Months == null ? '' : 'Average over the last 3 complete months: ${dash.avgMigraineDaysLast3Months}. '}'
-            '${recentWithout == 0 ? '' : 'Includes $recentWithout ${recentWithout == 1 ? 'day' : 'days'} with only attacks without headache. '}'
-            '* month in progress.',
-        bars: [
-          for (final m in recentMonths)
-            ReportBar(
-              '${monthLabel.format(DateTime(m.year, m.month))}'
-              '${DateTime(m.year, m.month) == thisMonth ? ' *' : ''}',
-              m.days,
-            ),
-        ],
+        title: l.reportChartMonthly,
+        note: [
+          l.reportMonthlyNote,
+          if (dash.avgMigraineDaysLast3Months != null)
+            l.reportMonthlyAverage(dec(dash.avgMigraineDaysLast3Months!)),
+          if (recentWithout > 0) l.reportMonthlyWithoutHeadache(recentWithout),
+          l.reportMonthInProgress,
+        ].join(' '),
+        bars: [for (final m in recentMonths) ReportBar(monthLabel(m.year, m.month), m.days)],
       ),
     if (dash.byYear.isNotEmpty)
       ReportChart(
-        title: 'By year',
+        title: l.reportChartByYear,
         bars: [for (final y in dash.byYear) ReportBar('${y.year}', y.count)],
       ),
-    ReportChart(title: 'By day of week', bars: bars(dash.byDayOfWeek)),
-    ReportChart(title: 'By season', bars: bars(dash.bySeason)),
-    ReportChart(title: 'By time of day', bars: bars(dash.byTimeOfDay)),
-    ReportChart(title: 'By daylight hours', bars: bars(dash.byDaylight)),
+    ReportChart(title: l.reportChartByDayOfWeek, bars: bars(dash.byDayOfWeek)),
+    ReportChart(title: l.reportChartBySeason, bars: bars(dash.bySeason)),
+    ReportChart(title: l.reportChartByTimeOfDay, bars: bars(dash.byTimeOfDay)),
+    ReportChart(title: l.reportChartByDaylight, bars: bars(dash.byDaylight)),
     ReportChart(
-      title: 'Pressure change (24h)',
-      note: weatherEnabled ? null : 'Weather enrichment is off, so this is empty.',
+      title: l.reportChartPressure,
+      note: weatherEnabled ? null : l.reportChartPressureOff,
       bars: bars(dash.pressureDelta),
     ),
-    ReportChart(title: 'By moon phase', bars: bars(dash.byMoonPhase)),
+    ReportChart(title: l.reportChartByMoon, bars: bars(dash.byMoonPhase)),
   ];
 
   String? away;
@@ -394,12 +398,12 @@ ReportContent buildReportContent({
   if (a != null) {
     final km = a.thresholdKm.round();
     if (a.awayEvents == 0) {
-      away = 'All ${a.locatedEvents} located '
-          '${a.locatedEvents == 1 ? 'entry was' : 'entries were'} within $km km of home.';
+      away = l.reportAwayAllHome(a.locatedEvents, km);
+    } else if (a.awayPlaces.isEmpty) {
+      away = l.reportAwaySome(a.awayEvents, a.locatedEvents, dec(a.awayPct), km);
     } else {
-      away = '${a.awayEvents} of ${a.locatedEvents} located entries (${a.awayPct}%) '
-          'were recorded more than $km km from home'
-          '${a.awayPlaces.isEmpty ? '' : ': ${a.awayPlaces.take(5).map((p) => '${clean(p.label)} (${p.count})').join(', ')}'}.';
+      away = l.reportAwaySomePlaces(a.awayEvents, a.locatedEvents, dec(a.awayPct), km,
+          a.awayPlaces.take(5).map((p) => l.reportAwayPlace(clean(p.label), p.count)).join(', '));
     }
   }
 
@@ -407,12 +411,12 @@ ReportContent buildReportContent({
   String? impact;
   final i = dash.impact;
   if (i != null) {
-    String days(int n) => '$n ${n == 1 ? 'day' : 'days'}';
-    impact = 'Impact, last 30 days: ${days(i.unableLast30)} unable to function, '
-        '${days(i.reducedLast30)} with reduced function (impact recorded on '
-        '${i.recordedLast30} of ${dash.migraineDaysLast30} migraine days).'
-        '${i.avgUnableLast3Months == null ? '' : ' Monthly average over the last 3 complete '
-            'months: ${i.avgUnableLast3Months} unable, ${i.avgReducedLast3Months} reduced.'}';
+    impact = [
+      l.reportImpact(l.reportDayCount(i.unableLast30), l.reportDayCount(i.reducedLast30),
+          i.recordedLast30, dash.migraineDaysLast30),
+      if (i.avgUnableLast3Months != null)
+        l.reportImpactAverage(dec(i.avgUnableLast3Months!), dec(i.avgReducedLast3Months ?? 0)),
+    ].join(' ');
   }
 
   // Attacks without headache (backlog #26).
@@ -420,23 +424,25 @@ ReportContent buildReportContent({
   final w = dash.withoutHeadache;
   if (w != null) {
     withoutHeadache = ReportWithoutHeadache(
-      summary: '${w.events} of ${w.totalEvents} entries (${w.pct}%) were recorded without '
-          'headache: ${w.withAura} with aura, ${w.withVertigo} with vertigo or dizziness, '
-          '${w.other} other.'
-          '${w.medianDurationHours == null ? '' : ' Median length ${w.medianDurationHours}h.'}',
+      summary: [
+        l.reportWithoutHeadacheSummary(
+            w.events, w.totalEvents, dec(w.pct), w.withAura, w.withVertigo, w.other),
+        if (w.medianDurationHours != null)
+          l.reportWithoutHeadacheMedian(dec(w.medianDurationHours!)),
+      ].join(' '),
       byKind: [
-        ReportBar('With aura', w.withAura),
-        ReportBar('With vertigo or dizziness', w.withVertigo),
-        ReportBar('Other', w.other),
+        ReportBar(l.reportWithAura, w.withAura),
+        ReportBar(l.reportWithVertigo, w.withVertigo),
+        ReportBar(l.reportOther, w.other),
       ],
       symptoms: bars(w.symptoms),
     );
   }
 
   // Medications and relief (backlog #19), from the dashboard so the report and the Analytics tab
-  // count them the same way.
+  // count them the same way. Relief names may be the English defaults; medication names are typed.
   ReportMedRow medRow(HelpedRow r) => ReportMedRow(
-        name: clean(r.name),
+        name: clean(r.relief ? label(r.name) : r.name),
         taken: r.tried,
         helped: r.helped,
         notHelped: r.notHelped,
@@ -450,23 +456,23 @@ ReportContent buildReportContent({
   ReportMedicationDays? medicationDays;
   final md = dash.medicationDays;
   if (md != null) {
-    String days(int n) => '$n ${n == 1 ? 'day' : 'days'}';
     final months = md.byMonth.length > 12 ? md.byMonth.sublist(md.byMonth.length - 12) : md.byMonth;
     final classes = [
       for (final c in [...MedClass.all, kUnclassified])
         if (months.any((m) => m.byClass.containsKey(c))) c,
     ];
-    final breakdown = md.byClassLast30.entries.map((e) => '${medClassName(englishL10n, e.key)} ${e.value}');
-    final f = DateFormat('MMM yyyy');
+    final breakdown =
+        md.byClassLast30.entries.map((e) => l.reportMedClassDays(medClassName(l, e.key), e.value));
+    final last30 = l.reportDayCount(md.last30);
     medicationDays = ReportMedicationDays(
-      summary: 'Days with acute medication, last 30 days: ${days(md.last30)}'
-          '${breakdown.isEmpty ? '.' : ' (${breakdown.join(', ')}).'}',
-      headers: ['Month', 'Any', for (final c in classes) medClassName(englishL10n, c)],
+      summary: breakdown.isEmpty
+          ? l.reportMedDaysSummary(last30)
+          : l.reportMedDaysSummaryByClass(last30, breakdown.join(', ')),
+      headers: [l.reportColumnMonth, l.reportColumnAny, for (final c in classes) medClassName(l, c)],
       rows: [
         for (final m in months)
           [
-            '${f.format(DateTime(m.year, m.month))}'
-                '${DateTime(m.year, m.month) == DateTime(now.year, now.month) ? ' *' : ''}',
+            monthLabel(m.year, m.month),
             '${m.days}',
             for (final c in classes) '${m.byClass[c] ?? 0}',
           ],
@@ -474,45 +480,51 @@ ReportContent buildReportContent({
       notice: md.notice == null
           ? const []
           : [
-              englishL10n.overuseNoticeTitle,
+              l.overuseNoticeTitle,
               for (final m in md.notice!)
                 for (final r in m.levelsReached)
-                  '${f.format(DateTime(m.year, m.month))}: ${levelReason(englishL10n, m, r)}',
-              englishL10n.overuseNoticeBody,
+                  l.reportOveruseMonthReason(
+                      fmt.monthYearShort(DateTime(m.year, m.month)), levelReason(l, m, r)),
+              l.overuseNoticeBody,
             ],
       unclassified: md.unclassifiedNames.isEmpty
           ? null
-          : 'No class set for ${md.unclassifiedNames.map(clean).join(', ')}: counted in "Any" '
-              'but not checked against the reference levels.',
+          : l.reportMedUnclassified(md.unclassifiedNames.map(clean).join(', ')),
     );
   }
 
-  final dfDay = DateFormat('d MMM yyyy');
   String day(String iso) {
     final d = parseIsoDay(iso);
-    return d == null ? iso : dfDay.format(d);
+    return d == null ? iso : fmt.date(d);
   }
 
   final preventives = [
     for (final p in dash.preventives)
-      '${clean(p.name)}${p.dose == null ? '' : ' ${clean(p.dose)}'}: '
-          '${p.stoppedOn == null ? 'since ${day(p.startedOn)}' : '${day(p.startedOn)} to ${day(p.stoppedOn!)}'}'
-          '${p.notes == null || p.notes!.trim().isEmpty ? '' : '. ${clean(p.notes)}'}',
+      () {
+        final name = '${clean(p.name)}${p.dose == null ? '' : ' ${clean(p.dose)}'}';
+        final line = p.stoppedOn == null
+            ? l.reportPreventiveSince(name, day(p.startedOn))
+            : l.reportPreventiveRange(name, day(p.startedOn), day(p.stoppedOn!));
+        return p.notes == null || p.notes!.trim().isEmpty
+            ? line
+            : l.reportPreventiveNotes(line, clean(p.notes));
+      }(),
   ];
 
   // Factors: every bucket row, with the app's own headline rows marked rather than repeated in a
-  // second table. Matches what tools/report.html settled on after review.
+  // second table. Matches what tools/report.html settled on after review. Factor names and
+  // buckets are matched in English and translated for display.
   List<ReportFactorGroup> groups(Map<String, List<FactorRow>> factors, List<TopFactor> top) {
     final topKeys = {for (final t in top) '${t.factor}|${t.condition}'};
     return [
       for (final entry in factors.entries)
         if (entry.value.isNotEmpty)
           ReportFactorGroup(
-            name: clean(entry.key),
+            name: clean(label(entry.key)),
             rows: [
               for (final r in entry.value)
                 ReportFactorRow(
-                  bucket: clean(r.bucket),
+                  bucket: clean(label(r.bucket)),
                   migraineDays: r.migraineDays,
                   totalDays: r.totalDays,
                   ratePct: r.migraineRatePct,
@@ -530,73 +542,70 @@ ReportContent buildReportContent({
   String? tracked;
   final tDays = dash.tracked;
   if (tDays != null) {
-    tracked = 'Days tracked, last 30 days: ${tDays.last30} (${tDays.migraineLast30} with a migraine, '
-        '${tDays.clearLast30} checked in as clear, ${30 - tDays.last30} not recorded). Since the first '
-        'check-in on ${df.format(tDays.firstCheckin)}: ${tDays.sinceFirstCheckin} of '
-        '${tDays.daysSinceFirstCheckin} days.';
+    tracked = l.reportTracked(
+      tDays.last30,
+      tDays.migraineLast30,
+      tDays.clearLast30,
+      30 - tDays.last30,
+      fmt.date(tDays.firstCheckin),
+      tDays.sinceFirstCheckin,
+      tDays.daysSinceFirstCheckin,
+    );
   }
   ReportTrackedFactors? trackedFactors;
   final tFactors = dash.trackedFactors;
   if (tFactors != null) {
     trackedFactors = ReportTrackedFactors(
       available: tFactors.available,
-      reason: tFactors.reason,
-      window: '${tFactors.migraineDays} migraine days and ${tFactors.clearDays} clear days since the first '
-          'check-in (${tFactors.trackedDays} tracked days).',
+      reason: tFactors.reasonIn(l),
+      window: l.reportTrackedWindow(tFactors.migraineDays, tFactors.clearDays, tFactors.trackedDays),
       groups: groups(tFactors.factors, tFactors.topFactors),
-      caveats: tFactors.caveats,
+      caveats: tFactors.caveatsIn(l),
     );
   }
 
+  String labels(String? json) => clean(decodeStringList(json).map(label).join(', '));
+
   final sorted = [...events]..sort((x, y) => y.startedAt.compareTo(x.startedAt));
-  final dfRow = DateFormat('d MMM yyyy');
-  final tf = DateFormat('HH:mm');
   final eventRows = <ReportEventRow>[
     for (final e in sorted)
       ReportEventRow(
-        date: dfRow.format(e.startedWall),
-        time: tf.format(e.startedWall),
-        severity: hasHeadache(e.headachePresent) ? (e.severity?.toString() ?? '-') : 'none',
+        date: fmt.date(e.startedWall),
+        time: fmt.time(e.startedWall),
+        severity: hasHeadache(e.headachePresent)
+            ? (e.severity?.toString() ?? '-')
+            : l.reportSeverityNone,
         duration: e.endedAt == null
-            ? 'ongoing'
+            ? l.reportDurationOngoing
             : (e.endedAt!.isBefore(e.startedAt)
                 ? '-'
-                : _fmtDuration(e.endedAt!.difference(e.startedAt))),
-        aura: e.auraPresent == null ? '-' : (e.auraPresent! ? 'yes' : 'no'),
-        headLocations: clean(decodeStringList(e.locationHead).join(', ')),
-        symptoms: clean(decodeStringList(e.symptoms).join(', ')),
-        triggers: clean(decodeStringList(e.triggersSuspected).join(', ')),
+                : _fmtDuration(l, fmt, e.endedAt!.difference(e.startedAt))),
+        aura: e.auraPresent == null ? '-' : (e.auraPresent! ? l.reportYes : l.reportNo),
+        headLocations: labels(e.locationHead),
+        symptoms: labels(e.symptoms),
+        triggers: labels(e.triggersSuspected),
         meds: clean([
           decodeMeds(e.medsTaken)
               .map((m) => [m.name, if (m.dose != null && m.dose!.isNotEmpty) m.dose!].join(' '))
               .join(', '),
           // Non-drug relief (backlog #19) shares the column, on its own line.
           if (decodeRelief(e.reliefTried).isNotEmpty)
-            'Relief: ${decodeRelief(e.reliefTried).map((r) => r.name).join(', ')}',
+            l.reportReliefLine(decodeRelief(e.reliefTried).map((r) => label(r.name)).join(', ')),
         ].where((x) => x.isNotEmpty).join('\n')),
         notes: clean(e.notes),
       ),
   ];
 
   final footnotes = <String>[
-    if (!corr.factors.containsKey('Pressure Δ 24h (hPa)'))
-      'The barometric-pressure factor is not shown: it needs a cached pressure history for your '
-          'home location, which the app builds the first time Analytics runs online with weather '
-          'enrichment on. Its absence here means "not available", not "no effect".',
+    if (!corr.factors.containsKey('Pressure Δ 24h (hPa)')) l.reportFootnotePressure,
     kWeatherAttribution,
   ];
 
   // Built last: `clean` sets the flag as it goes, so this has to come after every call to it.
-  if (anySubstituted) {
-    footnotes.insert(
-      0,
-      'Some characters in your entries could not be drawn with this report\'s font and appear as '
-          '"?". The app itself still holds them correctly, and a JSON export preserves them.',
-    );
-  }
+  if (anySubstituted) footnotes.insert(0, l.reportFootnoteFont);
 
   return ReportContent(
-    title: 'Migraine report',
+    title: l.reportTitle,
     subtitle: subtitleParts.join(' · '),
     summary: summary,
     charts: charts,
@@ -612,16 +621,15 @@ ReportContent buildReportContent({
     medicationDays: medicationDays,
     preventives: preventives,
     factorsAvailable: corr.available,
-    factorsReason: corr.reason,
+    factorsReason: corr.reasonIn(l),
     factorsWindow: corr.available
-        ? '${corr.totalMigraineDays} migraine-days over ${corr.totalDaysInRange} days '
-            '(${corr.baseRatePct}% of days).'
+        ? l.reportFactorsWindow(corr.totalMigraineDays, corr.totalDaysInRange, dec(corr.baseRatePct))
         : '',
     factorGroups: factorGroups,
-    caveats: corr.caveats,
+    caveats: corr.caveatsIn(l),
     events: eventRows,
     footnotes: footnotes,
-    methods: kReportMethods,
+    methods: l.reportMethods,
     disclaimer: kMedicalDisclaimer,
   );
 }

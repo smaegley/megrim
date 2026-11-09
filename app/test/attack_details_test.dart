@@ -6,6 +6,8 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
+import 'package:megrim/l10n/formats.dart';
+import 'package:megrim/l10n/l10n.dart';
 import 'package:megrim/models/json_fields.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
 import 'package:megrim/services/export_service.dart';
@@ -27,6 +29,10 @@ MigraineEventsCompanion ev(String id,
       impact: Value(impact),
       severity: Value(severity),
     );
+
+
+/// Dates as the report formats them in the test locale (D7: dates follow the locale).
+String day(DateTime d) => Formats.forL10n(englishL10n).date(d);
 
 void main() {
   group('schema v4', () {
@@ -328,9 +334,9 @@ void main() {
       final chart = c.charts.firstWhere((ch) => ch.title == 'Migraine days per month');
       expect(chart.note, contains('Includes 2 days with only attacks without headache.'));
       final rows = {for (final r in c.events) r.date: r};
-      expect(rows['1 Oct 2026']!.severity, 'none');
-      expect(rows['5 Oct 2026']!.severity, '6');
-      expect(rows['3 Oct 2026']!.symptoms, '$kSymptomVertigo, Fatigue');
+      expect(rows[day(DateTime(2026, 10, 1))]!.severity, 'none');
+      expect(rows[day(DateTime(2026, 10, 5))]!.severity, '6');
+      expect(rows[day(DateTime(2026, 10, 3))]!.symptoms, '$kSymptomVertigo, Fatigue');
       await repo.db.close();
     });
 
