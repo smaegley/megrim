@@ -86,5 +86,6 @@ String formatLocale(AppLocalizations l) {
     if (DateFormat.localeExists(tag)) return tag;
     break;
   }
-  return l.localeName;
+  // A language intl has no data for (e.g. the en_XA pseudo-locale) falls back to its base.
+  return DateFormat.localeExists(l.localeName) ? l.localeName : lang;
 }

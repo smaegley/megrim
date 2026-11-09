@@ -8,6 +8,7 @@ import '../analytics/dashboard.dart' show kTimeOfDayOrder;
 import '../database/database.dart'
     show kDefaultHeadLocations, kDefaultRelief, kDefaultSymptoms, kDefaultTriggers;
 import '../enrichment/calendar_factors.dart' show kSeasons;
+import 'formats.dart' show formatLocale;
 import 'gen/app_localizations.dart';
 
 /// Display names for values the app stores and computes in English (docs/TRANSLATIONS.md, "Data
@@ -20,9 +21,9 @@ String dataLabel(AppLocalizations l, String value) {
   if (f != null) return f(l);
   final dow = kDowLabels.indexOf(value);
   // 2024-01-01 was a Monday; kDowLabels starts on Monday.
-  if (dow >= 0) return DateFormat.E(l.localeName).format(DateTime(2024, 1, 1 + dow));
+  if (dow >= 0) return DateFormat.E(formatLocale(l)).format(DateTime(2024, 1, 1 + dow));
   final month = kMonthLabels.indexOf(value);
-  if (month >= 0) return DateFormat.MMM(l.localeName).format(DateTime(2024, month + 1));
+  if (month >= 0) return DateFormat.MMM(formatLocale(l)).format(DateTime(2024, month + 1));
   return _bucketLabel(l, value) ?? value;
 }
 
@@ -148,7 +149,7 @@ final Map<String, String Function(AppLocalizations)> _labels = {
 /// The numeric buckets: same bounds in every language, with the locale's decimal separator and
 /// wording.
 String? _bucketLabel(AppLocalizations l, String value) {
-  String n(num v) => NumberFormat.decimalPattern(l.localeName).format(v);
+  String n(num v) => NumberFormat.decimalPattern(formatLocale(l)).format(v);
   String h(num v) => l.dataHours(n(v));
   return switch (value) {
     // Pressure Δ 24h, hPa.
