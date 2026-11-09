@@ -1,6 +1,7 @@
 # Translations: design
 
-_Status: **PLANNED for `v1.0.9`** (phases 1 and 2), 2026-11-09. Nothing built yet. Replaces and
+_Status: **IN PROGRESS for `v1.0.9`** (phases 1 and 2), branch `feat/translations`, started
+2026-11-09. Replaces and
 extends backlog #25, which now points here. Decisions D1–D7 were made by Steve on 2026-11-09
 ([table at the end](#decisions-steve-2026-11-09))._
 
@@ -190,6 +191,37 @@ tests pass, the export is identical, and the pseudo-locale pass finds no hard-co
 - A short `docs/TRANSLATING.md` for volunteers: the Weblate link, the glossary, what "community
   translation" means, how medical strings are handled, and how to request a new language.
 
+### Weblate setup (Steve, once)
+
+Needs your GitHub account, so it isn't scripted. Do it after the branch with phase 1 is merged to
+`main` (Weblate reads `main`).
+
+1. Sign in at <https://hosted.weblate.org> with GitHub, and **request libre hosting** for a new
+   project "Megrim" (the form asks for the repo URL and the licence, GPL-3.0). Approval is
+   manual and can take a few days.
+2. Add a **component** "App":
+   - Source code repository `https://github.com/smaegley/megrim.git`, branch `main`.
+   - Version control: **GitHub pull request** (Weblate pushes to its fork and opens PRs; it
+     never pushes to `main`). Authorise the Weblate GitHub app when asked.
+   - File format **ARB file**; file mask `app/lib/l10n/app_*.arb`; monolingual base language
+     file and template for new translations both `app/lib/l10n/app_en.arb`.
+   - Language code style: **underscore** (`zh_Hans`), so files come out as
+     `app_zh_Hans.arb`, which gen-l10n expects.
+3. Project settings:
+   - **Reviews: on.** `[medical]` and `[legal]` messages need a second person (D4/D5).
+     Weblate shows each message's description as its explanation.
+   - **Machine translation:** enable a free service for *suggestions*. Don't turn on automatic
+     translation (D4).
+   - **Glossary:** add migraine, aura, attack, prodrome, postdrome, preventive, relief,
+     check-in, migraine day, clear day, impact, Megrim (not translated).
+   - Contributor agreement: none needed (GPL-3.0, contributions under the same licence).
+4. Mark `appTitle` ("Megrim") read-only in Weblate.
+5. Start the languages people asked for: Ukrainian (the volunteer on #22), French, Simplified
+   Chinese (`zh_Hans`). Post the Weblate link on #22 and #19.
+
+Then, per release: `tools/l10n.py stats` shows each language's coverage; when one meets the bar,
+add it to `app/lib/l10n/shipped_locales.dart`, run `tools/l10n.py sync`, and test it on a phone.
+
 ### CI checks (on every PR, including Weblate's)
 
 - `flutter gen-l10n` succeeds (catches broken ICU syntax and placeholder mismatches).
@@ -226,8 +258,11 @@ declare its languages:
 - Android: `res/xml/locales_config.xml` and `android:localeConfig` in the manifest.
 - iOS: `CFBundleLocalizations` in `Info.plist`.
 
-Generate both lists from the ARB files that meet the bar, with a small script run in CI, so they
-can't drift. There's no in-app picker (D2).
+Both lists, and the app's own `supportedLocales`, come from **`app/lib/l10n/shipped_locales.dart`**
+(`kShippedLocales`), not from the ARB files present: gen-l10n lists every ARB it finds, and
+Weblate commits unfinished translations as they progress. `tools/l10n.py sync` writes the
+platform lists; `tools/l10n.py check` (CI) fails if they're out of step or a shipped language is
+below the bar. There's no in-app picker (D2).
 
 **When the phone's language isn't supported, the app is in English.** Flutter compares each
 language on the phone's preferred list, in order, with the app's supported languages and uses the
