@@ -1111,5 +1111,159 @@
   "historyCheckinMark": "no migraine",
   "@historyCheckinMark": {
     "description": "Screen-reader label for the tick on a calendar day checked in as migraine-free. Lowercase in English."
+  },
+  "medsTitle": "Medications",
+  "@medsTitle": {
+    "description": "Screen title: the user's medications (acute and preventive)."
+  },
+  "medsRename": "Rename",
+  "@medsRename": {
+    "description": "Dialog title and tooltip: rename a medication or a choice in a list."
+  },
+  "medsAcuteTitle": "Taken for an attack",
+  "@medsAcuteTitle": {
+    "description": "Section heading: acute medications, taken to treat a migraine attack."
+  },
+  "medsAcuteHint": "Learned from your entries. The class counts medication days on Analytics.",
+  "@medsAcuteHint": {
+    "description": "[medical] Under 'Taken for an attack': the list is built from what was typed in entries; the class (triptan, etc.) is used to count medication days."
+  },
+  "medsPreventiveTitle": "Preventive",
+  "@medsPreventiveTitle": {
+    "description": "[medical] Section heading: preventive medications, taken daily to reduce attacks."
+  },
+  "medsPreventiveHint": "Taken daily to prevent attacks. Start and stop dates are marked on the migraine days chart.",
+  "@medsPreventiveHint": {
+    "description": "[medical] Under 'Preventive'."
+  },
+  "medsAddPreventive": "Add preventive",
+  "@medsAddPreventive": {
+    "description": "Button and dialog title: add a preventive medication."
+  },
+  "medsEditPreventive": "Edit preventive",
+  "@medsEditPreventive": {
+    "description": "Dialog title: change a preventive medication."
+  },
+  "medsPreventiveDoseHint": "e.g. 40 mg twice a day",
+  "@medsPreventiveDoseHint": {
+    "description": "Example text in a preventive medication's dose field."
+  },
+  "medsStarted": "Started",
+  "@medsStarted": {
+    "description": "The day a preventive medication was started."
+  },
+  "medsStillTaking": "Still taking it",
+  "@medsStillTaking": {
+    "description": "Switch: the preventive medication hasn't been stopped."
+  },
+  "medsStopped": "Stopped",
+  "@medsStopped": {
+    "description": "The day a preventive medication was stopped."
+  },
+  "medsNotes": "Notes (optional)",
+  "@medsNotes": {
+    "description": "Field label: notes on a preventive medication."
+  },
+  "medsNotesHint": "e.g. why it was stopped",
+  "@medsNotesHint": {
+    "description": "Example text in a preventive medication's notes field."
+  },
+  "medsSince": "Since {date}",
+  "@medsSince": {
+    "description": "When a preventive medication was started and is still taken: 'Since 1 Mar 2026'.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "1 Mar 2026"
+      }
+    }
+  },
+  "medsSpan": "{start} – {end}",
+  "@medsSpan": {
+    "description": "When a preventive medication was taken: '1 Mar 2026 – 30 Sep 2026'.",
+    "placeholders": {
+      "start": {
+        "type": "String",
+        "example": "1 Mar 2026"
+      },
+      "end": {
+        "type": "String",
+        "example": "30 Sep 2026"
+      }
+    }
+  },
+  "vocabAddTitle": "Add {item}",
+  "@vocabAddTitle": {
+    "description": "Dialog title and tooltip for adding a choice to a list; {item} is the list's name as it reads mid-sentence, e.g. 'Add suspected triggers'.",
+    "placeholders": {
+      "item": {
+        "type": "String",
+        "example": "suspected triggers"
+      }
+    }
+  },
+  "vocabManageTitle": "Manage {item}",
+  "@vocabManageTitle": {
+    "description": "Screen title for editing a list of choices; {item} is the list's name as it reads mid-sentence, e.g. 'Manage suspected triggers'.",
+    "placeholders": {
+      "item": {
+        "type": "String",
+        "example": "suspected triggers"
+      }
+    }
+  },
+  "medClassPickerTitle": "What kind of medication is {name}?",
+  "@medClassPickerTitle": {
+    "description": "Title of the medication class picker; {name} is the medication's name as the user typed it.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Ibuprofen"
+      }
+    }
+  },
+  "medClassPickerHint": "Used to count medication days by class. Optional; you can change it later in Settings › Medications.",
+  "@medClassPickerHint": {
+    "description": "[medical] Hint under the medication class picker's title. Keep the '›' between Settings and Medications."
+  },
+  "locationSearchLabel": "City search — or GPS / Plus Code",
+  "@locationSearchLabel": {
+    "description": "Label of the place search field. 'GPS' means coordinates typed in; 'Plus Code' is Google's open location code format (keep the name)."
+  },
+  "locationSearchHelper": "e.g. Boulder · 40.01, -105.27 · 849VCWC8+R9",
+  "@locationSearchHelper": {
+    "description": "Examples under the place search field: a city, coordinates, a Plus Code. Use a city name familiar in your language; keep the coordinates and code as they are."
+  },
+  "locationUse": "Use {place}",
+  "@locationUse": {
+    "description": "Choice to use what was typed (coordinates or a Plus Code) as the location.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "40.01, -105.27"
+      }
+    }
+  },
+  "locationEnteredDirectly": "Entered directly — nothing sent online",
+  "@locationEnteredDirectly": {
+    "description": "Under 'Use ...': the typed location is used as is, with no online lookup."
+  },
+  "locationRecent": "Recent",
+  "@locationRecent": {
+    "description": "Heading above recently used locations."
+  },
+  "locationSelected": "Selected: {place} ({coordinates})",
+  "@locationSelected": {
+    "description": "The chosen location with its coordinates.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Boulder, Colorado, United States"
+      },
+      "coordinates": {
+        "type": "String",
+        "example": "40.01, -105.27"
+      }
+    }
   }
 }

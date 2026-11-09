@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../database/database.dart';
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import '../models/medications.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/med_class_picker.dart';
-import '../l10n/l10n.dart';
 
 /// Settings › Medications (backlog #18, #19): the acute medications learned from entries, each
 /// with its class, and the preventive medications, each with start and stop dates. Renames do
@@ -47,7 +47,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   }
 
   Future<void> _addAcute() async {
-    final name = await _prompt('Add medication');
+    final name = await _prompt(context.l10n.entryAddMedication);
     if (name == null || name.isEmpty || !mounted) return;
     await repo.addVocab(VocabKind.medication, name);
     if (!mounted) return;
@@ -66,7 +66,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   }
 
   Future<void> _renameAcute(String old) async {
-    final value = await _prompt('Rename', initial: old);
+    final value = await _prompt(context.l10n.medsRename, initial: old);
     if (value != null && value.isNotEmpty && value != old) {
       await repo.renameVocab(VocabKind.medication, old, value);
       await _load();
@@ -107,10 +107,12 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
         title: Text(title),
         content: TextField(controller: controller, autofocus: true),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
           FilledButton(
               onPressed: () => Navigator.pop(context, controller.text.trim()),
-              child: const Text('Save')),
+              child: Text(MaterialLocalizations.of(context).saveButtonLabel)),
         ],
       ),
     );
@@ -119,6 +121,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = context.l10n;
     Widget header(String title, String subtitle) => Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
           child: Column(
@@ -132,28 +135,27 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
         );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Medications')),
+      appBar: AppBar(title: Text(l.medsTitle)),
       body: !_loaded
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               children: [
-                header('Taken for an attack',
-                    'Learned from your entries. The class counts medication days on Analytics.'),
+                header(l.medsAcuteTitle, l.medsAcuteHint),
                 for (final name in _acute)
                   ListTile(
                     title: Text(name),
-                    subtitle: Text(medClassName(context.l10n, _classes[name])),
+                    subtitle: Text(medClassName(l, _classes[name])),
                     onTap: () => _setClass(name),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                             icon: const Icon(Icons.edit),
-                            tooltip: 'Rename',
+                            tooltip: l.medsRename,
                             onPressed: () => _renameAcute(name)),
                         IconButton(
                             icon: const Icon(Icons.delete_outline),
-                            tooltip: 'Delete',
+                            tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
                             onPressed: () => _deleteAcute(name)),
                       ],
                     ),
@@ -165,18 +167,16 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                     child: TextButton.icon(
                       onPressed: _addAcute,
                       icon: const Icon(Icons.add, size: 18),
-                      label: const Text('Add medication'),
+                      label: Text(l.entryAddMedication),
                     ),
                   ),
                 ),
                 const Divider(),
-                header('Preventive',
-                    'Taken daily to prevent attacks. Start and stop dates are marked on the '
-                        'migraine days chart.'),
+                header(l.medsPreventiveTitle, l.medsPreventiveHint),
                 for (final p in _preventives)
                   ListTile(
                     title: Text(p.dose == null ? p.name : '${p.name} · ${p.dose}'),
-                    subtitle: Text(preventiveSpan(p)),
+                    subtitle: Text(preventiveSpan(p, l)),
                     onTap: () => _editPreventive(p),
                   ),
                 Align(
@@ -186,7 +186,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                     child: TextButton.icon(
                       onPressed: _editPreventive,
                       icon: const Icon(Icons.add, size: 18),
-                      label: const Text('Add preventive'),
+                      label: Text(l.medsAddPreventive),
                     ),
                   ),
                 ),
@@ -197,17 +197,18 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   }
 }
 
-/// "Since 1 Mar 2026" or "1 Mar 2026 – 30 Sep 2026".
-String preventiveSpan(PreventiveRegimen p) {
-  final f = DateFormat('d MMM y');
+/// "Since 1 Mar 2026" or "1 Mar 2026 – 30 Sep 2026", in [l]'s language (English by default).
+String preventiveSpan(PreventiveRegimen p, [AppLocalizations? l]) {
+  final l10n = l ?? englishL10n;
+  final f = Formats.forL10n(l10n);
   String day(String s) {
     final d = parseIsoDay(s);
-    return d == null ? s : f.format(d);
+    return d == null ? s : f.date(d);
   }
 
   return p.stoppedOn == null
-      ? 'Since ${day(p.startedOn)}'
-      : '${day(p.startedOn)} – ${day(p.stoppedOn!)}';
+      ? l10n.medsSince(day(p.startedOn))
+      : l10n.medsSpan(day(p.startedOn), day(p.stoppedOn!));
 }
 
 class _PreventiveResult {
@@ -274,9 +275,10 @@ class _PreventiveDialogState extends State<_PreventiveDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final f = DateFormat('d MMM y');
+    final f = Formats.of(context);
+    final l = context.l10n;
     return AlertDialog(
-      title: Text(widget.initial == null ? 'Add preventive' : 'Edit preventive'),
+      title: Text(widget.initial == null ? l.medsAddPreventive : l.medsEditPreventive),
       content: SizedBox(
         width: 400,
         child: SingleChildScrollView(
@@ -288,22 +290,22 @@ class _PreventiveDialogState extends State<_PreventiveDialog> {
                 controller: _name,
                 autofocus: widget.initial == null,
                 decoration:
-                    const InputDecoration(labelText: 'Name', border: OutlineInputBorder()),
+                    InputDecoration(labelText: l.entryMedName, border: const OutlineInputBorder()),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _dose,
-                decoration: const InputDecoration(
-                    labelText: 'Dose (optional)',
-                    hintText: 'e.g. 40 mg twice a day',
-                    border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                    labelText: l.entryDose,
+                    hintText: l.medsPreventiveDoseHint,
+                    border: const OutlineInputBorder()),
               ),
               const SizedBox(height: 8),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.event),
-                title: const Text('Started'),
-                subtitle: Text(f.format(_startedOn)),
+                title: Text(l.medsStarted),
+                subtitle: Text(f.date(_startedOn)),
                 onTap: () async {
                   final d = await _pickDate(_startedOn);
                   if (d == null) return;
@@ -315,7 +317,7 @@ class _PreventiveDialogState extends State<_PreventiveDialog> {
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Still taking it'),
+                title: Text(l.medsStillTaking),
                 value: _stoppedOn == null,
                 onChanged: (on) async {
                   if (on) {
@@ -333,8 +335,8 @@ class _PreventiveDialogState extends State<_PreventiveDialog> {
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.event_busy),
-                  title: const Text('Stopped'),
-                  subtitle: Text(f.format(_stoppedOn!)),
+                  title: Text(l.medsStopped),
+                  subtitle: Text(f.date(_stoppedOn!)),
                   onTap: () async {
                     final d = await _pickDate(_stoppedOn!, first: _startedOn);
                     if (d != null) setState(() => _stoppedOn = d);
@@ -344,10 +346,10 @@ class _PreventiveDialogState extends State<_PreventiveDialog> {
               TextField(
                 controller: _notes,
                 maxLines: 3,
-                decoration: const InputDecoration(
-                    labelText: 'Notes (optional)',
-                    hintText: 'e.g. why it was stopped',
-                    border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                    labelText: l.medsNotes,
+                    hintText: l.medsNotesHint,
+                    border: const OutlineInputBorder()),
               ),
             ],
           ),
@@ -358,9 +360,11 @@ class _PreventiveDialogState extends State<_PreventiveDialog> {
           TextButton(
             onPressed: () => Navigator.pop(
                 context, _PreventiveResult(delete: true, name: '', startedOn: _startedOn)),
-            child: const Text('Delete'),
+            child: Text(MaterialLocalizations.of(context).deleteButtonTooltip),
           ),
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
         FilledButton(
           onPressed: () {
             final name = _name.text.trim();
@@ -377,7 +381,7 @@ class _PreventiveDialogState extends State<_PreventiveDialog> {
               ),
             );
           },
-          child: const Text('Save'),
+          child: Text(MaterialLocalizations.of(context).saveButtonLabel),
         ),
       ],
     );
