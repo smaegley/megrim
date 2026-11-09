@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../database/database.dart';
 import '../models/attack_details.dart';
+import '../models/decimal_input.dart';
 import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
@@ -243,7 +244,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       auraDescription:
           Value(_auraDescription.text.isEmpty ? null : _auraDescription.text),
       stressLevel: Value(_stress),
-      sleepHoursPrior: Value(double.tryParse(_sleep.text)),
+      sleepHoursPrior: Value(parseDecimalInput(_sleep.text)),
       notes: Value(_notes.text.isEmpty ? null : _notes.text),
       locationHead: Value(headache ? encodeStringList(_locations.toList()) : null),
       triggersSuspected: Value(encodeStringList(_triggers.toList())),
@@ -530,7 +531,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           const SizedBox(height: 16),
           TextField(
             controller: _sleep,
-            keyboardType: TextInputType.number,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: const InputDecoration(
                 labelText: 'Sleep hours (prior night)', border: OutlineInputBorder()),
           ),

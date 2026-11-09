@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../database/database.dart';
+import '../models/decimal_input.dart';
 import '../models/json_fields.dart';
 import '../repositories/megrim_repository.dart';
 import 'manage_vocab_screen.dart';
@@ -60,7 +61,7 @@ class _CheckinScreenState extends State<CheckinScreen> {
     await widget.repo.saveCheckinDetails(
       widget.day,
       triggers: _triggers.toList(),
-      sleepHours: double.tryParse(_sleep.text.trim()),
+      sleepHours: parseDecimalInput(_sleep.text),
       stress: _stress,
       foods: _foods,
     );
