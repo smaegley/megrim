@@ -573,5 +573,509 @@
   "trackedCaveatRecallBias": "Recall bias: after a migraine people look harder for a cause than on a good day, so triggers can be over-recorded on migraine days.",
   "@trackedCaveatRecallBias": {
     "description": "Caveat under Migraine days vs clear days. 'Recall bias' is the statistics term."
+  },
+  "homeTabLog": "Log",
+  "@homeTabLog": {
+    "description": "Bottom navigation tab: the screen for logging a migraine."
+  },
+  "homeTabHistory": "History",
+  "@homeTabHistory": {
+    "description": "Bottom navigation tab: the list and calendar of past entries."
+  },
+  "homeTabAnalytics": "Analytics",
+  "@homeTabAnalytics": {
+    "description": "Bottom navigation tab: charts and patterns."
+  },
+  "homeTabSettings": "Settings",
+  "@homeTabSettings": {
+    "description": "Bottom navigation tab."
+  },
+  "legalMedicalDisclaimer": "Megrim is a personal diary and is not a medical device. It does not diagnose, treat, cure, or prevent any condition. \"Suspected factors\" are statistical associations in your own log — association is not causation. Always consult a qualified healthcare professional about your migraines and before making any treatment decisions.",
+  "@legalMedicalDisclaimer": {
+    "description": "[legal] [medical] The medical disclaimer, accepted during onboarding and shown in About and the PDF report. Needs a second reviewer. Keep 'Megrim' untranslated; 'Suspected factors' is the name of an Analytics card."
+  },
+  "legalPrivacySummary": "All data stays on your device. We operate no servers and collect nothing — no accounts, no analytics, no identifiers, no crash reporting. Weather enrichment is off unless you turn it on; then the app's only automatic network traffic is to Open-Meteo.com, to fetch weather for the approximate (~1 km rounded) location and date of entries you create. Backups use your phone's own backup (Google on Android, iCloud or your computer on iPhone), which you control in its settings; export files go wherever you choose to save them.",
+  "@legalPrivacySummary": {
+    "description": "[legal] Privacy summary in About. Must stay as precise as the English: what is sent, to whom, and when. Keep 'Open-Meteo.com' as is."
+  },
+  "legalWeatherAttribution": "Weather data by Open-Meteo.com",
+  "@legalWeatherAttribution": {
+    "description": "[legal] Attribution required by Open-Meteo's CC-BY 4.0 licence. Keep 'Open-Meteo.com' as is."
+  },
+  "legalAppTitle": "Megrim: Migraine Log",
+  "@legalAppTitle": {
+    "description": "Store-style title shown in About. Keep 'Megrim' untranslated."
+  },
+  "legalAppSubtitle": "Offline Migraine Log",
+  "@legalAppSubtitle": {
+    "description": "Store-style subtitle shown in About and on the Log screen."
+  },
+  "legalShortDescription": "Private, offline migraine log with automatic on-device pattern insights.",
+  "@legalShortDescription": {
+    "description": "One-line description shown in About."
+  },
+  "legalFullDescription": "Megrim is an open-source, offline-first migraine diary that helps you find your personal triggers. The app automatically adds time-of-day, season, daylight and moon context to your entries (and, if you opt in, local weather and barometric pressure), calculating correlations entirely on your phone. With no accounts, no cloud servers, and zero tracking, your health data stays completely private and under your control.",
+  "@legalFullDescription": {
+    "description": "Full description shown in About. Keep 'Megrim' untranslated."
+  },
+  "legalCaveatOddsRatioExplained": "OR = odds ratio: how much more likely a migraine is on days with that factor. OR 2.0 ≈ twice the odds vs. other days; OR 1.0 means no effect.",
+  "@legalCaveatOddsRatioExplained": {
+    "description": "Caveat on the Suspected Factors card. 'OR' abbreviates the statistics term 'odds ratio'; use the usual abbreviation in your language if there is one, consistently."
+  },
+  "legalCaveatSmallSample": "Small sample: results from a limited number of migraine days are noisy.",
+  "@legalCaveatSmallSample": {
+    "description": "Caveat on the Suspected Factors card."
+  },
+  "legalTranslationNote": "This translation was made by volunteers. If it differs from the English text of the medical disclaimer or the privacy summary, the English text is the version that counts.",
+  "@legalTranslationNote": {
+    "description": "[legal] Shown in About for every language except English. 'Volunteers' means community translators."
+  },
+  "onboardingWelcomeTitle": "Welcome to Megrim",
+  "@onboardingWelcomeTitle": {
+    "description": "First onboarding screen, title. Keep 'Megrim' untranslated."
+  },
+  "onboardingWelcomeBody": "A private, offline migraine diary. Everything stays on your device. Optionally, it can add weather and pressure context to your entries from Open-Meteo.com — you choose in a moment, and it is off unless you turn it on.",
+  "@onboardingWelcomeBody": {
+    "description": "First onboarding screen, body."
+  },
+  "onboardingGetStarted": "Get started",
+  "@onboardingGetStarted": {
+    "description": "Button on the first onboarding screen."
+  },
+  "onboardingBeforeYouBegin": "Before you begin",
+  "@onboardingBeforeYouBegin": {
+    "description": "Title of the onboarding step showing the medical disclaimer."
+  },
+  "onboardingAccept": "I understand and accept.",
+  "@onboardingAccept": {
+    "description": "[legal] Checkbox the user ticks to accept the medical disclaimer before using the app."
+  },
+  "onboardingContinue": "Continue",
+  "@onboardingContinue": {
+    "description": "Button to the next onboarding step."
+  },
+  "onboardingHomeTitle": "Your home location",
+  "@onboardingHomeTitle": {
+    "description": "Title of the onboarding step that asks for a home location."
+  },
+  "onboardingHomeBody": "Used on-device for daylight and season analytics, and — only if you enable weather enrichment in the next step — to fetch weather for your entries. Searching here sends the place name you type to Open-Meteo's geocoder to find coordinates; after that, only rounded (~1 km) coordinates would ever be sent, and only for weather. Prefer not to search online? Type GPS coordinates or a Plus Code instead — both are decoded on-device.",
+  "@onboardingHomeBody": {
+    "description": "[legal] Explains what the home location is used for and what is sent over the network. Keep it as precise as the English. 'Plus Code' is the name of Google's open location code format."
+  },
+  "onboardingWeatherTitle": "Weather enrichment",
+  "@onboardingWeatherTitle": {
+    "description": "Title of the onboarding step that asks whether to fetch weather. 'Enrichment' means adding weather data to entries."
+  },
+  "onboardingWeatherBody": "Megrim can fetch the weather around each migraine — temperature, humidity, barometric pressure, air quality — so Analytics can look for patterns like pressure swings before an attack.\n\nIf you turn this on, the entry's date and rounded (~1 km) coordinates are sent to Open-Meteo.com, a non-commercial weather service. Nothing else ever leaves your device: no account, no telemetry, and no server of ours.\n\nLeave it off and Megrim is fully offline. You can change this anytime in Settings.",
+  "@onboardingWeatherBody": {
+    "description": "[legal] Explains the weather opt-in and what is sent. Keep the blank lines between paragraphs. Keep it as precise as the English."
+  },
+  "onboardingWeatherSwitch": "Fetch weather for my entries",
+  "@onboardingWeatherSwitch": {
+    "description": "Switch on the weather onboarding step."
+  },
+  "onboardingWeatherSwitchSubtitle": "Recommended if you want pressure correlations",
+  "@onboardingWeatherSwitchSubtitle": {
+    "description": "Under the weather switch during onboarding."
+  },
+  "onboardingFinish": "Finish",
+  "@onboardingFinish": {
+    "description": "Button that ends onboarding."
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title of the Settings screen."
+  },
+  "settingsOff": "Off",
+  "@settingsOff": {
+    "description": "A setting that is turned off: the daily reminder, or the backup reminder interval."
+  },
+  "settingsHomeLocation": "Home location",
+  "@settingsHomeLocation": {
+    "description": "Settings row: the home location used for daylight, season and weather."
+  },
+  "settingsWeather": "Weather enrichment",
+  "@settingsWeather": {
+    "description": "Settings switch: fetch weather for entries. 'Enrichment' means adding weather data to entries."
+  },
+  "settingsWeatherOnSubtitle": "Fetches weather for entries from Open-Meteo (rounded location + date only)",
+  "@settingsWeatherOnSubtitle": {
+    "description": "[legal] Under the weather switch when it's on: what is sent."
+  },
+  "settingsWeatherOffSubtitle": "Off — no automatic network use (only searches you type)",
+  "@settingsWeatherOffSubtitle": {
+    "description": "Under the weather switch when it's off."
+  },
+  "settingsWeatherOnSnack": "Weather enrichment on — fetching weather for your entries…",
+  "@settingsWeatherOnSnack": {
+    "description": "Brief message after turning weather on."
+  },
+  "settingsWeatherOffSnack": "Weather enrichment off — no more automatic network requests.",
+  "@settingsWeatherOffSnack": {
+    "description": "Brief message after turning weather off."
+  },
+  "settingsTriggersTitle": "Triggers",
+  "@settingsTriggersTitle": {
+    "description": "Title of the screen that edits the list of trigger names."
+  },
+  "settingsHeadLocationsTitle": "Head locations",
+  "@settingsHeadLocationsTitle": {
+    "description": "Title of the screen that edits the list of places on the head where pain is felt."
+  },
+  "settingsManageTriggers": "Manage Triggers",
+  "@settingsManageTriggers": {
+    "description": "Settings row that opens the trigger list editor."
+  },
+  "settingsManageHeadLocations": "Manage Head locations",
+  "@settingsManageHeadLocations": {
+    "description": "Settings row that opens the head-location list editor."
+  },
+  "settingsManageMedications": "Manage Medications",
+  "@settingsManageMedications": {
+    "description": "Settings row that opens medication classes and preventive medications."
+  },
+  "settingsManageMedicationsSubtitle": "Classes, and preventive medications",
+  "@settingsManageMedicationsSubtitle": {
+    "description": "Under 'Manage Medications'."
+  },
+  "settingsLastBackup": "Last backup",
+  "@settingsLastBackup": {
+    "description": "Settings row: when the user last exported a JSON backup."
+  },
+  "settingsBackupSubtitle": "{age} · {reminder}",
+  "@settingsBackupSubtitle": {
+    "description": "Under 'Last backup': how long ago, then the reminder interval. E.g. '12 days ago · Every 30 days'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "12 days ago"
+      },
+      "reminder": {
+        "type": "String",
+        "example": "Every 30 days"
+      }
+    }
+  },
+  "settingsBackupSubtitleDue": "{age} · {reminder} · due",
+  "@settingsBackupSubtitleDue": {
+    "description": "Under 'Last backup' when a backup is overdue: how long ago, the reminder interval, and 'due'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "Never"
+      },
+      "reminder": {
+        "type": "String",
+        "example": "Every 30 days"
+      }
+    }
+  },
+  "settingsBackupNever": "Never",
+  "@settingsBackupNever": {
+    "description": "Last backup: the user has never exported a backup."
+  },
+  "settingsBackupToday": "Today",
+  "@settingsBackupToday": {
+    "description": "Last backup: today."
+  },
+  "settingsBackupYesterday": "Yesterday",
+  "@settingsBackupYesterday": {
+    "description": "Last backup: yesterday."
+  },
+  "settingsBackupDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@settingsBackupDaysAgo": {
+    "description": "Last backup: this many days ago (2 or more in practice).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsBackupEvery": "{count, plural, =1{Every day} other{Every {count} days}}",
+  "@settingsBackupEvery": {
+    "description": "Backup reminder interval (7, 14, 30 or 90 days).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsBackupReminderTitle": "Remind me to back up",
+  "@settingsBackupReminderTitle": {
+    "description": "Title of the dialog choosing the backup reminder interval."
+  },
+  "settingsExportJson": "Export (JSON backup)",
+  "@settingsExportJson": {
+    "description": "Settings row: export everything as a JSON file, which can be imported back."
+  },
+  "settingsExportCsv": "Export (CSV)",
+  "@settingsExportCsv": {
+    "description": "Settings row: export entries as a spreadsheet file."
+  },
+  "settingsExportReport": "Export report (PDF)",
+  "@settingsExportReport": {
+    "description": "Settings row: make a printable PDF report."
+  },
+  "settingsExportReportSubtitle": "A printable summary to share with a clinician",
+  "@settingsExportReportSubtitle": {
+    "description": "Under 'Export report (PDF)'."
+  },
+  "settingsImport": "Import (JSON)",
+  "@settingsImport": {
+    "description": "Settings row: import a JSON export."
+  },
+  "settingsImportGuide": "Import format guide",
+  "@settingsImportGuide": {
+    "description": "Settings row: opens the import format documentation on the web."
+  },
+  "settingsImportGuideSubtitle": "Bring in data from another app",
+  "@settingsImportGuideSubtitle": {
+    "description": "Under 'Import format guide'."
+  },
+  "settingsDonate": "Donate",
+  "@settingsDonate": {
+    "description": "Settings row: opens the developer's donation page."
+  },
+  "settingsDonateSubtitle": "Support development",
+  "@settingsDonateSubtitle": {
+    "description": "Under 'Donate'."
+  },
+  "settingsSourceCode": "Source code",
+  "@settingsSourceCode": {
+    "description": "Settings row: opens the source code on the web."
+  },
+  "settingsAbout": "About & privacy",
+  "@settingsAbout": {
+    "description": "Settings row: opens the About dialog with the privacy summary and disclaimer."
+  },
+  "settingsAboutLegalese": "GPL-3.0-or-later · {attribution}",
+  "@settingsAboutLegalese": {
+    "description": "In About: the licence, then the weather data attribution. Keep 'GPL-3.0-or-later' as is.",
+    "placeholders": {
+      "attribution": {
+        "type": "String",
+        "example": "Weather data by Open-Meteo.com"
+      }
+    }
+  },
+  "settingsDailyReminder": "Daily reminder",
+  "@settingsDailyReminder": {
+    "description": "Settings row and dialog title: a daily notification asking how the day was."
+  },
+  "settingsDailyReminderOn": "Every day at {time}, unless the day is already logged",
+  "@settingsDailyReminderOn": {
+    "description": "Under 'Daily reminder' when it's on.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "20:00"
+      }
+    }
+  },
+  "settingsDailyReminderExplain": "One notification a day asking how the day was, with \"No migraine today\" and \"Log\". It says nothing about your health, and nothing leaves the phone.",
+  "@settingsDailyReminderExplain": {
+    "description": "In the daily reminder dialog. 'No migraine today' and 'Log' are the notification's two buttons; use the same words as those buttons."
+  },
+  "settingsReminderChooseTime": "Choose a time…",
+  "@settingsReminderChooseTime": {
+    "description": "Daily reminder dialog option when the reminder is off."
+  },
+  "settingsReminderAtTime": "At {time} (change…)",
+  "@settingsReminderAtTime": {
+    "description": "Daily reminder dialog option when the reminder is on: tap to change the time.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "20:00"
+      }
+    }
+  },
+  "settingsRemindMeAt": "Remind me at",
+  "@settingsRemindMeAt": {
+    "description": "Title of the time picker for the daily reminder."
+  },
+  "settingsOngoingTitle": "Notification during a migraine",
+  "@settingsOngoingTitle": {
+    "description": "Settings switch (Android): an ongoing notification while a migraine is in progress."
+  },
+  "settingsOngoingSubtitle": "A running clock and an End button while one is in progress",
+  "@settingsOngoingSubtitle": {
+    "description": "Under 'Notification during a migraine'. 'End' is the notification's button that ends the migraine."
+  },
+  "settingsNotificationsRefused": "Notifications are off for Megrim in the phone's settings, so this stays off. Allow them there, then try again.",
+  "@settingsNotificationsRefused": {
+    "description": "Shown when the phone's settings block Megrim's notifications."
+  },
+  "settingsAppLock": "App lock",
+  "@settingsAppLock": {
+    "description": "Settings switch: ask for the phone's unlock when opening the app."
+  },
+  "settingsAppLockSubtitle": "Ask for your fingerprint, face or phone PIN when opening Megrim",
+  "@settingsAppLockSubtitle": {
+    "description": "Under 'App lock'."
+  },
+  "settingsLockAfter": "Lock after",
+  "@settingsLockAfter": {
+    "description": "Settings row and dialog title: how long the app may be in the background before it locks."
+  },
+  "settingsLockAfterSubtitle": "{timeout} in the background",
+  "@settingsLockAfterSubtitle": {
+    "description": "Under 'Lock after', e.g. 'After 1 minute in the background' or 'Immediately in the background'.",
+    "placeholders": {
+      "timeout": {
+        "type": "String",
+        "example": "After 1 minute"
+      }
+    }
+  },
+  "settingsLockImmediately": "Immediately",
+  "@settingsLockImmediately": {
+    "description": "App lock timeout: lock as soon as the app goes to the background."
+  },
+  "settingsLockAfterMinutes": "{count, plural, =1{After 1 minute} other{After {count} minutes}}",
+  "@settingsLockAfterMinutes": {
+    "description": "App lock timeout.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsHideInRecents": "Hide in recent apps",
+  "@settingsHideInRecents": {
+    "description": "Settings switch: blank the app in the phone's app switcher."
+  },
+  "settingsHideInRecentsAndroid": "Blank Megrim in the app switcher. Also blocks screenshots of the app.",
+  "@settingsHideInRecentsAndroid": {
+    "description": "Under 'Hide in recent apps' on Android."
+  },
+  "settingsHideInRecentsIos": "Blank Megrim in the app switcher.",
+  "@settingsHideInRecentsIos": {
+    "description": "Under 'Hide in recent apps' on iPhone."
+  },
+  "settingsAppLockOn": "App lock on.",
+  "@settingsAppLockOn": {
+    "description": "Brief message after turning app lock on."
+  },
+  "settingsAppLockOff": "App lock off.",
+  "@settingsAppLockOff": {
+    "description": "Brief message after turning app lock off."
+  },
+  "settingsNoScreenLockTitle": "No screen lock on this phone",
+  "@settingsNoScreenLockTitle": {
+    "description": "Dialog title when the phone has no screen lock, so app lock can't be turned on."
+  },
+  "settingsNoScreenLockBody": "App lock uses your phone's own unlock — fingerprint, face, or PIN, pattern or password. Set a screen lock in your phone's settings first, then turn app lock on here.",
+  "@settingsNoScreenLockBody": {
+    "description": "Dialog body when the phone has no screen lock."
+  },
+  "settingsTooManyAttempts": "Too many attempts. Wait a moment, then try again.",
+  "@settingsTooManyAttempts": {
+    "description": "Shown when the phone has locked out unlock attempts."
+  },
+  "settingsUnlockError": "Couldn't ask for your phone's unlock.",
+  "@settingsUnlockError": {
+    "description": "Shown when the phone's unlock prompt couldn't be shown."
+  },
+  "settingsChangeHomeTitle": "Change home location",
+  "@settingsChangeHomeTitle": {
+    "description": "Dialog title."
+  },
+  "settingsSaveReenrich": "Save & re-enrich",
+  "@settingsSaveReenrich": {
+    "description": "Button: save the new home location and recompute weather and daylight for all entries."
+  },
+  "settingsReenriching": "Re-enriching entries…",
+  "@settingsReenriching": {
+    "description": "Brief message while weather and daylight are recomputed for all entries."
+  },
+  "settingsDone": "Done.",
+  "@settingsDone": {
+    "description": "Brief message when re-enriching has finished."
+  },
+  "settingsBuildingReport": "Building report…",
+  "@settingsBuildingReport": {
+    "description": "Brief message while the PDF report is made."
+  },
+  "settingsReportFailed": "Report failed: {error}",
+  "@settingsReportFailed": {
+    "description": "Shown when making the PDF report failed. {error} is a technical message in English.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsExportTitle": "Export",
+  "@settingsExportTitle": {
+    "description": "Title of the dialog choosing how to export: share or save."
+  },
+  "settingsShare": "Share",
+  "@settingsShare": {
+    "description": "Export option: open the phone's share sheet."
+  },
+  "settingsSaveToDevice": "Save to device",
+  "@settingsSaveToDevice": {
+    "description": "Export option: save the file to a folder on the phone."
+  },
+  "settingsSaved": "Saved.",
+  "@settingsSaved": {
+    "description": "Brief message after an export was saved."
+  },
+  "settingsSaveFailed": "Save failed: {error}",
+  "@settingsSaveFailed": {
+    "description": "Shown when saving an export failed. {error} is a technical message in English.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsImportTitle": "Import",
+  "@settingsImportTitle": {
+    "description": "Title of the import dialog."
+  },
+  "settingsImportBody": "Merge with your existing entries, or replace everything?\n\nReplace permanently deletes all current entries first.",
+  "@settingsImportBody": {
+    "description": "Import dialog body. 'Merge' and 'Replace' are its two buttons; use the same words."
+  },
+  "settingsImportMerge": "Merge",
+  "@settingsImportMerge": {
+    "description": "Import dialog button: add the imported entries to the existing ones."
+  },
+  "settingsImportReplace": "Replace",
+  "@settingsImportReplace": {
+    "description": "Import dialog button: delete all current entries, then import."
+  },
+  "settingsImported": "Imported {imported}, skipped {skipped}.",
+  "@settingsImported": {
+    "description": "After an import: how many entries were imported, and how many were skipped (already present or invalid).",
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsImportFailed": "Import failed: {error}",
+  "@settingsImportFailed": {
+    "description": "Shown when an import failed, with the reason.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsCouldNotOpen": "Could not open {url}",
+  "@settingsCouldNotOpen": {
+    "description": "Shown when a web link couldn't be opened.",
+    "placeholders": {
+      "url": {
+        "type": "String",
+        "example": "https://github.com/smaegley/megrim"
+      }
+    }
   }
 }

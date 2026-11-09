@@ -1,5 +1,12 @@
 // Legal / policy text (SPEC §9). Kept in one place so onboarding, About, and the store listing
 // stay in sync.
+//
+// Translations (docs/TRANSLATIONS.md): the text shown in the app is in app_en.arb as `legal*`
+// messages (disclaimer, privacy summary, weather attribution, About copy, correlation caveats),
+// reached through context.l10n. The English constants below are kept only for files not yet
+// converted (the Log screen, Analytics and the report); remove each once nothing uses it.
+
+import 'l10n/l10n.dart';
 
 const String kMedicalDisclaimer =
     'Megrim is a personal diary and is not a medical device. It does not '
@@ -17,6 +24,16 @@ const String kPrivacySummary =
     'phone\'s own backup (Google on Android, iCloud or your computer on iPhone), '
     'which you control in its settings; export files go wherever you choose to '
     'save them.';
+
+/// Caveats shown verbatim on the correlations card (SPEC §9 / §6.2), in the app's language.
+/// Same text as [kCorrelationCaveats].
+List<String> correlationCardCaveats(AppLocalizations l) => [
+      l.legalCaveatOddsRatioExplained,
+      l.legalCaveatSmallSample,
+      l.correlationsCaveatOddsRatio,
+      l.caveatMultipleComparisons,
+      l.caveatNotCausation,
+    ];
 
 /// Caveats shown verbatim on the correlations card (SPEC §9 / §6.2).
 const List<String> kCorrelationCaveats = [
