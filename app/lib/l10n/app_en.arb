@@ -3,5 +3,329 @@
   "appTitle": "Megrim",
   "@appTitle": {
     "description": "The app's name. Not translated."
+  },
+  "dataTriggerStress": "Stress",
+  "@dataTriggerStress": {
+    "description": "Default trigger, and the 'Stress' factor in Migraine days vs clear days (stress level 1-5)."
+  },
+  "dataTriggerSleepChange": "Sleep change",
+  "@dataTriggerSleepChange": {
+    "description": "Default trigger: sleeping more or less than usual, or at different times."
+  },
+  "dataTriggerBrightLight": "Bright light",
+  "@dataTriggerBrightLight": {
+    "description": "Default trigger."
+  },
+  "dataTriggerExercise": "Exercise",
+  "@dataTriggerExercise": {
+    "description": "Default trigger."
+  },
+  "dataTriggerWeather": "Weather / pressure",
+  "@dataTriggerWeather": {
+    "description": "Default trigger: a change in the weather or barometric pressure."
+  },
+  "dataTriggerAlcohol": "Alcohol",
+  "@dataTriggerAlcohol": {
+    "description": "Default trigger."
+  },
+  "dataTriggerCaffeine": "Caffeine",
+  "@dataTriggerCaffeine": {
+    "description": "Default trigger, and a default relief method (coffee or tea taken to ease a migraine)."
+  },
+  "dataTriggerFood": "Food",
+  "@dataTriggerFood": {
+    "description": "Default trigger: something eaten."
+  },
+  "dataTriggerHormonal": "Hormonal",
+  "@dataTriggerHormonal": {
+    "description": "Default trigger: e.g. the menstrual cycle."
+  },
+  "dataTriggerStrongSmell": "Strong smell",
+  "@dataTriggerStrongSmell": {
+    "description": "Default trigger: perfume, smoke, paint and the like."
+  },
+  "dataTriggerScreenTime": "Screen time",
+  "@dataTriggerScreenTime": {
+    "description": "Default trigger: long use of a phone or computer screen."
+  },
+  "dataTriggerTravel": "Travel",
+  "@dataTriggerTravel": {
+    "description": "Default trigger: being away from home."
+  },
+  "dataHeadLeftTemple": "Left temple",
+  "@dataHeadLeftTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadRightTemple": "Right temple",
+  "@dataHeadRightTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindLeftEye": "Behind left eye",
+  "@dataHeadBehindLeftEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindRightEye": "Behind right eye",
+  "@dataHeadBehindRightEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadForehead": "Forehead",
+  "@dataHeadForehead": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadTop": "Top of head",
+  "@dataHeadTop": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBack": "Back of head",
+  "@dataHeadBack": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadNeck": "Neck",
+  "@dataHeadNeck": {
+    "description": "Default place where the pain is."
+  },
+  "dataHeadBothSides": "Both sides",
+  "@dataHeadBothSides": {
+    "description": "Default place on the head where the pain is: both sides of the head."
+  },
+  "dataSymptomNausea": "Nausea",
+  "@dataSymptomNausea": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomVomiting": "Vomiting",
+  "@dataSymptomVomiting": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomLight": "Light sensitivity",
+  "@dataSymptomLight": {
+    "description": "[medical] Default migraine symptom (photophobia)."
+  },
+  "dataSymptomSound": "Sound sensitivity",
+  "@dataSymptomSound": {
+    "description": "[medical] Default migraine symptom (phonophobia)."
+  },
+  "dataSymptomSmell": "Smell sensitivity",
+  "@dataSymptomSmell": {
+    "description": "[medical] Default migraine symptom (osmophobia)."
+  },
+  "dataSymptomNeck": "Neck pain / stiffness",
+  "@dataSymptomNeck": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomDizziness": "Dizziness",
+  "@dataSymptomDizziness": {
+    "description": "[medical] Default migraine symptom: feeling light-headed or unsteady. Different from vertigo."
+  },
+  "dataSymptomVertigo": "Vertigo",
+  "@dataSymptomVertigo": {
+    "description": "[medical] Default migraine symptom: a false sense that you or the room is spinning or moving. Marks vestibular migraine; keep it distinct from dizziness."
+  },
+  "dataSymptomMotion": "Motion sensitivity",
+  "@dataSymptomMotion": {
+    "description": "[medical] Default migraine symptom: symptoms made worse by moving the head or by motion."
+  },
+  "dataSymptomFatigue": "Fatigue",
+  "@dataSymptomFatigue": {
+    "description": "[medical] Default migraine symptom: extreme tiredness."
+  },
+  "dataSymptomBrainFog": "Brain fog",
+  "@dataSymptomBrainFog": {
+    "description": "[medical] Default migraine symptom: trouble thinking clearly or concentrating."
+  },
+  "dataSymptomYawning": "Yawning",
+  "@dataSymptomYawning": {
+    "description": "[medical] Default migraine symptom: repeated yawning, often before an attack."
+  },
+  "dataReliefDarkRoom": "Dark room",
+  "@dataReliefDarkRoom": {
+    "description": "Default non-drug relief method: resting in a dark room."
+  },
+  "dataReliefSleep": "Sleep",
+  "@dataReliefSleep": {
+    "description": "Default non-drug relief method."
+  },
+  "dataReliefColdPack": "Cold pack",
+  "@dataReliefColdPack": {
+    "description": "Default non-drug relief method: something cold on the head or neck."
+  },
+  "dataReliefHeat": "Heat",
+  "@dataReliefHeat": {
+    "description": "Default non-drug relief method: a warm compress, a hot shower."
+  },
+  "dataReliefHydration": "Hydration",
+  "@dataReliefHydration": {
+    "description": "Default non-drug relief method: drinking water."
+  },
+  "dataReliefRest": "Rest",
+  "@dataReliefRest": {
+    "description": "Default non-drug relief method."
+  },
+  "dataSeasonWinter": "Winter",
+  "@dataSeasonWinter": {
+    "description": "Season."
+  },
+  "dataSeasonSpring": "Spring",
+  "@dataSeasonSpring": {
+    "description": "Season."
+  },
+  "dataSeasonSummer": "Summer",
+  "@dataSeasonSummer": {
+    "description": "Season."
+  },
+  "dataSeasonAutumn": "Autumn",
+  "@dataSeasonAutumn": {
+    "description": "Season (fall)."
+  },
+  "dataMoonNew": "New Moon",
+  "@dataMoonNew": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaxingCrescent": "Waxing Crescent",
+  "@dataMoonWaxingCrescent": {
+    "description": "Moon phase."
+  },
+  "dataMoonFirstQuarter": "First Quarter",
+  "@dataMoonFirstQuarter": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaxingGibbous": "Waxing Gibbous",
+  "@dataMoonWaxingGibbous": {
+    "description": "Moon phase."
+  },
+  "dataMoonFull": "Full Moon",
+  "@dataMoonFull": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaningGibbous": "Waning Gibbous",
+  "@dataMoonWaningGibbous": {
+    "description": "Moon phase."
+  },
+  "dataMoonLastQuarter": "Last Quarter",
+  "@dataMoonLastQuarter": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaningCrescent": "Waning Crescent",
+  "@dataMoonWaningCrescent": {
+    "description": "Moon phase."
+  },
+  "dataTimeMorning": "morning",
+  "@dataTimeMorning": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeAfternoon": "afternoon",
+  "@dataTimeAfternoon": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeEvening": "evening",
+  "@dataTimeEvening": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeNight": "night",
+  "@dataTimeNight": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataFactorDayOfWeek": "Day of week",
+  "@dataFactorDayOfWeek": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorSeason": "Season",
+  "@dataFactorSeason": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorMonth": "Month",
+  "@dataFactorMonth": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorMoonPhase": "Moon phase",
+  "@dataFactorMoonPhase": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorDaylight": "Daylight hours",
+  "@dataFactorDaylight": {
+    "description": "Name of a factor: how many hours of daylight the day had."
+  },
+  "dataFactorPressure": "Pressure Δ 24h (hPa)",
+  "@dataFactorPressure": {
+    "description": "Name of a factor: the change in barometric pressure over 24 hours, in hectopascals. Keep 'Δ', '24h' and 'hPa' as symbols."
+  },
+  "dataFactorSleep": "Sleep the night before",
+  "@dataFactorSleep": {
+    "description": "Name of a factor in Migraine days vs clear days: hours slept the night before."
+  },
+  "dataFactorTrigger": "Trigger noted",
+  "@dataFactorTrigger": {
+    "description": "Name of a factor in Migraine days vs clear days: a trigger written down for that day."
+  },
+  "dataFactorFood": "Food noted",
+  "@dataFactorFood": {
+    "description": "Name of a factor in Migraine days vs clear days: a food written down for that day."
+  },
+  "dataHours": "{value} h",
+  "@dataHours": {
+    "description": "A number of hours, as a chart label: '9.5 h'. Use the usual short form for hours.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "9.5"
+      }
+    }
+  },
+  "dataBucketBelow": "< {value}",
+  "@dataBucketBelow": {
+    "description": "Chart bucket: values below a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "-10"
+      }
+    }
+  },
+  "dataBucketAbove": "> {value}",
+  "@dataBucketAbove": {
+    "description": "Chart bucket: values above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
+  "dataBucketAtLeast": "≥ {value}",
+  "@dataBucketAtLeast": {
+    "description": "Chart bucket: values at or above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "14 h"
+      }
+    }
+  },
+  "dataBucketRange": "{from} to {to}",
+  "@dataBucketRange": {
+    "description": "Chart bucket for a range that may include negative numbers: '-10 to -5' (pressure change in hPa).",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "-10"
+      },
+      "to": {
+        "type": "String",
+        "example": "-5"
+      }
+    }
+  },
+  "dataBucketSpan": "{from}–{to}",
+  "@dataBucketSpan": {
+    "description": "Chart bucket for a range of positive numbers, written with a dash: '6–8'.",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "6"
+      },
+      "to": {
+        "type": "String",
+        "example": "8"
+      }
+    }
   }
 }
