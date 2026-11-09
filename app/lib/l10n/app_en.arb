@@ -788,5 +788,140 @@
         "example": "Oct 2026 so far: 5 days; Sep 2026: 3 days"
       }
     }
+  },
+  "medCardTitle": "Acute medication days",
+  "@medCardTitle": {
+    "description": "Title of the Analytics card counting days on which medication was taken for an attack."
+  },
+  "medCardIntro": "Days on which you took medication for an attack. Two doses on one day count once.",
+  "@medCardIntro": {
+    "description": "Intro text of the Acute medication days card."
+  },
+  "medCardLast30Label": "days in the last 30 days",
+  "@medCardLast30Label": {
+    "description": "Acute medication days card: shown next to a big number (the count is displayed separately)."
+  },
+  "medCardNoneLast30": "None in the last 30 days.",
+  "@medCardNoneLast30": {
+    "description": "Acute medication days card: no medication days in the last 30 days."
+  },
+  "medCardClassDays": "{count, plural, =1{1 day} other{{count} days}}",
+  "@medCardClassDays": {
+    "description": "Acute medication days card: days for one medication class, shown next to the class name.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medCardChartTitle": "Acute medication days per month",
+  "@medCardChartTitle": {
+    "description": "Title of the per-month bar chart on the Acute medication days card (read by screen readers)."
+  },
+  "medCardFootnote": "* month in progress. A day with two classes counts once in the bar.",
+  "@medCardFootnote": {
+    "description": "Note under the medication days chart. '*' marks the current, unfinished month."
+  },
+  "medCardUnclassified": "{count, plural, =1{1 medication has no class ({names}), so it isn't checked against the reference levels.} other{{count} medications have no class ({names}), so they aren't checked against the reference levels.}}",
+  "@medCardUnclassified": {
+    "description": "[medical] Acute medication days card: medications without a class are not compared with the ICHD-3 medication-overuse reference levels. {names} is a comma-separated list of names the user typed.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String",
+        "example": "Mystery pill, Another tablet"
+      }
+    }
+  },
+  "medCardSetClasses": "Set classes",
+  "@medCardSetClasses": {
+    "description": "Button on the Acute medication days card: opens Settings › Medications to give medications a class."
+  },
+  "medCardNoticePdfNote": "The PDF report includes these counts.",
+  "@medCardNoticePdfNote": {
+    "description": "Sentence after the medication-overuse notice body on the Analytics card."
+  },
+  "overuseNoticeMonth": "{month}: {reason}",
+  "@overuseNoticeMonth": {
+    "description": "[medical] One line of the medication-overuse notice: a month and why it reached the reference level, e.g. 'Sep 2026: Triptan on 11 days (level 10)'.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Sep 2026"
+      },
+      "reason": {
+        "type": "String",
+        "example": "Triptan on 11 days (level 10)"
+      }
+    }
+  },
+  "helpedTitle": "What helped",
+  "@helpedTitle": {
+    "description": "Title of the Analytics card showing how often each medication or relief method helped."
+  },
+  "helpedIntro": "How often each medication or relief method helped, among the times you answered \"Helped?\". Unknown answers are left out of the share.",
+  "@helpedIntro": {
+    "description": "Intro text of the What helped card. \"Helped?\" is the question asked for each medication or relief on an entry."
+  },
+  "helpedMedications": "Medications",
+  "@helpedMedications": {
+    "description": "What helped card: heading of the medications section."
+  },
+  "helpedRelief": "Relief tried",
+  "@helpedRelief": {
+    "description": "What helped card: heading of the non-drug relief section (dark room, cold pack…)."
+  },
+  "helpedFootnote": "What you noted after each attack, not a comparison of treatments: how well something works depends on when and how it was taken.",
+  "@helpedFootnote": {
+    "description": "[medical] Note at the end of the What helped card."
+  },
+  "helpedNoAnswer": "tried {count}×, no answer recorded",
+  "@helpedNoAnswer": {
+    "description": "What helped card: a medication or relief tried this many times, with no 'Helped?' answer given. '×' means 'times'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "helpedShare": "helped {percent} ({answered} answered)",
+  "@helpedShare": {
+    "description": "What helped card: the share of answered tries that helped, e.g. 'helped 75% (4 answered)'.",
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "75%"
+      },
+      "answered": {
+        "type": "int"
+      }
+    }
+  },
+  "helpedShareWithUnknown": "helped {percent} ({answered} answered, {unknown} unknown)",
+  "@helpedShareWithUnknown": {
+    "description": "What helped card: the share of answered tries that helped, and how many tries had 'Unknown' as the answer.",
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "75%"
+      },
+      "answered": {
+        "type": "int"
+      },
+      "unknown": {
+        "type": "int"
+      }
+    }
+  },
+  "helpedMore": "and {count} more (in the export).",
+  "@helpedMore": {
+    "description": "What helped card: more rows than shown; the full list is in the data export.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }
