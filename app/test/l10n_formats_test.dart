@@ -15,6 +15,8 @@ void main() {
     expect(us.dateWeekday(d), 'Mon, Nov 9, 2026');
     expect(us.time(d), matches(RegExp(r'^2:05\sPM$')));
     expect(Formats('en_US', use24h: true).time(d), '14:05');
+    expect(gb.dateWeekdayTime(d), 'Mon, 9 Nov 2026, 14:05');
+    expect(us.dateWeekdayTime(d), matches(RegExp(r'^Mon, Nov 9, 2026, 2:05\sPM$')));
   });
 
   test('weeks start on Monday in Britain and Sunday in the US', () {

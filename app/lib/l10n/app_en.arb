@@ -3479,5 +3479,19 @@
   "entryEnrichNoLocation": "No location set — set a home location to enable enrichment.",
   "@entryEnrichNoLocation": {
     "description": "Entry detail, under Weather: why this entry has no weather, moon or daylight data. 'Enrichment' = the weather, moon and daylight details Megrim adds to an entry."
+  },
+  "formatDateTime": "{date}, {time}",
+  "@formatDateTime": {
+    "description": "A date followed by a time, e.g. 'Mon, Nov 9, 2026, 2:05 PM'. Both come already formatted for the language; only change the joiner if your language writes it differently.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Mon, Nov 9, 2026"
+      },
+      "time": {
+        "type": "String",
+        "example": "2:05 PM"
+      }
+    }
   }
 }

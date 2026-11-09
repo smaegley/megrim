@@ -103,6 +103,9 @@ class _Review {
     addTearDown(tester.view.reset);
     addTearDown(tester.platformDispatcher.clearAllTestValues);
 
+    // flutter_test draws shadows as hard black edges; draw them as the phone does.
+    debugDisableShadows = false;
+    addTearDown(() => debugDisableShadows = true);
     final previous = FlutterError.onError;
     FlutterError.onError = (d) {
       final first = d.exceptionAsString().split('\n').first;

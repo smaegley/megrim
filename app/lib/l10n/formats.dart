@@ -18,17 +18,24 @@ class Formats {
   /// 24-hour times. On screen this follows the phone's setting; elsewhere, the locale's habit.
   final bool use24h;
 
-  Formats(this.locale, {bool? use24h})
-      : use24h = use24h ?? !DateFormat.jm(locale).pattern!.contains('a');
+  /// Joins a date and a time ("Mon, Nov 9, 2026, 2:05 PM"): the `formatDateTime` message, so
+  /// each language picks its own joiner (intl's own joins English ones with a bare space).
+  final String Function(String date, String time) _join;
+
+  Formats(this.locale, {bool? use24h, String Function(String date, String time)? join})
+      : use24h = use24h ?? !DateFormat.jm(locale).pattern!.contains('a'),
+        _join = join ?? englishL10n.formatDateTime;
 
   /// For a screen: the app's language, the phone's region and its 12/24-hour setting.
   factory Formats.of(BuildContext context) => Formats(
         formatLocale(context.l10n),
         use24h: MediaQuery.maybeAlwaysUse24HourFormatOf(context) == true ? true : null,
+        join: context.l10n.formatDateTime,
       );
 
   /// For code outside the widget tree (the PDF report, notifications).
-  factory Formats.forL10n(AppLocalizations l) => Formats(formatLocale(l));
+  factory Formats.forL10n(AppLocalizations l) =>
+      Formats(formatLocale(l), join: l.formatDateTime);
 
   /// 9 Nov 2026
   String date(DateTime d) => DateFormat.yMMMd(locale).format(d);
@@ -79,8 +86,7 @@ class Formats {
   /// One-letter weekday names, Sunday first: S M T W T F S.
   List<String> get narrowWeekdays => DateFormat('', locale).dateSymbols.STANDALONENARROWWEEKDAYS;
 
-  String _withTime(DateFormat date, DateTime d) =>
-      (use24h ? date.add_Hm() : date.add_jm()).format(d);
+  String _withTime(DateFormat date, DateTime d) => _join(date.format(d), time(d));
 }
 
 /// The intl locale for [l]'s language: the phone's first preferred locale in that language (so
