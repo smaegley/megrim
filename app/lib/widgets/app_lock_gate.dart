@@ -2,6 +2,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../services/app_lock.dart';
 
 /// Sits in `MaterialApp.builder`, above the Navigator, so the lock covers every route, dialog and
@@ -110,8 +111,8 @@ class _LockScreenState extends State<_LockScreen> with WidgetsBindingObserver {
     setState(() {
       _busy = false;
       _message = switch (outcome) {
-        AuthOutcome.lockedOut => 'Too many attempts. Wait a moment, then try again.',
-        AuthOutcome.error => 'Couldn\'t ask for your phone\'s unlock. Try again.',
+        AuthOutcome.lockedOut => context.l10n.appLockLockedOut,
+        AuthOutcome.error => context.l10n.appLockError,
         _ => null,
       };
     });
@@ -120,6 +121,7 @@ class _LockScreenState extends State<_LockScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = context.l10n;
     final turnedOff = c.turnedOffNoCredential;
     return Material(
       color: theme.colorScheme.surface,
@@ -142,22 +144,17 @@ class _LockScreenState extends State<_LockScreen> with WidgetsBindingObserver {
                 const SizedBox(height: 24),
                 if (turnedOff) ...[
                   Text(
-                    'App lock turned off',
+                    l.appLockTurnedOffTitle,
                     style: theme.textTheme.titleLarge,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Your phone no longer has a screen lock, so Megrim can\'t check it\'s you. '
-                    'App lock has been turned off. Set a screen lock in your phone\'s settings, '
-                    'then turn app lock back on in Settings › Privacy.',
-                    textAlign: TextAlign.center,
-                  ),
+                  Text(l.appLockTurnedOffBody, textAlign: TextAlign.center),
                   const SizedBox(height: 24),
-                  FilledButton(onPressed: c.acknowledgeTurnedOff, child: const Text('Continue')),
+                  FilledButton(onPressed: c.acknowledgeTurnedOff, child: Text(l.appLockContinue)),
                 ] else ...[
                   Text(
-                    'Megrim is locked',
+                    l.appLockLocked,
                     style: theme.textTheme.titleLarge,
                     textAlign: TextAlign.center,
                   ),
@@ -165,7 +162,7 @@ class _LockScreenState extends State<_LockScreen> with WidgetsBindingObserver {
                   FilledButton.icon(
                     onPressed: _busy ? null : _unlock,
                     icon: const Icon(Icons.lock_open),
-                    label: const Text('Unlock'),
+                    label: Text(l.appLockUnlock),
                   ),
                   if (_message != null) ...[
                     const SizedBox(height: 16),
