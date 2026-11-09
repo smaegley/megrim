@@ -13,6 +13,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # Translations (docs/TRANSLATIONS.md): gen-l10n builds AppLocalizations from lib/l10n/*.arb.
+  flutter_localizations:
+    sdk: flutter
   cupertino_icons: ^1.0.8
 
   # Storage
@@ -24,7 +27,7 @@ dependencies:
   # Utilities
   uuid: ^4.5.0
   http: ^1.2.0
-  intl: ^0.19.0
+  intl: ^0.20.2
   # Connectivity monitoring to retry the enrichment queue when the network returns. Uses Android
   # ConnectivityManager — no Google Play Services, so it stays within the F-Droid constraint (§2.1).
   connectivity_plus: ^6.0.0
@@ -67,6 +70,7 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+  generate: true
   assets:
     - assets/logo.png
     - assets/gpl-3.0.txt

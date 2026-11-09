@@ -1,0 +1,10 @@
+# Translations (docs/TRANSLATIONS.md). gen-l10n reads lib/l10n/app_<lang>.arb and writes
+# AppLocalizations to lib/l10n/gen/ (not committed; `flutter pub get` regenerates it).
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-dir: lib/l10n/gen
+output-localization-file: app_localizations.dart
+nullable-getter: false
+untranslated-messages-file: build/l10n_untranslated.json
+# English first: when the phone's languages match none of ours, Flutter uses the first one.
+preferred-supported-locales: [en]

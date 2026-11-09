@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "appTitle": "Megrim",
+  "@appTitle": {
+    "description": "The app's name. Not translated."
+  }
+}
