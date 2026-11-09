@@ -1663,14 +1663,6 @@
   "@analyticsPressureOff": {
     "description": "Analytics, Top suspected factors: pressure can't be a factor while weather lookups are off. 'Settings › Weather enrichment' names the setting."
   },
-  "analyticsCaveatOddsRatioExplained": "OR = odds ratio: how much more likely a migraine is on days with that factor. OR 2.0 ≈ twice the odds vs. other days; OR 1.0 means no effect.",
-  "@analyticsCaveatOddsRatioExplained": {
-    "description": "Analytics, Top suspected factors caveat: explains the 'OR' abbreviation used on the card. 'OR' is the abbreviation of 'odds ratio'; translate it if your language uses another (and match analyticsOddsRatio)."
-  },
-  "analyticsCaveatSmallSample": "Small sample: results from a limited number of migraine days are noisy.",
-  "@analyticsCaveatSmallSample": {
-    "description": "Analytics, Top suspected factors caveat."
-  },
   "analyticsBullet": "• {text}",
   "@analyticsBullet": {
     "description": "A bulleted line in a list of caveats.",

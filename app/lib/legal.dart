@@ -25,8 +25,8 @@ const String kPrivacySummary =
     'which you control in its settings; export files go wherever you choose to '
     'save them.';
 
-/// Caveats shown verbatim on the correlations card (SPEC §9 / §6.2), in the app's language.
-/// Same text as [kCorrelationCaveats].
+/// Caveats shown verbatim on the correlations card (SPEC §9 / §6.2), in the app's language. The
+/// PDF report lists the analytics' own caveats instead.
 List<String> correlationCardCaveats(AppLocalizations l) => [
       l.legalCaveatOddsRatioExplained,
       l.legalCaveatSmallSample,
@@ -34,16 +34,6 @@ List<String> correlationCardCaveats(AppLocalizations l) => [
       l.caveatMultipleComparisons,
       l.caveatNotCausation,
     ];
-
-/// Caveats shown verbatim on the correlations card (SPEC §9 / §6.2).
-const List<String> kCorrelationCaveats = [
-  'OR = odds ratio: how much more likely a migraine is on days with that factor. '
-      'OR 2.0 ≈ twice the odds vs. other days; OR 1.0 means no effect.',
-  'Small sample: results from a limited number of migraine days are noisy.',
-  'Odds ratios use a +0.5 correction for empty cells; treat values near 1.0 as no signal.',
-  'Many factors are tested at once (multiple comparisons) — some apparent associations are chance.',
-  'Association is not causation. Use this to form hypotheses, not conclusions.',
-];
 
 const String kWeatherAttribution = 'Weather data by Open-Meteo.com';
 const String kSourceUrl = 'https://github.com/smaegley/megrim';

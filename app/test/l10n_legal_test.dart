@@ -16,8 +16,4 @@ void main() {
     expect(l.legalShortDescription, kShortDescription);
     expect(l.legalFullDescription, kFullDescription);
   });
-
-  test('the correlation card caveats match', () {
-    expect(correlationCardCaveats(l), kCorrelationCaveats);
-  });
 }

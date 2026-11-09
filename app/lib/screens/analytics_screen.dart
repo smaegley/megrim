@@ -101,16 +101,6 @@ String _plain(Formats fmt, double v) {
   return fmt.decimal(v, s.length - dot - 1);
 }
 
-/// The Suspected Factors caveats as the Analytics card lists them (SPEC §9 / §6.2), in the app's
-/// language. The PDF report lists the analytics' own caveats instead.
-List<String> _correlationCaveats(AppLocalizations l) => [
-      l.analyticsCaveatOddsRatioExplained,
-      l.analyticsCaveatSmallSample,
-      l.correlationsCaveatOddsRatio,
-      l.caveatMultipleComparisons,
-      l.caveatNotCausation,
-    ];
-
 /// Analytics (SPEC §4.5): a "days since last migraine" status card, summary, Top Suspected Factors,
 /// Most-tagged triggers, then collapsible per-factor charts (incl. season & time-of-day donuts).
 /// Computed locally. Includes the required Open-Meteo attribution footer.
@@ -717,7 +707,7 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
             if (_expanded) ...[
               const Divider(height: 24),
               for (final c in [
-                ..._correlationCaveats(l),
+                ...correlationCardCaveats(l),
                 if (corr.excludedMidAttackDays > 0) midAttackNote(l, corr.excludedMidAttackDays),
               ])
                 Padding(
