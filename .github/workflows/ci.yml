@@ -26,6 +26,11 @@ jobs:
           channel: stable
           cache: true
 
+      # The en-XA pseudo-locale (not committed), for the test that finds hard-coded text
+      # (test/l10n_hardcoded_text_test.dart). Before pub get, which generates the messages.
+      - name: Pseudo-locale for the hard-coded text test
+        working-directory: ${{ github.workspace }}
+        run: tools/l10n.py pseudo
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter analyze

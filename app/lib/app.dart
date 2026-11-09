@@ -30,13 +30,18 @@ class MegrimApp extends StatefulWidget {
   /// The daily reminder and ongoing notification (backlog #27, #23 step 3). Injectable for tests;
   /// defaults to one using the platform's notifications.
   final NotificationsController? notifications;
+
+  /// The languages offered. Tests pass the en-XA pseudo-locale here; the app ships
+  /// [kShippedLocales].
+  final List<Locale> supportedLocales;
   const MegrimApp(
       {super.key,
       required this.repo,
       this.geocoder,
       this.appLock,
       this.shortcuts,
-      this.notifications});
+      this.notifications,
+      this.supportedLocales = kShippedLocales});
 
   @override
   State<MegrimApp> createState() => _MegrimAppState();
@@ -119,7 +124,7 @@ class _MegrimAppState extends State<MegrimApp> {
       // Translations (docs/TRANSLATIONS.md): the phone's language when the app has it, otherwise
       // English. Only languages that meet the bar are offered (shipped_locales.dart).
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: kShippedLocales,
+      supportedLocales: widget.supportedLocales,
       // Follow the phone's light/dark setting (backlog #8).
       theme: megrimLightTheme(),
       darkTheme: megrimDarkTheme(),
