@@ -573,5 +573,320 @@
   "trackedCaveatRecallBias": "Recall bias: after a migraine people look harder for a cause than on a good day, so triggers can be over-recorded on migraine days.",
   "@trackedCaveatRecallBias": {
     "description": "Caveat under Migraine days vs clear days. 'Recall bias' is the statistics term."
+  },
+  "commonUndo": "Undo",
+  "@commonUndo": {
+    "description": "Snack bar action that reverses what was just done (a delete, a removed check-in)."
+  },
+  "commonAdd": "Add",
+  "@commonAdd": {
+    "description": "Dialog button that adds what was typed."
+  },
+  "commonYes": "Yes",
+  "@commonYes": {
+    "description": "Answer choice in a Yes / No / ... selector."
+  },
+  "commonNo": "No",
+  "@commonNo": {
+    "description": "Answer choice in a Yes / No / ... selector."
+  },
+  "commonUnknown": "Unknown",
+  "@commonUnknown": {
+    "description": "Answer choice: the user doesn't know (e.g. whether there was an aura, whether a medication helped)."
+  },
+  "commonNotSet": "Not set",
+  "@commonNotSet": {
+    "description": "Shown where an optional value hasn't been entered."
+  },
+  "commonManage": "Manage",
+  "@commonManage": {
+    "description": "Button next to a section heading that opens the screen to add, rename or remove its choices."
+  },
+  "entryEndBeforeStart": "End time must be after the start time.",
+  "@entryEndBeforeStart": {
+    "description": "Error when saving an entry whose end is before its start."
+  },
+  "entryCheckinsRemoved": "{count, plural, =1{Removed the \"No migraine\" check-in for that day.} other{Removed {count} \"No migraine\" check-ins for those days.}}",
+  "@entryCheckinsRemoved": {
+    "description": "Snack bar after saving an entry: check-ins (days logged as migraine-free) on the days the entry covers were removed, since an entry wins. 'No migraine' is the check-in's name.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "entryDeleteTitle": "Delete this entry?",
+  "@entryDeleteTitle": {
+    "description": "Title of the confirmation before deleting a migraine entry."
+  },
+  "entryDeleteBody": "This permanently removes the migraine and its computed factors.",
+  "@entryDeleteBody": {
+    "description": "Body of the confirmation before deleting a migraine entry. 'Computed factors' are the weather, moon phase etc. added automatically."
+  },
+  "entryDeleted": "Entry deleted",
+  "@entryDeleted": {
+    "description": "Snack bar after an entry was deleted (with Undo)."
+  },
+  "entryRecordedLocation": "Recorded location",
+  "@entryRecordedLocation": {
+    "description": "Where the user was during the migraine; title of the tile and of the dialog to change it."
+  },
+  "entryUseLocation": "Use location",
+  "@entryUseLocation": {
+    "description": "Dialog button: use the chosen place as the entry's location."
+  },
+  "entryTitleNew": "New entry",
+  "@entryTitleNew": {
+    "description": "Screen title when creating a migraine entry."
+  },
+  "entryTitleEdit": "Event detail",
+  "@entryTitleEdit": {
+    "description": "Screen title when viewing or editing an existing migraine entry."
+  },
+  "entryDiscard": "Discard",
+  "@entryDiscard": {
+    "description": "Tooltip: leave a new entry without saving it."
+  },
+  "entryDeleteTooltip": "Delete entry",
+  "@entryDeleteTooltip": {
+    "description": "Tooltip on the delete button of an existing entry."
+  },
+  "entryStarted": "Started",
+  "@entryStarted": {
+    "description": "When the migraine started (date and time)."
+  },
+  "entryEnded": "Ended",
+  "@entryEnded": {
+    "description": "When the migraine ended (date and time)."
+  },
+  "entryOngoingHint": "ongoing — tap to set",
+  "@entryOngoingHint": {
+    "description": "Shown under 'Ended' while the migraine has no end yet. Lowercase in English."
+  },
+  "entryClearEnd": "Clear (mark ongoing)",
+  "@entryClearEnd": {
+    "description": "Tooltip: remove the end time, so the migraine is still going on."
+  },
+  "entryLocationNotSet": "Not set — tap to add",
+  "@entryLocationNotSet": {
+    "description": "Shown under 'Recorded location' when none is set."
+  },
+  "entryHeadacheQuestion": "Headache?",
+  "@entryHeadacheQuestion": {
+    "description": "Question above Yes / No / Not sure: did this attack have a headache? (Some migraine attacks have none.)"
+  },
+  "entryHeadacheNotSure": "Not sure",
+  "@entryHeadacheNotSure": {
+    "description": "Answer to 'Headache?': the user isn't sure."
+  },
+  "entrySeverityValue": "Severity: {value} / 10",
+  "@entrySeverityValue": {
+    "description": "[medical] Headache pain severity on a 1-10 scale; {value} is a number or a dash when not set.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "7"
+      }
+    }
+  },
+  "entryHeadLocation": "Head location",
+  "@entryHeadLocation": {
+    "description": "Section heading: where on the head the pain was."
+  },
+  "entryNoHeadacheNote": "Logged as an attack without headache. Record how it affected you below.",
+  "@entryNoHeadacheNote": {
+    "description": "[medical] Shown instead of severity when 'Headache?' is No."
+  },
+  "entryImpactTitle": "Impact on the day",
+  "@entryImpactTitle": {
+    "description": "Section heading: how much the attack affected the user's day."
+  },
+  "entryImpactQuestion": "How well could you do your usual things?",
+  "@entryImpactQuestion": {
+    "description": "Hint under 'Impact on the day', above Normal / Reduced / Unable."
+  },
+  "entryAura": "Aura",
+  "@entryAura": {
+    "description": "[medical] Section heading: migraine aura (visual or other disturbance before or during the attack)."
+  },
+  "entryAuraDescription": "Aura description (optional)",
+  "@entryAuraDescription": {
+    "description": "[medical] Field label: describe the aura."
+  },
+  "entryAuraHint": "e.g. shimmering lights, zigzag lines",
+  "@entryAuraHint": {
+    "description": "[medical] Example text in the aura description field."
+  },
+  "entrySymptoms": "Symptoms",
+  "@entrySymptoms": {
+    "description": "[medical] Section heading for the symptom choices."
+  },
+  "entryTriggers": "Suspected triggers",
+  "@entryTriggers": {
+    "description": "Section heading: what the user thinks may have set off the migraine."
+  },
+  "entryFoods": "Foods notable",
+  "@entryFoods": {
+    "description": "Section heading: foods the user wants to note for this migraine."
+  },
+  "entryMedications": "Medications",
+  "@entryMedications": {
+    "description": "Section heading: medications taken for this migraine."
+  },
+  "entryRelief": "Relief tried",
+  "@entryRelief": {
+    "description": "Section heading: non-drug things tried for relief (dark room, cold pack...)."
+  },
+  "entrySleepHours": "Sleep hours (prior night)",
+  "@entrySleepHours": {
+    "description": "Field label: hours slept the night before."
+  },
+  "entryStressValue": "Stress level: {value} / 5",
+  "@entryStressValue": {
+    "description": "Stress on a 1-5 scale; {value} is a number or a dash when not set.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "3"
+      }
+    }
+  },
+  "entryNotes": "Notes",
+  "@entryNotes": {
+    "description": "Field label for free notes."
+  },
+  "entryAddFood": "Add food",
+  "@entryAddFood": {
+    "description": "Button and dialog title: add a food to this entry."
+  },
+  "entryFoodHint": "e.g. chocolate, red wine",
+  "@entryFoodHint": {
+    "description": "Example text in the add-food field."
+  },
+  "entryAddMedication": "Add medication",
+  "@entryAddMedication": {
+    "description": "Button and dialog title: add a medication taken."
+  },
+  "entryEditMedication": "Edit medication",
+  "@entryEditMedication": {
+    "description": "Dialog title when changing a medication already on the entry."
+  },
+  "entryRemoveMedication": "Remove medication",
+  "@entryRemoveMedication": {
+    "description": "Tooltip: take this medication off the entry."
+  },
+  "entryAddRelief": "Add relief",
+  "@entryAddRelief": {
+    "description": "Button and dialog title: add a relief method tried."
+  },
+  "entryEditRelief": "Edit relief",
+  "@entryEditRelief": {
+    "description": "Dialog title when changing a relief method already on the entry."
+  },
+  "entryRemoveRelief": "Remove relief",
+  "@entryRemoveRelief": {
+    "description": "Tooltip: take this relief method off the entry."
+  },
+  "entryEnrichmentPending": "Enrichment pending",
+  "@entryEnrichmentPending": {
+    "description": "Card title: weather and astronomy for the entry haven't been added yet."
+  },
+  "entryEnrichmentPendingBody": "Weather and astronomy will be added when online.",
+  "@entryEnrichmentPendingBody": {
+    "description": "Card text under 'Enrichment pending'."
+  },
+  "entryEnrichment": "Enrichment",
+  "@entryEnrichment": {
+    "description": "Card title: data added automatically to the entry (weather, moon, daylight...)."
+  },
+  "entryEnrichSeason": "Season",
+  "@entryEnrichSeason": {
+    "description": "Row label in the enrichment card."
+  },
+  "entryEnrichTimeOfDay": "Time of day",
+  "@entryEnrichTimeOfDay": {
+    "description": "Row label in the enrichment card: morning, afternoon, evening or night."
+  },
+  "entryEnrichDaylight": "Daylight",
+  "@entryEnrichDaylight": {
+    "description": "Row label in the enrichment card: hours of daylight that day."
+  },
+  "entryEnrichMoon": "Moon",
+  "@entryEnrichMoon": {
+    "description": "Row label in the enrichment card: moon phase."
+  },
+  "entryEnrichTemp": "Temp",
+  "@entryEnrichTemp": {
+    "description": "Row label in the enrichment card: air temperature (short)."
+  },
+  "entryEnrichHumidity": "Humidity",
+  "@entryEnrichHumidity": {
+    "description": "Row label in the enrichment card."
+  },
+  "entryEnrichPressure": "Pressure",
+  "@entryEnrichPressure": {
+    "description": "Row label in the enrichment card: barometric pressure."
+  },
+  "entryEnrichPressureDelta": "Pressure Δ 24h",
+  "@entryEnrichPressureDelta": {
+    "description": "Row label in the enrichment card: change in pressure over 24 hours. Keep 'Δ' and '24h'."
+  },
+  "entryEnrichAqi": "AQI",
+  "@entryEnrichAqi": {
+    "description": "Row label in the enrichment card: air quality index (use the local abbreviation)."
+  },
+  "entryWeatherOff": "Weather not fetched — weather enrichment is off (Settings).",
+  "@entryWeatherOff": {
+    "description": "Shown in the enrichment card when the user turned weather off in Settings."
+  },
+  "entryMedName": "Name",
+  "@entryMedName": {
+    "description": "Field label: the medication's name."
+  },
+  "entryDose": "Dose (optional)",
+  "@entryDose": {
+    "description": "Field label: the medication dose."
+  },
+  "entryDoseHint": "e.g. 400 mg",
+  "@entryDoseHint": {
+    "description": "Example text in the dose field."
+  },
+  "entryTimeTaken": "Time taken",
+  "@entryTimeTaken": {
+    "description": "When the medication was taken."
+  },
+  "entryDayTaken": "Day taken",
+  "@entryDayTaken": {
+    "description": "Title of the date picker for the day a dose was taken (multi-day entries)."
+  },
+  "entryDoseDayTime": "{day}, {time}",
+  "@entryDoseDayTime": {
+    "description": "A dose's day and time on a multi-day entry: 'Mon 9 Nov, 14:05'.",
+    "placeholders": {
+      "day": {
+        "type": "String",
+        "example": "Mon 9 Nov"
+      },
+      "time": {
+        "type": "String",
+        "example": "14:05"
+      }
+    }
+  },
+  "entryClearTime": "Clear time",
+  "@entryClearTime": {
+    "description": "Tooltip: remove the time a medication was taken."
+  },
+  "entryHelped": "Helped?",
+  "@entryHelped": {
+    "description": "Question above Yes / No / Unknown: did the medication or relief help?"
+  },
+  "entryReliefQuestion": "What did you try?",
+  "@entryReliefQuestion": {
+    "description": "Field label in the relief dialog."
+  },
+  "entryReliefHint": "e.g. dark room, cold pack",
+  "@entryReliefHint": {
+    "description": "Example text in the relief field."
   }
 }

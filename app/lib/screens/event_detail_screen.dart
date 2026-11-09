@@ -1,8 +1,11 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show NumberFormat;
 
 import '../database/database.dart';
+import '../l10n/data_labels.dart';
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import '../models/attack_details.dart';
 import '../models/decimal_input.dart';
 import '../models/event_time.dart';
@@ -15,7 +18,6 @@ import '../repositories/megrim_repository.dart';
 import '../widgets/location_picker.dart';
 import '../widgets/med_class_picker.dart';
 import '../widgets/severity_badge.dart' show StatusColors;
-import '../l10n/l10n.dart';
 import 'manage_vocab_screen.dart';
 import 'medications_screen.dart';
 
@@ -221,12 +223,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
+    final l = context.l10n;
     final startInstant = instantOf(_startedAt, _startOffset);
     final endInstant =
         _endedAt == null ? null : instantOf(_endedAt!, _endOffset ?? _startOffset);
     if (endInstant != null && endInstant.isBefore(startInstant)) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('End time must be after the start time.')));
+          SnackBar(content: Text(l.entryEndBeforeStart)));
       return;
     }
     // Without a headache there is no pain to rate or place (backlog #26): those fields are hidden
@@ -274,12 +277,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     if (removed.isNotEmpty) {
       final n = removed.length;
       messenger.showSnackBar(SnackBar(
-        content: Text(n == 1
-            ? 'Removed the "No migraine" check-in for that day.'
-            : 'Removed $n "No migraine" check-ins for those days.'),
+        content: Text(l.entryCheckinsRemoved(n)),
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
-            label: 'Undo', onPressed: () => widget.repo.restoreCheckins(removed)),
+            label: l.commonUndo, onPressed: () => widget.repo.restoreCheckins(removed)),
       ));
     }
     if (mounted) Navigator.of(context).pop();
@@ -294,15 +295,15 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete this entry?'),
-        content: const Text('This permanently removes the migraine and its computed factors.'),
+        title: Text(context.l10n.entryDeleteTitle),
+        content: Text(context.l10n.entryDeleteBody),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Delete',
+            child: Text(MaterialLocalizations.of(context).deleteButtonTooltip,
                 style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
         ],
@@ -314,10 +315,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     Navigator.of(context).pop();
     if (removed != null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Entry deleted'),
+        content: Text(context.l10n.entryDeleted),
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
-          label: 'Undo',
+          label: context.l10n.commonUndo,
           onPressed: () => widget.repo.restoreEvent(removed.event, removed.derived),
         ),
       ));
@@ -369,7 +370,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Recorded location'),
+        title: Text(context.l10n.entryRecordedLocation),
         content: SizedBox(
           width: 400,
           child: LocationPickerField(
@@ -383,10 +384,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
           FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Use location')),
+              child: Text(context.l10n.entryUseLocation)),
         ],
       ),
     );
@@ -405,18 +406,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final isDraft = widget.draft != null;
+    final l = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: Text(isDraft ? 'New entry' : 'Event detail'),
+        title: Text(isDraft ? l.entryTitleNew : l.entryTitleEdit),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            tooltip: isDraft ? 'Discard' : 'Delete entry',
+            tooltip: isDraft ? l.entryDiscard : l.entryDeleteTooltip,
             onPressed: _delete,
           ),
           IconButton(
             icon: const Icon(Icons.check),
-            tooltip: 'Save',
+            tooltip: MaterialLocalizations.of(context).saveButtonLabel,
             onPressed: _save,
           ),
         ],
@@ -425,28 +427,28 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           _dateTimeTile(
-            label: 'Started',
+            label: l.entryStarted,
             value: _startedAt,
             onTap: () => _pickDateTime(isStart: true),
           ),
           _dateTimeTile(
-            label: 'Ended',
+            label: l.entryEnded,
             value: _endedAt,
             onTap: () => _pickDateTime(isStart: false),
             onClear: _endedAt == null ? null : () => setState(() { _endedAt = null; _endTouched = true; }),
-            emptyHint: 'ongoing — tap to set',
+            emptyHint: l.entryOngoingHint,
           ),
           _locationTile(),
           const Divider(height: 24),
 
-          const Text('Headache?'),
+          Text(l.entryHeadacheQuestion),
           HeadacheSelector(
             value: _headache,
             onChanged: (v) => setState(() => _headache = v),
           ),
           if (hasHeadache(_headache)) ...[
             const SizedBox(height: 16),
-            Text('Severity: ${_severity ?? '—'} / 10'),
+            Text(l.entrySeverityValue('${_severity ?? '—'}')),
             Slider(
               value: (_severity ?? 5).toDouble(),
               min: 1,
@@ -455,20 +457,20 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               label: '${_severity ?? 5}',
               onChanged: (v) => setState(() => _severity = v.round()),
             ),
-            _sectionHeader('Head location', VocabKind.headLocation),
+            _sectionHeader(l.entryHeadLocation, VocabKind.headLocation),
             _chips(_locationVocab, _locations),
           ] else
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                'Logged as an attack without headache. Record how it affected you below.',
+                l.entryNoHeadacheNote,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
 
           const SizedBox(height: 16),
-          const Text('Impact on the day'),
-          Text('How well could you do your usual things?',
+          Text(l.entryImpactTitle),
+          Text(l.entryImpactQuestion,
               style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 4),
           SegmentedButton<String>(
@@ -488,13 +490,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             ),
 
           const SizedBox(height: 16),
-          const Text('Aura'),
+          Text(l.entryAura),
           SegmentedButton<int>(
             key: const Key('aura-selector'),
-            segments: const [
-              ButtonSegment(value: 1, label: Text('Yes')),
-              ButtonSegment(value: 0, label: Text('No')),
-              ButtonSegment(value: -1, label: Text('Unknown')),
+            segments: [
+              ButtonSegment(value: 1, label: Text(l.commonYes)),
+              ButtonSegment(value: 0, label: Text(l.commonNo)),
+              ButtonSegment(value: -1, label: Text(l.commonUnknown)),
             ],
             selected: {_aura == null ? -1 : (_aura! ? 1 : 0)},
             onSelectionChanged: (s) => setState(() {
@@ -506,38 +508,38 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             const SizedBox(height: 8),
             TextField(
               controller: _auraDescription,
-              decoration: const InputDecoration(
-                labelText: 'Aura description (optional)',
-                hintText: 'e.g. shimmering lights, zigzag lines',
+              decoration: InputDecoration(
+                labelText: l.entryAuraDescription,
+                hintText: l.entryAuraHint,
                 border: OutlineInputBorder(),
               ),
             ),
           ],
 
-          _sectionHeader('Symptoms', VocabKind.symptom),
+          _sectionHeader(l.entrySymptoms, VocabKind.symptom),
           _chips(_symptomVocab, _symptoms),
 
-          _sectionHeader('Suspected triggers', VocabKind.trigger),
+          _sectionHeader(l.entryTriggers, VocabKind.trigger),
           _chips(_triggerVocab, _triggers),
 
-          _plainSectionHeader('Foods notable'),
+          _plainSectionHeader(l.entryFoods),
           _foodsSection(),
 
-          _sectionHeader('Medications', VocabKind.medication),
+          _sectionHeader(l.entryMedications, VocabKind.medication),
           _medsSection(),
 
-          _sectionHeader('Relief tried', VocabKind.relief),
+          _sectionHeader(l.entryRelief, VocabKind.relief),
           _reliefSection(),
 
           const SizedBox(height: 16),
           TextField(
             controller: _sleep,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
-                labelText: 'Sleep hours (prior night)', border: OutlineInputBorder()),
+            decoration: InputDecoration(
+                labelText: l.entrySleepHours, border: const OutlineInputBorder()),
           ),
           const SizedBox(height: 16),
-          Text('Stress level: ${_stress ?? '—'} / 5'),
+          Text(l.entryStressValue('${_stress ?? '—'}')),
           Slider(
             value: (_stress ?? 3).toDouble(),
             min: 1,
@@ -551,7 +553,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             controller: _notes,
             maxLines: 4,
             decoration:
-                const InputDecoration(labelText: 'Notes', border: OutlineInputBorder()),
+                InputDecoration(labelText: l.entryNotes, border: const OutlineInputBorder()),
           ),
 
           const Divider(height: 32),
@@ -568,16 +570,16 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     VoidCallback? onClear,
     String? emptyHint,
   }) {
-    final df = DateFormat('EEE d MMM yyyy, HH:mm');
+    final fmt = Formats.of(context);
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: const Icon(Icons.schedule),
       title: Text(label),
-      subtitle: Text(value != null ? df.format(value) : (emptyHint ?? '—')),
+      subtitle: Text(value != null ? fmt.dateWeekdayTime(value) : (emptyHint ?? '—')),
       trailing: onClear != null
           ? IconButton(
               icon: const Icon(Icons.clear),
-              tooltip: 'Clear (mark ongoing)',
+              tooltip: context.l10n.entryClearEnd,
               onPressed: onClear,
             )
           : const Icon(Icons.edit_outlined),
@@ -591,11 +593,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             '${_geoLat != null && _geoLon != null ? ' (${_geoLat!.toStringAsFixed(2)}, ${_geoLon!.toStringAsFixed(2)})' : ''}'
         : (_geoLat != null && _geoLon != null)
             ? '(${_geoLat!.toStringAsFixed(2)}, ${_geoLon!.toStringAsFixed(2)})'
-            : 'Not set — tap to add';
+            : context.l10n.entryLocationNotSet;
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: const Icon(Icons.place_outlined),
-      title: const Text('Recorded location'),
+      title: Text(context.l10n.entryRecordedLocation),
       subtitle: Text(subtitle),
       trailing: const Icon(Icons.edit_outlined),
       onTap: _editLocation,
@@ -617,7 +619,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 ));
                 await _loadVocab();
               },
-              child: const Text('Manage'),
+              child: Text(context.l10n.commonManage),
             ),
           ],
         ),
@@ -644,7 +646,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           ),
         ActionChip(
           avatar: const Icon(Icons.add, size: 18),
-          label: const Text('Add food'),
+          label: Text(context.l10n.entryAddFood),
           onPressed: _addFood,
         ),
       ],
@@ -652,7 +654,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Future<void> _addFood() async {
-    final value = await _promptText('Add food', hint: 'e.g. chocolate, red wine');
+    final value =
+        await _promptText(context.l10n.entryAddFood, hint: context.l10n.entryFoodHint);
     if (value != null && value.isNotEmpty && !_foods.contains(value)) {
       setState(() => _foods.add(value));
     }
@@ -671,10 +674,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
           FilledButton(
             onPressed: () => Navigator.pop(context, controller.text.trim()),
-            child: const Text('Add'),
+            child: Text(context.l10n.commonAdd),
           ),
         ],
       ),
@@ -689,7 +693,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       children: [
         for (final v in all)
           FilterChip(
-            label: Text(v),
+            label: Text(dataLabel(context.l10n, v)),
             selected: selected.contains(v),
             onSelected: (on) => setState(() {
               if (on) {
@@ -716,7 +720,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           child: TextButton.icon(
             onPressed: () => _editMed(),
             icon: const Icon(Icons.add, size: 18),
-            label: const Text('Add medication'),
+            label: Text(context.l10n.entryAddMedication),
           ),
         ),
       ],
@@ -748,7 +752,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         subtitle: subtitle.isEmpty ? null : Text(subtitle),
         trailing: IconButton(
           icon: const Icon(Icons.close),
-          tooltip: 'Remove medication',
+          tooltip: context.l10n.entryRemoveMedication,
           onPressed: () => setState(() => _meds.removeAt(index)),
         ),
         onTap: () => _editMed(index: index),
@@ -765,7 +769,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     final sameDay = local.year == _startedAt.year &&
         local.month == _startedAt.month &&
         local.day == _startedAt.day;
-    return DateFormat(sameDay ? 'HH:mm' : 'EEE d MMM, HH:mm').format(local);
+    final fmt = Formats.of(context);
+    return sameDay ? fmt.time(local) : fmt.dayMonthWeekdayTime(local);
   }
 
   /// The last day a dose can fall on: the end's day, or today for an ongoing entry.
@@ -827,7 +832,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           child: TextButton.icon(
             onPressed: () => _editRelief(),
             icon: const Icon(Icons.add, size: 18),
-            label: const Text('Add relief'),
+            label: Text(context.l10n.entryAddRelief),
           ),
         ),
       ],
@@ -846,10 +851,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       child: ListTile(
         dense: true,
         leading: Icon(helpIcon, color: helpColor),
-        title: Text(r.name),
+        title: Text(dataLabel(context.l10n, r.name)),
         trailing: IconButton(
           icon: const Icon(Icons.close),
-          tooltip: 'Remove relief',
+          tooltip: context.l10n.entryRemoveRelief,
           onPressed: () => setState(() => _relief.removeAt(index)),
         ),
         onTap: () => _editRelief(index: index),
@@ -886,36 +891,45 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   Widget _enrichmentCard() {
     final d = _derived;
+    final l = context.l10n;
     if (d == null) {
-      return const Card(
+      return Card(
         child: ListTile(
-          leading: Icon(Icons.hourglass_empty),
-          title: Text('Enrichment pending'),
-          subtitle: Text('Weather and astronomy will be added when online.'),
+          leading: const Icon(Icons.hourglass_empty),
+          title: Text(l.entryEnrichmentPending),
+          subtitle: Text(l.entryEnrichmentPendingBody),
         ),
       );
     }
+    final fmt = Formats.of(context);
     // Round for display. The stored values carry full double precision — daylight comes from the
     // NOAA sun math (14.81900883878691 h) and the pressure deltas are a subtraction of two
     // readings, so they arrive with float artefacts (-6.199999999999932 hPa). Reported by an
     // F-Droid tester. Export (JSON/CSV) deliberately keeps full precision; only the display rounds.
     String? f(num? v, String unit, {int decimals = 1, bool signed = false}) {
       if (v == null) return null;
-      final s = v.toStringAsFixed(decimals);
+      // No grouping: "1012.3 hPa", not "1,012.3 hPa".
+      final s = (NumberFormat.decimalPatternDigits(locale: fmt.locale, decimalDigits: decimals)
+            ..turnOffGrouping())
+          .format(v);
       return '${signed && v > 0 ? '+' : ''}$s$unit';
     }
 
+    String? label(String? v) => v == null ? null : dataLabel(l, v);
+
     final rows = <String, String?>{
-      'Season': d.season,
-      'Time of day': d.timeOfDayBucket,
-      'Daylight': f(d.daylightHours, ' h'),
-      'Moon': d.moonPhase,
-      'Temp': f(d.tempC, ' °C'),
-      'Humidity': f(d.humidityPct, ' %', decimals: 0),
-      'Pressure': f(d.pressureHpa, ' hPa'),
+      l.entryEnrichSeason: label(d.season),
+      l.entryEnrichTimeOfDay: label(d.timeOfDayBucket),
+      l.entryEnrichDaylight: d.daylightHours == null
+          ? null
+          : l.dataHours(fmt.decimal(d.daylightHours!, 1)),
+      l.entryEnrichMoon: label(d.moonPhase),
+      l.entryEnrichTemp: f(d.tempC, ' °C'),
+      l.entryEnrichHumidity: f(d.humidityPct, ' %', decimals: 0),
+      l.entryEnrichPressure: f(d.pressureHpa, ' hPa'),
       // A change value reads ambiguously without an explicit sign.
-      'Pressure Δ 24h': f(d.pressureDelta24h, ' hPa', signed: true),
-      'AQI': d.aqi?.toString(),
+      l.entryEnrichPressureDelta: f(d.pressureDelta24h, ' hPa', signed: true),
+      l.entryEnrichAqi: d.aqi == null ? null : fmt.integer(d.aqi!),
     };
     return Card(
       child: Padding(
@@ -923,7 +937,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Enrichment', style: Theme.of(context).textTheme.titleSmall),
+            Text(l.entryEnrichment, style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 8),
             for (final entry in rows.entries)
               if (entry.value != null)
@@ -943,7 +957,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
-                  'Weather not fetched — weather enrichment is off (Settings).',
+                  l.entryWeatherOff,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -968,11 +982,12 @@ class HeadacheSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     return SegmentedButton<int>(
-      segments: const [
-        ButtonSegment(value: 1, label: Text('Yes')),
-        ButtonSegment(value: 0, label: Text('No')),
-        ButtonSegment(value: -1, label: Text('Not sure')),
+      segments: [
+        ButtonSegment(value: 1, label: Text(l.commonYes)),
+        ButtonSegment(value: 0, label: Text(l.commonNo)),
+        ButtonSegment(value: -1, label: Text(l.entryHeadacheNotSure)),
       ],
       selected: {value == null ? -1 : (value! ? 1 : 0)},
       onSelectionChanged: (s) {
@@ -1067,7 +1082,7 @@ class _MedEditDialogState extends State<_MedEditDialog> {
                 : day,
         firstDate: _firstDay,
         lastDate: widget.lastDay,
-        helpText: 'Day taken',
+        helpText: context.l10n.entryDayTaken,
       );
       if (picked == null || !mounted) return;
       day = picked;
@@ -1086,8 +1101,9 @@ class _MedEditDialogState extends State<_MedEditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     return AlertDialog(
-      title: Text(widget.initial == null ? 'Add medication' : 'Edit medication'),
+      title: Text(widget.initial == null ? l.entryAddMedication : l.entryEditMedication),
       content: SizedBox(
         width: 400,
         child: SingleChildScrollView(
@@ -1112,8 +1128,8 @@ class _MedEditDialogState extends State<_MedEditDialog> {
                     controller: controller,
                     focusNode: focusNode,
                     autofocus: widget.initial == null,
-                    decoration: const InputDecoration(
-                        labelText: 'Name', border: OutlineInputBorder()),
+                    decoration: InputDecoration(
+                        labelText: l.entryMedName, border: const OutlineInputBorder()),
                     onChanged: (v) => _name.text = v,
                   );
                 },
@@ -1121,38 +1137,39 @@ class _MedEditDialogState extends State<_MedEditDialog> {
               const SizedBox(height: 12),
               TextField(
                 controller: _dose,
-                decoration: const InputDecoration(
-                    labelText: 'Dose (optional)',
-                    hintText: 'e.g. 400 mg',
-                    border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                    labelText: l.entryDose,
+                    hintText: l.entryDoseHint,
+                    border: const OutlineInputBorder()),
               ),
               const SizedBox(height: 12),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.schedule),
-                title: const Text('Time taken'),
+                title: Text(l.entryTimeTaken),
                 subtitle: Text(_time == null
-                    ? 'Not set'
+                    ? l.commonNotSet
                     : _multiDay
-                        ? '${DateFormat('EEE d MMM').format(_day)}, ${_time!.format(context)}'
+                        ? l.entryDoseDayTime(
+                            Formats.of(context).dayMonthWeekday(_day), _time!.format(context))
                         : _time!.format(context)),
                 trailing: _time == null
                     ? const Icon(Icons.edit_outlined)
                     : IconButton(
                         icon: const Icon(Icons.clear),
-                        tooltip: 'Clear time',
+                        tooltip: l.entryClearTime,
                         onPressed: () => setState(() => _time = null),
                       ),
                 onTap: _pickTime,
               ),
               const SizedBox(height: 8),
-              const Text('Helped?'),
+              Text(l.entryHelped),
               const SizedBox(height: 4),
               SegmentedButton<int>(
-                segments: const [
-                  ButtonSegment(value: 1, label: Text('Yes')),
-                  ButtonSegment(value: 0, label: Text('No')),
-                  ButtonSegment(value: -1, label: Text('Unknown')),
+                segments: [
+                  ButtonSegment(value: 1, label: Text(l.commonYes)),
+                  ButtonSegment(value: 0, label: Text(l.commonNo)),
+                  ButtonSegment(value: -1, label: Text(l.commonUnknown)),
                 ],
                 selected: {_helped == null ? -1 : (_helped! ? 1 : 0)},
                 onSelectionChanged: (s) => setState(() {
@@ -1167,7 +1184,7 @@ class _MedEditDialogState extends State<_MedEditDialog> {
       actions: [
         TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel')),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
         FilledButton(
           onPressed: () {
             final name = _name.text.trim();
@@ -1183,7 +1200,7 @@ class _MedEditDialogState extends State<_MedEditDialog> {
               ),
             );
           },
-          child: const Text('Save'),
+          child: Text(MaterialLocalizations.of(context).saveButtonLabel),
         ),
       ],
     );
@@ -1211,8 +1228,28 @@ class _ReliefEditDialogState extends State<_ReliefEditDialog> {
   @override
   void initState() {
     super.initState();
-    _name = TextEditingController(text: widget.initial?.name ?? '');
+    _name = TextEditingController();
     _helped = widget.initial?.helped;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Defaults show in the app's language; the field starts with the name as displayed.
+    final initial = widget.initial?.name;
+    if (initial != null && _name.text.isEmpty) _name.text = dataLabel(context.l10n, initial);
+  }
+
+  /// The value to store for what's in the field: a vocabulary value when the text is how one is
+  /// displayed (a translated default stays its English value), otherwise the text as typed.
+  String _stored(String text) {
+    final l = context.l10n;
+    final initial = widget.initial?.name;
+    if (initial != null && dataLabel(l, initial) == text) return initial;
+    for (final v in widget.vocab) {
+      if (dataLabel(l, v) == text) return v;
+    }
+    return text;
   }
 
   @override
@@ -1224,8 +1261,9 @@ class _ReliefEditDialogState extends State<_ReliefEditDialog> {
   @override
   Widget build(BuildContext context) {
     final suggestions = widget.vocab.where((v) => !widget.taken.contains(v)).toList();
+    final l = context.l10n;
     return AlertDialog(
-      title: Text(widget.initial == null ? 'Add relief' : 'Edit relief'),
+      title: Text(widget.initial == null ? l.entryAddRelief : l.entryEditRelief),
       content: SizedBox(
         width: 400,
         child: SingleChildScrollView(
@@ -1236,10 +1274,10 @@ class _ReliefEditDialogState extends State<_ReliefEditDialog> {
               TextField(
                 controller: _name,
                 autofocus: widget.initial == null,
-                decoration: const InputDecoration(
-                    labelText: 'What did you try?',
-                    hintText: 'e.g. dark room, cold pack',
-                    border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                    labelText: l.entryReliefQuestion,
+                    hintText: l.entryReliefHint,
+                    border: const OutlineInputBorder()),
                 onChanged: (_) => setState(() {}),
               ),
               if (suggestions.isNotEmpty) ...[
@@ -1249,21 +1287,21 @@ class _ReliefEditDialogState extends State<_ReliefEditDialog> {
                   children: [
                     for (final v in suggestions)
                       ChoiceChip(
-                        label: Text(v),
-                        selected: _name.text.trim() == v,
-                        onSelected: (_) => setState(() => _name.text = v),
+                        label: Text(dataLabel(l, v)),
+                        selected: _name.text.trim() == dataLabel(l, v),
+                        onSelected: (_) => setState(() => _name.text = dataLabel(l, v)),
                       ),
                   ],
                 ),
               ],
               const SizedBox(height: 12),
-              const Text('Helped?'),
+              Text(l.entryHelped),
               const SizedBox(height: 4),
               SegmentedButton<int>(
-                segments: const [
-                  ButtonSegment(value: 1, label: Text('Yes')),
-                  ButtonSegment(value: 0, label: Text('No')),
-                  ButtonSegment(value: -1, label: Text('Unknown')),
+                segments: [
+                  ButtonSegment(value: 1, label: Text(l.commonYes)),
+                  ButtonSegment(value: 0, label: Text(l.commonNo)),
+                  ButtonSegment(value: -1, label: Text(l.commonUnknown)),
                 ],
                 selected: {_helped == null ? -1 : (_helped! ? 1 : 0)},
                 onSelectionChanged: (s) => setState(() {
@@ -1276,14 +1314,16 @@ class _ReliefEditDialogState extends State<_ReliefEditDialog> {
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
         FilledButton(
           onPressed: () {
             final name = _name.text.trim();
             if (name.isEmpty) return;
-            Navigator.pop(context, ReliefEntry(name: name, helped: _helped));
+            Navigator.pop(context, ReliefEntry(name: _stored(name), helped: _helped));
           },
-          child: const Text('Save'),
+          child: Text(MaterialLocalizations.of(context).saveButtonLabel),
         ),
       ],
     );
