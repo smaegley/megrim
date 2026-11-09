@@ -13,4 +13,6 @@ const List<Duration> kAppLockTimeoutChoices = [
 
 /// "Immediately" / "After 5 minutes". English unless [l] is given.
 String appLockTimeoutLabel(Duration d, [AppLocalizations? l]) =>
-    (l ?? englishL10n).appLockAfterMinutes(d.inMinutes);
+    d == Duration.zero
+        ? (l ?? englishL10n).appLockImmediately
+        : (l ?? englishL10n).appLockAfterMinutes(d.inMinutes);

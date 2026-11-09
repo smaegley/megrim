@@ -770,20 +770,20 @@
       }
     }
   },
-  "settingsBackupNever": "Never",
-  "@settingsBackupNever": {
+  "backupNever": "Never",
+  "@backupNever": {
     "description": "Last backup: the user has never exported a backup."
   },
-  "settingsBackupToday": "Today",
-  "@settingsBackupToday": {
+  "backupToday": "Today",
+  "@backupToday": {
     "description": "Last backup: today."
   },
-  "settingsBackupYesterday": "Yesterday",
-  "@settingsBackupYesterday": {
+  "backupYesterday": "Yesterday",
+  "@backupYesterday": {
     "description": "Last backup: yesterday."
   },
-  "settingsBackupDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
-  "@settingsBackupDaysAgo": {
+  "backupDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@backupDaysAgo": {
     "description": "Last backup: this many days ago (2 or more in practice).",
     "placeholders": {
       "count": {
@@ -791,8 +791,8 @@
       }
     }
   },
-  "settingsBackupEvery": "{count, plural, =1{Every day} other{Every {count} days}}",
-  "@settingsBackupEvery": {
+  "backupReminderEvery": "{count, plural, =1{Every day} other{Every {count} days}}",
+  "@backupReminderEvery": {
     "description": "Backup reminder interval (7, 14, 30 or 90 days).",
     "placeholders": {
       "count": {
@@ -928,12 +928,12 @@
       }
     }
   },
-  "settingsLockImmediately": "Immediately",
-  "@settingsLockImmediately": {
+  "appLockImmediately": "Immediately",
+  "@appLockImmediately": {
     "description": "App lock timeout: lock as soon as the app goes to the background."
   },
-  "settingsLockAfterMinutes": "{count, plural, =1{After 1 minute} other{After {count} minutes}}",
-  "@settingsLockAfterMinutes": {
+  "appLockAfterMinutes": "{count, plural, =1{After 1 minute} other{After {count} minutes}}",
+  "@appLockAfterMinutes": {
     "description": "App lock timeout.",
     "placeholders": {
       "count": {
@@ -3121,28 +3121,6 @@
   "@entryReliefHint": {
     "description": "Example text in the relief field."
   },
-  "backupNever": "Never",
-  "@backupNever": {
-    "description": "When the data was last backed up (exported): never."
-  },
-  "backupAge": "{days, plural, =0{Today} =1{Yesterday} other{{days} days ago}}",
-  "@backupAge": {
-    "description": "When the data was last backed up (exported), as an age: 'Today', 'Yesterday', '12 days ago'.",
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "backupReminderEvery": "{days, plural, =0{Off} other{Every {days} days}}",
-  "@backupReminderEvery": {
-    "description": "The backup reminder's interval: 'Off' (0), or 'Every 30 days'. The choices are 7, 14, 30 and 90.",
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
   "quickLogTodayHasEntry": "Today already has a migraine entry, so it wasn't marked clear.",
   "@quickLogTodayHasEntry": {
     "description": "Snack bar: the 'No migraine today' notification button was tapped, but today already has a migraine entry."
@@ -3495,15 +3473,6 @@
       "coordinates": {
         "type": "String",
         "example": "40.01, -105.27"
-      }
-    }
-  },
-  "appLockAfterMinutes": "{minutes, plural, =0{Immediately} =1{After 1 minute} other{After {minutes} minutes}}",
-  "@appLockAfterMinutes": {
-    "description": "App lock: how long Megrim may stay in the background before asking for the phone's unlock again. 0 = immediately; the choices are 0, 1, 5 and 15 minutes.",
-    "placeholders": {
-      "minutes": {
-        "type": "int"
       }
     }
   }

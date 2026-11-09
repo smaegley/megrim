@@ -76,12 +76,18 @@ class BackupStatus {
 
   String ageLabelIn(AppLocalizations l) {
     final d = daysSince;
-    if (d == null) return l.backupNever;
-    return l.backupAge(d);
+    return switch (d) {
+      null => l.backupNever,
+      0 => l.backupToday,
+      1 => l.backupYesterday,
+      _ => l.backupDaysAgo(d),
+    };
   }
 }
 
 /// "Off" / "Every 30 days", for the Settings subtitle and the interval picker. English unless
 /// [l] is given.
 String backupReminderLabel(int days, [AppLocalizations? l]) =>
-    (l ?? englishL10n).backupReminderEvery(days <= kBackupReminderOff ? 0 : days);
+    days <= kBackupReminderOff
+        ? (l ?? englishL10n).settingsOff
+        : (l ?? englishL10n).backupReminderEvery(days);

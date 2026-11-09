@@ -93,7 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 leading: Icon(days == _backup.reminderDays
                     ? Icons.radio_button_checked
                     : Icons.radio_button_unchecked),
-                title: Text(_reminderLabel(context.l10n, days)),
+                title: Text(backupReminderLabel(days, context.l10n)),
               ),
             ),
         ],
@@ -182,7 +182,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(l.settingsLastBackup),
             subtitle: Text(
               (_backup.isOverdue ? l.settingsBackupSubtitleDue : l.settingsBackupSubtitle)(
-                  _backupAge(l, _backup.daysSince), _reminderLabel(l, _backup.reminderDays)),
+                  _backup.ageLabelIn(l), backupReminderLabel(_backup.reminderDays, l)),
               style: _backup.isOverdue
                   ? const TextStyle(color: StatusColors.serious)
                   : null,
@@ -335,7 +335,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           leading: const Icon(Icons.timer_outlined),
           title: Text(context.l10n.settingsLockAfter),
           subtitle: Text(
-              context.l10n.settingsLockAfterSubtitle(_lockTimeoutLabel(context.l10n, lock.timeout))),
+              context.l10n.settingsLockAfterSubtitle(appLockTimeoutLabel(lock.timeout, context.l10n))),
           enabled: lock.enabled,
           onTap: () => _pickLockTimeout(lock),
         ),
@@ -394,7 +394,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: ListTile(
                 leading: Icon(
                     d == lock.timeout ? Icons.radio_button_checked : Icons.radio_button_unchecked),
-                title: Text(_lockTimeoutLabel(context.l10n, d)),
+                title: Text(appLockTimeoutLabel(d, context.l10n)),
               ),
             ),
         ],
@@ -666,22 +666,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
-
-/// "Never" / "Today" / "Yesterday" / "12 days ago", from [BackupStatus.daysSince].
-String _backupAge(AppLocalizations l, int? days) => switch (days) {
-      null => l.settingsBackupNever,
-      0 => l.settingsBackupToday,
-      1 => l.settingsBackupYesterday,
-      _ => l.settingsBackupDaysAgo(days),
-    };
-
-/// "Off" / "Every 30 days", for the backup subtitle and the interval picker.
-String _reminderLabel(AppLocalizations l, int days) =>
-    days <= kBackupReminderOff ? l.settingsOff : l.settingsBackupEvery(days);
-
-/// "Immediately" / "After 1 minute" / "After 5 minutes", for the app lock timeout.
-String _lockTimeoutLabel(AppLocalizations l, Duration d) =>
-    d == Duration.zero ? l.settingsLockImmediately : l.settingsLockAfterMinutes(d.inMinutes);
 
 /// Small helper to keep filename generation with today's date in one place.
 class ExportServiceFilename {
