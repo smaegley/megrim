@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'l10n/l10n.dart';
+import 'l10n/shipped_locales.dart';
 import 'repositories/megrim_repository.dart';
 import 'screens/home_shell.dart';
 import 'screens/onboarding_screen.dart';
@@ -116,9 +117,9 @@ class _MegrimAppState extends State<MegrimApp> {
       title: 'Megrim',
       debugShowCheckedModeBanner: false,
       // Translations (docs/TRANSLATIONS.md): the phone's language when the app has it, otherwise
-      // English, which gen-l10n lists first in supportedLocales.
+      // English. Only languages that meet the bar are offered (shipped_locales.dart).
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      supportedLocales: kShippedLocales,
       // Follow the phone's light/dark setting (backlog #8).
       theme: megrimLightTheme(),
       darkTheme: megrimDarkTheme(),
