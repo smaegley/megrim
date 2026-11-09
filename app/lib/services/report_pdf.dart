@@ -14,6 +14,8 @@ import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import 'report_content.dart';
 
 /// Ink colours. Greys rather than the app's purple: this is printed, often in black and white, and
@@ -28,11 +30,17 @@ const PdfColor _panel = PdfColor.fromInt(0xFFF1F3F6);
 int filledFlex(int count, int max) =>
     max <= 0 ? 0 : (count / max * 1000).round().clamp(0, 1000);
 
+/// [l10n] gives the headings, column names and notes; pass the one the content was built with.
+/// English when null.
 Future<Uint8List> renderReportPdf(
   ReportContent c, {
   required ByteData regular,
   required ByteData bold,
+  AppLocalizations? l10n,
 }) async {
+  final l = l10n ?? englishL10n;
+  final fmt = Formats.forL10n(l);
+  String pct(num v) => l.reportPercent(v is double ? reportDecimal(fmt, v) : '$v');
   final fontRegular = pw.Font.ttf(regular);
   final fontBold = pw.Font.ttf(bold);
 
@@ -62,7 +70,7 @@ Future<Uint8List> renderReportPdf(
   // Horizontal bars, drawn as rectangles: no chart library, and they survive a black-and-white
   // print, which a colour-coded chart would not.
   pw.Widget barChart(List<ReportBar> bars) {
-    if (bars.isEmpty) return note('No data.');
+    if (bars.isEmpty) return note(l.reportNoData);
     final max = bars.map((b) => b.count).fold<int>(0, (a, b) => a > b ? a : b);
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -149,7 +157,14 @@ Future<Uint8List> renderReportPdf(
   }
 
   pw.Widget helpedTable(String what, List<ReportMedRow> rows) => table(
-        [what, 'Taken', 'Helped', "Didn't", 'Unknown', 'Helped %'],
+        [
+          what,
+          l.reportColumnTaken,
+          l.reportColumnHelped,
+          l.reportColumnDidnt,
+          l.reportColumnUnknown,
+          l.reportColumnHelpedPct,
+        ],
         [
           for (final m in rows)
             [
@@ -158,7 +173,7 @@ Future<Uint8List> renderReportPdf(
               '${m.helped}',
               '${m.notHelped}',
               '${m.unknown}',
-              m.helpedPct == null ? '-' : '${m.helpedPct}%',
+              m.helpedPct == null ? '-' : pct(m.helpedPct!),
             ],
         ],
         flex: const [4, 1, 1, 1, 1, 1],
@@ -174,7 +189,7 @@ Future<Uint8List> renderReportPdf(
     pw.Divider(color: _ink, thickness: 1),
 
     // ── summary ─────────────────────────────────────────────────────────────
-    heading('Summary'),
+    heading(l.reportHeadingSummary),
     pw.Row(
       children: [
         for (final s in c.summary)
@@ -214,26 +229,22 @@ Future<Uint8List> renderReportPdf(
 
     // ── attacks without headache (backlog #26) ──────────────────────────────
     if (c.withoutHeadache != null) ...[
-      heading('Attacks without headache'),
+      heading(l.reportHeadingWithoutHeadache),
       pw.Text(c.withoutHeadache!.summary, style: const pw.TextStyle(fontSize: 8.5)),
-      note('Entries marked as having no headache: aura only, vertigo, or other symptoms with no '
-          'pain. They count as migraine days above. Severity is not rated for them, so the '
-          'average severity covers headache attacks only. When both aura and vertigo are '
-          'recorded, the entry counts as "with aura".'),
+      note(l.reportWithoutHeadacheNote),
       pw.SizedBox(height: 4),
       barChart(c.withoutHeadache!.byKind),
       if (c.withoutHeadache!.symptoms.isNotEmpty) ...[
         pw.SizedBox(height: 6),
-        pw.Text('Their symptoms', style: pw.TextStyle(font: fontBold, fontSize: 9)),
+        pw.Text(l.reportTheirSymptoms, style: pw.TextStyle(font: fontBold, fontSize: 9)),
         pw.SizedBox(height: 2),
         barChart(c.withoutHeadache!.symptoms),
       ],
     ],
 
     // ── patterns ────────────────────────────────────────────────────────────
-    heading('Patterns'),
-    note('Counts of logged entries. A tall bar means more migraines were logged there, '
-        'nothing more.'),
+    heading(l.reportHeadingPatterns),
+    note(l.reportPatternsNote),
     for (final chart in c.charts) ...[
       pw.SizedBox(height: 6),
       pw.Text(chart.title, style: pw.TextStyle(font: fontBold, fontSize: 9)),
@@ -243,22 +254,20 @@ Future<Uint8List> renderReportPdf(
     ],
 
     if (c.triggerFrequency.isNotEmpty) ...[
-      heading('Most-tagged triggers'),
-      note('Self-reported, and recorded only on migraine days — there is no comparison with '
-          'days you felt well, so these are counts, not correlations.'),
+      heading(l.reportHeadingTriggers),
+      note(l.reportTriggersNote),
       barChart(c.triggerFrequency),
     ],
 
     if (c.symptomFrequency.isNotEmpty) ...[
-      heading('Symptoms'),
-      note('How often each symptom was recorded, across all entries. Entries from before '
-          'symptoms could be recorded have none.'),
+      heading(l.reportHeadingSymptoms),
+      note(l.reportSymptomsNote),
       barChart(c.symptomFrequency),
     ],
 
     // ── acute-medication days (backlog #18) ─────────────────────────────────
     if (c.medicationDays != null) ...[
-      heading('Acute medication days'),
+      heading(l.reportHeadingMedDays),
       pw.Text(c.medicationDays!.summary, style: const pw.TextStyle(fontSize: 8.5)),
       if (c.medicationDays!.notice.isNotEmpty) ...[
         pw.SizedBox(height: 4),
@@ -287,16 +296,12 @@ Future<Uint8List> renderReportPdf(
         flex: [3, for (var i = 1; i < c.medicationDays!.headers.length; i++) 2],
         rightAlign: [false, for (var i = 1; i < c.medicationDays!.headers.length; i++) true],
       ),
-      note('Distinct days per month with at least one dose; a day with two classes counts once '
-          'under "Any". Reference levels (ICHD-3 8.2): 10 days a month for triptans, ergots, '
-          'opioids and combination pain relievers; 15 for simple pain relievers; 10 in total for '
-          'a mix of these. Gepants, ditans and anti-nausea medication are counted but not '
-          'checked. * month in progress.'),
+      note(l.reportMedDaysNote),
       if (c.medicationDays!.unclassified != null) note(c.medicationDays!.unclassified!),
     ],
 
     if (c.preventives.isNotEmpty) ...[
-      heading('Preventive medications'),
+      heading(l.reportHeadingPreventives),
       for (final line in c.preventives)
         pw.Padding(
           padding: const pw.EdgeInsets.only(bottom: 2),
@@ -305,35 +310,29 @@ Future<Uint8List> renderReportPdf(
     ],
 
     if (c.medications.isNotEmpty) ...[
-      heading('Medications'),
-      helpedTable('Medication', c.medications),
-      note('"Helped %" excludes unknowns. Personal observation, not a clinical trial.'),
+      heading(l.reportHeadingMedications),
+      helpedTable(l.reportColumnMedication, c.medications),
+      note(l.reportMedicationsNote),
     ],
 
     // ── non-drug relief (backlog #19) ───────────────────────────────────────
     if (c.relief.isNotEmpty) ...[
-      heading('Relief tried'),
-      helpedTable('Relief', c.relief),
-      note('Non-drug relief recorded on entries. "Helped %" excludes unknowns.'),
+      heading(l.reportHeadingRelief),
+      helpedTable(l.reportColumnRelief, c.relief),
+      note(l.reportReliefNote),
     ],
   ];
 
   final factorPages = <pw.Widget>[
-    heading('Suspected factors'),
+    heading(l.reportHeadingFactors),
     pw.Container(
       padding: const pw.EdgeInsets.all(7),
       color: _panel,
-      child: pw.Text(
-        'Read this first. These are associations within one person\'s own log, computed over '
-        'migraine-days. Association is not causation; small samples are noisy, and because many '
-        'factors are tested at once some will look elevated by chance. Treat them as questions to '
-        'discuss, not findings.',
-        style: const pw.TextStyle(fontSize: 8),
-      ),
+      child: pw.Text(l.reportFactorsReadFirst, style: const pw.TextStyle(fontSize: 8)),
     ),
     pw.SizedBox(height: 6),
     if (!c.factorsAvailable)
-      pw.Text(c.factorsReason ?? 'Not enough data yet.',
+      pw.Text(c.factorsReason ?? l.reportNotEnoughData,
           style: const pw.TextStyle(fontSize: 8.5))
     else ...[
       pw.Text(c.factorsWindow, style: const pw.TextStyle(fontSize: 8.5)),
@@ -342,15 +341,21 @@ Future<Uint8List> renderReportPdf(
         pw.Text(g.name, style: pw.TextStyle(font: fontBold, fontSize: 9)),
         pw.SizedBox(height: 2),
         table(
-          const ['Bucket', 'Migraine-days', 'All days', 'Rate', 'Odds ratio'],
+          [
+            l.reportColumnBucket,
+            l.reportColumnMigraineDays,
+            l.reportColumnAllDays,
+            l.reportColumnRate,
+            l.reportColumnOddsRatio,
+          ],
           [
             for (final r in g.rows)
               [
                 '${r.bucket}${r.isTop ? '  *' : ''}',
                 '${r.migraineDays}',
                 '${r.totalDays}',
-                '${r.ratePct}%',
-                r.oddsRatio.toStringAsFixed(2),
+                pct(r.ratePct),
+                fmt.decimal(r.oddsRatio, 2),
               ],
           ],
           flex: const [3, 2, 2, 2, 2],
@@ -358,9 +363,8 @@ Future<Uint8List> renderReportPdf(
         ),
       ],
       pw.SizedBox(height: 4),
-      note('* marks the rows the app highlights: at least 3 migraine-days in the bucket and an '
-          'odds ratio above 1.'),
-      for (final caveat in c.caveats) note('- $caveat'),
+      note(l.reportFactorsStarNote),
+      for (final caveat in c.caveats) note(l.reportCaveatItem(caveat)),
     ],
     // ── migraine days vs clear days (backlog #16) ─────────────────────────
     if (c.trackedFactors case final t?) ...[
@@ -369,13 +373,10 @@ Future<Uint8List> renderReportPdf(
         child: pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            heading('Migraine days vs clear days'),
-            note('Sleep, stress, triggers and foods as recorded on days a migraine started, '
-                'compared with days checked in as having no migraine. Only tracked days count, '
-                'and each factor only the days it was recorded on. The same caution applies as '
-                'above.'),
+            heading(l.reportHeadingTracked),
+            note(l.reportTrackedNote),
             pw.SizedBox(height: 4),
-            pw.Text(t.available ? t.window : t.reason ?? 'Not enough data yet.',
+            pw.Text(t.available ? t.window : t.reason ?? l.reportNotEnoughData,
                 style: const pw.TextStyle(fontSize: 8.5)),
           ],
         ),
@@ -386,15 +387,21 @@ Future<Uint8List> renderReportPdf(
           pw.Text(g.name, style: pw.TextStyle(font: fontBold, fontSize: 9)),
           pw.SizedBox(height: 2),
           table(
-            const ['Recorded', 'Migraine-days', 'Tracked days', 'Rate', 'Odds ratio'],
+            [
+              l.reportColumnRecorded,
+              l.reportColumnMigraineDays,
+              l.reportColumnTrackedDays,
+              l.reportColumnRate,
+              l.reportColumnOddsRatio,
+            ],
             [
               for (final r in g.rows)
                 [
                   '${r.bucket}${r.isTop ? '  *' : ''}',
                   '${r.migraineDays}',
                   '${r.totalDays}',
-                  '${r.ratePct}%',
-                  r.oddsRatio.toStringAsFixed(2),
+                  pct(r.ratePct),
+                  fmt.decimal(r.oddsRatio, 2),
                 ],
             ],
             flex: const [3, 2, 2, 2, 2],
@@ -402,19 +409,26 @@ Future<Uint8List> renderReportPdf(
           ),
         ],
         pw.SizedBox(height: 4),
-        for (final caveat in t.caveats) note('- $caveat'),
+        for (final caveat in t.caveats) note(l.reportCaveatItem(caveat)),
       ],
     ],
   ];
 
   final eventPages = <pw.Widget>[
-    heading('Entries'),
-    note('Newest first. Times are shown in the zone each entry was recorded in. Sev "none": '
-        'an attack without headache.'),
+    heading(l.reportHeadingEntries),
+    note(l.reportEntriesNote),
     table(
-      const [
-        'Date', 'Time', 'Sev', 'Duration', 'Aura', 'Head', 'Symptoms', 'Triggers', 'Meds', //
-        'Notes',
+      [
+        l.reportColumnDate,
+        l.reportColumnTime,
+        l.reportColumnSev,
+        l.reportColumnDuration,
+        l.reportColumnAura,
+        l.reportColumnHead,
+        l.reportColumnSymptoms,
+        l.reportColumnTriggers,
+        l.reportColumnMeds,
+        l.reportColumnNotes,
       ],
       [
         for (final e in c.events)
@@ -444,10 +458,10 @@ Future<Uint8List> renderReportPdf(
   ];
 
   final closing = <pw.Widget>[
-    heading('Methods'),
+    heading(l.reportHeadingMethods),
     pw.Text(c.methods, style: const pw.TextStyle(fontSize: 8, color: _muted)),
     for (final f in c.footnotes) ...[pw.SizedBox(height: 4), note(f)],
-    heading('Disclaimer'),
+    heading(l.reportHeadingDisclaimer),
     pw.Text(c.disclaimer, style: const pw.TextStyle(fontSize: 8)),
   ];
 
@@ -459,7 +473,7 @@ Future<Uint8List> renderReportPdf(
         alignment: pw.Alignment.centerRight,
         margin: const pw.EdgeInsets.only(top: 8),
         child: pw.Text(
-          'Page ${ctx.pageNumber} of ${ctx.pagesCount}',
+          l.reportPageOf(ctx.pageNumber, ctx.pagesCount),
           style: const pw.TextStyle(fontSize: 7.5, color: _muted),
         ),
       ),

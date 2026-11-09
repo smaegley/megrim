@@ -4,6 +4,7 @@ import 'package:megrim/analytics/correlations.dart';
 import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
 import 'package:megrim/l10n/formats.dart';
+import 'package:megrim/l10n/gen/app_localizations_en.dart';
 import 'package:megrim/l10n/l10n.dart';
 import 'package:megrim/models/json_fields.dart';
 import 'package:megrim/models/med_entry.dart';
@@ -41,6 +42,7 @@ ReportContent build({
   List<MigraineEvent> events = const [],
   String? homeLabel,
   bool Function(int)? canRender,
+  AppLocalizations? l10n,
 }) =>
     buildReportContent(
       // By default the dashboard of the same events, as the repository builds it.
@@ -55,13 +57,40 @@ ReportContent build({
       now: DateTime(2026, 10, 5),
       homeLabel: homeLabel,
       canRender: canRender,
+      l10n: l10n,
     );
 
+/// Stands in for a translation: two messages marked, so a test can see the report uses the
+/// language it is given.
+class _MarkedL10n extends AppLocalizationsEn {
+  @override
+  String get reportTitle => '[Migraine report]';
+  @override
+  String get dataSeasonWinter => '[Winter]';
+}
 
 /// Dates as the report formats them in the test locale (D7: dates follow the locale).
 String day(DateTime d) => Formats.forL10n(englishL10n).date(d);
 
 void main() {
+  test('the report is in the language it is given, stored values included', () {
+    final c = build(
+      events: [
+        MigraineEvent(
+          id: 'w',
+          startedAt: DateTime(2026, 1, 10, 9),
+          createdAt: DateTime(2026, 1, 10),
+          updatedAt: DateTime(2026, 1, 10),
+        ),
+      ],
+      l10n: _MarkedL10n(),
+    );
+    expect(c.title, '[Migraine report]');
+    final season = c.charts.firstWhere((ch) => ch.title == englishL10n.reportChartBySeason);
+    expect(season.bars.map((b) => b.label), contains('[Winter]'));
+    expect(build().title, 'Migraine report');
+  });
+
   group('sanitiseForFont', () {
     bool latinOnly(int rune) => rune < 0x250;
 

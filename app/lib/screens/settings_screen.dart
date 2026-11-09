@@ -14,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
+import '../l10n/l10n.dart';
 import '../legal.dart';
 import '../models/app_lock_timeout.dart';
 import '../models/backup_status.dart';
@@ -454,6 +455,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// a PDF can't be imported back, the same reason CSV doesn't.
   Future<void> _exportReport(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n; // the report follows the app's language (D1)
     messenger.showSnackBar(
         const SnackBar(content: Text('Building report…'), duration: Duration(seconds: 2)));
     try {
@@ -462,8 +464,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // Exact glyph coverage of the embedded font, so anything it can't draw becomes "?" rather
       // than silently disappearing.
       final coverage = TtfParser(regular).charToGlyphIndexMap;
-      final content = await repo.reportContent(canRender: coverage.containsKey);
-      final bytes = await renderReportPdf(content, regular: regular, bold: bold);
+      final content = await repo.reportContent(canRender: coverage.containsKey, l10n: l10n);
+      final bytes = await renderReportPdf(content, regular: regular, bold: bold, l10n: l10n);
       if (!context.mounted) return;
       await _exportBytes(context, bytes, ExportServiceFilename.pdf());
     } catch (e) {
