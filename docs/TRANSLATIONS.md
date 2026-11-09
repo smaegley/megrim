@@ -5,6 +5,45 @@ _Status: **IN PROGRESS for `v1.0.9`** (phases 1 and 2), branch `feat/translation
 extends backlog #25, which now points here. Decisions D1–D7 were made by Steve on 2026-11-09
 ([table at the end](#decisions-steve-2026-11-09))._
 
+## As built so far (2026-11-09, branch `feat/translations`)
+
+Phase 1 is done, and phase 2 apart from Weblate (needs Steve's account) and the Chinese font. The
+English app looks as before, except as listed under *Visible changes*.
+
+- **619 English messages** in `app/lib/l10n/app_en.arb`, each with a description;
+  `[medical]`/`[legal]` marked. Helpers: `context.l10n` (falls back to English where no
+  delegate is installed, as in widget tests), `dataLabel()` for stored English values,
+  `Formats` for dates/times/numbers, `deviceL10n()` for code with no `BuildContext`.
+- **Shipped languages** come from `app/lib/l10n/shipped_locales.dart`, not from the ARB files
+  present (otherwise Weblate's unfinished files would ship). `tools/l10n.py sync | check |
+  stats | pseudo`; `check` runs in CI.
+- **Tests:** the export is identical under any phone language; every default and analytics label
+  has a translation; and the **hard-coded text test** runs the store-screenshot flow in the
+  `en-XA` pseudo-locale and fails on any English left outside a message (CI generates the
+  pseudo-locale first). It also found one layout overflow with longer text (fixed).
+- **Notifications** are rebuilt in the new language when the phone's language changes
+  (`didChangeLocales`) and at every start, so no "last language" setting was needed.
+- **The PDF report** takes the app's `AppLocalizations` (D1).
+- **Platform lists:** Android `res/xml/locales_config.xml` + `android:localeConfig`; iOS
+  `CFBundleLocalizations`. Both list `en` only for now.
+
+**Visible changes in English** (all from D7, following the phone's locale): dates read the
+locale's way ("Mon, Nov 9, 2026" on a US phone, "Mon, 9 Nov 2026" on a British one), times
+follow the phone's 12/24-hour setting, counts of 1,000 or more get a separator, the History
+calendar starts the week on the region's first day (Monday in Britain), and "across 1 migraine"
+is no longer "1 migraines". Store screenshots need retaking at the release.
+
+**Not yet:**
+- **Weblate** (Steve, steps below), after the branch is merged to `main`.
+- **Chinese PDF font (D3):** Noto Sans SC is about 8 MB as OTF, but the `pdf` package needs
+  TrueType, and the TrueType build is a 17.7 MB variable font. Proposal: add the font and the
+  report's font fallback when Simplified Chinese is close to the bar, not in 1.0.9, so the app
+  doesn't grow by 10–18 MB for a language that isn't offered yet.
+- **iOS `InfoPlist.strings`** (the purpose strings and the shortcut title in other languages)
+  needs the Xcode project on the Mac; only matters once a second language ships.
+- **Place names** from the geocoder are requested in English (`language: 'en'`); changing that
+  changes a network request, so it's left for a language that needs it.
+
 ## Why
 
 Three requests are open on GitHub, all tracked under #22 (`localization`, `planned`):
@@ -77,8 +116,8 @@ Phases 2–3 are mostly setup and waiting for translators.
   [Medical and legal wording](#medical-and-legal-wording).
 - **Notifications** (`notifications.dart`): "How was today?", "Migraine in progress", and the
   action buttons (*No migraine today*, *Log*, *End*). Notifications are scheduled ahead with their
-  text baked in, so the app **reschedules them at startup when the language has changed** (store
-  the language used last time in `app_settings`).
+  text baked in, so the app **reschedules them when the language changes** (as built: at every
+  start, and on `didChangeLocales`).
 - **Native strings outside Dart**:
   - Android: `res/values/strings.xml` (the "Log migraine" shortcut). Translations go in
     `values-<lang>/strings.xml`.
