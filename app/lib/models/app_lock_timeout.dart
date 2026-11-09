@@ -1,3 +1,5 @@
+import '../l10n/l10n.dart';
+
 /// App lock "Lock after" choices (backlog #24): how long Megrim may sit in the background before it
 /// asks for the phone's unlock again. A cold start always locks.
 const Duration kAppLockDefaultTimeout = Duration(minutes: 1);
@@ -9,8 +11,6 @@ const List<Duration> kAppLockTimeoutChoices = [
   Duration(minutes: 15),
 ];
 
-String appLockTimeoutLabel(Duration d) {
-  if (d == Duration.zero) return 'Immediately';
-  final m = d.inMinutes;
-  return m == 1 ? 'After 1 minute' : 'After $m minutes';
-}
+/// "Immediately" / "After 5 minutes". English unless [l] is given.
+String appLockTimeoutLabel(Duration d, [AppLocalizations? l]) =>
+    (l ?? englishL10n).appLockAfterMinutes(d.inMinutes);

@@ -7,6 +7,8 @@
 /// all — see backlog #15. Pure, with no I/O and no clock of its own, so it tests directly.
 library;
 
+import '../l10n/l10n.dart';
+
 /// Reminder intervals offered in Settings, in days. 0 = off, and is the default: the reminder is
 /// opt-in, so an upgrade changes nothing until the user chooses an interval.
 const List<int> kBackupReminderChoices = [0, 7, 14, 30, 90];
@@ -68,16 +70,18 @@ class BackupStatus {
     return daysSince == null || daysSince! >= reminderDays;
   }
 
-  /// "Never" / "Today" / "Yesterday" / "12 days ago".
-  String get ageLabel {
+  /// "Never" / "Today" / "Yesterday" / "12 days ago", in English; [ageLabelIn] for the app's
+  /// language.
+  String get ageLabel => ageLabelIn(englishL10n);
+
+  String ageLabelIn(AppLocalizations l) {
     final d = daysSince;
-    if (d == null) return 'Never';
-    if (d == 0) return 'Today';
-    if (d == 1) return 'Yesterday';
-    return '$d days ago';
+    if (d == null) return l.backupNever;
+    return l.backupAge(d);
   }
 }
 
-/// "Off" / "Every 30 days", for the Settings subtitle and the interval picker.
-String backupReminderLabel(int days) =>
-    days <= kBackupReminderOff ? 'Off' : 'Every $days days';
+/// "Off" / "Every 30 days", for the Settings subtitle and the interval picker. English unless
+/// [l] is given.
+String backupReminderLabel(int days, [AppLocalizations? l]) =>
+    (l ?? englishL10n).backupReminderEvery(days <= kBackupReminderOff ? 0 : days);

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../models/home_location.dart';
 import '../services/geocoder.dart';
 import '../services/location_input.dart';
@@ -129,8 +130,8 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
           controller: _controller,
           onChanged: _onChanged,
           decoration: InputDecoration(
-            labelText: 'City search — or GPS / Plus Code',
-            helperText: 'e.g. Boulder · 40.01, -105.27 · 849VCWC8+R9',
+            labelText: context.l10n.locationSearchLabel,
+            helperText: context.l10n.locationSearchHelper,
             prefixIcon: const Icon(Icons.search),
             suffixIcon: _loading
                 ? const Padding(
@@ -148,8 +149,8 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
             child: ListTile(
               dense: true,
               leading: const Icon(Icons.pin_drop_outlined),
-              title: Text('Use ${_manual!.label}'),
-              subtitle: const Text('Entered directly — nothing sent online'),
+              title: Text(context.l10n.locationUse(_manual!.label)),
+              subtitle: Text(context.l10n.locationEnteredDirectly),
               onTap: _selectManual,
             ),
           ),
@@ -162,7 +163,7 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('Recent',
+                    child: Text(context.l10n.locationRecent,
                         style: Theme.of(context).textTheme.labelMedium),
                   ),
                 ),
@@ -197,8 +198,8 @@ class _LocationPickerFieldState extends State<LocationPickerField> {
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(
-              'Selected: ${_chosen!.label} '
-              '(${_chosen!.lat.toStringAsFixed(2)}, ${_chosen!.lon.toStringAsFixed(2)})',
+              context.l10n.locationSelected(_chosen!.label,
+                  '${_chosen!.lat.toStringAsFixed(2)}, ${_chosen!.lon.toStringAsFixed(2)}'),
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),

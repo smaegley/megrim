@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../analytics/dashboard.dart';
 import '../database/database.dart';
+import '../l10n/l10n.dart';
 import '../legal.dart';
 import '../models/attack_details.dart';
 import '../models/backup_status.dart';
@@ -163,8 +164,8 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     await _loadActive();
     if (!mounted) return;
     if (_todayHasEntry) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Today already has a migraine entry, so it wasn\'t marked clear.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.quickLogTodayHasEntry)));
       return;
     }
     await _checkIn();
@@ -188,8 +189,8 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     final removed = await widget.repo.removeCheckinsCoveredBy(id);
     await _loadActive();
     if (removed.isNotEmpty && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Today\'s "No migraine" check-in was removed.'),
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(context.l10n.quickLogCheckinRemoved),
       ));
     }
     await _offerOngoing();
@@ -202,21 +203,22 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     final yes = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Show a notification while it lasts?'),
-        content: const Text(
-            'A "Migraine in progress" notification with a running clock and an End button, so '
-            'you don\'t forget the timer is on. It isn\'t shown on the lock screen. You can change '
-            'this in Settings.'),
+        title: Text(context.l10n.quickLogOfferOngoingTitle),
+        content: Text(context.l10n.quickLogOfferOngoingBody),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Not now')),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Show it')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(context.l10n.quickLogNotNow)),
+          FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(context.l10n.quickLogShowIt)),
         ],
       ),
     );
     if (yes == true) {
       if (!await n.setOngoing(true) && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Notifications are off for Megrim in the phone\'s settings.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.quickLogNotificationsOff)));
       }
     } else {
       await n.declineOngoing();
@@ -242,16 +244,15 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Discard this migraine?'),
-        content: const Text(
-            'This stops the timer and permanently deletes the in-progress entry.'),
+        title: Text(context.l10n.quickLogDiscardTitle),
+        content: Text(context.l10n.quickLogDiscardBody),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Keep')),
+              child: Text(context.l10n.quickLogKeep)),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Discard',
+            child: Text(context.l10n.quickLogDiscard,
                 style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
         ],
@@ -262,10 +263,10 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     await _loadActive();
     if (removed != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Migraine discarded'),
+        content: Text(context.l10n.quickLogDiscarded),
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
-          label: 'Undo',
+          label: context.l10n.commonUndo,
           onPressed: () async {
             await widget.repo.restoreEvent(removed.event, removed.derived);
             await _loadActive();
@@ -345,7 +346,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
             ),
             const SizedBox(width: 8),
             Text(
-              'Last backup: ${_backup.ageLabel}',
+              context.l10n.quickLogLastBackup(_backup.ageLabelIn(context.l10n)),
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
@@ -380,11 +381,11 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               child: FilledButton.icon(
                 onPressed: _start,
                 icon: const Icon(Icons.add),
-                label: const Text('LOG MIGRAINE', style: TextStyle(fontSize: 18)),
+                label: Text(context.l10n.quickLogStart, style: const TextStyle(fontSize: 18)),
               ),
             ),
             const SizedBox(height: 12),
-            Text('Tap to start. You can add details any time.',
+            Text(context.l10n.quickLogStartHint,
                 style: Theme.of(context).textTheme.bodySmall),
             if (!_todayHasEntry) ...[
               const SizedBox(height: 32),
@@ -405,7 +406,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
         child: OutlinedButton.icon(
           onPressed: _checkIn,
           icon: const Icon(Icons.check),
-          label: const Text('NO MIGRAINE TODAY'),
+          label: Text(context.l10n.quickLogNoMigraineToday),
         ),
       );
     }
@@ -416,14 +417,15 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           children: [
             Icon(Icons.check_circle, color: theme.colorScheme.primary),
             const SizedBox(width: 8),
-            Flexible(child: Text('No migraine today', style: theme.textTheme.titleSmall)),
+            Flexible(
+                child: Text(context.l10n.quickLogCheckedIn, style: theme.textTheme.titleSmall)),
           ],
         ),
         Wrap(
           alignment: WrapAlignment.center,
           children: [
-            TextButton(onPressed: _openCheckin, child: const Text('Add details')),
-            TextButton(onPressed: _undoCheckIn, child: const Text('Undo')),
+            TextButton(onPressed: _openCheckin, child: Text(context.l10n.quickLogAddDetails)),
+            TextButton(onPressed: _undoCheckIn, child: Text(context.l10n.commonUndo)),
           ],
         ),
       ],
@@ -437,7 +439,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Migraine in progress',
+          Text(context.l10n.quickLogInProgress,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
@@ -445,7 +447,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.displaySmall),
           const SizedBox(height: 24),
-          const Text('Headache?'),
+          Text(context.l10n.entryHeadacheQuestion),
           HeadacheSelector(
             value: _active!.headachePresent,
             onChanged: (v) async {
@@ -461,7 +463,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           ),
           if (hasHeadache(_active!.headachePresent)) ...[
             const SizedBox(height: 16),
-            Text('Severity: ${_active!.severity ?? 5} / 10'),
+            Text(context.l10n.entrySeverityValue('${_active!.severity ?? 5}')),
             Slider(
               value: (_active!.severity ?? 5).toDouble(),
               min: 1,
@@ -482,9 +484,9 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           TextField(
             controller: _notes,
             maxLines: 3,
-            decoration: const InputDecoration(
-              labelText: 'Notes',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: context.l10n.entryNotes,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 24),
@@ -497,7 +499,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               ),
               onPressed: _end,
               icon: const Icon(Icons.stop),
-              label: const Text('MIGRAINE ENDED'),
+              label: Text(context.l10n.quickLogEnded),
             ),
           ),
           TextButton(
@@ -508,14 +510,14 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               ));
               await _loadActive();
             },
-            child: const Text('Add more details'),
+            child: Text(context.l10n.quickLogMoreDetails),
           ),
           TextButton.icon(
             onPressed: _discard,
             icon: const Icon(Icons.delete_outline, size: 18),
             style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.error),
-            label: const Text('Discard'),
+            label: Text(context.l10n.quickLogDiscard),
           ),
         ],
       ),
