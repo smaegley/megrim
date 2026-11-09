@@ -72,6 +72,13 @@ class Formats {
   /// A percentage: 42%, or 42 %.
   String percent(num pct) => NumberFormat.percentPattern(locale).format(pct / 100);
 
+  /// The first day of the week, 0 = Sunday (MaterialLocalizations' convention): Monday on a
+  /// British phone, Sunday on an American one.
+  int get firstDayOfWeekIndex => (DateFormat('', locale).dateSymbols.FIRSTDAYOFWEEK + 1) % 7;
+
+  /// One-letter weekday names, Sunday first: S M T W T F S.
+  List<String> get narrowWeekdays => DateFormat('', locale).dateSymbols.STANDALONENARROWWEEKDAYS;
+
   String _withTime(DateFormat date, DateTime d) =>
       (use24h ? date.add_Hm() : date.add_jm()).format(d);
 }

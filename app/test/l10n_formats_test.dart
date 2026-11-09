@@ -17,6 +17,12 @@ void main() {
     expect(Formats('en_US', use24h: true).time(d), '14:05');
   });
 
+  test('weeks start on Monday in Britain and Sunday in the US', () {
+    expect(Formats('en_GB').firstDayOfWeekIndex, 1);
+    expect(Formats('en_US').firstDayOfWeekIndex, 0);
+    expect(Formats('en_US').narrowWeekdays.first, 'S');
+  });
+
   test('numbers use the locale separator', () {
     expect(Formats('en_GB').decimal(7.5, 1), '7.5');
     expect(Formats('fr').decimal(7.5, 1), '7,5');

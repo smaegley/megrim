@@ -557,11 +557,10 @@ class _MonthGrid extends StatelessWidget {
     final year = int.parse(parts[0]);
     final mo = int.parse(parts[1]);
     final daysInMonth = DateTime(year, mo + 1, 0).day;
-    // Weekday alignment (backlog #10). First day of week comes from the device locale via
-    // MaterialLocalizations (0 = Sunday) — no in-app setting; with the app English-only today
-    // this resolves Sunday-first, and picks up Monday-first locales automatically if/when
-    // localisation is added. narrowWeekdays is indexed Sunday-first, same convention.
-    final loc = MaterialLocalizations.of(context);
+    // Weekday alignment (backlog #10). The first day of the week follows the phone's region, as
+    // the dates do (Formats, decision D7): Monday-first in Britain, Sunday-first in the US. No
+    // in-app setting. Both are indexed Sunday-first (0 = Sunday).
+    final loc = Formats.of(context);
     final firstDow = loc.firstDayOfWeekIndex;
     // Column of the month's 1st: Dart weekday is 1=Mon..7=Sun; `% 7` re-bases to Sunday-first.
     final lead = (DateTime(year, mo, 1).weekday % 7 - firstDow + 7) % 7;
