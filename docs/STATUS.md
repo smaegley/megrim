@@ -23,6 +23,13 @@ retaken; README, F-Droid description and release notes refreshed; a release chec
 3. Then mark 1.0.8 released everywhere in this file.
 
 **Next release (number to decide; 1.1.0 if C2 goes in):**
+**Translations come next (Steve, 2026-11-09)**: backlog #25 (UI and PDF text into ARB files),
+then hosted Weblate. On GitHub, #22 is the main issue and #19 (zh-CN) is a sub-issue; both are
+labelled `localization` + `planned` and were answered 2026-11-09. A volunteer offered
+Ukrainian on #22, so post there when Weblate is ready. Add a milestone once the release number is
+decided. To decide first: report language (the phone's, or chosen at export), and a careful review of
+medical strings (disclaimer, symptoms, overuse notice). #23 (calendar in the PDF) is waiting
+on the reporter's answer to Steve's question. No dev started.
 0. **Remove the Donate tile from the iOS build** (decided 2026-10-30). This prepares the App
    Store for countries beyond the US: the Ko-fi link
    (`app/lib/screens/settings_screen.dart`, the `Donate` tile) is allowed only on the US storefront
