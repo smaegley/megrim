@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../analytics/dashboard.dart';
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import 'severity_badge.dart' show StatusColors, onStatusColor;
 
 /// Whole calendar days between two local dates. Computed on UTC copies of the y/m/d fields so a
@@ -27,27 +28,28 @@ class DaysSinceCard extends StatelessWidget {
     if (last == null) return const SizedBox.shrink();
     final days = daysBetweenLocalDates(last, DateTime.now());
 
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final mu = summary.avgIntervalDays;
     final sigma = summary.intervalStdDevDays;
     Color color = StatusColors.neutral;
-    String note = 'Not enough history to gauge yet.';
+    String note = l.daysSinceNoHistory;
     if (mu != null && sigma != null) {
       if (days < mu - sigma) {
         color = StatusColors.good;
-        note = 'Well within your usual gap (avg ${mu.round()} d).';
+        note = l.daysSinceWellWithin(mu.round());
       } else if (days < mu) {
         color = StatusColors.warning;
-        note = 'Approaching your average gap (avg ${mu.round()} d).';
+        note = l.daysSinceApproaching(mu.round());
       } else if (days < mu + sigma) {
         color = StatusColors.serious;
-        note = 'Past your average gap (avg ${mu.round()} d).';
+        note = l.daysSincePast(mu.round());
       } else {
         color = StatusColors.critical;
-        note = 'Well past your average gap (avg ${mu.round()} d).';
+        note = l.daysSinceWellPast(mu.round());
       }
     }
 
-    final df = DateFormat('EEE d MMM yyyy');
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -59,7 +61,7 @@ class DaysSinceCard extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               child: Text(
-                '$days',
+                fmt.integer(days),
                 style: TextStyle(
                   color: onStatusColor(color),
                   fontWeight: FontWeight.bold,
@@ -72,13 +74,10 @@ class DaysSinceCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                      days == 1
-                          ? 'day since last migraine'
-                          : 'days since last migraine',
+                  Text(l.daysSinceLabel(days),
                       style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 2),
-                  Text('Last: ${df.format(last)}',
+                  Text(l.daysSinceLast(fmt.dateWeekday(last)),
                       style: Theme.of(context).textTheme.bodyMedium),
                   const SizedBox(height: 2),
                   Text(note, style: Theme.of(context).textTheme.bodySmall),

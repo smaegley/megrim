@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
+
 /// Shared red→green status palette (from the data-viz status ramp — good/warning/serious/critical).
 /// Reused for the severity badge and the "days since last migraine" card so the whole app reads one
 /// colour language. These are fixed status hues, deliberately distinct from the categorical series
@@ -57,7 +59,7 @@ class SeverityBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     if (noHeadache) {
       return Semantics(
-        label: 'No headache',
+        label: context.l10n.noHeadache,
         child: Container(
           width: size,
           height: size,

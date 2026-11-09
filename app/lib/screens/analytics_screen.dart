@@ -1,11 +1,13 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../analytics/correlations.dart';
 import '../analytics/dashboard.dart';
 import '../analytics/pressure_baseline.dart';
+import '../l10n/data_labels.dart';
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import '../legal.dart';
 import '../repositories/megrim_repository.dart';
 import '../services/connectivity_monitor.dart';
@@ -13,7 +15,6 @@ import '../widgets/days_since_card.dart';
 import '../widgets/medication_cards.dart';
 import '../widgets/monthly_days_card.dart';
 import '../widgets/severity_badge.dart' show onStatusColor;
-import '../l10n/l10n.dart';
 import 'medications_screen.dart';
 
 /// x-axis glyphs for the moon-phase chart — icons in place of text labels (review item #6).
@@ -91,6 +92,25 @@ Color _magnitudeColor(double t, Brightness b) {
 int barChartLabelStep(int length, {int maxLabels = 8}) =>
     length > maxLabels ? (length / maxLabels).ceil() : 1;
 
+/// [v] with the digits Dart prints for it ("3.0", "12.5", "1.27"), so English reads as before,
+/// but with the locale's decimal separator.
+String _plain(Formats fmt, double v) {
+  final s = v.toString();
+  final dot = s.indexOf('.');
+  if (dot < 0 || s.contains('e')) return s;
+  return fmt.decimal(v, s.length - dot - 1);
+}
+
+/// The Suspected Factors caveats as the Analytics card lists them (SPEC §9 / §6.2), in the app's
+/// language. The PDF report lists the analytics' own caveats instead.
+List<String> _correlationCaveats(AppLocalizations l) => [
+      l.analyticsCaveatOddsRatioExplained,
+      l.analyticsCaveatSmallSample,
+      l.correlationsCaveatOddsRatio,
+      l.caveatMultipleComparisons,
+      l.caveatNotCausation,
+    ];
+
 /// Analytics (SPEC §4.5): a "days since last migraine" status card, summary, Top Suspected Factors,
 /// Most-tagged triggers, then collapsible per-factor charts (incl. season & time-of-day donuts).
 /// Computed locally. Includes the required Open-Meteo attribution footer.
@@ -159,13 +179,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Analytics'),
+        title: Text(l.analyticsTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh',
+            tooltip: l.analyticsRefresh,
             onPressed: _reload,
           ),
         ],
@@ -185,9 +206,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Couldn\'t load analytics.'),
+                    Text(l.analyticsLoadError),
                     const SizedBox(height: 12),
-                    FilledButton(onPressed: _reload, child: const Text('Retry')),
+                    FilledButton(onPressed: _reload, child: Text(l.analyticsRetry)),
                   ],
                 ),
               ),
@@ -198,7 +219,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           }
           final (dash, corr, weatherOn) = snap.data!;
           if (dash.isEmpty) {
-            return const Center(child: Text('Log a few migraines to see analytics.'));
+            return Center(child: Text(l.analyticsEmpty));
           }
           return RefreshIndicator(
             onRefresh: () async => _reload(),
@@ -218,33 +239,24 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 16),
                 _TrackedFactorsCard(dash: dash),
                 _FrequencyCard(
-                  title: 'Most-tagged triggers',
-                  description: 'How often you tagged each trigger, across '
-                      '${dash.summary.totalEvents} migraines.',
+                  title: l.analyticsTriggersTitle,
+                  description: l.analyticsTriggersDescription(dash.summary.totalEvents),
                   items: dash.triggerFrequency,
                   total: dash.summary.totalEvents,
-                  noun: 'triggers',
+                  showAll: l.analyticsShowAllTriggers,
                   note: dash.trackedFactors == null
-                      ? 'This is a frequency count of what you noted — not a correlation. '
-                          'Self-reported triggers are only recorded on migraine days, so there '
-                          'is no non-migraine baseline to test them against. Treat these as '
-                          'personal notes, not evidence of cause. Checking in on days without '
-                          'a migraine (Log › No migraine today) gives them one.'
-                      : 'This is a frequency count of what you noted — not a correlation. '
-                          '"Migraine days vs clear days" compares them with the days you '
-                          'checked in as clear.',
+                      ? l.analyticsTriggersNote
+                      : l.analyticsTriggersNoteWithCheckins,
                 ),
                 const SizedBox(height: 16),
                 // Backlog #20.
                 _FrequencyCard(
-                  title: 'Most common symptoms',
-                  description: 'How often you ticked each symptom, across '
-                      '${dash.summary.totalEvents} migraines.',
+                  title: l.analyticsSymptomsTitle,
+                  description: l.analyticsSymptomsDescription(dash.summary.totalEvents),
                   items: dash.symptomFrequency,
                   total: dash.summary.totalEvents,
-                  noun: 'symptoms',
-                  note: 'A count of what you noted on each migraine. Entries from before '
-                      'symptoms could be recorded have none, which lowers the percentages.',
+                  showAll: l.analyticsShowAllSymptoms,
+                  note: l.analyticsSymptomsNote,
                 ),
                 const SizedBox(height: 16),
                 // Backlog #22a.
@@ -262,46 +274,46 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 WhatHelpedCard(dash: dash),
                 _AwayFromHomeCard(dash: dash),
                 _collapsibleChart(
-                  title: 'By year',
+                  title: l.analyticsByYear,
                   data: _yearCounts(dash.byYear),
                   child: _barChart(_yearCounts(dash.byYear)),
                 ),
                 const SizedBox(height: 16),
                 _collapsibleChart(
-                  title: 'By day of week',
+                  title: l.analyticsByDayOfWeek,
                   data: dash.byDayOfWeek,
                   child: _barChart(dash.byDayOfWeek),
                 ),
                 const SizedBox(height: 16),
                 _collapsibleChart(
-                  title: 'By season',
+                  title: l.analyticsBySeason,
                   data: dash.bySeason,
                   child: _donut(dash.bySeason),
                 ),
                 const SizedBox(height: 16),
                 _collapsibleChart(
-                  title: 'By time of day',
+                  title: l.analyticsByTimeOfDay,
                   data: dash.byTimeOfDay,
                   child: _donut(dash.byTimeOfDay),
                 ),
                 const SizedBox(height: 16),
                 _collapsibleChart(
-                  title: 'By daylight hours',
+                  title: l.analyticsByDaylight,
                   data: dash.byDaylight,
                   child: _barChart(dash.byDaylight),
                 ),
                 const SizedBox(height: 16),
                 _collapsibleChart(
-                  title: 'Pressure change (24h)',
+                  title: l.analyticsByPressure,
                   data: dash.pressureDelta,
                   child: _barChart(dash.pressureDelta),
                   emptyNotice: weatherOn
                       ? null
-                      : 'Needs weather enrichment (off) — enable it in Settings',
+                      : l.analyticsNeedsWeather,
                 ),
                 const SizedBox(height: 16),
                 _collapsibleChart(
-                  title: 'By moon phase',
+                  title: l.analyticsByMoonPhase,
                   data: dash.byMoonPhase,
                   child: _barChart(dash.byMoonPhase, axisGlyphs: _moonGlyphs),
                 ),
@@ -321,15 +333,21 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   // Summary as stat tiles — two rows of three (backlog #1). Each tile is a big glanceable figure
   // over a muted label; null-valued stats show an em dash so the grid stays a fixed 2×3.
   Widget _summaryCard(Summary s) {
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final tiles = <Widget>[
-      _statTile('${s.totalEvents}', 'Events'),
-      _statTile('${s.yearsTracked}', 'Years tracked'),
-      _statTile(s.avgSeverity != null ? '${s.avgSeverity}' : '—', 'Avg severity'),
+      _statTile('${s.totalEvents}', l.analyticsStatEvents),
+      _statTile(_plain(fmt, s.yearsTracked), l.analyticsStatYears),
+      _statTile(s.avgSeverity != null ? _plain(fmt, s.avgSeverity!) : '—', l.analyticsStatSeverity),
       _statTile(
-          s.avgDurationHours != null ? '${s.avgDurationHours}h' : '—', 'Avg duration'),
+          s.avgDurationHours != null
+              ? l.analyticsHoursShort(_plain(fmt, s.avgDurationHours!))
+              : '—',
+          l.analyticsStatDuration),
       _statTile(
-          s.avgIntervalDays != null ? '${s.avgIntervalDays}d' : '—', 'Avg interval'),
-      _statTile('${s.eventsPerYear}', 'Per year'),
+          s.avgIntervalDays != null ? l.analyticsDaysShort(_plain(fmt, s.avgIntervalDays!)) : '—',
+          l.analyticsStatInterval),
+      _statTile(_plain(fmt, s.eventsPerYear), l.analyticsStatPerYear),
     ];
     return Card(
       child: Padding(
@@ -337,7 +355,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Summary', style: Theme.of(context).textTheme.titleMedium),
+            Text(l.analyticsSummary, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             Row(children: [for (final t in tiles.take(3)) Expanded(child: t)]),
             const SizedBox(height: 8),
@@ -381,10 +399,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     // Why-this-is-blank tag for charts whose data source is an opt-in feature (weather).
     String? emptyNotice,
   }) {
+    final l = context.l10n;
     final top = _topOf(data);
     final summary = top == null
-        ? (emptyNotice ?? 'No data yet')
-        : 'Most: ${top.label} (${top.count})';
+        ? (emptyNotice ?? l.analyticsNoData)
+        : l.analyticsMost(dataLabel(l, top.label), top.count);
     return Card(
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
@@ -428,10 +447,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     for (var i = 0; i < data.length; i++) {
       if (data[i].count > 0) present.add(i);
     }
+    final l = context.l10n;
     if (present.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
-        child: Center(child: Text('No data yet')),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Center(child: Text(l.analyticsNoData)),
       );
     }
     // Labels (name + count) sit inside each slice — this is the direct labelling the palette's CVD
@@ -449,7 +469,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 color: colors[i % colors.length],
                 radius: 68,
                 titlePositionPercentageOffset: 0.6,
-                title: '${data[i].label}\n${data[i].count}',
+                title: '${dataLabel(l, data[i].label)}\n${data[i].count}',
                 titleStyle: TextStyle(
                   fontSize: 11,
                   height: 1.2,
@@ -511,8 +531,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 getTitlesWidget: (v, meta) {
                   final i = v.toInt();
                   if (i < 0 || i >= data.length) return const SizedBox();
-                  final label = data[i].label;
-                  final glyph = axisGlyphs?[label];
+                  final glyph = axisGlyphs?[data[i].label];
+                  final label = dataLabel(context.l10n, data[i].label);
                   // Always label the first and last bar (the extremes are the most useful to
                   // read on a long series) plus every labelStep-th one in between.
                   final showLabel = glyph != null ||
@@ -622,12 +642,14 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final corr = widget.corr;
     if (!corr.available) {
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Text(corr.reason ?? 'Not enough data yet.'),
+          child: Text(corr.reasonIn(l) ?? l.analyticsNotEnoughData),
         ),
       );
     }
@@ -650,17 +672,17 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Top suspected factors',
+            Text(l.analyticsFactorsTitle,
                 style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
             Text(
-              'Base rate: ${corr.baseRatePct}% of days '
-              '(${corr.totalMigraineDays}/${corr.totalDaysInRange})',
+              l.analyticsBaseRate(
+                  _plain(fmt, corr.baseRatePct), corr.totalMigraineDays, corr.totalDaysInRange),
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
             if (corr.topFactors.isEmpty)
-              const Text('No factors stand out above chance yet.')
+              Text(l.analyticsNoFactors)
             else
               for (final t in shown) _factorBar(context, t, maxOr),
             if (hasMore)
@@ -669,8 +691,8 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
                 child: TextButton(
                   onPressed: () => setState(() => _expanded = !_expanded),
                   child: Text(_expanded
-                      ? 'Show top factor per category'
-                      : 'Show all ${corr.topFactors.length} factors'),
+                      ? l.analyticsShowTopPerCategory
+                      : l.analyticsShowAllFactors(corr.topFactors.length)),
                 ),
               ),
             if (!widget.weatherEnabled)
@@ -684,8 +706,7 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        'Pressure isn\'t analysed — weather enrichment is off '
-                        '(Settings › Weather enrichment).',
+                        l.analyticsPressureOff,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
@@ -696,12 +717,12 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
             if (_expanded) ...[
               const Divider(height: 24),
               for (final c in [
-                ...kCorrelationCaveats,
-                if (corr.excludedMidAttackDays > 0) midAttackNote(context.l10n, corr.excludedMidAttackDays),
+                ..._correlationCaveats(l),
+                if (corr.excludedMidAttackDays > 0) midAttackNote(l, corr.excludedMidAttackDays),
               ])
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Text('• $c',
+                  child: Text(l.analyticsBullet(c),
                       style: Theme.of(context).textTheme.bodySmall),
                 ),
             ],
@@ -716,6 +737,7 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
 /// to the strongest shown factor, shaded by the same magnitude (backlog #1b/#3). The OR value and
 /// factor:condition label are kept as text — the bar is an addition, not a replacement.
 Widget _factorBar(BuildContext context, TopFactor t, double maxOr) {
+  final l = context.l10n;
   final frac = maxOr <= 0 ? 0.0 : (t.oddsRatio / maxOr).clamp(0.0, 1.0);
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6),
@@ -724,9 +746,11 @@ Widget _factorBar(BuildContext context, TopFactor t, double maxOr) {
       children: [
         Row(
           children: [
-            Expanded(child: Text('${t.factor}: ${t.condition}')),
+            Expanded(
+                child: Text(l.analyticsFactorCondition(
+                    dataLabel(l, t.factor), dataLabel(l, t.condition)))),
             const SizedBox(width: 8),
-            Text('OR ${t.oddsRatio}',
+            Text(l.analyticsOddsRatio(_plain(Formats.of(context), t.oddsRatio)),
                 style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
@@ -754,15 +778,15 @@ class _FrequencyCard extends StatefulWidget {
   final List<LabeledCount> items;
   final int total;
 
-  /// Plural noun for the "Show all N …" button.
-  final String noun;
+  /// The "Show all N …" button's text for N items.
+  final String Function(int count) showAll;
   final String note;
   const _FrequencyCard({
     required this.title,
     required this.description,
     required this.items,
     required this.total,
-    required this.noun,
+    required this.showAll,
     required this.note,
   });
 
@@ -775,6 +799,8 @@ class _FrequencyCardState extends State<_FrequencyCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final triggers = widget.items;
     if (triggers.isEmpty) return const SizedBox.shrink();
     final total = widget.total;
@@ -801,8 +827,9 @@ class _FrequencyCardState extends State<_FrequencyCard> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(child: Text(t.label)),
-                        Text('${t.count} · ${(t.count / total * 100).round()}%'),
+                        Expanded(child: Text(dataLabel(l, t.label))),
+                        Text(l.analyticsCountShare(
+                            t.count, fmt.percent((t.count / total * 100).round()))),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -827,8 +854,8 @@ class _FrequencyCardState extends State<_FrequencyCard> {
                 child: TextButton(
                   onPressed: () => setState(() => _expanded = !_expanded),
                   child: Text(_expanded
-                      ? 'Show top 5'
-                      : 'Show all ${triggers.length} ${widget.noun}'),
+                      ? l.analyticsShowTop5
+                      : widget.showAll(triggers.length)),
                 ),
               ),
             if (_expanded) ...[
@@ -861,10 +888,11 @@ class _TrackedDaysCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = dash.tracked;
     if (t == null) return const SizedBox.shrink();
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final theme = Theme.of(context);
     final small = theme.textTheme.bodySmall;
     final unrecorded = 30 - t.last30;
-    final f = DateFormat('d MMM yyyy');
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Card(
@@ -873,9 +901,9 @@ class _TrackedDaysCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Days tracked', style: theme.textTheme.titleMedium),
+              Text(l.trackedDaysTitle, style: theme.textTheme.titleMedium),
               const SizedBox(height: 4),
-              Text('Days with an entry or a "No migraine" check-in.', style: small),
+              Text(l.trackedDaysIntro, style: small),
               const SizedBox(height: 12),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -889,18 +917,15 @@ class _TrackedDaysCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Expanded(child: Text('of the last 30 days', style: small)),
+                  Expanded(child: Text(l.trackedDaysOfLast30, style: small)),
                 ],
               ),
               const SizedBox(height: 4),
-              Text('${t.migraineLast30} with a migraine, ${t.clearLast30} without, '
-                  '$unrecorded not recorded.'),
+              Text(l.trackedDaysBreakdown(t.migraineLast30, t.clearLast30, unrecorded)),
               const SizedBox(height: 8),
               Text(
-                '${t.sinceFirstCheckin} of ${t.daysSinceFirstCheckin} days since your first '
-                'check-in (${f.format(t.firstCheckin)}). A day with nothing recorded could '
-                'have been either, so the more days are tracked, the more the numbers here '
-                'can be trusted.',
+                l.trackedDaysSinceFirst(
+                    t.sinceFirstCheckin, t.daysSinceFirstCheckin, fmt.date(t.firstCheckin)),
                 style: small,
               ),
             ],
@@ -928,6 +953,7 @@ class _TrackedFactorsCardState extends State<_TrackedFactorsCard> {
   Widget build(BuildContext context) {
     final t = widget.dash.trackedFactors;
     if (t == null) return const SizedBox.shrink();
+    final l = context.l10n;
     final theme = Theme.of(context);
     final small = theme.textTheme.bodySmall;
     final shown = _expanded ? t.topFactors : t.topFactors.take(3).toList();
@@ -940,25 +966,17 @@ class _TrackedFactorsCardState extends State<_TrackedFactorsCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Migraine days vs clear days', style: theme.textTheme.titleMedium),
+              Text(l.trackedFactorsTitle, style: theme.textTheme.titleMedium),
               const SizedBox(height: 4),
-              Text(
-                'What you recorded on days a migraine started, compared with days you checked '
-                'in as clear: sleep, stress, triggers and foods.',
-                style: small,
-              ),
+              Text(l.trackedFactorsIntro, style: small),
               const SizedBox(height: 12),
               if (!t.available)
-                Text(t.reason ?? 'Not enough data yet.')
+                Text(t.reasonIn(l) ?? l.analyticsNotEnoughData)
               else ...[
-                Text(
-                  '${t.migraineDays} migraine days and ${t.clearDays} clear days since your '
-                  'first check-in.',
-                  style: small,
-                ),
+                Text(l.trackedFactorsCounts(t.migraineDays, t.clearDays), style: small),
                 const SizedBox(height: 8),
                 if (t.topFactors.isEmpty)
-                  const Text('Nothing you recorded stands out above chance yet.')
+                  Text(l.trackedFactorsNone)
                 else
                   for (final f in shown) _factorBar(context, f, maxOr),
                 Align(
@@ -966,18 +984,18 @@ class _TrackedFactorsCardState extends State<_TrackedFactorsCard> {
                   child: TextButton(
                     onPressed: () => setState(() => _expanded = !_expanded),
                     child: Text(_expanded
-                        ? 'Show less'
+                        ? l.trackedFactorsShowLess
                         : t.topFactors.length > shown.length
-                            ? 'Show all ${t.topFactors.length} and the caveats'
-                            : 'Show the caveats'),
+                            ? l.trackedFactorsShowAll(t.topFactors.length)
+                            : l.trackedFactorsShowCaveats),
                   ),
                 ),
                 if (_expanded) ...[
                   const Divider(height: 24),
-                  for (final c in t.caveats)
+                  for (final c in t.caveatsIn(l))
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Text('• $c', style: small),
+                      child: Text(l.analyticsBullet(c), style: small),
                     ),
                 ],
               ],
@@ -997,6 +1015,8 @@ class _ImpactCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final i = dash.impact;
     if (i == null) return const SizedBox.shrink();
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final theme = Theme.of(context);
     Widget figure(String value, String label) => Column(
           children: [
@@ -1013,8 +1033,8 @@ class _ImpactCard extends StatelessWidget {
         );
     final avg = i.avgUnableLast3Months == null
         ? null
-        : 'Avg/month over the last 3 complete months: ${i.avgUnableLast3Months} unable, '
-            '${i.avgReducedLast3Months} reduced.';
+        : l.impactCardAverage(
+            _plain(fmt, i.avgUnableLast3Months!), _plain(fmt, i.avgReducedLast3Months ?? 0));
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Card(
@@ -1023,22 +1043,20 @@ class _ImpactCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Impact on the day', style: theme.textTheme.titleMedium),
+              Text(l.impactCardTitle, style: theme.textTheme.titleMedium),
               const SizedBox(height: 4),
-              Text('Migraine days in the last 30 days, by how much they stopped you.',
-                  style: theme.textTheme.bodySmall),
+              Text(l.impactCardIntro, style: theme.textTheme.bodySmall),
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Expanded(child: figure('${i.unableLast30}', 'Unable to function')),
-                  Expanded(child: figure('${i.reducedLast30}', 'Reduced function')),
+                  Expanded(child: figure('${i.unableLast30}', l.impactCardUnable)),
+                  Expanded(child: figure('${i.reducedLast30}', l.impactCardReduced)),
                 ],
               ),
               const SizedBox(height: 12),
               if (avg != null) Text(avg, style: theme.textTheme.bodySmall),
               Text(
-                'Impact recorded on ${i.recordedLast30} of ${dash.migraineDaysLast30} '
-                'migraine days in the last 30 days. A day counts its worst impact.',
+                l.impactCardRecorded(i.recordedLast30, dash.migraineDaysLast30),
                 style: theme.textTheme.bodySmall,
               ),
             ],
@@ -1061,6 +1079,8 @@ class _AwayFromHomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final away = dash.awayFromHome;
     if (away == null) return const SizedBox.shrink();
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final km = away.thresholdKm.round();
     final unlocated = dash.summary.totalEvents - away.locatedEvents;
     final maxCount =
@@ -1074,33 +1094,25 @@ class _AwayFromHomeCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Away from home',
-                  style: Theme.of(context).textTheme.titleMedium),
+              Text(l.awayTitle, style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 4),
               Text(
-                'Entries recorded more than $km km from your home location. '
-                'Descriptive only — it shows where you logged migraines, not that '
-                'travel caused them.',
+                l.awayIntro(km),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 12),
               if (away.awayEvents == 0)
-                Text(
-                  'All ${away.locatedEvents} located '
-                  '${away.locatedEvents == 1 ? 'entry was' : 'entries were'} '
-                  'within $km km of home.',
-                )
+                Text(l.awayNone(away.locatedEvents, km))
               else ...[
                 Text(
-                  '${away.awayEvents} of ${away.locatedEvents} located entries '
-                  '(${away.awayPct}%)',
+                  l.awayShare(away.awayEvents, away.locatedEvents, _plain(fmt, away.awayPct)),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 if (away.farthestKm != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
-                      'Farthest: ${away.farthestKm!.round()} km from home.',
+                      l.awayFarthest(away.farthestKm!.round()),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
@@ -1140,9 +1152,7 @@ class _AwayFromHomeCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
-                    '$unlocated ${unlocated == 1 ? 'entry has' : 'entries have'} '
-                    'no recorded location and ${unlocated == 1 ? 'is' : 'are'} '
-                    'not counted here.',
+                    l.awayUnlocated(unlocated),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
