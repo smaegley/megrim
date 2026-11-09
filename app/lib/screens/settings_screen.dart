@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
@@ -218,12 +219,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ..._privacyTiles(context, lock),
           ],
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.favorite_outline),
-            title: const Text('Donate'),
-            subtitle: const Text('Support development'),
-            onTap: () => _launch(context, 'https://ko-fi.com/smaegley'),
-          ),
+          // Not on iOS: an external tip link is allowed only on the US App Store (guideline
+          // 3.1.1), and one binary serves every storefront (docs/APP_STORE.md, Option B).
+          if (defaultTargetPlatform != TargetPlatform.iOS)
+            ListTile(
+              leading: const Icon(Icons.favorite_outline),
+              title: const Text('Donate'),
+              subtitle: const Text('Support development'),
+              onTap: () => _launch(context, 'https://ko-fi.com/smaegley'),
+            ),
           ListTile(
             leading: const Icon(Icons.code),
             title: const Text('Source code'),
