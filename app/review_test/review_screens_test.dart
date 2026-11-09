@@ -104,8 +104,7 @@ class _Review {
     addTearDown(tester.platformDispatcher.clearAllTestValues);
 
     // flutter_test draws shadows as hard black edges; draw them as the phone does.
-    debugDisableShadows = false;
-    addTearDown(() => debugDisableShadows = true);
+    debugDisableShadows = false; // reset in the finally below, before the binding checks it
     final previous = FlutterError.onError;
     FlutterError.onError = (d) {
       final first = d.exceptionAsString().split('\n').first;
@@ -124,6 +123,7 @@ class _Review {
       await tester.pump(const Duration(seconds: 1));
       await tester.runAsync(() => db.close());
     } finally {
+      debugDisableShadows = true;
       FlutterError.onError = previous;
       File('${dir.path}/problems.txt').writeAsStringSync(
           problems.isEmpty ? 'none\n' : '${problems.toSet().join('\n')}\n');
