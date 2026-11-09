@@ -6,6 +6,9 @@
   tools/l10n.py check   Fail if those are out of step, if an ARB file is malformed, or if a
                         shipped language is below the bar (decision D5). Run in CI.
   tools/l10n.py stats   Print each translation's coverage.
+  tools/l10n.py pseudo  Write app/lib/l10n/app_en_XA.arb (not committed): every message wrapped
+                        in ⟦…⟧ with accented letters, for the test that finds hard-coded text
+                        (en-XA is Android's own pseudo-locale).
 
 The bar (D5): every message marked [medical] or [legal] in its description, and every report and
 notification message (keys starting with "report" or "notif"), is translated; and at least 90% of
@@ -116,7 +119,7 @@ def check():
         if not template.get('@' + k, {}).get('description'):
             errors.append(f'app_{TEMPLATE}.arb: "{k}" has no description for translators')
     for path in sorted(L10N.glob('app_*.arb')):
-        if path.name == f'app_{TEMPLATE}.arb':
+        if path.name in (f'app_{TEMPLATE}.arb', PSEUDO.name):
             continue
         for k, v in messages(load(path)).items():
             if k not in tmsg:
@@ -149,12 +152,68 @@ def check():
     print(f'ok: {len(tmsg)} messages; shipped: {", ".join(tags)}')
 
 
+PSEUDO = L10N / 'app_en_XA.arb'
+_ACCENTS = str.maketrans('aceinosuyACEINOSUY', 'àçéîñôšûýÀÇÉÎÑÔŠÛÝ')
+
+
+def pseudo_text(msg):
+    """Accent the literal text of an ICU message, leaving placeholders, plural/select syntax and
+    the case selectors as they are."""
+    out, i = [], 0
+    while i < len(msg):
+        c = msg[i]
+        if c != '{':
+            out.append(c.translate(_ACCENTS))
+            i += 1
+            continue
+        depth, j = 1, i + 1
+        while depth:
+            depth += {'{': 1, '}': -1}.get(msg[j], 0)
+            j += 1
+        inner = msg[i + 1:j - 1]
+        m = re.match(r'(\s*\w+\s*,\s*(?:plural|select)\s*,)(.*)$', inner, re.S)
+        if not m:
+            out.append(msg[i:j])  # a placeholder
+        else:
+            cases, rest = [], m.group(2)
+            for sel, body in _icu_cases(rest):
+                cases.append(f'{sel}{{{pseudo_text(body)}}}')
+            out.append('{' + m.group(1) + ' ' + ' '.join(cases) + '}')
+        i = j
+    return ''.join(out)
+
+
+def _icu_cases(text):
+    """[(selector, body)] from 'one{...} other{...}'."""
+    cases, i = [], 0
+    while i < len(text):
+        m = re.compile(r'\s*([^\s{]+)\s*\{').match(text, i)
+        if not m:
+            break
+        depth, j = 1, m.end()
+        while depth:
+            depth += {'{': 1, '}': -1}.get(text[j], 0)
+            j += 1
+        cases.append((m.group(1), text[m.end():j - 1]))
+        i = j
+    return cases
+
+
+def pseudo():
+    template = load(L10N / f'app_{TEMPLATE}.arb')
+    arb = {'@@locale': 'en_XA'}
+    for k, v in messages(template).items():
+        arb[k] = '⟦' + pseudo_text(v) + '⟧'
+    PSEUDO.write_text(json.dumps(arb, ensure_ascii=False, indent=2) + '\n')
+    print(f'wrote {PSEUDO.relative_to(ROOT)} ({len(arb) - 1} messages)')
+
+
 def stats():
     template = load(L10N / f'app_{TEMPLATE}.arb')
     tags = shipped()
     print(f'{TEMPLATE}: {len(messages(template))} messages (template)')
     for path in sorted(L10N.glob('app_*.arb')):
-        if path.name == f'app_{TEMPLATE}.arb':
+        if path.name in (f'app_{TEMPLATE}.arb', PSEUDO.name):
             continue
         tag = path.stem[4:].replace('_', '-')
         share, missing = coverage(template, load(path))
@@ -164,4 +223,4 @@ def stats():
 
 if __name__ == '__main__':
     cmd = sys.argv[1] if len(sys.argv) > 1 else ''
-    {'sync': sync, 'check': check, 'stats': stats}.get(cmd, lambda: sys.exit(__doc__))()
+    {'sync': sync, 'check': check, 'stats': stats, 'pseudo': pseudo}.get(cmd, lambda: sys.exit(__doc__))()
