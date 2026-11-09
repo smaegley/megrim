@@ -1,8 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../analytics/dashboard.dart';
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import '../models/medications.dart' show parseIsoDay;
 
 /// "Migraine days per month" (backlog #17): the number neurologists track. Two figures — the
@@ -33,7 +34,8 @@ class MonthlyDaysCard extends StatelessWidget {
     final avg = dash.avgMigraineDaysLast3Months;
     final without = dash.migraineDaysWithoutHeadacheLast30;
     final anyWithout = months.any((m) => m.daysWithoutHeadache > 0);
-    final f = DateFormat('MMM yyyy');
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final starts = <int>{}, stops = <int>{};
     final notes = <String>[];
     int? indexOf(DateTime? d) {
@@ -50,8 +52,8 @@ class MonthlyDaysCard extends StatelessWidget {
       if (ei != null) stops.add(ei);
       if (start == null) continue;
       notes.add(stop == null
-          ? '${p.name} from ${f.format(start)}'
-          : '${p.name} ${f.format(start)} – ${f.format(stop)}');
+          ? l.monthlyPreventiveFrom(p.name, fmt.monthYearShort(start))
+          : l.monthlyPreventiveRange(p.name, fmt.monthYearShort(start), fmt.monthYearShort(stop)));
     }
     final markers = {
       for (final i in {...starts, ...stops})
@@ -63,23 +65,23 @@ class MonthlyDaysCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Migraine days per month', style: theme.textTheme.titleMedium),
+            Text(l.monthlyTitle, style: theme.textTheme.titleMedium),
             const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
                   child: _figure(
                     context,
-                    '${dash.migraineDaysLast30}',
-                    without == 0 ? 'Last 30 days' : 'Last 30 days\nincluding $without without headache',
+                    fmt.integer(dash.migraineDaysLast30),
+                    without == 0 ? l.monthlyLast30 : l.monthlyLast30Including(without),
                   ),
                 ),
                 Expanded(
                   child: _figure(
                     context,
-                    avg == null ? '—' : '$avg',
-                    'Avg/month, last 3 months',
-                    tooltip: avg == null ? 'Needs 3 complete months of history' : null,
+                    avg == null ? '—' : fmt.decimal(avg, 1),
+                    l.monthlyAvg3Months,
+                    tooltip: avg == null ? l.monthlyAvgNeedsHistory : null,
                   ),
                 ),
               ],
@@ -91,21 +93,20 @@ class MonthlyDaysCard extends StatelessWidget {
                   MonthBar(m.year, m.month, m.days, lower: m.daysWithoutHeadache),
               ],
               now: now ?? DateTime.now(),
-              title: 'Migraine days per month',
-              describeLower: (n) => '$n without headache',
+              title: l.monthlyTitle,
+              describeLower: l.monthlyWithoutHeadache,
               markers: markers,
             ),
             const SizedBox(height: 4),
             Text(
-              'Days with a migraine, not entries. * month in progress.'
-              '${anyWithout ? ' Lower part of a bar: days with only attacks without headache.' : ''}',
+              anyWithout ? l.monthlyFootnoteWithLower : l.monthlyFootnote,
               style: theme.textTheme.bodySmall,
             ),
             if (notes.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
-                  'Preventives (▲ started, ▼ stopped): ${notes.join('; ')}.',
+                  l.monthlyPreventives(notes.join('; ')),
                   style: theme.textTheme.bodySmall,
                 ),
               ),
@@ -183,15 +184,22 @@ class MonthBarChart extends StatelessWidget {
     final barColor = theme.colorScheme.primary;
     final withoutColor = theme.colorScheme.tertiary;
     final maxDays = months.fold<int>(0, (m, e) => e.value > m ? e.value : m);
-    final abbrev = DateFormat('MMM');
-    final full = DateFormat('MMM yyyy');
+    final l = context.l10n;
+    final fmt = Formats.of(context);
 
     // One screen-reader sentence for the whole chart, newest first, rather than 12+ bar nodes.
+    String spokenMonth(MonthBar m) {
+      final month = fmt.monthYearShort(DateTime(m.year, m.month));
+      final days = _inProgress(m)
+          ? l.chartMonthDaysSoFar(month, m.value)
+          : l.chartMonthDays(month, m.value);
+      return m.lower == 0 || describeLower == null
+          ? days
+          : l.chartMonthDaysWithDetail(days, describeLower!(m.lower));
+    }
+
     final spoken = [
-      for (final m in months.reversed.take(MonthlyDaysCard.visibleMonths))
-        '${full.format(DateTime(m.year, m.month))}${_inProgress(m) ? ' so far' : ''}: '
-            '${m.value} ${m.value == 1 ? 'day' : 'days'}'
-            '${m.lower == 0 || describeLower == null ? '' : ', ${describeLower!(m.lower)}'}',
+      for (final m in months.reversed.take(MonthlyDaysCard.visibleMonths)) spokenMonth(m),
     ].join('; ');
     final markerColor = theme.colorScheme.secondary;
 
@@ -251,7 +259,7 @@ class MonthBarChart extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
-                          '${abbrev.format(DateTime(m.year, m.month))}${_inProgress(m) ? '*' : ''}'
+                          '${fmt.monthShort(DateTime(m.year, m.month))}${_inProgress(m) ? '*' : ''}'
                           '${showYear ? '\n${m.year}' : ''}',
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 9, height: 1.1),
@@ -293,8 +301,9 @@ class MonthBarChart extends StatelessWidget {
           ),
         );
         return Semantics(
-          label: '$title, newest first. $spoken'
-              '${markers.isEmpty ? '' : '. Treatment changes are marked.'}',
+          label: markers.isEmpty
+              ? l.chartSpoken(title, spoken)
+              : l.chartSpokenWithMarkers(title, spoken),
           // Its own node, so TalkBack reads the chart as one stop instead of merging it into the card.
           container: true,
           excludeSemantics: true,
