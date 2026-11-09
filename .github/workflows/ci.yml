@@ -36,6 +36,12 @@ jobs:
       - name: Changelogs match their release notes
         working-directory: ${{ github.workspace }}
         run: tools/sync_changelogs.py --check
+      # Translations (docs/TRANSLATIONS.md): ARB files well-formed, every English message
+      # described for translators, each shipped language at the bar (D5), and Android's and iOS's
+      # language lists in step with app/lib/l10n/shipped_locales.dart.
+      - name: Translations check
+        working-directory: ${{ github.workspace }}
+        run: tools/l10n.py check
       - run: flutter test
       # Re-run under a DST timezone so date/time bucketing bugs that only appear across a
       # daylight-saving transition (see analytics day-stepping) are actually exercised.
