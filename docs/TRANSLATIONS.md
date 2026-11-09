@@ -10,13 +10,17 @@ extends backlog #25, which now points here. Decisions D1–D7 were made by Steve
 Phase 1 is done, and phase 2 apart from Weblate (needs Steve's account) and the Chinese font. The
 English app looks as before, except as listed under *Visible changes*.
 
-- **619 English messages** in `app/lib/l10n/app_en.arb`, each with a description;
+- **620 English messages** in `app/lib/l10n/app_en.arb`, each with a description;
   `[medical]`/`[legal]` marked. Helpers: `context.l10n` (falls back to English where no
   delegate is installed, as in widget tests), `dataLabel()` for stored English values,
   `Formats` for dates/times/numbers, `deviceL10n()` for code with no `BuildContext`.
 - **Shipped languages** come from `app/lib/l10n/shipped_locales.dart`, not from the ARB files
   present (otherwise Weblate's unfinished files would ship). `tools/l10n.py sync | check |
   stats | pseudo`; `check` runs in CI.
+- **Visual review:** `tools/review_screens.sh` renders ~200 screens (all store shots, every page of
+  the long screens, onboarding, dialogs, the PDF) in six setups (en-US, en-GB, a German phone,
+  pseudo, 1.5× text, 320 dp) as a Flutter test on the VM, no emulator, for Claude to look
+  through before a branch goes to Steve. It found the missing comma between date and time.
 - **Tests:** the export is identical under any phone language; every default and analytics label
   has a translation; and the **hard-coded text test** runs the store-screenshot flow in the
   `en-XA` pseudo-locale and fails on any English left outside a message (CI generates the
@@ -41,6 +45,8 @@ is no longer "1 migraines". Store screenshots need retaking at the release.
   doesn't grow by 10–18 MB for a language that isn't offered yet.
 - **iOS `InfoPlist.strings`** (the purpose strings and the shortcut title in other languages)
   needs the Xcode project on the Mac; only matters once a second language ships.
+- **Sleep hours in the edit field** show as stored ("5.2"), not in the locale's form ("5,2");
+  either is accepted when saving. Format it when a comma-decimal language ships.
 - **Place names** from the geocoder are requested in English (`language: 'en'`); changing that
   changes a network request, so it's left for a language that needs it.
 
