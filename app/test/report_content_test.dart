@@ -3,9 +3,9 @@ import 'package:megrim/analytics/checkins.dart';
 import 'package:megrim/analytics/correlations.dart';
 import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
+import 'package:megrim/l10n/l10n.dart';
 import 'package:megrim/models/json_fields.dart';
 import 'package:megrim/models/med_entry.dart';
-import 'package:megrim/models/medications.dart';
 import 'package:megrim/models/relief_entry.dart';
 import 'package:megrim/services/report_content.dart';
 
@@ -301,11 +301,11 @@ void main() {
 
     test('the notice lists each qualifying month, and only when all three qualify', () {
       expect(withMeds().medicationDays!.notice, [
-        kOveruseNoticeTitle,
+        englishL10n.overuseNoticeTitle,
         'Jul 2026: Triptan on 10 days (level 10)',
         'Aug 2026: Triptan on 10 days (level 10)',
         'Sep 2026: Triptan on 10 days (level 10)',
-        kOveruseNoticeBody,
+        englishL10n.overuseNoticeBody,
       ]);
       expect(withMeds(perMonth: 9).medicationDays!.notice, isEmpty);
     });

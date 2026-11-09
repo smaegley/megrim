@@ -15,6 +15,7 @@ import '../repositories/megrim_repository.dart';
 import '../widgets/location_picker.dart';
 import '../widgets/med_class_picker.dart';
 import '../widgets/severity_badge.dart' show StatusColors;
+import '../l10n/l10n.dart';
 import 'manage_vocab_screen.dart';
 import 'medications_screen.dart';
 
@@ -473,7 +474,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           SegmentedButton<String>(
             segments: [
               for (final v in EventImpact.all)
-                ButtonSegment(value: v, label: Text(kImpactLabels[v]!)),
+                ButtonSegment(value: v, label: Text(impactLabel(context.l10n, v))),
             ],
             selected: {?_impact},
             emptySelectionAllowed: true,
@@ -482,7 +483,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           if (_impact != null)
             Padding(
               padding: const EdgeInsets.only(top: 4),
-              child: Text(kImpactExplanations[_impact]!,
+              child: Text(impactExplanation(context.l10n, _impact!),
                   style: Theme.of(context).textTheme.bodySmall),
             ),
 
@@ -726,7 +727,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     final m = _meds[index];
     final cls = _medClasses[m.name];
     final parts = <String>[
-      if (cls != null) medClassName(cls),
+      if (cls != null) medClassName(context.l10n, cls),
       if (m.dose != null && m.dose!.isNotEmpty) m.dose!,
       if (m.time != null) _fmtMedTime(m.time!),
     ];

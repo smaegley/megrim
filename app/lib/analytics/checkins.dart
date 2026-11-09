@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import '../models/event_time.dart' show daysCovered, wallDate;
 import 'correlations.dart' show FactorRow, TopFactor, factorRows;
 import 'dashboard.dart' show EventStat;
@@ -129,6 +130,8 @@ class TrackedFactors {
   /// Per factor; a factor is left out when too few of its days were recorded.
   final Map<String, List<FactorRow>> factors;
   final List<TopFactor> topFactors;
+  /// [reason] and [caveats] are in English, as the export carries them; [reasonIn] and
+  /// [caveatsIn] give the same text in the app's language.
   final List<String> caveats;
 
   const TrackedFactors({
@@ -141,6 +144,24 @@ class TrackedFactors {
     this.topFactors = const [],
     this.caveats = const [],
   });
+
+  static String notEnoughDays(AppLocalizations l, int tracked, int migraine, int clear) =>
+      l.trackedNeedsDays(kMinTrackedDays, kMinTrackedMigraineDays, kMinTrackedClearDays, tracked,
+          migraine, clear);
+
+  static List<String> caveatsFor(AppLocalizations l, int migraineDays, int clearDays) => [
+        l.trackedCaveatSample(migraineDays, clearDays),
+        l.trackedCaveatRecordedDays,
+        l.trackedCaveatRecallBias,
+        l.caveatMultipleComparisons,
+        l.caveatNotCausation,
+      ];
+
+  String? reasonIn(AppLocalizations l) =>
+      reason == null ? null : notEnoughDays(l, trackedDays, migraineDays, clearDays);
+
+  List<String> caveatsIn(AppLocalizations l) =>
+      caveats.isEmpty ? const [] : caveatsFor(l, migraineDays, clearDays);
 }
 
 /// What was recorded on one tracked day.
@@ -205,10 +226,7 @@ TrackedFactors computeTrackedFactors(Iterable<EventStat> events, Iterable<Checki
       trackedDays: days.length,
       migraineDays: migraineDays,
       clearDays: clearDays,
-      reason:
-          'Needs $kMinTrackedDays tracked days, with at least $kMinTrackedMigraineDays '
-          'migraine days and $kMinTrackedClearDays clear days. So far: ${days.length} tracked, '
-          '$migraineDays migraine, $clearDays clear (since your first check-in).',
+      reason: TrackedFactors.notEnoughDays(englishL10n, days.length, migraineDays, clearDays),
     );
   }
 
@@ -276,15 +294,6 @@ TrackedFactors computeTrackedFactors(Iterable<EventStat> events, Iterable<Checki
     clearDays: clearDays,
     factors: factors,
     topFactors: top.take(8).toList(),
-    caveats: [
-      'Based on $migraineDays migraine days and $clearDays clear days since your first check-in '
-          '— small sample, results are noisy.',
-      'Each factor counts only the days it was recorded on.',
-      'Recall bias: after a migraine people look harder for a cause than on a good day, so '
-          'triggers can be over-recorded on migraine days.',
-      'Many factors are tested at once (multiple comparisons) — some apparent associations are '
-          'chance.',
-      'Association is not causation. Use this to form hypotheses, not conclusions.',
-    ],
+    caveats: TrackedFactors.caveatsFor(englishL10n, migraineDays, clearDays),
   );
 }

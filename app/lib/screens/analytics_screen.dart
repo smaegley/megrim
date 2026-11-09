@@ -13,6 +13,7 @@ import '../widgets/days_since_card.dart';
 import '../widgets/medication_cards.dart';
 import '../widgets/monthly_days_card.dart';
 import '../widgets/severity_badge.dart' show onStatusColor;
+import '../l10n/l10n.dart';
 import 'medications_screen.dart';
 
 /// x-axis glyphs for the moon-phase chart — icons in place of text labels (review item #6).
@@ -696,7 +697,7 @@ class _CorrelationsCardState extends State<_CorrelationsCard> {
               const Divider(height: 24),
               for (final c in [
                 ...kCorrelationCaveats,
-                if (corr.excludedMidAttackDays > 0) midAttackNote(corr.excludedMidAttackDays),
+                if (corr.excludedMidAttackDays > 0) midAttackNote(context.l10n, corr.excludedMidAttackDays),
               ])
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),

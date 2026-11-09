@@ -5,6 +5,7 @@ import '../database/database.dart';
 import '../models/medications.dart';
 import '../repositories/megrim_repository.dart';
 import '../widgets/med_class_picker.dart';
+import '../l10n/l10n.dart';
 
 /// Settings › Medications (backlog #18, #19): the acute medications learned from entries, each
 /// with its class, and the preventive medications, each with start and stop dates. Renames do
@@ -141,7 +142,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 for (final name in _acute)
                   ListTile(
                     title: Text(name),
-                    subtitle: Text(medClassName(_classes[name])),
+                    subtitle: Text(medClassName(context.l10n, _classes[name])),
                     onTap: () => _setClass(name),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,

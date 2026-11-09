@@ -19,6 +19,7 @@ import '../models/attack_details.dart';
 import '../models/event_time.dart';
 import '../models/json_fields.dart';
 import '../models/medications.dart';
+import '../l10n/l10n.dart';
 
 
 class ReportStat {
@@ -452,15 +453,15 @@ ReportContent buildReportContent({
     String days(int n) => '$n ${n == 1 ? 'day' : 'days'}';
     final months = md.byMonth.length > 12 ? md.byMonth.sublist(md.byMonth.length - 12) : md.byMonth;
     final classes = [
-      for (final c in [...kMedClassLabels.keys, kUnclassified])
+      for (final c in [...MedClass.all, kUnclassified])
         if (months.any((m) => m.byClass.containsKey(c))) c,
     ];
-    final breakdown = md.byClassLast30.entries.map((e) => '${medClassName(e.key)} ${e.value}');
+    final breakdown = md.byClassLast30.entries.map((e) => '${medClassName(englishL10n, e.key)} ${e.value}');
     final f = DateFormat('MMM yyyy');
     medicationDays = ReportMedicationDays(
       summary: 'Days with acute medication, last 30 days: ${days(md.last30)}'
           '${breakdown.isEmpty ? '.' : ' (${breakdown.join(', ')}).'}',
-      headers: ['Month', 'Any', for (final c in classes) medClassName(c)],
+      headers: ['Month', 'Any', for (final c in classes) medClassName(englishL10n, c)],
       rows: [
         for (final m in months)
           [
@@ -473,11 +474,11 @@ ReportContent buildReportContent({
       notice: md.notice == null
           ? const []
           : [
-              kOveruseNoticeTitle,
+              englishL10n.overuseNoticeTitle,
               for (final m in md.notice!)
                 for (final r in m.levelsReached)
-                  '${f.format(DateTime(m.year, m.month))}: ${levelReason(m, r)}',
-              kOveruseNoticeBody,
+                  '${f.format(DateTime(m.year, m.month))}: ${levelReason(englishL10n, m, r)}',
+              englishL10n.overuseNoticeBody,
             ],
       unclassified: md.unclassifiedNames.isEmpty
           ? null

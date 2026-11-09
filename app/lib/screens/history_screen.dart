@@ -7,6 +7,7 @@ import '../models/event_time.dart';
 import '../models/medications.dart' show isoDay;
 import '../repositories/megrim_repository.dart';
 import '../widgets/severity_badge.dart';
+import '../l10n/l10n.dart';
 import 'checkin_screen.dart';
 import 'event_detail_screen.dart';
 
@@ -148,7 +149,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             title: Text(df.format(e.startedWall)),
             subtitle: Text(
               [
-                ?noHeadacheLabel(e),
+                ?noHeadacheLabel(context.l10n, e),
                 if (e.severity != null) 'Severity ${e.severity}/10',
                 if (spanDays > 1) '$spanDays days',
                 if (e.endedAt == null) 'ongoing',
@@ -229,7 +230,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 title: Text(DateFormat('HH:mm').format(e.startedWall)),
                 subtitle: Text(
                   [
-                    ?noHeadacheLabel(e),
+                    ?noHeadacheLabel(context.l10n, e),
                     if (e.severity != null) 'Severity ${e.severity}/10',
                     if (e.endedAt == null) 'ongoing',
                   ].join(' · '),

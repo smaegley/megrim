@@ -327,5 +327,251 @@
         "example": "8"
       }
     }
+  },
+  "noHeadache": "No headache",
+  "@noHeadache": {
+    "description": "Label on an attack recorded without headache (History, entry detail, report)."
+  },
+  "noHeadacheWithAura": "No headache · with aura",
+  "@noHeadacheWithAura": {
+    "description": "[medical] Label on an attack without headache that had an aura (ICHD-3 'typical aura without headache'). Keep the '·' separator."
+  },
+  "noHeadacheWithVertigo": "No headache · with vertigo",
+  "@noHeadacheWithVertigo": {
+    "description": "[medical] Label on an attack without headache that had vertigo or dizziness (as in vestibular migraine). Keep the '·' separator."
+  },
+  "impactNormal": "Normal",
+  "@impactNormal": {
+    "description": "Impact on the day, short button label: functioned normally. Answers 'How well could you do your usual things?'"
+  },
+  "impactReduced": "Reduced",
+  "@impactReduced": {
+    "description": "Impact on the day, short button label: reduced function, did less or less well."
+  },
+  "impactUnable": "Unable",
+  "@impactUnable": {
+    "description": "Impact on the day, short button label: unable to do usual activities. Must not read as 'unable to stop me'."
+  },
+  "impactNormalDescription": "functioned normally",
+  "@impactNormalDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactReducedDescription": "reduced function",
+  "@impactReducedDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactUnableDescription": "unable to function",
+  "@impactUnableDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactNormalExplanation": "Functioned normally: got through the day as usual",
+  "@impactNormalExplanation": {
+    "description": "Shown under the impact buttons once 'Normal' is chosen."
+  },
+  "impactReducedExplanation": "Reduced function: did less, or less well",
+  "@impactReducedExplanation": {
+    "description": "Shown under the impact buttons once 'Reduced' is chosen."
+  },
+  "impactUnableExplanation": "Unable to function: couldn't do your usual activities",
+  "@impactUnableExplanation": {
+    "description": "Shown under the impact buttons once 'Unable' is chosen."
+  },
+  "medClassTriptan": "Triptan",
+  "@medClassTriptan": {
+    "description": "[medical] Class of acute migraine medication."
+  },
+  "medClassErgot": "Ergot",
+  "@medClassErgot": {
+    "description": "[medical] Class of acute migraine medication (ergotamines)."
+  },
+  "medClassOpioid": "Opioid",
+  "@medClassOpioid": {
+    "description": "[medical] Class of acute medication."
+  },
+  "medClassCombination": "Combination pain reliever",
+  "@medClassCombination": {
+    "description": "[medical] Class of acute medication: a pain reliever combined with codeine, caffeine or butalbital (ICHD-3 'combination-analgesic')."
+  },
+  "medClassSimple": "Simple pain reliever",
+  "@medClassSimple": {
+    "description": "[medical] Class of acute medication: paracetamol, ibuprofen, aspirin and similar (ICHD-3 'non-opioid analgesic')."
+  },
+  "medClassGepant": "Gepant",
+  "@medClassGepant": {
+    "description": "[medical] Class of acute migraine medication (CGRP receptor antagonists)."
+  },
+  "medClassDitan": "Ditan",
+  "@medClassDitan": {
+    "description": "[medical] Class of acute migraine medication (lasmiditan)."
+  },
+  "medClassAntiemetic": "Anti-nausea",
+  "@medClassAntiemetic": {
+    "description": "[medical] Class of medication against nausea (antiemetic)."
+  },
+  "medClassOther": "Other",
+  "@medClassOther": {
+    "description": "Medication class: anything not in the other classes."
+  },
+  "medClassNotSet": "No class set",
+  "@medClassNotSet": {
+    "description": "Shown for a medication the user hasn't given a class."
+  },
+  "medClassTriptanExamples": "sumatriptan, rizatriptan, zolmitriptan…",
+  "@medClassTriptanExamples": {
+    "description": "[medical] Examples under the class name in the picker. Generic drug names, no brands; use the local generic names."
+  },
+  "medClassErgotExamples": "ergotamine, dihydroergotamine",
+  "@medClassErgotExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassOpioidExamples": "codeine, tramadol, oxycodone…",
+  "@medClassOpioidExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassCombinationExamples": "a pain reliever combined with codeine, caffeine or butalbital",
+  "@medClassCombinationExamples": {
+    "description": "[medical] Examples under the class name."
+  },
+  "medClassSimpleExamples": "paracetamol (acetaminophen), ibuprofen, naproxen, aspirin…",
+  "@medClassSimpleExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names; use the local names (paracetamol / acetaminophen)."
+  },
+  "medClassGepantExamples": "ubrogepant, rimegepant, zavegepant",
+  "@medClassGepantExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassDitanExamples": "lasmiditan",
+  "@medClassDitanExamples": {
+    "description": "[medical] Example under the class name. Generic drug name."
+  },
+  "medClassAntiemeticExamples": "metoclopramide, ondansetron, domperidone…",
+  "@medClassAntiemeticExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassOtherExamples": "anything else",
+  "@medClassOtherExamples": {
+    "description": "Under 'Other' in the medication class picker."
+  },
+  "overuseNoticeTitle": "Medication days at a reference level",
+  "@overuseNoticeTitle": {
+    "description": "[medical] Title of the notice shown when acute-medication days reached the ICHD-3 medication-overuse reference level in each of the last 3 months. Calm and factual; not a warning or a diagnosis."
+  },
+  "overuseNoticeBody": "In each of the last 3 complete months, your days with acute medication reached a level that headache guidelines (ICHD-3) use when looking at medication-overuse headache, where frequent use of acute medication can make headaches more frequent. This is a count of what you logged, not a diagnosis. Don't change how you take a medication because of it; it may be worth discussing with your doctor.",
+  "@overuseNoticeBody": {
+    "description": "[medical] Body of the medication-overuse notice. It must not say the user has medication-overuse headache, and must not tell them to stop or change a medication. Needs a second reviewer."
+  },
+  "overuseLevelClass": "{medClass} on {days} days (level {level})",
+  "@overuseLevelClass": {
+    "description": "[medical] One month's reason for the notice: a class's medication days and the ICHD-3 reference level, e.g. 'Triptan on 11 days (level 10)'.",
+    "placeholders": {
+      "medClass": {
+        "type": "String",
+        "example": "Triptan"
+      },
+      "days": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "overuseLevelMixed": "A mix of classes on {days} days in total (level {level})",
+  "@overuseLevelMixed": {
+    "description": "[medical] One month's reason for the notice when several classes together reached the level (ICHD-3 8.2.6).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsNeedEvents": "Need at least {count} events for correlation analysis.",
+  "@correlationsNeedEvents": {
+    "description": "Why Suspected Factors isn't shown yet.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsCaveatSample": "Based on {migraineDays} migraine days over {days} days — small sample, results are noisy.",
+  "@correlationsCaveatSample": {
+    "description": "Caveat under Suspected Factors.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsMidAttackNote": "{count, plural, =1{1 day in the middle of a multi-day migraine is left out: a new attack can't start while one is underway.} other{{count} days in the middle of a multi-day migraine are left out: a new attack can't start while one is underway.}}",
+  "@correlationsMidAttackNote": {
+    "description": "Caveat under Suspected Factors: days inside a multi-day attack (not its first day) are not counted.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsCaveatOddsRatio": "Odds ratios use a +0.5 correction for empty cells; treat values near 1.0 as no signal.",
+  "@correlationsCaveatOddsRatio": {
+    "description": "Caveat under Suspected Factors. 'Odds ratio' is the statistics term; '+0.5' and '1.0' are numbers."
+  },
+  "caveatMultipleComparisons": "Many factors are tested at once (multiple comparisons) — some apparent associations are chance.",
+  "@caveatMultipleComparisons": {
+    "description": "Caveat under Suspected Factors and Migraine days vs clear days. 'Multiple comparisons' is the statistics term."
+  },
+  "caveatNotCausation": "Association is not causation. Use this to form hypotheses, not conclusions.",
+  "@caveatNotCausation": {
+    "description": "Caveat under Suspected Factors and Migraine days vs clear days."
+  },
+  "trackedNeedsDays": "Needs {needDays} tracked days, with at least {needMigraine} migraine days and {needClear} clear days. So far: {tracked} tracked, {migraine} migraine, {clear} clear (since your first check-in).",
+  "@trackedNeedsDays": {
+    "description": "Why Migraine days vs clear days isn't shown yet. A 'clear day' is a day logged as migraine-free with a check-in.",
+    "placeholders": {
+      "needDays": {
+        "type": "int"
+      },
+      "needMigraine": {
+        "type": "int"
+      },
+      "needClear": {
+        "type": "int"
+      },
+      "tracked": {
+        "type": "int"
+      },
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedCaveatSample": "Based on {migraineDays} migraine days and {clearDays} clear days since your first check-in — small sample, results are noisy.",
+  "@trackedCaveatSample": {
+    "description": "Caveat under Migraine days vs clear days.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "clearDays": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedCaveatRecordedDays": "Each factor counts only the days it was recorded on.",
+  "@trackedCaveatRecordedDays": {
+    "description": "Caveat under Migraine days vs clear days."
+  },
+  "trackedCaveatRecallBias": "Recall bias: after a migraine people look harder for a cause than on a good day, so triggers can be over-recorded on migraine days.",
+  "@trackedCaveatRecallBias": {
+    "description": "Caveat under Migraine days vs clear days. 'Recall bias' is the statistics term."
   }
 }

@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:megrim/analytics/correlations.dart';
 import 'package:megrim/analytics/pressure_baseline.dart';
 import 'package:megrim/database/database.dart';
-import 'package:flutter/material.dart';
+import 'package:megrim/l10n/l10n.dart';
 import 'package:megrim/models/home_location.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
 import 'package:megrim/screens/analytics_screen.dart';
@@ -224,7 +225,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(showAll);
     await tester.pumpAndSettle();
-    final note = find.text('• ${midAttackNote(excluded)}');
+    final note = find.text('• ${midAttackNote(englishL10n, excluded)}');
     await tester.scrollUntilVisible(note, 200, scrollable: page.first);
     expect(note, findsOneWidget);
 
@@ -235,11 +236,11 @@ void main() {
 
   test('the note reads naturally for one day and for several', () {
     expect(
-      midAttackNote(1),
+      midAttackNote(englishL10n, 1),
       '1 day in the middle of a multi-day migraine is left out: a new attack can\'t start while one is underway.',
     );
     expect(
-      midAttackNote(18),
+      midAttackNote(englishL10n, 18),
       startsWith('18 days in the middle of a multi-day migraine are left out'),
     );
   });

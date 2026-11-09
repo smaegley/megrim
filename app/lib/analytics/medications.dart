@@ -1,4 +1,5 @@
 import '../database/database.dart' show MedClass;
+import '../l10n/l10n.dart';
 import '../models/event_time.dart' show wallDate;
 import '../models/med_entry.dart';
 import '../models/medications.dart';
@@ -102,10 +103,10 @@ DateTime doseDay(MedEntry m, DateTime startedAt, int? startOffsetMin) {
 
 /// One reason [m] reached a reference level, with its count and the level:
 /// "Triptan on 11 days (level 10)".
-String levelReason(MedMonth m, String reason) => reason == kMixedClasses
-    ? 'A mix of classes on ${m.overuseClassDays} days in total (level $kMixedOveruseDaysPerMonth)'
-    : '${kMedClassLabels[reason]} on ${m.byClass[reason]} days '
-          '(level ${kOveruseDaysPerMonth[reason]})';
+String levelReason(AppLocalizations l, MedMonth m, String reason) => reason == kMixedClasses
+    ? l.overuseLevelMixed(m.overuseClassDays, kMixedOveruseDaysPerMonth)
+    : l.overuseLevelClass(medClassLabel(l, reason), m.byClass[reason] ?? 0,
+        kOveruseDaysPerMonth[reason] ?? 0);
 
 int _monthIndex(DateTime d) => d.year * 12 + d.month - 1;
 

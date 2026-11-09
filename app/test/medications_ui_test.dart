@@ -2,15 +2,15 @@ import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
+import 'package:megrim/l10n/l10n.dart';
 import 'package:megrim/models/json_fields.dart';
+import 'package:megrim/models/med_entry.dart';
+import 'package:megrim/models/relief_entry.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
 import 'package:megrim/screens/event_detail_screen.dart';
 import 'package:megrim/screens/medications_screen.dart';
-import 'package:megrim/analytics/dashboard.dart';
-import 'package:megrim/models/med_entry.dart';
-import 'package:megrim/models/medications.dart';
-import 'package:megrim/models/relief_entry.dart';
 import 'package:megrim/widgets/medication_cards.dart';
 import 'package:megrim/widgets/monthly_days_card.dart';
 
@@ -221,10 +221,10 @@ void main() {
         medClasses: const {'Suma': MedClass.triptan},
       );
       await pumpCard(tester, MedicationDaysCard(dash: dash, now: today));
-      expect(find.text(kOveruseNoticeTitle), findsOneWidget);
+      expect(find.text(englishL10n.overuseNoticeTitle), findsOneWidget);
       expect(find.text('Jul 2026: Triptan on 11 days (level 10)'), findsOneWidget);
       expect(find.text('Sep 2026: Triptan on 11 days (level 10)'), findsOneWidget);
-      final body = kOveruseNoticeBody.toLowerCase();
+      final body = englishL10n.overuseNoticeBody.toLowerCase();
       for (final phrase in [
         'you have medication',
         'you have mo',
@@ -256,7 +256,7 @@ void main() {
         tester,
         MedicationDaysCard(dash: dash, now: today, onSetClasses: () => tapped = true),
       );
-      expect(find.text(kOveruseNoticeTitle), findsNothing);
+      expect(find.text(englishL10n.overuseNoticeTitle), findsNothing);
       expect(find.text('Acute medication days'), findsOneWidget);
       expect(find.textContaining('1 medication has no class (Mystery pill)'), findsOneWidget);
       await tester.tap(find.text('Set classes'));
@@ -366,7 +366,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       // Layout overflows fail the test by themselves.
-      expect(find.text(kOveruseNoticeTitle), findsOneWidget);
+      expect(find.text(englishL10n.overuseNoticeTitle), findsOneWidget);
     });
   });
 }

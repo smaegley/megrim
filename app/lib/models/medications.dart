@@ -1,35 +1,38 @@
 import '../database/database.dart' show MedClass;
+import '../l10n/l10n.dart';
 
 /// Shared wording and rules for medication classes and the overuse notice (backlog #18), so
 /// Settings, Event Detail, Analytics and the report agree. Limits are ICHD-3 8.2 (checked against
 /// ichd-3.org 2026-10-29); docs/METHODS.md explains how they are applied.
 
-/// Short names, as the class picker and the Analytics card show them.
-const Map<String, String> kMedClassLabels = {
-  MedClass.triptan: 'Triptan',
-  MedClass.ergot: 'Ergot',
-  MedClass.opioid: 'Opioid',
-  MedClass.combinationAnalgesic: 'Combination pain reliever',
-  MedClass.simpleAnalgesic: 'Simple pain reliever',
-  MedClass.gepant: 'Gepant',
-  MedClass.ditan: 'Ditan',
-  MedClass.antiemetic: 'Anti-nausea',
-  MedClass.other: 'Other',
-};
+/// Short names, as the class picker and the Analytics card show them. [cls] is a [MedClass]
+/// value; anything else is returned as it is.
+String medClassLabel(AppLocalizations l, String cls) => switch (cls) {
+      MedClass.triptan => l.medClassTriptan,
+      MedClass.ergot => l.medClassErgot,
+      MedClass.opioid => l.medClassOpioid,
+      MedClass.combinationAnalgesic => l.medClassCombination,
+      MedClass.simpleAnalgesic => l.medClassSimple,
+      MedClass.gepant => l.medClassGepant,
+      MedClass.ditan => l.medClassDitan,
+      MedClass.antiemetic => l.medClassAntiemetic,
+      MedClass.other => l.medClassOther,
+      _ => cls,
+    };
 
 /// Examples under each choice in the picker. No brand names: the app ships no drug database
 /// (SPEC open question 4), and these are only there to tell the classes apart.
-const Map<String, String> kMedClassExamples = {
-  MedClass.triptan: 'sumatriptan, rizatriptan, zolmitriptan…',
-  MedClass.ergot: 'ergotamine, dihydroergotamine',
-  MedClass.opioid: 'codeine, tramadol, oxycodone…',
-  MedClass.combinationAnalgesic: 'a pain reliever combined with codeine, caffeine or butalbital',
-  MedClass.simpleAnalgesic: 'paracetamol (acetaminophen), ibuprofen, naproxen, aspirin…',
-  MedClass.gepant: 'ubrogepant, rimegepant, zavegepant',
-  MedClass.ditan: 'lasmiditan',
-  MedClass.antiemetic: 'metoclopramide, ondansetron, domperidone…',
-  MedClass.other: 'anything else',
-};
+String medClassExamples(AppLocalizations l, String cls) => switch (cls) {
+      MedClass.triptan => l.medClassTriptanExamples,
+      MedClass.ergot => l.medClassErgotExamples,
+      MedClass.opioid => l.medClassOpioidExamples,
+      MedClass.combinationAnalgesic => l.medClassCombinationExamples,
+      MedClass.simpleAnalgesic => l.medClassSimpleExamples,
+      MedClass.gepant => l.medClassGepantExamples,
+      MedClass.ditan => l.medClassDitanExamples,
+      MedClass.antiemetic => l.medClassAntiemeticExamples,
+      _ => l.medClassOtherExamples,
+    };
 
 /// Days per month at which ICHD-3 8.2.1–8.2.5 set the reference level for each class. Classes
 /// not listed (gepant, ditan, antiemetic, other, unclassified) never raise the notice.
@@ -58,20 +61,13 @@ const String kUnclassified = 'unclassified';
 const String kMixedClasses = 'mixed';
 
 /// "Triptan", or "No class set" for null and [kUnclassified].
-String medClassName(String? key) =>
-    key == null || key == kUnclassified ? 'No class set' : kMedClassLabels[key] ?? key;
+String medClassName(AppLocalizations l, String? key) =>
+    key == null || key == kUnclassified ? l.medClassNotSet : medClassLabel(l, key);
 
-/// The overuse notice (backlog #18), as the Analytics card and the report word it. It states the
-/// counts and the reference level and suggests a doctor; it never says the user has
-/// medication-overuse headache and never tells them to stop or change a medication.
-const String kOveruseNoticeTitle = 'Medication days at a reference level';
-
-const String kOveruseNoticeBody =
-    'In each of the last 3 complete months, your days with acute medication reached a level that '
-    'headache guidelines (ICHD-3) use when looking at medication-overuse headache, where frequent '
-    'use of acute medication can make headaches more frequent. This is a count of what you '
-    'logged, not a diagnosis. Don\'t change how you take a medication because of it; it may be '
-    'worth discussing with your doctor.';
+// The overuse notice (backlog #18) is `overuseNoticeTitle` / `overuseNoticeBody` in app_en.arb,
+// worded as the Analytics card and the report show it. It states the counts and the reference
+// level and suggests a doctor; it never says the user has medication-overuse headache and never
+// tells them to stop or change a medication. Wording approved by Steve 2026-10-29.
 
 /// `yyyy-MM-dd` for a calendar date (preventive start/stop, schema v5).
 String isoDay(DateTime d) =>

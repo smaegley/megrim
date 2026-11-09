@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../analytics/dashboard.dart';
 import '../analytics/medications.dart';
 import '../models/medications.dart';
+import '../l10n/l10n.dart';
 import 'monthly_days_card.dart';
 
 /// "Acute medication days" (backlog #18): days with medication taken for an attack, in the last
@@ -71,7 +72,7 @@ class MedicationDaysCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 1),
                   child: Row(
                     children: [
-                      Expanded(child: Text(medClassName(c))),
+                      Expanded(child: Text(medClassName(context.l10n, c))),
                       Text(
                         '$n ${n == 1 ? 'day' : 'days'}',
                         style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
@@ -143,7 +144,7 @@ class _OveruseNotice extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      kOveruseNoticeTitle,
+                      context.l10n.overuseNoticeTitle,
                       style: theme.textTheme.titleSmall?.copyWith(
                         color: scheme.onSecondaryContainer,
                       ),
@@ -154,10 +155,10 @@ class _OveruseNotice extends StatelessWidget {
               const SizedBox(height: 8),
               for (final m in months)
                 for (final r in m.levelsReached)
-                  Text('${f.format(DateTime(m.year, m.month))}: ${levelReason(m, r)}'),
+                  Text('${f.format(DateTime(m.year, m.month))}: ${levelReason(context.l10n, m, r)}'),
               const SizedBox(height: 8),
               Text(
-                '$kOveruseNoticeBody The PDF report includes these counts.',
+                '${context.l10n.overuseNoticeBody} The PDF report includes these counts.',
                 style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSecondaryContainer),
               ),
             ],

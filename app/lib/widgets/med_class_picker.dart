@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../database/database.dart' show MedClass;
 import '../models/medications.dart';
+import '../l10n/l10n.dart';
 
 /// Pick a medication's class (backlog #18). Resolves to `(cls: null)` for "Not set", or to null
 /// if the dialog is dismissed, so callers can tell "clear it" from "leave it".
@@ -28,8 +29,8 @@ Future<({String? cls})?> showMedClassPicker(BuildContext context,
 }
 
 Widget _option(BuildContext context, String? cls, String? current) => ListTile(
-      title: Text(cls == null ? 'Not set' : kMedClassLabels[cls]!),
-      subtitle: cls == null ? null : Text(kMedClassExamples[cls]!),
+      title: Text(cls == null ? 'Not set' : medClassLabel(context.l10n, cls)),
+      subtitle: cls == null ? null : Text(medClassExamples(context.l10n, cls)),
       trailing: cls == current ? const Icon(Icons.check) : null,
       selected: cls == current,
       onTap: () => Navigator.pop(context, (cls: cls)),
