@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../legal.dart';
+import '../l10n/l10n.dart';
 import '../models/home_location.dart';
 import '../repositories/megrim_repository.dart';
 import '../services/geocoder.dart';
@@ -62,21 +62,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Welcome to Megrim',
+            Text(context.l10n.onboardingWelcomeTitle,
                 style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 16),
-            const Text(
-              'A private, offline migraine diary. Everything stays on your device. '
-              'Optionally, it can add weather and pressure context to your entries '
-              'from Open-Meteo.com — you choose in a moment, and it is off unless '
-              'you turn it on.',
-            ),
+            Text(context.l10n.onboardingWelcomeBody),
             const SizedBox(height: 32),
             Align(
               alignment: Alignment.centerRight,
               child: FilledButton(
                 onPressed: () => setState(() => _step = 1),
-                child: const Text('Get started'),
+                child: Text(context.l10n.onboardingGetStarted),
               ),
             ),
           ],
@@ -86,12 +81,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _disclaimer() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Before you begin',
+          Text(context.l10n.onboardingBeforeYouBegin,
               style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
-              child: Text(kMedicalDisclaimer,
+              child: Text(context.l10n.legalMedicalDisclaimer,
                   style: Theme.of(context).textTheme.bodyLarge),
             ),
           ),
@@ -99,13 +94,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             contentPadding: EdgeInsets.zero,
             value: _disclaimerAccepted,
             onChanged: (v) => setState(() => _disclaimerAccepted = v ?? false),
-            title: const Text('I understand and accept.'),
+            title: Text(context.l10n.onboardingAccept),
           ),
           Align(
             alignment: Alignment.centerRight,
             child: FilledButton(
               onPressed: _disclaimerAccepted ? () => setState(() => _step = 2) : null,
-              child: const Text('Continue'),
+              child: Text(context.l10n.onboardingContinue),
             ),
           ),
         ],
@@ -114,7 +109,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _location() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Your home location',
+          Text(context.l10n.onboardingHomeTitle,
               style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
           // The picker's search-results dropdown can grow tall enough (plus the on-screen
@@ -125,15 +120,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Used on-device for daylight and season analytics, and — only if you '
-                    'enable weather enrichment in the next step — to fetch weather for your '
-                    'entries. Searching here sends the place name you type to Open-Meteo\'s '
-                    'geocoder to find coordinates; after that, only rounded (~1 km) '
-                    'coordinates would ever be sent, and only for weather. Prefer not to '
-                    'search online? Type GPS coordinates or a Plus Code instead — both are '
-                    'decoded on-device.',
-                  ),
+                  Text(context.l10n.onboardingHomeBody),
                   const SizedBox(height: 16),
                   LocationPickerField(
                       geocoder: widget.geocoder,
@@ -146,7 +133,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             alignment: Alignment.centerRight,
             child: FilledButton(
               onPressed: _home != null ? () => setState(() => _step = 3) : null,
-              child: const Text('Continue'),
+              child: Text(context.l10n.onboardingContinue),
             ),
           ),
         ],
@@ -155,7 +142,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _weather() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Weather enrichment',
+          Text(context.l10n.onboardingWeatherTitle,
               style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
           Expanded(
@@ -163,25 +150,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Megrim can fetch the weather around each migraine — temperature, '
-                    'humidity, barometric pressure, air quality — so Analytics can look '
-                    'for patterns like pressure swings before an attack.\n\n'
-                    'If you turn this on, the entry\'s date and rounded (~1 km) '
-                    'coordinates are sent to Open-Meteo.com, a non-commercial weather '
-                    'service. Nothing else ever leaves your device: no account, no '
-                    'telemetry, and no server of ours.\n\n'
-                    'Leave it off and Megrim is fully offline. You can change this '
-                    'anytime in Settings.',
-                  ),
+                  Text(context.l10n.onboardingWeatherBody),
                   const SizedBox(height: 8),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
                     value: _weatherOptIn,
                     onChanged: (v) => setState(() => _weatherOptIn = v),
-                    title: const Text('Fetch weather for my entries'),
-                    subtitle: const Text(
-                        'Recommended if you want pressure correlations'),
+                    title: Text(context.l10n.onboardingWeatherSwitch),
+                    subtitle: Text(context.l10n.onboardingWeatherSwitchSubtitle),
                   ),
                 ],
               ),
@@ -194,7 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: _saving
                   ? const SizedBox(
                       width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Finish'),
+                  : Text(context.l10n.onboardingFinish),
             ),
           ),
         ],

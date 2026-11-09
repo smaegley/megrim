@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../services/app_lock.dart';
 import '../services/app_shortcuts.dart';
 
@@ -134,11 +135,14 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
             if (i == 2) _analyticsToken++;
           });
         },
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.add_circle_outline), label: 'Log'),
-          NavigationDestination(icon: Icon(Icons.list_alt), label: 'History'),
-          NavigationDestination(icon: Icon(Icons.insights), label: 'Analytics'),
-          NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
+        destinations: [
+          NavigationDestination(
+              icon: const Icon(Icons.add_circle_outline), label: context.l10n.homeTabLog),
+          NavigationDestination(icon: const Icon(Icons.list_alt), label: context.l10n.homeTabHistory),
+          NavigationDestination(
+              icon: const Icon(Icons.insights), label: context.l10n.homeTabAnalytics),
+          NavigationDestination(
+              icon: const Icon(Icons.settings), label: context.l10n.homeTabSettings),
         ],
       ),
     );
