@@ -23,8 +23,10 @@ retaken; README, F-Droid description and release notes refreshed; a release chec
 3. Then mark 1.0.8 released everywhere in this file.
 
 **Next release (number to decide; 1.1.0 if C2 goes in):**
-**Translations come next (Steve, 2026-11-09)**: design in **`docs/TRANSLATIONS.md`** (4
-phases; Steve to answer **D1–D7** at the end before work starts). Phase 1 = backlog #25 (UI, PDF,
+**Translations come next (Steve, 2026-11-09)**: design in **`docs/TRANSLATIONS.md`**;
+decisions D1–D7 made 2026-11-09. **`v1.0.9` = phases 1 and 2** (still English only; English dates
+follow the phone's locale); each language ships in a later release once complete. The iOS Donate
+tile removal below is planned for the same next build. Phase 1 = backlog #25 (UI, PDF,
 notification and native text into ARB files, no visible change), then hosted Weblate. On GitHub, #22 is the main issue and #19 (zh-CN) is a sub-issue; both are
 labelled `localization` + `planned` and were answered 2026-11-09. A volunteer offered
 Ukrainian on #22, so post there when Weblate is ready. Add a milestone once the release number is
