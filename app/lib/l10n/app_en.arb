@@ -888,5 +888,117 @@
   "entryReliefHint": "e.g. dark room, cold pack",
   "@entryReliefHint": {
     "description": "Example text in the relief field."
+  },
+  "backupNever": "Never",
+  "@backupNever": {
+    "description": "When the data was last backed up (exported): never."
+  },
+  "backupAge": "{days, plural, =0{Today} =1{Yesterday} other{{days} days ago}}",
+  "@backupAge": {
+    "description": "When the data was last backed up (exported), as an age: 'Today', 'Yesterday', '12 days ago'.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "backupReminderEvery": "{days, plural, =0{Off} other{Every {days} days}}",
+  "@backupReminderEvery": {
+    "description": "The backup reminder's interval: 'Off' (0), or 'Every 30 days'. The choices are 7, 14, 30 and 90.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "quickLogTodayHasEntry": "Today already has a migraine entry, so it wasn't marked clear.",
+  "@quickLogTodayHasEntry": {
+    "description": "Snack bar: the 'No migraine today' notification button was tapped, but today already has a migraine entry."
+  },
+  "quickLogCheckinRemoved": "Today's \"No migraine\" check-in was removed.",
+  "@quickLogCheckinRemoved": {
+    "description": "Snack bar after starting a migraine on a day already checked in as migraine-free."
+  },
+  "quickLogOfferOngoingTitle": "Show a notification while it lasts?",
+  "@quickLogOfferOngoingTitle": {
+    "description": "Dialog title, asked once on the first migraine started (Android): show a notification while the migraine is in progress?"
+  },
+  "quickLogOfferOngoingBody": "A \"Migraine in progress\" notification with a running clock and an End button, so you don't forget the timer is on. It isn't shown on the lock screen. You can change this in Settings.",
+  "@quickLogOfferOngoingBody": {
+    "description": "Dialog body for the 'Migraine in progress' notification offer. 'End' is the notification's button."
+  },
+  "quickLogNotNow": "Not now",
+  "@quickLogNotNow": {
+    "description": "Dialog button: decline for now."
+  },
+  "quickLogShowIt": "Show it",
+  "@quickLogShowIt": {
+    "description": "Dialog button: yes, show the notification."
+  },
+  "quickLogNotificationsOff": "Notifications are off for Megrim in the phone's settings.",
+  "@quickLogNotificationsOff": {
+    "description": "Snack bar: the notification can't be shown because the phone blocks Megrim's notifications."
+  },
+  "quickLogDiscardTitle": "Discard this migraine?",
+  "@quickLogDiscardTitle": {
+    "description": "Confirmation title before deleting the migraine that is in progress."
+  },
+  "quickLogDiscardBody": "This stops the timer and permanently deletes the in-progress entry.",
+  "@quickLogDiscardBody": {
+    "description": "Confirmation body before deleting the migraine that is in progress."
+  },
+  "quickLogKeep": "Keep",
+  "@quickLogKeep": {
+    "description": "Dialog button: don't discard, keep the migraine."
+  },
+  "quickLogDiscard": "Discard",
+  "@quickLogDiscard": {
+    "description": "Button: delete the migraine in progress (started by mistake)."
+  },
+  "quickLogDiscarded": "Migraine discarded",
+  "@quickLogDiscarded": {
+    "description": "Snack bar after the migraine in progress was discarded (with Undo)."
+  },
+  "quickLogLastBackup": "Last backup: {age}",
+  "@quickLogLastBackup": {
+    "description": "Line at the bottom of the Log screen; {age} is 'Today', 'Yesterday', '12 days ago' or 'Never'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "12 days ago"
+      }
+    }
+  },
+  "quickLogStart": "LOG MIGRAINE",
+  "@quickLogStart": {
+    "description": "The main button on the Log screen: start timing a migraine now. Upper case in English; use what reads as a strong button label."
+  },
+  "quickLogStartHint": "Tap to start. You can add details any time.",
+  "@quickLogStartHint": {
+    "description": "Hint under the LOG MIGRAINE button."
+  },
+  "quickLogNoMigraineToday": "NO MIGRAINE TODAY",
+  "@quickLogNoMigraineToday": {
+    "description": "Button: record today as a migraine-free day (a check-in). Upper case in English, like LOG MIGRAINE."
+  },
+  "quickLogCheckedIn": "No migraine today",
+  "@quickLogCheckedIn": {
+    "description": "Shown once today is checked in as migraine-free."
+  },
+  "quickLogAddDetails": "Add details",
+  "@quickLogAddDetails": {
+    "description": "Button: add optional details (sleep, stress...) to today's check-in."
+  },
+  "quickLogInProgress": "Migraine in progress",
+  "@quickLogInProgress": {
+    "description": "Heading while a migraine is being timed."
+  },
+  "quickLogEnded": "MIGRAINE ENDED",
+  "@quickLogEnded": {
+    "description": "Button: the migraine is over; stop the timer. Upper case in English."
+  },
+  "quickLogMoreDetails": "Add more details",
+  "@quickLogMoreDetails": {
+    "description": "Button: open the full entry to add details."
   }
 }
