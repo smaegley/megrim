@@ -1881,5 +1881,929 @@
         "type": "int"
       }
     }
+  },
+  "reportTitle": "Migraine report",
+  "@reportTitle": {
+    "description": "Title of the printable PDF report a patient can give their doctor."
+  },
+  "reportEntryCount": "{count, plural, =1{1 entry} other{{count} entries}}",
+  "@reportEntryCount": {
+    "description": "Report subtitle: how many entries (logged migraine attacks) the report covers.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDateRange": "{from} to {to}",
+  "@reportDateRange": {
+    "description": "Report subtitle: the dates of the first and last entry.",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "5 Jan 2024"
+      },
+      "to": {
+        "type": "String",
+        "example": "1 Jun 2026"
+      }
+    }
+  },
+  "reportGenerated": "generated {date}",
+  "@reportGenerated": {
+    "description": "Report subtitle: the day the report was made. Lowercase in English: it follows a '·' separator.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "5 Oct 2026"
+      }
+    }
+  },
+  "reportAppVersion": "Megrim {version}",
+  "@reportAppVersion": {
+    "description": "Report subtitle: the app name and version.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.9"
+      }
+    }
+  },
+  "reportStatEntries": "Entries",
+  "@reportStatEntries": {
+    "description": "Report summary tile: number of logged attacks."
+  },
+  "reportStatYearsTracked": "Years tracked",
+  "@reportStatYearsTracked": {
+    "description": "Report summary tile."
+  },
+  "reportStatAvgSeverity": "Avg severity",
+  "@reportStatAvgSeverity": {
+    "description": "Report summary tile: average pain severity (1-10). Short: the tile is narrow."
+  },
+  "reportStatAvgDuration": "Avg duration",
+  "@reportStatAvgDuration": {
+    "description": "Report summary tile: average attack length. Short."
+  },
+  "reportStatAvgInterval": "Avg interval",
+  "@reportStatAvgInterval": {
+    "description": "Report summary tile: average time between attacks. Short."
+  },
+  "reportStatPerYear": "Per year",
+  "@reportStatPerYear": {
+    "description": "Report summary tile: attacks per year."
+  },
+  "reportStatMigraineDays30": "Migraine days, last 30 d",
+  "@reportStatMigraineDays30": {
+    "description": "Report summary tile: days with a migraine in the last 30 days. 'd' is short for days; keep it short."
+  },
+  "reportSeverityOutOf10": "{value}/10",
+  "@reportSeverityOutOf10": {
+    "description": "Average severity on a 1-10 scale.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "6.2"
+      }
+    }
+  },
+  "reportHoursShort": "{value}h",
+  "@reportHoursShort": {
+    "description": "A length in hours, very short form: '3.5h'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "3.5"
+      }
+    }
+  },
+  "reportDaysShort": "{value}d",
+  "@reportDaysShort": {
+    "description": "A length in days, very short form: '12.3d'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "12.3"
+      }
+    }
+  },
+  "reportMinutesShort": "{value}m",
+  "@reportMinutesShort": {
+    "description": "A length in minutes, very short form: '45m'.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDaysHoursShort": "{days}d {hours}h",
+  "@reportDaysHoursShort": {
+    "description": "A length in days and hours, very short form: '2d 4h'.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "reportChartMonthly": "Migraine days per month",
+  "@reportChartMonthly": {
+    "description": "Report chart title."
+  },
+  "reportMonthlyNote": "Days with a migraine, not entries; a multi-day migraine counts each day.",
+  "@reportMonthlyNote": {
+    "description": "Note under the monthly chart."
+  },
+  "reportMonthlyAverage": "Average over the last 3 complete months: {value}.",
+  "@reportMonthlyAverage": {
+    "description": "Note under the monthly chart.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "4.3"
+      }
+    }
+  },
+  "reportMonthlyWithoutHeadache": "{count, plural, =1{Includes 1 day with only attacks without headache.} other{Includes {count} days with only attacks without headache.}}",
+  "@reportMonthlyWithoutHeadache": {
+    "description": "Note under the monthly chart: days whose only attacks had no headache (aura only, vertigo).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportMonthInProgress": "* month in progress.",
+  "@reportMonthInProgress": {
+    "description": "Note under a monthly chart or table: the month marked * isn't finished yet. Keep the '*'."
+  },
+  "reportMonthMarkedInProgress": "{month} *",
+  "@reportMonthMarkedInProgress": {
+    "description": "A month label marked as still in progress.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Oct 2026"
+      }
+    }
+  },
+  "reportChartByYear": "By year",
+  "@reportChartByYear": {
+    "description": "Report chart title: attacks per year."
+  },
+  "reportChartByDayOfWeek": "By day of week",
+  "@reportChartByDayOfWeek": {
+    "description": "Report chart title."
+  },
+  "reportChartBySeason": "By season",
+  "@reportChartBySeason": {
+    "description": "Report chart title."
+  },
+  "reportChartByTimeOfDay": "By time of day",
+  "@reportChartByTimeOfDay": {
+    "description": "Report chart title."
+  },
+  "reportChartByDaylight": "By daylight hours",
+  "@reportChartByDaylight": {
+    "description": "Report chart title: hours of daylight on the day."
+  },
+  "reportChartPressure": "Pressure change (24h)",
+  "@reportChartPressure": {
+    "description": "Report chart title: change in barometric pressure over 24 hours."
+  },
+  "reportChartPressureOff": "Weather enrichment is off, so this is empty.",
+  "@reportChartPressureOff": {
+    "description": "Note under the pressure chart when the weather lookup is turned off."
+  },
+  "reportChartByMoon": "By moon phase",
+  "@reportChartByMoon": {
+    "description": "Report chart title."
+  },
+  "reportAwayAllHome": "{count, plural, =1{All 1 located entry was within {km} km of home.} other{All {count} located entries were within {km} km of home.}}",
+  "@reportAwayAllHome": {
+    "description": "Report: none of the entries with a location was far from home.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "reportAwaySome": "{away} of {located} located entries ({pct}%) were recorded more than {km} km from home.",
+  "@reportAwaySome": {
+    "description": "Report: share of entries logged away from home.",
+    "placeholders": {
+      "away": {
+        "type": "int"
+      },
+      "located": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "reportAwaySomePlaces": "{away} of {located} located entries ({pct}%) were recorded more than {km} km from home: {places}.",
+  "@reportAwaySomePlaces": {
+    "description": "Report: share of entries logged away from home, with up to five places and their counts.",
+    "placeholders": {
+      "away": {
+        "type": "int"
+      },
+      "located": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "km": {
+        "type": "int"
+      },
+      "places": {
+        "type": "String",
+        "example": "Paris (2), Lyon (1)"
+      }
+    }
+  },
+  "reportAwayPlace": "{place} ({count})",
+  "@reportAwayPlace": {
+    "description": "One place in the away-from-home list, with its number of entries.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Paris"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDayCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@reportDayCount": {
+    "description": "A number of days, used inside other report sentences.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportImpact": "Impact, last 30 days: {unable} unable to function, {reduced} with reduced function (impact recorded on {recorded} of {migraineDays} migraine days).",
+  "@reportImpact": {
+    "description": "Report: days by impact on daily life. {unable} and {reduced} are '3 days' style counts.",
+    "placeholders": {
+      "unable": {
+        "type": "String",
+        "example": "3 days"
+      },
+      "reduced": {
+        "type": "String",
+        "example": "1 day"
+      },
+      "recorded": {
+        "type": "int"
+      },
+      "migraineDays": {
+        "type": "int"
+      }
+    }
+  },
+  "reportImpactAverage": "Monthly average over the last 3 complete months: {unable} unable, {reduced} reduced.",
+  "@reportImpactAverage": {
+    "description": "Report: follows the impact sentence.",
+    "placeholders": {
+      "unable": {
+        "type": "String",
+        "example": "2.3"
+      },
+      "reduced": {
+        "type": "String",
+        "example": "1.0"
+      }
+    }
+  },
+  "reportWithoutHeadacheSummary": "{events} of {total} entries ({pct}%) were recorded without headache: {aura} with aura, {vertigo} with vertigo or dizziness, {other} other.",
+  "@reportWithoutHeadacheSummary": {
+    "description": "[medical] Report: attacks recorded with no headache, by kind.",
+    "placeholders": {
+      "events": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "aura": {
+        "type": "int"
+      },
+      "vertigo": {
+        "type": "int"
+      },
+      "other": {
+        "type": "int"
+      }
+    }
+  },
+  "reportWithoutHeadacheMedian": "Median length {hours}h.",
+  "@reportWithoutHeadacheMedian": {
+    "description": "Report: follows the attacks-without-headache summary.",
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "5.5"
+      }
+    }
+  },
+  "reportWithAura": "With aura",
+  "@reportWithAura": {
+    "description": "[medical] Bar label: attacks without headache that had an aura."
+  },
+  "reportWithVertigo": "With vertigo or dizziness",
+  "@reportWithVertigo": {
+    "description": "[medical] Bar label: attacks without headache with vertigo or dizziness."
+  },
+  "reportOther": "Other",
+  "@reportOther": {
+    "description": "Bar label: attacks without headache of any other kind."
+  },
+  "reportMedDaysSummary": "Days with acute medication, last 30 days: {days}.",
+  "@reportMedDaysSummary": {
+    "description": "[medical] Report: days on which an acute (as-needed) medication was taken.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "8 days"
+      }
+    }
+  },
+  "reportMedDaysSummaryByClass": "Days with acute medication, last 30 days: {days} ({breakdown}).",
+  "@reportMedDaysSummaryByClass": {
+    "description": "[medical] Report: as above, with days per medication class.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "8 days"
+      },
+      "breakdown": {
+        "type": "String",
+        "example": "Triptan 6, Simple pain reliever 3"
+      }
+    }
+  },
+  "reportMedClassDays": "{medClass} {count}",
+  "@reportMedClassDays": {
+    "description": "One class in the breakdown above: class name and its number of days.",
+    "placeholders": {
+      "medClass": {
+        "type": "String",
+        "example": "Triptan"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportColumnMonth": "Month",
+  "@reportColumnMonth": {
+    "description": "Report table column header."
+  },
+  "reportColumnAny": "Any",
+  "@reportColumnAny": {
+    "description": "[medical] Report table column header: days with any acute medication. Short. Referred to in reportMedUnclassified."
+  },
+  "reportOveruseMonthReason": "{month}: {reason}",
+  "@reportOveruseMonthReason": {
+    "description": "[medical] One month that reached the medication reference level, with its reason.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Jul 2026"
+      },
+      "reason": {
+        "type": "String",
+        "example": "Triptan on 10 days (level 10)"
+      }
+    }
+  },
+  "reportMedUnclassified": "No class set for {medications}: counted in \"Any\" but not checked against the reference levels.",
+  "@reportMedUnclassified": {
+    "description": "[medical] Report: medications without a class. \"Any\" is the column header reportColumnAny; use the same word.",
+    "placeholders": {
+      "medications": {
+        "type": "String",
+        "example": "Ibuprofen, Aspirin"
+      }
+    }
+  },
+  "reportPreventiveSince": "{medication}: since {start}",
+  "@reportPreventiveSince": {
+    "description": "[medical] Report: a preventive medication still taken. {medication} is its name and dose as the user typed them.",
+    "placeholders": {
+      "medication": {
+        "type": "String",
+        "example": "Propranolol 40 mg"
+      },
+      "start": {
+        "type": "String",
+        "example": "4 Aug 2026"
+      }
+    }
+  },
+  "reportPreventiveRange": "{medication}: {start} to {stop}",
+  "@reportPreventiveRange": {
+    "description": "[medical] Report: a preventive medication taken from one date to another.",
+    "placeholders": {
+      "medication": {
+        "type": "String",
+        "example": "Topiramate 50 mg"
+      },
+      "start": {
+        "type": "String",
+        "example": "1 Jun 2026"
+      },
+      "stop": {
+        "type": "String",
+        "example": "20 Aug 2026"
+      }
+    }
+  },
+  "reportPreventiveNotes": "{line}. {notes}",
+  "@reportPreventiveNotes": {
+    "description": "Report: a preventive medication line followed by the user's notes on it.",
+    "placeholders": {
+      "line": {
+        "type": "String",
+        "example": "Propranolol 40 mg: since 4 Aug 2026"
+      },
+      "notes": {
+        "type": "String",
+        "example": "for prevention"
+      }
+    }
+  },
+  "reportTracked": "Days tracked, last 30 days: {tracked} ({migraine} with a migraine, {clear} checked in as clear, {notRecorded} not recorded). Since the first check-in on {firstCheckin}: {since} of {total} days.",
+  "@reportTracked": {
+    "description": "Report: how many days were recorded. A 'check-in' is logging a day as migraine-free ('clear').",
+    "placeholders": {
+      "tracked": {
+        "type": "int"
+      },
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      },
+      "notRecorded": {
+        "type": "int"
+      },
+      "firstCheckin": {
+        "type": "String",
+        "example": "30 Sep 2026"
+      },
+      "since": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reportTrackedWindow": "{migraine} migraine days and {clear} clear days since the first check-in ({tracked} tracked days).",
+  "@reportTrackedWindow": {
+    "description": "Report: what Migraine days vs clear days is based on.",
+    "placeholders": {
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      },
+      "tracked": {
+        "type": "int"
+      }
+    }
+  },
+  "reportSeverityNone": "none",
+  "@reportSeverityNone": {
+    "description": "Report entries table, Sev column: an attack without headache has no pain severity. Very short."
+  },
+  "reportDurationOngoing": "ongoing",
+  "@reportDurationOngoing": {
+    "description": "Report entries table, Duration column: the attack hasn't ended. Short."
+  },
+  "reportYes": "yes",
+  "@reportYes": {
+    "description": "Report entries table, Aura column. Short."
+  },
+  "reportNo": "no",
+  "@reportNo": {
+    "description": "Report entries table, Aura column. Short."
+  },
+  "reportReliefLine": "Relief: {relief}",
+  "@reportReliefLine": {
+    "description": "Report entries table, Meds column: the non-drug relief tried, on its own line.",
+    "placeholders": {
+      "relief": {
+        "type": "String",
+        "example": "Dark room, Cold pack"
+      }
+    }
+  },
+  "reportFootnotePressure": "The barometric-pressure factor is not shown: it needs a cached pressure history for your home location, which the app builds the first time Analytics runs online with weather enrichment on. Its absence here means \"not available\", not \"no effect\".",
+  "@reportFootnotePressure": {
+    "description": "Report footnote."
+  },
+  "reportFootnoteFont": "Some characters in your entries could not be drawn with this report's font and appear as \"?\". The app itself still holds them correctly, and a JSON export preserves them.",
+  "@reportFootnoteFont": {
+    "description": "Report footnote. Keep the '?'."
+  },
+  "reportFactorsWindow": "{migraineDays} migraine-days over {days} days ({pct}% of days).",
+  "@reportFactorsWindow": {
+    "description": "Report: what Suspected Factors is based on.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      }
+    }
+  },
+  "reportMethods": "Descriptive charts are plain counts of logged entries: a tall bar means more migraines were logged there, nothing more. Suspected factors use the unit of a migraine-day, and every day between the first and last migraine is a baseline day. For each bucket a 2x2 table is built and a Haldane-Anscombe corrected odds ratio computed (0.5 added to every cell). A factor is marked as a headline row only if its bucket covers at least 3 migraine-days and its odds ratio exceeds 1. Moon phase and daylight are computed astronomically from the home location; season is hemisphere-corrected.",
+  "@reportMethods": {
+    "description": "Report 'Methods' section. Statistics terms: 2x2 table, Haldane-Anscombe corrected odds ratio, baseline day."
+  },
+  "reportNoData": "No data.",
+  "@reportNoData": {
+    "description": "Report: shown in place of an empty chart."
+  },
+  "reportColumnTaken": "Taken",
+  "@reportColumnTaken": {
+    "description": "Report table column: times a medication or relief was used."
+  },
+  "reportColumnHelped": "Helped",
+  "@reportColumnHelped": {
+    "description": "Report table column: times it helped."
+  },
+  "reportColumnDidnt": "Didn't",
+  "@reportColumnDidnt": {
+    "description": "Report table column: times it didn't help. Short."
+  },
+  "reportColumnUnknown": "Unknown",
+  "@reportColumnUnknown": {
+    "description": "Report table column: times the outcome wasn't recorded."
+  },
+  "reportColumnHelpedPct": "Helped %",
+  "@reportColumnHelpedPct": {
+    "description": "Report table column: share of recorded outcomes where it helped."
+  },
+  "reportPercent": "{value}%",
+  "@reportPercent": {
+    "description": "A percentage in a report table or sentence. Use the local spacing (42 % in French).",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "42"
+      }
+    }
+  },
+  "reportHeadingSummary": "Summary",
+  "@reportHeadingSummary": {
+    "description": "Report section heading."
+  },
+  "reportHeadingWithoutHeadache": "Attacks without headache",
+  "@reportHeadingWithoutHeadache": {
+    "description": "[medical] Report section heading: migraine attacks with no headache (aura only, vertigo, other)."
+  },
+  "reportWithoutHeadacheNote": "Entries marked as having no headache: aura only, vertigo, or other symptoms with no pain. They count as migraine days above. Severity is not rated for them, so the average severity covers headache attacks only. When both aura and vertigo are recorded, the entry counts as \"with aura\".",
+  "@reportWithoutHeadacheNote": {
+    "description": "[medical] Report note under 'Attacks without headache'."
+  },
+  "reportTheirSymptoms": "Their symptoms",
+  "@reportTheirSymptoms": {
+    "description": "Report sub-heading: symptoms of the attacks without headache."
+  },
+  "reportHeadingPatterns": "Patterns",
+  "@reportHeadingPatterns": {
+    "description": "Report section heading: the descriptive charts."
+  },
+  "reportPatternsNote": "Counts of logged entries. A tall bar means more migraines were logged there, nothing more.",
+  "@reportPatternsNote": {
+    "description": "Report note under 'Patterns'."
+  },
+  "reportHeadingTriggers": "Most-tagged triggers",
+  "@reportHeadingTriggers": {
+    "description": "Report section heading: triggers recorded most often."
+  },
+  "reportTriggersNote": "Self-reported, and recorded only on migraine days — there is no comparison with days you felt well, so these are counts, not correlations.",
+  "@reportTriggersNote": {
+    "description": "Report note under 'Most-tagged triggers'."
+  },
+  "reportHeadingSymptoms": "Symptoms",
+  "@reportHeadingSymptoms": {
+    "description": "Report section heading."
+  },
+  "reportSymptomsNote": "How often each symptom was recorded, across all entries. Entries from before symptoms could be recorded have none.",
+  "@reportSymptomsNote": {
+    "description": "Report note under 'Symptoms'."
+  },
+  "reportHeadingMedDays": "Acute medication days",
+  "@reportHeadingMedDays": {
+    "description": "[medical] Report section heading: days with as-needed (acute) medication."
+  },
+  "reportMedDaysNote": "Distinct days per month with at least one dose; a day with two classes counts once under \"Any\". Reference levels (ICHD-3 8.2): 10 days a month for triptans, ergots, opioids and combination pain relievers; 15 for simple pain relievers; 10 in total for a mix of these. Gepants, ditans and anti-nausea medication are counted but not checked. * month in progress.",
+  "@reportMedDaysNote": {
+    "description": "[medical] Report note under the medication-days table. \"Any\" is the column header reportColumnAny. ICHD-3 8.2 is the headache classification's section on medication overuse. Needs a second reviewer."
+  },
+  "reportHeadingPreventives": "Preventive medications",
+  "@reportHeadingPreventives": {
+    "description": "[medical] Report section heading: medications taken daily to prevent migraines."
+  },
+  "reportHeadingMedications": "Medications",
+  "@reportHeadingMedications": {
+    "description": "Report section heading."
+  },
+  "reportColumnMedication": "Medication",
+  "@reportColumnMedication": {
+    "description": "Report table column header."
+  },
+  "reportMedicationsNote": "\"Helped %\" excludes unknowns. Personal observation, not a clinical trial.",
+  "@reportMedicationsNote": {
+    "description": "Report note under 'Medications'. \"Helped %\" is the column reportColumnHelpedPct."
+  },
+  "reportHeadingRelief": "Relief tried",
+  "@reportHeadingRelief": {
+    "description": "Report section heading: non-drug relief (dark room, cold pack…)."
+  },
+  "reportColumnRelief": "Relief",
+  "@reportColumnRelief": {
+    "description": "Report table column header: a non-drug relief method."
+  },
+  "reportReliefNote": "Non-drug relief recorded on entries. \"Helped %\" excludes unknowns.",
+  "@reportReliefNote": {
+    "description": "Report note under 'Relief tried'."
+  },
+  "reportHeadingFactors": "Suspected factors",
+  "@reportHeadingFactors": {
+    "description": "Report section heading: factors more common on migraine days."
+  },
+  "reportFactorsReadFirst": "Read this first. These are associations within one person's own log, computed over migraine-days. Association is not causation; small samples are noisy, and because many factors are tested at once some will look elevated by chance. Treat them as questions to discuss, not findings.",
+  "@reportFactorsReadFirst": {
+    "description": "[medical] Report box at the top of 'Suspected factors'."
+  },
+  "reportNotEnoughData": "Not enough data yet.",
+  "@reportNotEnoughData": {
+    "description": "Report: shown when a section has too little data."
+  },
+  "reportColumnBucket": "Bucket",
+  "@reportColumnBucket": {
+    "description": "Report table column: the value range or category of a factor."
+  },
+  "reportColumnMigraineDays": "Migraine-days",
+  "@reportColumnMigraineDays": {
+    "description": "Report table column."
+  },
+  "reportColumnAllDays": "All days",
+  "@reportColumnAllDays": {
+    "description": "Report table column."
+  },
+  "reportColumnRate": "Rate",
+  "@reportColumnRate": {
+    "description": "Report table column: share of days that were migraine days."
+  },
+  "reportColumnOddsRatio": "Odds ratio",
+  "@reportColumnOddsRatio": {
+    "description": "Report table column (statistics term)."
+  },
+  "reportFactorsStarNote": "* marks the rows the app highlights: at least 3 migraine-days in the bucket and an odds ratio above 1.",
+  "@reportFactorsStarNote": {
+    "description": "Report note under the factor tables. Keep the '*'."
+  },
+  "reportCaveatItem": "- {caveat}",
+  "@reportCaveatItem": {
+    "description": "One caveat in a list under a factor table.",
+    "placeholders": {
+      "caveat": {
+        "type": "String"
+      }
+    }
+  },
+  "reportHeadingTracked": "Migraine days vs clear days",
+  "@reportHeadingTracked": {
+    "description": "Report section heading: comparing days a migraine started with days checked in as migraine-free."
+  },
+  "reportTrackedNote": "Sleep, stress, triggers and foods as recorded on days a migraine started, compared with days checked in as having no migraine. Only tracked days count, and each factor only the days it was recorded on. The same caution applies as above.",
+  "@reportTrackedNote": {
+    "description": "Report note under 'Migraine days vs clear days'."
+  },
+  "reportColumnRecorded": "Recorded",
+  "@reportColumnRecorded": {
+    "description": "Report table column: what was recorded (a sleep range, a trigger…)."
+  },
+  "reportColumnTrackedDays": "Tracked days",
+  "@reportColumnTrackedDays": {
+    "description": "Report table column."
+  },
+  "reportHeadingEntries": "Entries",
+  "@reportHeadingEntries": {
+    "description": "Report section heading: the list of logged attacks."
+  },
+  "reportEntriesNote": "Newest first. Times are shown in the zone each entry was recorded in. Sev \"none\": an attack without headache.",
+  "@reportEntriesNote": {
+    "description": "Report note above the entries table. \"none\" is reportSeverityNone; 'Sev' is reportColumnSev."
+  },
+  "reportColumnDate": "Date",
+  "@reportColumnDate": {
+    "description": "Report entries table column. Narrow."
+  },
+  "reportColumnTime": "Time",
+  "@reportColumnTime": {
+    "description": "Report entries table column. Narrow."
+  },
+  "reportColumnSev": "Sev",
+  "@reportColumnSev": {
+    "description": "Report entries table column: severity, abbreviated. Very narrow."
+  },
+  "reportColumnDuration": "Duration",
+  "@reportColumnDuration": {
+    "description": "Report entries table column. Narrow."
+  },
+  "reportColumnAura": "Aura",
+  "@reportColumnAura": {
+    "description": "[medical] Report entries table column. Very narrow."
+  },
+  "reportColumnHead": "Head",
+  "@reportColumnHead": {
+    "description": "Report entries table column: where on the head the pain was. Narrow."
+  },
+  "reportColumnSymptoms": "Symptoms",
+  "@reportColumnSymptoms": {
+    "description": "Report entries table column."
+  },
+  "reportColumnTriggers": "Triggers",
+  "@reportColumnTriggers": {
+    "description": "Report entries table column."
+  },
+  "reportColumnMeds": "Meds",
+  "@reportColumnMeds": {
+    "description": "Report entries table column: medications, abbreviated. Narrow."
+  },
+  "reportColumnNotes": "Notes",
+  "@reportColumnNotes": {
+    "description": "Report entries table column."
+  },
+  "reportHeadingMethods": "Methods",
+  "@reportHeadingMethods": {
+    "description": "Report section heading."
+  },
+  "reportHeadingDisclaimer": "Disclaimer",
+  "@reportHeadingDisclaimer": {
+    "description": "[legal] Report section heading."
+  },
+  "reportPageOf": "Page {page} of {pages}",
+  "@reportPageOf": {
+    "description": "Report page footer.",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
+  },
+  "notifReminderTitle": "Megrim",
+  "@notifReminderTitle": {
+    "description": "Title of the daily reminder notification: the app's name."
+  },
+  "notifReminderBody": "How was today?",
+  "@notifReminderBody": {
+    "description": "Text of the daily reminder notification. Kept generic on purpose: it may be seen by others."
+  },
+  "notifActionNoMigraine": "No migraine today",
+  "@notifActionNoMigraine": {
+    "description": "Button on the daily reminder: record today as migraine-free."
+  },
+  "notifActionLog": "Log",
+  "@notifActionLog": {
+    "description": "Button on the daily reminder: open the app to log a migraine. Short."
+  },
+  "notifReminderChannel": "Daily reminder",
+  "@notifReminderChannel": {
+    "description": "Android notification channel name, shown in the phone's notification settings."
+  },
+  "notifReminderChannelDescription": "The once-a-day reminder to log the day",
+  "@notifReminderChannelDescription": {
+    "description": "Android notification channel description, shown in the phone's notification settings."
+  },
+  "notifOngoingTitle": "Migraine in progress",
+  "@notifOngoingTitle": {
+    "description": "Title of the ongoing notification shown while a migraine is running (with a clock); also its channel name."
+  },
+  "notifOngoingChannelDescription": "Shown while a migraine is running, with a clock and End",
+  "@notifOngoingChannelDescription": {
+    "description": "Android notification channel description. 'End' is the button notifActionEnd."
+  },
+  "notifActionEnd": "End",
+  "@notifActionEnd": {
+    "description": "Button on the 'Migraine in progress' notification: end the migraine now. Short."
+  },
+  "appLockUnlockReason": "Unlock Megrim",
+  "@appLockUnlockReason": {
+    "description": "Shown by the phone's own unlock prompt (fingerprint, face, PIN) when the app is locked."
+  },
+  "appLockConfirmTurnOn": "Confirm it's you to turn on app lock",
+  "@appLockConfirmTurnOn": {
+    "description": "Shown by the phone's unlock prompt when turning app lock on."
+  },
+  "appLockConfirmTurnOff": "Confirm it's you to turn off app lock",
+  "@appLockConfirmTurnOff": {
+    "description": "Shown by the phone's unlock prompt when turning app lock off."
+  },
+  "appLockLockedOut": "Too many attempts. Wait a moment, then try again.",
+  "@appLockLockedOut": {
+    "description": "Lock screen: the phone refused after too many failed unlock attempts."
+  },
+  "appLockError": "Couldn't ask for your phone's unlock. Try again.",
+  "@appLockError": {
+    "description": "Lock screen: the unlock prompt could not be shown."
+  },
+  "appLockTurnedOffTitle": "App lock turned off",
+  "@appLockTurnedOffTitle": {
+    "description": "Lock screen title when the phone no longer has a screen lock."
+  },
+  "appLockTurnedOffBody": "Your phone no longer has a screen lock, so Megrim can't check it's you. App lock has been turned off. Set a screen lock in your phone's settings, then turn app lock back on in Settings › Privacy.",
+  "@appLockTurnedOffBody": {
+    "description": "Lock screen text. 'Settings › Privacy' is where the option is in the app; keep the '›'."
+  },
+  "appLockContinue": "Continue",
+  "@appLockContinue": {
+    "description": "Button: dismiss the 'App lock turned off' message."
+  },
+  "appLockLocked": "Megrim is locked",
+  "@appLockLocked": {
+    "description": "Lock screen title."
+  },
+  "appLockUnlock": "Unlock",
+  "@appLockUnlock": {
+    "description": "Lock screen button: show the phone's unlock prompt."
+  },
+  "importErrorNotUtf8": "File is not valid UTF-8 text.",
+  "@importErrorNotUtf8": {
+    "description": "Import error: the chosen file isn't text."
+  },
+  "importErrorNotJson": "File is not valid JSON.",
+  "@importErrorNotJson": {
+    "description": "Import error."
+  },
+  "importErrorStructure": "Unexpected file structure.",
+  "@importErrorStructure": {
+    "description": "Import error: the file is JSON but not shaped like an export."
+  },
+  "importErrorNotMegrim": "Not a Megrim export file.",
+  "@importErrorNotMegrim": {
+    "description": "Import error."
+  },
+  "importErrorVersion": "Unsupported export version: {version} (this app supports {supported}).",
+  "@importErrorVersion": {
+    "description": "Import error: the file comes from a newer (or unknown) export format.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "3"
+      },
+      "supported": {
+        "type": "int"
+      }
+    }
+  },
+  "importErrorEvent": "Event \"{id}\" is malformed ({detail}). Nothing was imported.",
+  "@importErrorEvent": {
+    "description": "Import error: one entry in the file is broken. {detail} is a technical message, in English.",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
   }
 }

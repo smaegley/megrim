@@ -309,7 +309,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
                 const SizedBox(height: 24),
                 Center(
-                  child: Text(kWeatherAttribution,
+                  child: Text(context.l10n.legalWeatherAttribution,
                       style: Theme.of(context).textTheme.bodySmall),
                 ),
               ],

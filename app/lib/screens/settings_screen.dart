@@ -456,7 +456,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// a PDF can't be imported back, the same reason CSV doesn't.
   Future<void> _exportReport(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
-    final l = context.l10n;
+    final l = context.l10n; // the report follows the app's language (D1)
     messenger.showSnackBar(
         SnackBar(content: Text(l.settingsBuildingReport), duration: const Duration(seconds: 2)));
     try {
@@ -465,8 +465,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // Exact glyph coverage of the embedded font, so anything it can't draw becomes "?" rather
       // than silently disappearing.
       final coverage = TtfParser(regular).charToGlyphIndexMap;
-      final content = await repo.reportContent(canRender: coverage.containsKey);
-      final bytes = await renderReportPdf(content, regular: regular, bold: bold);
+      final content = await repo.reportContent(canRender: coverage.containsKey, l10n: l);
+      final bytes = await renderReportPdf(content, regular: regular, bold: bold, l10n: l);
       if (!context.mounted) return;
       await _exportBytes(context, bytes, ExportServiceFilename.pdf());
     } catch (e) {
@@ -608,7 +608,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SnackBar(content: Text(l.settingsImported(r.imported, r.skipped))));
       await repo.processEnrichmentQueue();
     } on ImportException catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(l.settingsImportFailed(e.message))));
+      messenger.showSnackBar(SnackBar(content: Text(l.settingsImportFailed(e.messageIn(l)))));
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(l.settingsImportFailed('$e'))));
     }

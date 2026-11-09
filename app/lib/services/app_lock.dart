@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:local_auth/local_auth.dart';
 
+import '../l10n/device_l10n.dart';
 import '../models/app_lock_timeout.dart';
 import '../repositories/megrim_repository.dart';
 
@@ -119,7 +120,8 @@ class AppLockController extends ChangeNotifier with WidgetsBindingObserver {
        window = window ?? PlatformWindowSecurity(),
        _now = now ?? DateTime.now;
 
-  static const String unlockReason = 'Unlock Megrim';
+  /// Shown by the phone's own unlock prompt, in the language the app is shown in.
+  static String get unlockReason => deviceL10n().appLockUnlockReason;
 
   bool _loaded = false;
   bool _enabled = false;
@@ -237,7 +239,7 @@ class AppLockController extends ChangeNotifier with WidgetsBindingObserver {
     }
     final outcome = await whileExternal(
       () => authenticator.authenticate(
-        on ? 'Confirm it\'s you to turn on app lock' : 'Confirm it\'s you to turn off app lock',
+        on ? deviceL10n().appLockConfirmTurnOn : deviceL10n().appLockConfirmTurnOff,
       ),
     );
     if (outcome != AuthOutcome.success) return outcome;

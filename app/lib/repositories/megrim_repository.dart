@@ -14,6 +14,7 @@ import '../models/event_time.dart';
 import '../models/home_location.dart';
 import '../models/json_fields.dart';
 import '../models/medications.dart' show isoDay, parseIsoDay;
+import '../l10n/l10n.dart';
 import '../legal.dart' show kAppVersion;
 import '../services/analytics_export.dart';
 import '../services/report_content.dart';
@@ -481,9 +482,11 @@ class MegrimRepository {
   ///
   /// [canRender] reports whether the report's font can draw a rune; unsupported ones become "?"
   /// instead of vanishing. Pass null to skip substitution (tests that don't care about fonts).
+  /// [l10n] is the report's language (the app's own); English when null.
   Future<ReportContent> reportContent({
     DateTime? now,
     bool Function(int rune)? canRender,
+    AppLocalizations? l10n,
   }) async {
     final baselineService = PressureBaselineService(db: db);
     try {
@@ -501,6 +504,7 @@ class MegrimRepository {
         homeLabel: home?.label,
         weatherEnabled: await weatherEnrichmentEnabled,
         canRender: canRender,
+        l10n: l10n,
       );
     } finally {
       baselineService.close();

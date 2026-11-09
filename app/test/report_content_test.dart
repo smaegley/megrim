@@ -3,6 +3,8 @@ import 'package:megrim/analytics/checkins.dart';
 import 'package:megrim/analytics/correlations.dart';
 import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
+import 'package:megrim/l10n/formats.dart';
+import 'package:megrim/l10n/gen/app_localizations_en.dart';
 import 'package:megrim/l10n/l10n.dart';
 import 'package:megrim/models/json_fields.dart';
 import 'package:megrim/models/med_entry.dart';
@@ -40,6 +42,7 @@ ReportContent build({
   List<MigraineEvent> events = const [],
   String? homeLabel,
   bool Function(int)? canRender,
+  AppLocalizations? l10n,
 }) =>
     buildReportContent(
       // By default the dashboard of the same events, as the repository builds it.
@@ -54,9 +57,40 @@ ReportContent build({
       now: DateTime(2026, 10, 5),
       homeLabel: homeLabel,
       canRender: canRender,
+      l10n: l10n,
     );
 
+/// Stands in for a translation: two messages marked, so a test can see the report uses the
+/// language it is given.
+class _MarkedL10n extends AppLocalizationsEn {
+  @override
+  String get reportTitle => '[Migraine report]';
+  @override
+  String get dataSeasonWinter => '[Winter]';
+}
+
+/// Dates as the report formats them in the test locale (D7: dates follow the locale).
+String day(DateTime d) => Formats.forL10n(englishL10n).date(d);
+
 void main() {
+  test('the report is in the language it is given, stored values included', () {
+    final c = build(
+      events: [
+        MigraineEvent(
+          id: 'w',
+          startedAt: DateTime(2026, 1, 10, 9),
+          createdAt: DateTime(2026, 1, 10),
+          updatedAt: DateTime(2026, 1, 10),
+        ),
+      ],
+      l10n: _MarkedL10n(),
+    );
+    expect(c.title, '[Migraine report]');
+    final season = c.charts.firstWhere((ch) => ch.title == englishL10n.reportChartBySeason);
+    expect(season.bars.map((b) => b.label), contains('[Winter]'));
+    expect(build().title, 'Migraine report');
+  });
+
   group('sanitiseForFont', () {
     bool latinOnly(int rune) => rune < 0x250;
 
@@ -92,8 +126,8 @@ void main() {
       );
       expect(c.subtitle, contains('55 entries'));
       expect(c.subtitle, contains('Boulder, Colorado'));
-      expect(c.subtitle, contains('5 Jan 2024 to 1 Jun 2026'));
-      expect(c.subtitle, contains('generated 5 Oct 2026'));
+      expect(c.subtitle, contains('${day(DateTime(2024, 1, 5))} to ${day(DateTime(2026, 6, 1))}'));
+      expect(c.subtitle, contains('generated ${day(DateTime(2026, 10, 5))}'));
       expect(c.subtitle, contains('Megrim 1.0.6'));
     });
 
@@ -312,7 +346,7 @@ void main() {
 
     test('preventives and relief are listed', () {
       final c = withMeds();
-      expect(c.preventives, ['Propranolol 40 mg: since 4 Aug 2026. for prevention']);
+      expect(c.preventives, ['Propranolol 40 mg: since ${day(DateTime(2026, 8, 4))}. for prevention']);
       expect(c.relief.single.name, 'Dark room');
       expect(c.relief.single.helpedPct, 0);
       expect(c.medications.first.name, 'Suma');
@@ -352,7 +386,7 @@ void main() {
       );
       final c = build(dash: dash);
       expect(c.tracked, startsWith('Days tracked, last 30 days: 3 (1 with a migraine, 2 checked '
-          'in as clear, 27 not recorded). Since the first check-in on 30 Sep 2026: 3 of 6 days.'));
+          'in as clear, 27 not recorded). Since the first check-in on ${day(DateTime(2026, 9, 30))}: 3 of 6 days.'));
       expect(c.trackedFactors!.available, isFalse);
       expect(c.trackedFactors!.reason, contains('So far: 3 tracked, 1 migraine, 2 clear'));
     });

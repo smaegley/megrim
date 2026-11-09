@@ -112,6 +112,15 @@ void main() {
       await n.sync();
     }
 
+    test('a change of the phone\'s language rebuilds the reminders, whose text is baked in',
+        () async {
+      await n.setReminder(eight);
+      backend.reminders = null; // as if nothing were scheduled yet
+      n.didChangeLocales(const [Locale('fr')]);
+      await n.sync();
+      expect(backend.reminders, hasLength(kReminderDaysAhead));
+    });
+
     test('off by default: nothing scheduled or posted, no permission asked', () async {
       await settle();
       expect(backend.reminders, isNull);
