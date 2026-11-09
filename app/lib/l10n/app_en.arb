@@ -1020,5 +1020,96 @@
   "checkinTriggers": "Possible triggers",
   "@checkinTriggers": {
     "description": "Section heading on a migraine-free day: things that might have triggered a migraine, noted for comparison."
+  },
+  "historyTitle": "History",
+  "@historyTitle": {
+    "description": "Screen title and bottom tab: the list and calendar of past migraines."
+  },
+  "historyAddPast": "Add past entry",
+  "@historyAddPast": {
+    "description": "Button: log a migraine that happened earlier."
+  },
+  "historyAddPastTooltip": "Log a migraine that happened earlier",
+  "@historyAddPastTooltip": {
+    "description": "Tooltip on the 'Add past entry' button."
+  },
+  "historyViewList": "List",
+  "@historyViewList": {
+    "description": "Toggle between the list and calendar views: the list."
+  },
+  "historyViewCalendar": "Calendar",
+  "@historyViewCalendar": {
+    "description": "Toggle between the list and calendar views: the calendar."
+  },
+  "historyEmpty": "No migraines logged yet.",
+  "@historyEmpty": {
+    "description": "Shown in the list view when nothing has been logged."
+  },
+  "historySeverity": "Severity {value}/10",
+  "@historySeverity": {
+    "description": "[medical] A logged migraine's pain severity, in a list row.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "historySpanDays": "{count, plural, =1{1 day} other{{count} days}}",
+  "@historySpanDays": {
+    "description": "How many calendar days a migraine covered, in a list row (only shown for 2 or more).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "historyOngoing": "ongoing",
+  "@historyOngoing": {
+    "description": "A migraine with no end time yet, in a list row. Lowercase in English."
+  },
+  "historyEntriesOn": "{count, plural, =1{1 entry on {date}} other{{count} entries on {date}}}",
+  "@historyEntriesOn": {
+    "description": "Heading of the sheet listing a day's entries when it has several.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String",
+        "example": "Mon, 9 Nov 2026"
+      }
+    }
+  },
+  "historyNoMigraineThisDay": "No migraine this day",
+  "@historyNoMigraineThisDay": {
+    "description": "Choice for an empty calendar day: record it as migraine-free (a check-in)."
+  },
+  "historyCheckinDetails": "No migraine: details",
+  "@historyCheckinDetails": {
+    "description": "Choice for a checked-in day: open its optional details."
+  },
+  "historyCheckinDetailsHint": "Sleep, stress, triggers and foods",
+  "@historyCheckinDetailsHint": {
+    "description": "Under 'No migraine: details': what can be added."
+  },
+  "historyRemoveCheckin": "Remove the check-in",
+  "@historyRemoveCheckin": {
+    "description": "Choice for a checked-in day: remove the 'No migraine' check-in."
+  },
+  "historyLogOnDay": "Log a migraine on this day",
+  "@historyLogOnDay": {
+    "description": "Choice for a calendar day: add a migraine entry on that day."
+  },
+  "historyMarkedClear": "Marked as a day without migraine",
+  "@historyMarkedClear": {
+    "description": "Snack bar after a calendar day was checked in as migraine-free."
+  },
+  "historyCalendarEmpty": "No migraines logged yet — tap a date below to add one.",
+  "@historyCalendarEmpty": {
+    "description": "Shown above the calendar when nothing has been logged."
+  },
+  "historyCheckinMark": "no migraine",
+  "@historyCheckinMark": {
+    "description": "Screen-reader label for the tick on a calendar day checked in as migraine-free. Lowercase in English."
   }
 }

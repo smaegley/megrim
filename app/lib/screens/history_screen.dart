@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../database/database.dart';
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import '../models/attack_details.dart';
 import '../models/event_time.dart';
 import '../models/medications.dart' show isoDay;
 import '../repositories/megrim_repository.dart';
 import '../widgets/severity_badge.dart';
-import '../l10n/l10n.dart';
 import 'checkin_screen.dart';
 import 'event_detail_screen.dart';
 
@@ -51,13 +52,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('History')),
+      appBar: AppBar(title: Text(l.historyTitle)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addManual,
         icon: const Icon(Icons.add),
-        label: const Text('Add past entry'),
-        tooltip: 'Log a migraine that happened earlier',
+        label: Text(l.historyAddPast),
+        tooltip: l.historyAddPastTooltip,
       ),
       body: Column(
         children: [
@@ -66,16 +68,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
             child: SizedBox(
               width: double.infinity,
               child: SegmentedButton<_HistoryView>(
-                segments: const [
+                segments: [
                   ButtonSegment(
                     value: _HistoryView.list,
-                    icon: Icon(Icons.list),
-                    label: Text('List'),
+                    icon: const Icon(Icons.list),
+                    label: Text(l.historyViewList),
                   ),
                   ButtonSegment(
                     value: _HistoryView.calendar,
-                    icon: Icon(Icons.calendar_month),
-                    label: Text('Calendar'),
+                    icon: const Icon(Icons.calendar_month),
+                    label: Text(l.historyViewCalendar),
                   ),
                 ],
                 selected: {_view},
@@ -95,7 +97,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 // current month's grid (all grey) so a first entry can be created by tapping a
                 // date — the empty state shouldn't disable the tap-to-add flow just introduced.
                 if (events.isEmpty && _view == _HistoryView.list) {
-                  return const Center(child: Text('No migraines logged yet.'));
+                  return Center(child: Text(l.historyEmpty));
                 }
                 return _view == _HistoryView.calendar
                     ? StreamBuilder<Set<String>>(
@@ -117,7 +119,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Widget _listView(List<MigraineEvent> events) {
-    final df = DateFormat('EEE d MMM yyyy, HH:mm');
+    final fmt = Formats.of(context);
+    final l = context.l10n;
     return ListView.separated(
       // Scroll offset survives a remount (List <-> Calendar toggle) via the route's PageStorage.
       key: const PageStorageKey('history-list'),
@@ -146,13 +149,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
           child: ListTile(
             leading: SeverityBadge(
                 severity: e.severity, noHeadache: !hasHeadache(e.headachePresent)),
-            title: Text(df.format(e.startedWall)),
+            title: Text(fmt.dateWeekdayTime(e.startedWall)),
             subtitle: Text(
               [
-                ?noHeadacheLabel(context.l10n, e),
-                if (e.severity != null) 'Severity ${e.severity}/10',
-                if (spanDays > 1) '$spanDays days',
-                if (e.endedAt == null) 'ongoing',
+                ?noHeadacheLabel(l, e),
+                if (e.severity != null) l.historySeverity(e.severity!),
+                if (spanDays > 1) l.historySpanDays(spanDays),
+                if (e.endedAt == null) l.historyOngoing,
               ].join(' · '),
             ),
             trailing: const Icon(Icons.chevron_right),
@@ -218,8 +221,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Text(
-                '${dayEvents.length} entries on '
-                '${DateFormat('EEE d MMM yyyy').format(localDay)}',
+                context.l10n.historyEntriesOn(
+                    dayEvents.length, Formats.of(context).dateWeekday(localDay)),
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
@@ -227,12 +230,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ListTile(
                 leading: SeverityBadge(
                     severity: e.severity, noHeadache: !hasHeadache(e.headachePresent)),
-                title: Text(DateFormat('HH:mm').format(e.startedWall)),
+                title: Text(Formats.of(context).time(e.startedWall)),
                 subtitle: Text(
                   [
                     ?noHeadacheLabel(context.l10n, e),
-                    if (e.severity != null) 'Severity ${e.severity}/10',
-                    if (e.endedAt == null) 'ongoing',
+                    if (e.severity != null) context.l10n.historySeverity(e.severity!),
+                    if (e.endedAt == null) context.l10n.historyOngoing,
                   ].join(' · '),
                 ),
                 onTap: () => Navigator.pop(context, e.id),
@@ -257,32 +260,32 @@ class _HistoryScreenState extends State<HistoryScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Text(
-                DateFormat('EEE d MMM yyyy').format(localDay),
+                Formats.of(context).dateWeekday(localDay),
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
             if (checkin == null)
               ListTile(
                 leading: const Icon(Icons.check),
-                title: const Text('No migraine this day'),
+                title: Text(context.l10n.historyNoMigraineThisDay),
                 onTap: () => Navigator.pop(context, _DayAction.checkIn),
               )
             else ...[
               ListTile(
                 leading: const Icon(Icons.check_circle),
-                title: const Text('No migraine: details'),
-                subtitle: const Text('Sleep, stress, triggers and foods'),
+                title: Text(context.l10n.historyCheckinDetails),
+                subtitle: Text(context.l10n.historyCheckinDetailsHint),
                 onTap: () => Navigator.pop(context, _DayAction.details),
               ),
               ListTile(
                 leading: const Icon(Icons.remove_circle_outline),
-                title: const Text('Remove the check-in'),
+                title: Text(context.l10n.historyRemoveCheckin),
                 onTap: () => Navigator.pop(context, _DayAction.remove),
               ),
             ],
             ListTile(
               leading: const Icon(Icons.add),
-              title: const Text('Log a migraine on this day'),
+              title: Text(context.l10n.historyLogOnDay),
               onTap: () => Navigator.pop(context, _DayAction.log),
             ),
           ],
@@ -295,9 +298,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
         await widget.repo.checkIn(localDay);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text('Marked as a day without migraine'),
+          content: Text(context.l10n.historyMarkedClear),
           action: SnackBarAction(
-            label: 'Add details',
+            label: context.l10n.quickLogAddDetails,
             onPressed: () => _openCheckin(localDay),
           ),
         ));
@@ -307,10 +310,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
         final removed = await widget.repo.removeCheckin(localDay);
         if (removed == null || !mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text('Check-in removed'),
+          content: Text(context.l10n.checkinRemoved),
           duration: const Duration(seconds: 5),
           action: SnackBarAction(
-              label: 'Undo', onPressed: () => widget.repo.restoreCheckins([removed])),
+              label: context.l10n.commonUndo,
+              onPressed: () => widget.repo.restoreCheckins([removed])),
         ));
       case _DayAction.log:
         await _addManualForDate(localDay);
@@ -364,10 +368,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
     if (removed == null || !mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Entry deleted'),
+        content: Text(context.l10n.entryDeleted),
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
-          label: 'Undo',
+          label: context.l10n.commonUndo,
           onPressed: () =>
               widget.repo.restoreEvent(removed.event, removed.derived),
         ),
@@ -498,10 +502,10 @@ class _CalendarView extends StatelessWidget {
       itemCount: months.length + (events.isEmpty ? 1 : 0),
       itemBuilder: (context, i) {
         if (events.isEmpty && i == 0) {
-          return const Padding(
-            padding: EdgeInsets.fromLTRB(4, 0, 4, 12),
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
             child: Text(
-              'No migraines logged yet — tap a date below to add one.',
+              context.l10n.historyCalendarEmpty,
               textAlign: TextAlign.center,
             ),
           );
@@ -578,7 +582,7 @@ class _MonthGrid extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              DateFormat('MMMM yyyy').format(DateTime(year, mo)),
+              Formats.of(context).monthYear(DateTime(year, mo)),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -697,7 +701,7 @@ class _MonthGrid extends StatelessWidget {
                   key: ValueKey('checkin-$month-$day'),
                   size: 14,
                   color: Theme.of(context).colorScheme.primary,
-                  semanticLabel: 'no migraine',
+                  semanticLabel: context.l10n.historyCheckinMark,
                 ),
               ),
           ],
