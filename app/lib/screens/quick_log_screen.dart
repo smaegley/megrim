@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import '../analytics/dashboard.dart';
 import '../database/database.dart';
 import '../l10n/l10n.dart';
-import '../legal.dart';
 import '../models/attack_details.dart';
 import '../models/backup_status.dart';
 import '../models/event_time.dart' show daysCovered;
@@ -298,7 +297,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
                   const Text('Megrim',
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-                  Text(kAppSubtitle,
+                  Text(context.l10n.legalAppSubtitle,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context)
