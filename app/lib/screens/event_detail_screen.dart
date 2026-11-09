@@ -609,7 +609,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title, style: Theme.of(context).textTheme.titleSmall),
+            // Expanded: a longer heading in another language wraps instead of overflowing.
+            Expanded(child: Text(title, style: Theme.of(context).textTheme.titleSmall)),
             TextButton(
               onPressed: () async {
                 await Navigator.of(context).push(MaterialPageRoute(
