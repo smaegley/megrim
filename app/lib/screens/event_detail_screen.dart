@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
 import '../database/database.dart';
+import '../enrichment/enrichment_service.dart' show kEnrichNoLocation;
 import '../l10n/data_labels.dart';
 import '../l10n/formats.dart';
 import '../l10n/l10n.dart';
@@ -965,7 +966,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             if (d.enrichError != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Text(d.enrichError!,
+                // Stored English; the one hint users act on is translated, other errors are
+                // technical detail.
+                child: Text(d.enrichError == kEnrichNoLocation ? l.entryEnrichNoLocation : d.enrichError!,
                     style: TextStyle(color: Theme.of(context).colorScheme.error)),
               ),
           ],

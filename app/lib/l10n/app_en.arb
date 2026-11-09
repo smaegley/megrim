@@ -3475,5 +3475,9 @@
         "example": "40.01, -105.27"
       }
     }
+  },
+  "entryEnrichNoLocation": "No location set — set a home location to enable enrichment.",
+  "@entryEnrichNoLocation": {
+    "description": "Entry detail, under Weather: why this entry has no weather, moon or daylight data. 'Enrichment' = the weather, moon and daylight details Megrim adds to an entry."
   }
 }

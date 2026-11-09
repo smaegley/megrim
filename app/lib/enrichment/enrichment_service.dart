@@ -7,6 +7,10 @@ import 'astro.dart';
 import 'calendar_factors.dart';
 import 'open_meteo_client.dart';
 
+/// Stored as the entry's enrich_error when there's no location. Stored text stays English (it's
+/// data); Event Detail shows `entryEnrichNoLocation` in its place.
+const String kEnrichNoLocation = 'No location set — set a home location to enable enrichment.';
+
 /// Orchestrates on-device enrichment (SPEC §5). For each event it computes:
 ///   1. calendar factors (local, always)
 ///   2. astronomical factors (local math, always)
@@ -56,7 +60,7 @@ class EnrichmentService {
     if (coords == null) {
       await _writeDerived(
         eventId,
-        error: 'No location set — set a home location to enable enrichment.',
+        error: kEnrichNoLocation,
         enriched: false,
       );
       return false;
