@@ -1,0 +1,4 @@
+• Dates and times follow your phone's region and its 12/24-hour setting; the calendar starts on Monday where that's the custom.
+• Ready for translation: volunteers can now translate Megrim on Hosted Weblate. The app stays in English until a language is complete.
+• Fixed: sleep hours accept a decimal comma ("7,5").
+• No new permissions, no database change.
