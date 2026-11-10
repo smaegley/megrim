@@ -23,18 +23,19 @@ retaken; README, F-Droid description and release notes refreshed; a release chec
 3. Then mark 1.0.8 released everywhere in this file.
 
 **Next release: `v1.0.9`** (C2 stays for 1.1.0):
-**`v1.0.9`: translations phases 1–2 + the iOS Donate tile, BUILT on `feat/translations`
-(2026-11-09), waiting on Steve's test.** Design and "As built" in **`docs/TRANSLATIONS.md`**
+**`v1.0.9`: translations phases 1–2 + the iOS Donate tile, built on `feat/translations`
+(2026-11-09); Steve's test passed (Android emulator, real phone, iOS Simulator) and merged to
+`main` 2026-11-10.** Design and "As built" in **`docs/TRANSLATIONS.md`**
 (decisions D1–D7 made 2026-11-09). Still English only; visible changes are D7's (dates and the
 calendar's first weekday follow the phone's region). 619 messages, 452 tests; the hard-coded text
 test (en-XA pseudo-locale) and `tools/l10n.py check` run in CI. Also on the branch: the Donate
-tile hidden on iOS, and the sleep-hours fields accepting "7,5". After merge: Steve sets up
-Weblate (steps in TRANSLATIONS.md), then posts on #22 (the Ukrainian volunteer) and #19. Each
-language ships in a later release once it meets D5. The Chinese PDF font is proposed for when
-zh is near the bar (size). GitHub: #22 is the main issue, #19 (zh-CN) a sub-issue, both
+tile hidden on iOS, and the sleep-hours fields accepting "7,5". Next: Steve sets up
+Weblate (steps in TRANSLATIONS.md; planned 2026-11-11), then posts on #22 (the Ukrainian volunteer) and #19. Each
+language ships in a later release once it meets D5. The Chinese PDF font waits until there is a
+Chinese translation (Steve, 2026-11-10; size). GitHub: #22 is the main issue, #19 (zh-CN) a sub-issue, both
 `localization` + `planned`. #23 (calendar in the PDF) is waiting on the reporter.
-0. **Remove the Donate tile from the iOS build** (decided 2026-10-30; **built on
-   `feat/translations` 2026-11-09**). This prepares the App
+0. **Remove the Donate tile from the iOS build** (decided 2026-10-30; **merged to `main`
+   2026-11-10**). This prepares the App
    Store for countries beyond the US: the Ko-fi link
    (`app/lib/screens/settings_screen.dart`, the `Donate` tile) is allowed only on the US storefront
    (guideline 3.1.1). Everywhere else, tips to the developer must go through in-app purchase

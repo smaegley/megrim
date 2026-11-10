@@ -38,10 +38,10 @@ calendar starts the week on the region's first day (Monday in Britain), and "acr
 is no longer "1 migraines". Store screenshots need retaking at the release.
 
 **Not yet:**
-- **Weblate** (Steve, steps below), after the branch is merged to `main`.
+- **Weblate** (Steve, steps below); the branch was merged to `main` on 2026-11-10.
 - **Chinese PDF font (D3):** Noto Sans SC is about 8 MB as OTF, but the `pdf` package needs
-  TrueType, and the TrueType build is a 17.7 MB variable font. Proposal: add the font and the
-  report's font fallback when Simplified Chinese is close to the bar, not in 1.0.9, so the app
+  TrueType, and the TrueType build is a 17.7 MB variable font. Decided (Steve, 2026-11-10): add the
+  font and the report's font fallback once there is a Chinese translation, not in 1.0.9, so the app
   doesn't grow by 10–18 MB for a language that isn't offered yet.
 - **iOS `InfoPlist.strings`** (the purpose strings and the shortcut title in other languages)
   needs the Xcode project on the Mac; only matters once a second language ships.
