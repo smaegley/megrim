@@ -14,8 +14,8 @@
 # the device is never touched.
 #
 # Device names differ between Xcode and SDK versions; override them with these if needed:
-#   MEGRIM_SIM_IPHONE_69  (default "iPhone 17 Pro Max")    MEGRIM_SIM_IPHONE_63 ("iPhone 17 Pro")
-#   MEGRIM_SIM_IPAD_13    (default "iPad Pro 13-inch")      MEGRIM_SIM_DUO ("iPhone Duo")
+#   MEGRIM_SIM_IPHONE_69  (default "iPhone 18 Pro Max")    MEGRIM_SIM_IPHONE_63 ("iPhone 18 Pro")
+#   MEGRIM_SIM_IPAD_13    (default "iPad Pro 13-inch (M5)") MEGRIM_SIM_DUO ("iPhone Duo")
 #   MEGRIM_AVD_PHONE      (default "megrim_phone")         MEGRIM_AVD_FOLD ("megrim_fold")
 set -euo pipefail
 
@@ -81,9 +81,9 @@ boot_avd() { # $1 = AVD name; prints the serial once booted
 run_target() {
   local target="$1" device
   case "$target" in
-    iphone-69) device="$(boot_sim "${MEGRIM_SIM_IPHONE_69:-iPhone 17 Pro Max}")" ;;
-    iphone-63) device="$(boot_sim "${MEGRIM_SIM_IPHONE_63:-iPhone 17 Pro}")" ;;
-    ipad-13) device="$(boot_sim "${MEGRIM_SIM_IPAD_13:-iPad Pro 13-inch}")" ;;
+    iphone-69) device="$(boot_sim "${MEGRIM_SIM_IPHONE_69:-iPhone 18 Pro Max}")" ;;
+    iphone-63) device="$(boot_sim "${MEGRIM_SIM_IPHONE_63:-iPhone 18 Pro}")" ;;
+    ipad-13) device="$(boot_sim "${MEGRIM_SIM_IPAD_13:-iPad Pro 13-inch (M5)}")" ;;
     duo-inner | duo-outer)
       device="$(boot_sim "${MEGRIM_SIM_DUO:-iPhone Duo}")"
       # simctl has no fold command (Xcode 27.1): the pose is set by hand in Device Hub, with the
