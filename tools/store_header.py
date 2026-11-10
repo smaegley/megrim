@@ -109,7 +109,8 @@ def main():
     gap = 56
     row_w = icon.width + gap + name_w
     x0 = int((W - row_w) // 2)
-    top = (H - SAFE_H) // 2 - 10
+    block_h = icon.height + 230 + 42  # logo row down to the bottom of the last line
+    top = (H - SAFE_H) // 2 + (SAFE_H - block_h) // 2  # centred in the safe area
     canvas.paste(icon, (x0, top), mask)
     d.text((x0 + icon.width + gap, top + icon.height // 2), NAME, font=f_name, fill=TEXT, anchor="lm")
     d.text((W // 2, top + icon.height + 120), LINE, font=f_line, fill=TEXT, anchor="mm")
