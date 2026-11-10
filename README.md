@@ -119,6 +119,14 @@ planned and proposed work is in [`docs/BACKLOG.md`](docs/BACKLOG.md).
 Newest first. Full notes for each release are on the
 [Releases page](https://github.com/smaegley/megrim/releases).
 
+- **`v1.0.9`** (2026-11):
+  - **Dates and times follow your phone's region** and its 12/24-hour setting, in the app and the
+    PDF report; the History calendar starts on Monday where that's the custom.
+  - **Ready for translation:** all text comes from one message file, translated by volunteers on
+    [Hosted Weblate](https://hosted.weblate.org/projects/megrim/). Still English until a language
+    is complete.
+  - Sleep hours accept a decimal comma ("7,5"). The Donate link is gone from the iOS app (App
+    Store rules outside the US).
 - **`v1.0.8`** (2026-10-30):
   - **"No migraine today" check-ins**, from the Log tab, the calendar or the daily reminder.
     They make **Days tracked** and **Migraine days vs clear days** possible, the latter comparing
