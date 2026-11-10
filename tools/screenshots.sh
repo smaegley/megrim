@@ -4,6 +4,8 @@
 #   tools/screenshots.sh <target>      e.g. iphone-69, ipad-13, android-phone, android-fold
 #   tools/screenshots.sh all-ios       iphone-69, iphone-63, ipad-13 in turn
 #   tools/screenshots.sh all-android   android-phone, android-fold in turn
+#   tools/screenshots.sh duo-outer duo-inner   iPhone Duo, outer then inner display (asks you
+#                                      to set the pose in Device Hub before each)
 #
 # It boots the device (an iOS Simulator, or an Android emulator AVD), runs the shot flow in
 # app/integration_test/shots.dart with `flutter drive`, which saves one PNG per shot to
@@ -13,7 +15,7 @@
 #
 # Device names differ between Xcode and SDK versions; override them with these if needed:
 #   MEGRIM_SIM_IPHONE_69  (default "iPhone 17 Pro Max")    MEGRIM_SIM_IPHONE_63 ("iPhone 17 Pro")
-#   MEGRIM_SIM_IPAD_13    (default "iPad Pro 13-inch")      MEGRIM_SIM_DUO (no default yet)
+#   MEGRIM_SIM_IPAD_13    (default "iPad Pro 13-inch")      MEGRIM_SIM_DUO ("iPhone Duo")
 #   MEGRIM_AVD_PHONE      (default "megrim_phone")         MEGRIM_AVD_FOLD ("megrim_fold")
 set -euo pipefail
 
@@ -83,8 +85,12 @@ run_target() {
     iphone-63) device="$(boot_sim "${MEGRIM_SIM_IPHONE_63:-iPhone 17 Pro}")" ;;
     ipad-13) device="$(boot_sim "${MEGRIM_SIM_IPAD_13:-iPad Pro 13-inch}")" ;;
     duo-inner | duo-outer)
-      [ -n "${MEGRIM_SIM_DUO:-}" ] || die "set MEGRIM_SIM_DUO to the iPhone Duo Simulator's name (none known yet)"
-      device="$(boot_sim "$MEGRIM_SIM_DUO")" ;;
+      device="$(boot_sim "${MEGRIM_SIM_DUO:-iPhone Duo}")"
+      # simctl has no fold command (Xcode 27.1): the pose is set by hand in Device Hub, with the
+      # buttons under the device. Closed shows the outer display, Open the inner one.
+      local pose=Closed; [ "$target" = duo-inner ] && pose=Open
+      echo "In Device Hub, set the iPhone Duo's pose to $pose, then press Return." >&2
+      read -r _ ;;
     android-phone) device="$(boot_avd "${MEGRIM_AVD_PHONE:-megrim_phone}")" ;;
     android-fold)
       device="$(boot_avd "${MEGRIM_AVD_FOLD:-megrim_fold}")"
