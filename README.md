@@ -273,6 +273,13 @@ migraines and before making any treatment decisions.
 
 This is a hobby project with no SLA; see [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
+### Help translate
+
+Megrim is translated by volunteers on [Hosted Weblate](https://hosted.weblate.org/projects/megrim/),
+in the browser, with no Git or Flutter needed. Start with the
+[translator guide](docs/TRANSLATING.md). A language ships in the app once it is complete and
+reviewed; until then the app stays in English.
+
 ## License
 
 [GPL-3.0-or-later](LICENSE). Weather data by [Open-Meteo.com](https://open-meteo.com) (CC-BY 4.0).
