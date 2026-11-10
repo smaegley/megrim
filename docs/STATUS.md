@@ -1,41 +1,52 @@
 # Megrim — where things stand
 
-_Last updated: 2026-10-31: **v1.0.8 (versionCode 13) released on GitHub and on the App Store (iOS build 14, approved and released 2026-10-31); F-Droid to follow by itself (expected about 6–7 November)**: groups A, B and C1 (schema v6). F-Droid serves v1.0.7 until then. C2 (widget, iOS Live Activity) is deferred to 1.1.0. The GitHub release description is now posted automatically from `docs/release-notes/<version>.md`._
+_Last updated: 2026-11-10: **v1.0.8 out everywhere** (GitHub; App Store build 14, released 2026-10-31; F-Droid, versionCodes 131–133, confirmed 2026-11-10). **Next: v1.0.9**, translations phases 1–2 and the iOS Donate tile, merged to `main` 2026-11-10; Weblate set up the same day. C2 (widget, iOS Live Activity) is deferred to 1.1.0._
 
 A resume-here snapshot: what is shipped, what is in flight, and what the open threads are.
 `docs/SPEC.md` §12 remains the detailed running history; this file is the short version.
 
-## Next steps (as of 2026-10-30)
+## Next steps (as of 2026-11-10)
 
-**Done this session:** v1.0.8 tagged and published on GitHub (published APK checked, release
-description pasted by Steve); iOS 1.0.8 build 14 submitted to App Review; store screenshots
-retaken; README, F-Droid description and release notes refreshed; a release checklist written
-(*Working notes* below); and `release.yml` now posts the GitHub release description from
-`docs/release-notes/<version>.md` (merged `b2b39f4`, CI green; first real run at the next tag).
+**1.0.8 is released everywhere:** GitHub (2026-10-30), App Store (iOS build 14, 2026-10-31)
+and F-Droid (versionCodes 131–133, seen on f-droid.org 2026-11-10).
 
-**Waiting on (Steve comes back when these land):**
-1. ~~App Review for iOS 1.0.8~~ **Done: approved and released 2026-10-31** (the 1.0.8
-   screenshots went up with the submission).
-2. **F-Droid 1.0.8** (versionCodes 131–133), about a week after the tag, so around 6–7
-   November. Check the listing shows 1.0.8 with the new description, screenshots and changelog;
-   if the build fails, look at the F-Droid build log first (the new plugin
-   `flutter_local_notifications` ships no binaries, so it shouldn't be that).
-3. Then mark 1.0.8 released everywhere in this file.
+**Done 2026-11-09/10: translations phases 1–2 and Weblate.**
+- Built on `feat/translations`, checked by Claude's visual review (`tools/review_screens.sh`,
+  196 screens in six setups), tested by Steve (Android emulator, real phone, iOS Simulator),
+  merged to `main` (`d76ff2c`), CI green. Design and "As built" in **`docs/TRANSLATIONS.md`**
+  (decisions D1–D7). Still English only; visible changes are D7's (dates and the calendar's
+  first weekday follow the phone's region). 620 messages, 452 tests; the hard-coded text test
+  (en-XA pseudo-locale) and `tools/l10n.py check` run in CI. Also in: the Donate tile hidden on
+  iOS, and the sleep-hours fields accepting "7,5".
+- **Weblate** (Hosted Weblate, project `megrim`, component `app`): set up per the numbered
+  checklist in TRANSLATIONS.md. Ukrainian, French and Simplified Chinese started; glossary of 12
+  terms; reviews on; enforced ICU/placeholder checks; webhook on. Weblate opens PRs from its
+  fork, and `.github/workflows/weblate-automerge.yml` merges translation-only ones once CI
+  passes (Steve's call, 2026-11-10). First PR #24 (empty `fr`/`uk` files) merged.
+- Fixed on the way: Chinese is `app_zh.arb` (gen-l10n needs the `zh` fallback; Weblate maps it
+  with the alias `zh:zh_Hans`). README has a "Help translate" section. The Chinese PDF font
+  waits until there is a Chinese translation (Steve, 2026-11-10).
 
-**Next release: `v1.0.9`** (C2 stays for 1.1.0):
-**`v1.0.9`: translations phases 1–2 + the iOS Donate tile, built on `feat/translations`
-(2026-11-09); Steve's test passed (Android emulator, real phone, iOS Simulator) and merged to
-`main` 2026-11-10.** Design and "As built" in **`docs/TRANSLATIONS.md`**
-(decisions D1–D7 made 2026-11-09). Still English only; visible changes are D7's (dates and the
-calendar's first weekday follow the phone's region). 619 messages, 452 tests; the hard-coded text
-test (en-XA pseudo-locale) and `tools/l10n.py check` run in CI. Also on the branch: the Donate
-tile hidden on iOS, and the sleep-hours fields accepting "7,5". Next: Steve sets up
-Weblate (steps in TRANSLATIONS.md; planned 2026-11-11), then posts on #22 (the Ukrainian volunteer) and #19. Each
-language ships in a later release once it meets D5. The Chinese PDF font waits until there is a
-Chinese translation (Steve, 2026-11-10; size). GitHub: #22 is the main issue, #19 (zh-CN) a sub-issue, both
-`localization` + `planned`. #23 (calendar in the PDF) is waiting on the reporter.
-0. **Remove the Donate tile from the iOS build** (decided 2026-10-30; **merged to `main`
-   2026-11-10**). This prepares the App
+**Waiting on:**
+1. **Libre hosting approval** from Weblate (requested 2026-11-10; manual, a few days). The
+   project is on a trial until then.
+2. Then **post on #22 and #19** with the Weblate link (drafts are ready; Claude posts on
+   Steve's OK). #22 is the main issue, #19 (zh-CN) a sub-issue, both `localization` +
+   `planned`.
+3. **The first real Weblate PR:** check the auto-merge workflow merges it (it can only be
+   tested from `main`). If GitHub asks to approve CI for it, approve it.
+
+**Next release: `v1.0.9`** (C2 stays for 1.1.0): what's on `main` now. To do at release:
+version bump, release notes, retake the store screenshots (dates follow the region, so shots
+01, 02/09, 05 and 07 change slightly; `.claude/test-translations.md` Part Z), then the usual
+GitHub / iOS / F-Droid steps. Each translated language ships in a later release once it meets
+D5. #23 (calendar in the PDF) is waiting on the reporter.
+
+Small chore: `actions/checkout@v4` and `actions/setup-java@v4` in CI target Node.js 20, which
+GitHub is retiring (they're forced onto Node 24 for now); bump them sometime.
+
+**Region expansion (after 1.0.9 is live on iOS).** Step 0, **remove the Donate tile from the
+   iOS build** (decided 2026-10-30), is **done: merged to `main` 2026-11-10, ships in 1.0.9**. This prepares the App
    Store for countries beyond the US: the Ko-fi link
    (`app/lib/screens/settings_screen.dart`, the `Donate` tile) is allowed only on the US storefront
    (guideline 3.1.1). Everywhere else, tips to the developer must go through in-app purchase
@@ -281,7 +292,7 @@ listing content live in `docs/APP_STORE.md`; the operational facts:
 
 | | |
 |---|---|
-| Latest release | **`v1.0.8`** (versionCode 13, prepared 2026-10-30; tag pending): check-ins with Days tracked and Migraine days vs clear days, the daily reminder and the Android Migraine in progress notification, symptoms, impact and attacks without headache, medication classes, preventives and relief (see the section above); schema v3 → v6. Previous: **`v1.0.7`** (versionCode 12, tagged 2026-10-08): app lock, migraine days per month, the "Log migraine" shortcut, the Android backup fix and the Suspected Factors corrections (see the section above); no schema change. Previous: **`v1.0.6`** (versionCode 11, tagged 2026-10-05), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.6); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`) with the permission list unchanged. Contents: the in-app PDF report (backlog #12) and the opt-in backup reminder (#14). No schema change. Previous: **`v1.0.5`** (versionCode 10, tagged 2026-09-29), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.5); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
+| Latest release | **`v1.0.8`** (versionCode 13, tagged 2026-10-30; GitHub 10-30, App Store 10-31, F-Droid by 11-10): check-ins with Days tracked and Migraine days vs clear days, the daily reminder and the Android Migraine in progress notification, symptoms, impact and attacks without headache, medication classes, preventives and relief (see the section above); schema v3 → v6. Previous: **`v1.0.7`** (versionCode 12, tagged 2026-10-08): app lock, migraine days per month, the "Log migraine" shortcut, the Android backup fix and the Suspected Factors corrections (see the section above); no schema change. Previous: **`v1.0.6`** (versionCode 11, tagged 2026-10-05), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.6); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`) with the permission list unchanged. Contents: the in-app PDF report (backlog #12) and the opt-in backup reminder (#14). No schema change. Previous: **`v1.0.5`** (versionCode 10, tagged 2026-09-29), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.5); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: the recent-locations picker (#18), the away-from-home share and the "Travel" trigger (backlog #13, schema **v3**, additive). Previous: **`v1.0.4`** (versionCode 9, tagged 2026-09-22), signed APK + AAB on the [GitHub release](https://github.com/smaegley/megrim/releases/tag/v1.0.4); the published APK verified as signed with the real release key (`CN=Steve Maegley`, SHA-256 `c316cce2…`). Contents: #14 end-date shift, #16 analytics block, #11 report page, #17 event time zones (schema v2, additive). F-Droid picks the tag up automatically |
 | Signing | Release keystore `CN=Steve Maegley`, SHA-256 `c316cce2…`; the four CI secrets live on the repo. Tagging `v*` builds and publishes automatically |
 | Distribution | **F-Droid** (accepted 2026-08-23) and GitHub Releases; Obtainium tracks the repo for auto-updates |
 | Permissions | `INTERNET`, `ACCESS_NETWORK_STATE` (connectivity_plus), and since v1.0.7 `USE_BIOMETRIC` + `USE_FINGERPRINT` (local_auth / androidx.biometric, for the optional app lock; install-time, no prompt). No location permission at all |
