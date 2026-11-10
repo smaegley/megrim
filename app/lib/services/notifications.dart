@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import '../l10n/device_l10n.dart';
+import '../l10n/l10n.dart';
 import '../models/event_time.dart' show daysCovered;
 import '../repositories/megrim_repository.dart';
 import 'app_shortcuts.dart';
@@ -75,6 +77,13 @@ abstract class NotificationBackend {
 class PluginNotificationBackend implements NotificationBackend {
   final _plugin = FlutterLocalNotificationsPlugin();
 
+  /// The text, read each time a notification is built: the language `MaterialApp` picks
+  /// ([deviceL10n]) unless a test gives its own.
+  final AppLocalizations Function() _messages;
+
+  PluginNotificationBackend({AppLocalizations Function()? messages})
+    : _messages = messages ?? deviceL10n;
+
   static const _reminderCategory = 'reminder';
 
   @override
@@ -82,6 +91,7 @@ class PluginNotificationBackend implements NotificationBackend {
 
   @override
   Future<void> init(void Function(String action) onAction) async {
+    final l = _messages();
     void respond(NotificationResponse r) {
       final action = _actionFor(r.actionId, r.payload);
       if (action != null) onAction(action);
@@ -103,12 +113,12 @@ class PluginNotificationBackend implements NotificationBackend {
               actions: [
                 DarwinNotificationAction.plain(
                   kCheckinTodayAction,
-                  'No migraine today',
+                  l.notifActionNoMigraine,
                   options: {DarwinNotificationActionOption.foreground},
                 ),
                 DarwinNotificationAction.plain(
                   kOpenLogAction,
-                  'Log',
+                  l.notifActionLog,
                   options: {DarwinNotificationActionOption.foreground},
                 ),
               ],
@@ -144,11 +154,12 @@ class PluginNotificationBackend implements NotificationBackend {
   @override
   Future<void> scheduleReminders(List<DateTime> at) async {
     await cancelReminders();
-    const details = NotificationDetails(
+    final l = _messages();
+    final details = NotificationDetails(
       android: AndroidNotificationDetails(
         'daily_reminder',
-        'Daily reminder',
-        channelDescription: 'The once-a-day reminder to log the day',
+        l.notifReminderChannel,
+        channelDescription: l.notifReminderChannelDescription,
         // Not on a secure lock screen at all: "private" would still show the text and buttons
         // unless the user has set the phone to hide sensitive content, and the plugin can't give
         // a separate lock-screen version.
@@ -156,13 +167,13 @@ class PluginNotificationBackend implements NotificationBackend {
         actions: [
           AndroidNotificationAction(
             kCheckinTodayAction,
-            'No migraine today',
+            l.notifActionNoMigraine,
             showsUserInterface: true,
           ),
-          AndroidNotificationAction(kOpenLogAction, 'Log', showsUserInterface: true),
+          AndroidNotificationAction(kOpenLogAction, l.notifActionLog, showsUserInterface: true),
         ],
       ),
-      iOS: DarwinNotificationDetails(categoryIdentifier: _reminderCategory),
+      iOS: const DarwinNotificationDetails(categoryIdentifier: _reminderCategory),
     );
     for (var i = 0; i < at.length; i++) {
       await _plugin.zonedSchedule(
@@ -172,8 +183,8 @@ class PluginNotificationBackend implements NotificationBackend {
         notificationDetails: details,
         // Inexact: a few minutes late is fine, and it needs no exact-alarm permission.
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        title: 'Megrim',
-        body: 'How was today?',
+        title: l.notifReminderTitle,
+        body: l.notifReminderBody,
         payload: kOpenLogAction,
       );
     }
@@ -187,37 +198,40 @@ class PluginNotificationBackend implements NotificationBackend {
   }
 
   @override
-  Future<void> showOngoing(DateTime startedAt) => _plugin.show(
-    id: kOngoingId,
-    title: 'Migraine in progress',
-    notificationDetails: NotificationDetails(
-      android: AndroidNotificationDetails(
-        'migraine_in_progress',
-        'Migraine in progress',
-        channelDescription: 'Shown while a migraine is running, with a clock and End',
-        importance: Importance.low,
-        priority: Priority.low,
-        ongoing: true,
-        autoCancel: false,
-        onlyAlertOnce: true,
-        // The phone counts the clock up itself: no background work.
-        usesChronometer: true,
-        showWhen: true,
-        when: startedAt.millisecondsSinceEpoch,
-        // As the reminder: hidden on a secure lock screen.
-        visibility: NotificationVisibility.secret,
-        actions: const [
-          AndroidNotificationAction(
-            kEndMigraineAction,
-            'End',
-            showsUserInterface: true,
-            cancelNotification: false,
-          ),
-        ],
+  Future<void> showOngoing(DateTime startedAt) {
+    final l = _messages();
+    return _plugin.show(
+      id: kOngoingId,
+      title: l.notifOngoingTitle,
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          'migraine_in_progress',
+          l.notifOngoingTitle,
+          channelDescription: l.notifOngoingChannelDescription,
+          importance: Importance.low,
+          priority: Priority.low,
+          ongoing: true,
+          autoCancel: false,
+          onlyAlertOnce: true,
+          // The phone counts the clock up itself: no background work.
+          usesChronometer: true,
+          showWhen: true,
+          when: startedAt.millisecondsSinceEpoch,
+          // As the reminder: hidden on a secure lock screen.
+          visibility: NotificationVisibility.secret,
+          actions: [
+            AndroidNotificationAction(
+              kEndMigraineAction,
+              l.notifActionEnd,
+              showsUserInterface: true,
+              cancelNotification: false,
+            ),
+          ],
+        ),
       ),
-    ),
-    payload: kOpenLogAction,
-  );
+      payload: kOpenLogAction,
+    );
+  }
 
   @override
   Future<void> cancelOngoing() => _plugin.cancel(id: kOngoingId);
@@ -283,6 +297,14 @@ class NotificationsController extends ChangeNotifier with WidgetsBindingObserver
       s.cancel();
     }
     super.dispose();
+  }
+
+  /// Scheduled notifications carry their text, so a change of the phone's language while the app
+  /// runs rebuilds them in the new one. (Every start rebuilds them anyway: the first sync after
+  /// [init] always schedules, and the iOS button titles are set in [NotificationBackend.init].)
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    sync(force: true);
   }
 
   @override

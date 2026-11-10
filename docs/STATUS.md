@@ -22,18 +22,19 @@ retaken; README, F-Droid description and release notes refreshed; a release chec
    `flutter_local_notifications` ships no binaries, so it shouldn't be that).
 3. Then mark 1.0.8 released everywhere in this file.
 
-**Next release (number to decide; 1.1.0 if C2 goes in):**
-**Translations come next (Steve, 2026-11-09)**: design in **`docs/TRANSLATIONS.md`**;
-decisions D1–D7 made 2026-11-09. **`v1.0.9` = phases 1 and 2** (still English only; English dates
-follow the phone's locale); each language ships in a later release once complete. The iOS Donate
-tile removal below is planned for the same next build. Phase 1 = backlog #25 (UI, PDF,
-notification and native text into ARB files, no visible change), then hosted Weblate. On GitHub, #22 is the main issue and #19 (zh-CN) is a sub-issue; both are
-labelled `localization` + `planned` and were answered 2026-11-09. A volunteer offered
-Ukrainian on #22, so post there when Weblate is ready. Add a milestone once the release number is
-decided. To decide first: report language (the phone's, or chosen at export), and a careful review of
-medical strings (disclaimer, symptoms, overuse notice). #23 (calendar in the PDF) is waiting
-on the reporter's answer to Steve's question. No dev started.
-0. **Remove the Donate tile from the iOS build** (decided 2026-10-30). This prepares the App
+**Next release: `v1.0.9`** (C2 stays for 1.1.0):
+**`v1.0.9`: translations phases 1–2 + the iOS Donate tile, BUILT on `feat/translations`
+(2026-11-09), waiting on Steve's test.** Design and "As built" in **`docs/TRANSLATIONS.md`**
+(decisions D1–D7 made 2026-11-09). Still English only; visible changes are D7's (dates and the
+calendar's first weekday follow the phone's region). 619 messages, 452 tests; the hard-coded text
+test (en-XA pseudo-locale) and `tools/l10n.py check` run in CI. Also on the branch: the Donate
+tile hidden on iOS, and the sleep-hours fields accepting "7,5". After merge: Steve sets up
+Weblate (steps in TRANSLATIONS.md), then posts on #22 (the Ukrainian volunteer) and #19. Each
+language ships in a later release once it meets D5. The Chinese PDF font is proposed for when
+zh is near the bar (size). GitHub: #22 is the main issue, #19 (zh-CN) a sub-issue, both
+`localization` + `planned`. #23 (calendar in the PDF) is waiting on the reporter.
+0. **Remove the Donate tile from the iOS build** (decided 2026-10-30; **built on
+   `feat/translations` 2026-11-09**). This prepares the App
    Store for countries beyond the US: the Ko-fi link
    (`app/lib/screens/settings_screen.dart`, the `Donate` tile) is allowed only on the US storefront
    (guideline 3.1.1). Everywhere else, tips to the developer must go through in-app purchase

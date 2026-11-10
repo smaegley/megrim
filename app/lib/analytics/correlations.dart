@@ -1,5 +1,6 @@
 import '../enrichment/astro.dart' show moonPhaseName, sunTimes;
 import '../enrichment/calendar_factors.dart' show seasonForMonth;
+import '../l10n/l10n.dart';
 import '../models/event_time.dart' show daysCovered, wallClock;
 
 /// Port of the private app's `correlations.py` (SPEC §6.2) — "Top Suspected Factors".
@@ -132,6 +133,8 @@ class CorrelationResult {
   final double baseRatePct;
   final List<TopFactor> topFactors;
   final Map<String, List<FactorRow>> factors;
+  /// [reason] and [caveats] are in English, as the export carries them; [reasonIn] and
+  /// [caveatsIn] give the same text in the app's language.
   final List<String> caveats;
 
   const CorrelationResult({
@@ -146,6 +149,24 @@ class CorrelationResult {
     this.factors = const {},
     this.caveats = const [],
   });
+
+  static String notEnoughEvents(AppLocalizations l) =>
+      l.correlationsNeedEvents(kMinEventsForCorrelations);
+
+  static List<String> caveatsFor(AppLocalizations l, int migraineDays, int days, int midAttackDays) =>
+      [
+        l.correlationsCaveatSample(migraineDays, days),
+        if (midAttackDays > 0) midAttackNote(l, midAttackDays),
+        l.correlationsCaveatOddsRatio,
+        l.caveatMultipleComparisons,
+        l.caveatNotCausation,
+      ];
+
+  String? reasonIn(AppLocalizations l) => reason == null ? null : notEnoughEvents(l);
+
+  List<String> caveatsIn(AppLocalizations l) => caveats.isEmpty
+      ? const []
+      : caveatsFor(l, totalMigraineDays, totalDaysInRange, excludedMidAttackDays);
 }
 
 /// Build per-bucket rows for one factor from the migraine-day and all-day (baseline) counts.
@@ -201,8 +222,7 @@ CorrelationResult computeCorrelations({
   if (eventStarts.length < kMinEventsForCorrelations) {
     return CorrelationResult(
       available: false,
-      reason:
-          'Need at least $kMinEventsForCorrelations events for correlation analysis.',
+      reason: CorrelationResult.notEnoughEvents(englishL10n),
     );
   }
 
@@ -333,20 +353,13 @@ CorrelationResult computeCorrelations({
     baseRatePct: _round2(totalMigraine / totalDays * 100),
     topFactors: top.take(8).toList(),
     factors: factors,
-    caveats: [
-      'Based on $totalMigraine migraine days over $totalDays days — small sample, results are noisy.',
-      if (midAttack.isNotEmpty) midAttackNote(midAttack.length),
-      'Odds ratios use a +0.5 correction for empty cells; treat values near 1.0 as no signal.',
-      'Many factors are tested at once (multiple comparisons) — some apparent associations are chance.',
-      'Association is not causation. Use this to form hypotheses, not conclusions.',
-    ],
+    caveats: CorrelationResult.caveatsFor(englishL10n, totalMigraine, totalDays, midAttack.length),
   );
 }
 
 /// The caveat shown wherever Suspected Factors is (Analytics card, PDF report) when [n] mid-attack
 /// days were left out.
-String midAttackNote(int n) => '$n ${n == 1 ? 'day' : 'days'} in the middle of a multi-day '
-    'migraine ${n == 1 ? 'is' : 'are'} left out: a new attack can\'t start while one is underway.';
+String midAttackNote(AppLocalizations l, int n) => l.correlationsMidAttackNote(n);
 
 String _dayKey(DateTime d) => '${d.year.toString().padLeft(4, '0')}-'
     '${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';

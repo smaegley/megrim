@@ -16,6 +16,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:megrim/l10n/l10n.dart';
+import 'package:megrim/l10n/shipped_locales.dart';
 import 'package:megrim/app.dart';
 import 'package:megrim/database/database.dart';
 import 'package:megrim/models/home_location.dart';
@@ -211,9 +213,10 @@ class _NoShortcuts implements ShortcutSource {
   void listen(void Function(String action) onAction) {}
 }
 
-Widget demoApp(MegrimRepository repo) => MegrimApp(
+Widget demoApp(MegrimRepository repo, {List<Locale>? supportedLocales}) => MegrimApp(
   repo: repo,
   shortcuts: AppShortcuts(source: _NoShortcuts()),
+  supportedLocales: supportedLocales ?? kShippedLocales,
 );
 
 /// Lets real async work (database, file I/O) finish, then settles frames.
@@ -258,65 +261,68 @@ Future<void> runShots(
 }) async {
   setBrightness(Brightness.light);
   await settle(tester);
+  // Screens are found by their messages, so the flow runs in any language (docs/TRANSLATIONS.md).
+  final l = AppLocalizations.of(tester.element(find.byType(NavigationBar)));
+  final lastBackup = l.quickLogLastBackup('\u0000').split('\u0000').first;
 
   // 01 — Log, with the days-since card and the backup line.
-  await _tab(tester, 'Log');
-  expect(find.text('LOG MIGRAINE'), findsOneWidget);
-  expect(find.textContaining('Last backup:'), findsOneWidget);
+  await _tab(tester, l.homeTabLog);
+  expect(find.text(l.quickLogStart), findsOneWidget);
+  expect(find.textContaining(lastBackup), findsOneWidget);
   await capture(kShotNames[0]);
 
   // 02 — Analytics from the top: days since, Summary, Migraine days per month.
-  await _tab(tester, 'Analytics');
+  await _tab(tester, l.homeTabAnalytics);
   await _toTop(tester);
-  expect(find.text('Migraine days per month'), findsOneWidget);
+  expect(find.text(l.monthlyTitle), findsOneWidget);
   await capture(kShotNames[1]);
 
   // 03 — Top suspected factors.
-  await _bringToTop(tester, find.text('Top suspected factors'));
+  await _bringToTop(tester, find.text(l.analyticsFactorsTitle));
   await capture(kShotNames[2]);
 
   // 04 — Migraine days vs clear days (the check-ins' tracked-day comparison).
-  await _bringToTop(tester, find.text('Migraine days vs clear days'));
-  expect(find.text('Screen time'), findsWidgets);
+  await _bringToTop(tester, find.text(l.trackedFactorsTitle));
+  expect(find.text(l.dataTriggerScreenTime), findsWidgets);
   await capture(kShotNames[3]);
 
   // 05 — History list.
-  await _tab(tester, 'History');
-  await tester.tap(find.text('List'));
+  await _tab(tester, l.homeTabHistory);
+  await tester.tap(find.text(l.historyViewList));
   await settle(tester);
   final tiles = find.descendant(of: find.byType(ListView), matching: find.byType(ListTile));
   expect(tiles, findsWidgets);
   await capture(kShotNames[4]);
 
   // 06 — History calendar (the latest migraine spans two days).
-  await tester.tap(find.text('Calendar'));
+  await tester.tap(find.text(l.historyViewCalendar));
   await settle(tester);
   await capture(kShotNames[5]);
 
   // 07 — Entry detail of the latest migraine (triggers, medications, relief).
-  await tester.tap(find.text('List'));
+  await tester.tap(find.text(l.historyViewList));
   await settle(tester);
   await tester.tap(tiles.first);
   await settle(tester);
-  expect(find.text('Started'), findsOneWidget);
+  expect(find.text(l.entryStarted), findsOneWidget);
   // Start at the triggers so triggers, sleep and medications are all in frame.
-  await _bringToTop(tester, find.text('Suspected triggers'));
+  await _bringToTop(tester, find.text(l.entryTriggers));
   await capture(kShotNames[6]);
   await tester.pageBack();
   await settle(tester);
 
   // 08 — Settings › Privacy (app lock).
-  await _tab(tester, 'Settings');
-  await _bringToTop(tester, find.text('App lock'), alignment: 0.3);
+  await _tab(tester, l.homeTabSettings);
+  await _bringToTop(tester, find.text(l.settingsAppLock), alignment: 0.3);
   await capture(kShotNames[7]);
 
   // 09, 10 — dark mode.
   setBrightness(Brightness.dark);
   await settle(tester);
-  await _tab(tester, 'Analytics');
+  await _tab(tester, l.homeTabAnalytics);
   await _toTop(tester);
   await capture(kShotNames[8]);
-  await _tab(tester, 'Log');
+  await _tab(tester, l.homeTabLog);
   await capture(kShotNames[9]);
 
   setBrightness(null);

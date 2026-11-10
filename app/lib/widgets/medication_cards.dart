@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../analytics/dashboard.dart';
 import '../analytics/medications.dart';
+import '../l10n/data_labels.dart';
+import '../l10n/formats.dart';
+import '../l10n/l10n.dart';
 import '../models/medications.dart';
 import 'monthly_days_card.dart';
 
@@ -24,6 +26,8 @@ class MedicationDaysCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final m = dash.medicationDays;
     if (m == null) return const SizedBox.shrink();
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final theme = Theme.of(context);
     final small = theme.textTheme.bodySmall;
     final unclassified = m.unclassifiedNames;
@@ -35,13 +39,9 @@ class MedicationDaysCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Acute medication days', style: theme.textTheme.titleMedium),
+              Text(l.medCardTitle, style: theme.textTheme.titleMedium),
               const SizedBox(height: 4),
-              Text(
-                'Days on which you took medication for an attack. Two doses on one day '
-                'count once.',
-                style: small,
-              ),
+              Text(l.medCardIntro, style: small),
               const SizedBox(height: 12),
               if (m.notice != null) ...[
                 _OveruseNotice(months: m.notice!),
@@ -54,26 +54,26 @@ class MedicationDaysCard extends StatelessWidget {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    '${m.last30}',
+                    fmt.integer(m.last30),
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       fontFeatures: const [FontFeature.tabularFigures()],
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Expanded(child: Text('days in the last 30 days', style: small)),
+                  Expanded(child: Text(l.medCardLast30Label, style: small)),
                 ],
               ),
               const SizedBox(height: 4),
-              if (m.byClassLast30.isEmpty) Text('None in the last 30 days.', style: small),
+              if (m.byClassLast30.isEmpty) Text(l.medCardNoneLast30, style: small),
               for (final MapEntry(key: c, value: n) in m.byClassLast30.entries)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 1),
                   child: Row(
                     children: [
-                      Expanded(child: Text(medClassName(c))),
+                      Expanded(child: Text(medClassName(l, c))),
                       Text(
-                        '$n ${n == 1 ? 'day' : 'days'}',
+                        l.medCardClassDays(n),
                         style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
                       ),
                     ],
@@ -83,26 +83,20 @@ class MedicationDaysCard extends StatelessWidget {
               MonthBarChart(
                 months: [for (final x in m.byMonth) MonthBar(x.year, x.month, x.days)],
                 now: now ?? DateTime.now(),
-                title: 'Acute medication days per month',
+                title: l.medCardChartTitle,
               ),
               const SizedBox(height: 4),
-              Text(
-                '* month in progress. A day with two classes counts once in the bar.',
-                style: small,
-              ),
+              Text(l.medCardFootnote, style: small),
               if (unclassified.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
-                  '${unclassified.length == 1 ? '1 medication has' : '${unclassified.length} '
-                            'medications have'} no class (${unclassified.join(', ')}), so '
-                  '${unclassified.length == 1 ? 'it isn\'t' : 'they aren\'t'} checked against '
-                  'the reference levels.',
+                  l.medCardUnclassified(unclassified.length, unclassified.join(', ')),
                   style: small,
                 ),
                 if (onSetClasses != null)
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: TextButton(onPressed: onSetClasses, child: const Text('Set classes')),
+                    child: TextButton(onPressed: onSetClasses, child: Text(l.medCardSetClasses)),
                   ),
               ],
             ],
@@ -119,9 +113,10 @@ class _OveruseNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final f = DateFormat('MMM yyyy');
     return Semantics(
       container: true,
       child: Container(
@@ -143,7 +138,7 @@ class _OveruseNotice extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      kOveruseNoticeTitle,
+                      l.overuseNoticeTitle,
                       style: theme.textTheme.titleSmall?.copyWith(
                         color: scheme.onSecondaryContainer,
                       ),
@@ -154,10 +149,11 @@ class _OveruseNotice extends StatelessWidget {
               const SizedBox(height: 8),
               for (final m in months)
                 for (final r in m.levelsReached)
-                  Text('${f.format(DateTime(m.year, m.month))}: ${levelReason(m, r)}'),
+                  Text(l.overuseNoticeMonth(
+                      fmt.monthYearShort(DateTime(m.year, m.month)), levelReason(l, m, r))),
               const SizedBox(height: 8),
               Text(
-                '$kOveruseNoticeBody The PDF report includes these counts.',
+                '${l.overuseNoticeBody} ${l.medCardNoticePdfNote}',
                 style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSecondaryContainer),
               ),
             ],
@@ -181,6 +177,8 @@ class WhatHelpedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final rows = dash.whatHelped;
     if (rows.isEmpty) return const SizedBox.shrink();
+    final l = context.l10n;
+    final fmt = Formats.of(context);
     final theme = Theme.of(context);
     final small = theme.textTheme.bodySmall;
     final meds = rows.where((r) => !r.relief).toList();
@@ -190,15 +188,17 @@ class WhatHelpedCard extends StatelessWidget {
       final pct = r.helpedPct;
       final answered = r.helped + r.notHelped;
       final detail = pct == null
-          ? 'tried ${r.tried}×, no answer recorded'
-          : 'helped $pct% ($answered answered${r.unknown == 0 ? '' : ', ${r.unknown} unknown'})';
+          ? l.helpedNoAnswer(r.tried)
+          : r.unknown == 0
+          ? l.helpedShare(fmt.percent(pct), answered)
+          : l.helpedShareWithUnknown(fmt.percent(pct), answered, r.unknown);
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Name and detail on separate lines: both can be long, and screens narrow.
-            Text(r.name),
+            Text(dataLabel(l, r.name)),
             Text(detail, style: small),
             const SizedBox(height: 4),
             ClipRRect(
@@ -223,7 +223,7 @@ class WhatHelpedCard extends StatelessWidget {
         Text(title, style: theme.textTheme.titleSmall),
         for (final r in list.take(maxRows)) row(r),
         if (list.length > maxRows)
-          Text('and ${list.length - maxRows} more (in the export).', style: small),
+          Text(l.helpedMore(list.length - maxRows), style: small),
       ],
     );
 
@@ -235,21 +235,13 @@ class WhatHelpedCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('What helped', style: theme.textTheme.titleMedium),
+              Text(l.helpedTitle, style: theme.textTheme.titleMedium),
               const SizedBox(height: 4),
-              Text(
-                'How often each medication or relief method helped, among the times you '
-                'answered "Helped?". Unknown answers are left out of the share.',
-                style: small,
-              ),
-              if (meds.isNotEmpty) section('Medications', meds),
-              if (relief.isNotEmpty) section('Relief tried', relief),
+              Text(l.helpedIntro, style: small),
+              if (meds.isNotEmpty) section(l.helpedMedications, meds),
+              if (relief.isNotEmpty) section(l.helpedRelief, relief),
               const SizedBox(height: 8),
-              Text(
-                'What you noted after each attack, not a comparison of treatments: how well '
-                'something works depends on when and how it was taken.',
-                style: small,
-              ),
+              Text(l.helpedFootnote, style: small),
             ],
           ),
         ),

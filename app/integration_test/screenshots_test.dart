@@ -2,6 +2,7 @@ import 'dart:io' show Platform;
 
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart' show initializeDateFormatting;
 import 'package:integration_test/integration_test.dart';
 import 'package:megrim/database/database.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
@@ -15,6 +16,7 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('store screenshots', (tester) async {
+    await initializeDateFormatting(); // as main() does
     final db = MegrimDatabase.forTesting(NativeDatabase.memory());
     final repo = MegrimRepository(db: db);
     await seedDemo(db, repo, DateTime.now());

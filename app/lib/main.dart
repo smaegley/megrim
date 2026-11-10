@@ -1,13 +1,17 @@
 import 'package:flutter/foundation.dart' show LicenseEntryWithLineBreaks, LicenseRegistry;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:intl/date_symbol_data_local.dart' show initializeDateFormatting;
 
 import 'app.dart';
 import 'database/database.dart';
 import 'repositories/megrim_repository.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Date and number names for every locale (docs/TRANSLATIONS.md), so code outside the widget tree
+  // (the PDF report, notifications, chart labels) can format in the app's language.
+  await initializeDateFormatting();
   // Register Megrim's own GPL-3.0 licence so it appears on the built-in licences page (About →
   // View licences) alongside the auto-collected third-party package licences.
   LicenseRegistry.addLicense(() async* {

@@ -4,8 +4,10 @@ import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:megrim/database/database.dart';
+import 'package:megrim/l10n/l10n.dart';
 import 'package:megrim/models/json_fields.dart';
 import 'package:megrim/models/med_entry.dart';
+import 'package:megrim/services/export_format.dart' show kExportFormatVersion;
 import 'package:megrim/services/export_service.dart';
 import 'package:megrim/services/import_service.dart';
 
@@ -188,6 +190,29 @@ void main() {
         () => svc.importJson(
             {'format': 'megrim-export', 'format_version': 999, 'events': []}),
         throwsA(isA<ImportException>()));
+    await db.close();
+  });
+
+  test('import errors read as before in English', () async {
+    final db = freshDb();
+    final svc = ImportService(db);
+    Future<String> messageOf(Future<void> Function() f) async {
+      try {
+        await f();
+      } on ImportException catch (e) {
+        expect(e.messageIn(englishL10n), e.message);
+        return e.message;
+      }
+      fail('no ImportException');
+    }
+
+    expect(await messageOf(() => svc.importJson({'format': 'nope', 'format_version': 1})),
+        'Not a Megrim export file.');
+    expect(
+        await messageOf(() => svc.importJson(
+            {'format': 'megrim-export', 'format_version': 999, 'events': []})),
+        'Unsupported export version: 999 (this app supports $kExportFormatVersion).');
+    expect(await messageOf(() => svc.importJsonString('{')), 'File is not valid JSON.');
     await db.close();
   });
 

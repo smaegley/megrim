@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import '../database/database.dart';
+import '../l10n/l10n.dart';
 import 'export_format.dart';
 
 class ImportResult {
@@ -13,9 +14,15 @@ class ImportResult {
       {required this.imported, required this.skipped, required this.replaced});
 }
 
+/// Why an import was refused. [message] is English; [messageIn] gives the same in the app's
+/// language for the screen.
 class ImportException implements Exception {
-  final String message;
-  ImportException(this.message);
+  final String Function(AppLocalizations l) _text;
+  ImportException(this._text);
+
+  String get message => _text(englishL10n);
+  String messageIn(AppLocalizations l) => _text(l);
+
   @override
   String toString() => message;
 }
@@ -37,7 +44,7 @@ class ImportService {
     try {
       raw = utf8.decode(bytes);
     } on FormatException {
-      throw ImportException('File is not valid UTF-8 text.');
+      throw ImportException((l) => l.importErrorNotUtf8);
     }
     return importJsonString(raw, replace: replace);
   }
@@ -47,10 +54,10 @@ class ImportService {
     try {
       decoded = jsonDecode(raw);
     } catch (_) {
-      throw ImportException('File is not valid JSON.');
+      throw ImportException((l) => l.importErrorNotJson);
     }
     if (decoded is! Map<String, dynamic>) {
-      throw ImportException('Unexpected file structure.');
+      throw ImportException((l) => l.importErrorStructure);
     }
     return importJson(decoded, replace: replace);
   }
@@ -58,12 +65,11 @@ class ImportService {
   Future<ImportResult> importJson(Map<String, dynamic> doc,
       {bool replace = false}) async {
     if (doc['format'] != kExportFormat) {
-      throw ImportException('Not a Megrim export file.');
+      throw ImportException((l) => l.importErrorNotMegrim);
     }
     final version = doc['format_version'];
     if (version is! int || version > kExportFormatVersion) {
-      throw ImportException(
-          'Unsupported export version: $version (this app supports $kExportFormatVersion).');
+      throw ImportException((l) => l.importErrorVersion('$version', kExportFormatVersion));
     }
 
     final events = (doc['events'] as List?) ?? const [];
@@ -100,7 +106,7 @@ class ImportService {
         } on ImportException {
           rethrow;
         } catch (e) {
-          throw ImportException('Event "$id" is malformed ($e). Nothing was imported.');
+          throw ImportException((l) => l.importErrorEvent(id, '$e'));
         }
         existing.add(id);
         imported++;

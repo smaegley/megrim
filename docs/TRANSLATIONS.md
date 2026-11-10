@@ -1,8 +1,54 @@
 # Translations: design
 
-_Status: **PLANNED for `v1.0.9`** (phases 1 and 2), 2026-11-09. Nothing built yet. Replaces and
+_Status: **IN PROGRESS for `v1.0.9`** (phases 1 and 2), branch `feat/translations`, started
+2026-11-09. Replaces and
 extends backlog #25, which now points here. Decisions D1–D7 were made by Steve on 2026-11-09
 ([table at the end](#decisions-steve-2026-11-09))._
+
+## As built so far (2026-11-09, branch `feat/translations`)
+
+Phase 1 is done, and phase 2 apart from Weblate (needs Steve's account) and the Chinese font. The
+English app looks as before, except as listed under *Visible changes*.
+
+- **620 English messages** in `app/lib/l10n/app_en.arb`, each with a description;
+  `[medical]`/`[legal]` marked. Helpers: `context.l10n` (falls back to English where no
+  delegate is installed, as in widget tests), `dataLabel()` for stored English values,
+  `Formats` for dates/times/numbers, `deviceL10n()` for code with no `BuildContext`.
+- **Shipped languages** come from `app/lib/l10n/shipped_locales.dart`, not from the ARB files
+  present (otherwise Weblate's unfinished files would ship). `tools/l10n.py sync | check |
+  stats | pseudo`; `check` runs in CI.
+- **Visual review:** `tools/review_screens.sh` renders ~200 screens (all store shots, every page of
+  the long screens, onboarding, dialogs, the PDF) in six setups (en-US, en-GB, a German phone,
+  pseudo, 1.5× text, 320 dp) as a Flutter test on the VM, no emulator, for Claude to look
+  through before a branch goes to Steve. It found the missing comma between date and time.
+- **Tests:** the export is identical under any phone language; every default and analytics label
+  has a translation; and the **hard-coded text test** runs the store-screenshot flow in the
+  `en-XA` pseudo-locale and fails on any English left outside a message (CI generates the
+  pseudo-locale first). It also found one layout overflow with longer text (fixed).
+- **Notifications** are rebuilt in the new language when the phone's language changes
+  (`didChangeLocales`) and at every start, so no "last language" setting was needed.
+- **The PDF report** takes the app's `AppLocalizations` (D1).
+- **Platform lists:** Android `res/xml/locales_config.xml` + `android:localeConfig`; iOS
+  `CFBundleLocalizations`. Both list `en` only for now.
+
+**Visible changes in English** (all from D7, following the phone's locale): dates read the
+locale's way ("Mon, Nov 9, 2026" on a US phone, "Mon, 9 Nov 2026" on a British one), times
+follow the phone's 12/24-hour setting, counts of 1,000 or more get a separator, the History
+calendar starts the week on the region's first day (Monday in Britain), and "across 1 migraine"
+is no longer "1 migraines". Store screenshots need retaking at the release.
+
+**Not yet:**
+- **Weblate** (Steve, steps below), after the branch is merged to `main`.
+- **Chinese PDF font (D3):** Noto Sans SC is about 8 MB as OTF, but the `pdf` package needs
+  TrueType, and the TrueType build is a 17.7 MB variable font. Proposal: add the font and the
+  report's font fallback when Simplified Chinese is close to the bar, not in 1.0.9, so the app
+  doesn't grow by 10–18 MB for a language that isn't offered yet.
+- **iOS `InfoPlist.strings`** (the purpose strings and the shortcut title in other languages)
+  needs the Xcode project on the Mac; only matters once a second language ships.
+- **Sleep hours in the edit field** show as stored ("5.2"), not in the locale's form ("5,2");
+  either is accepted when saving. Format it when a comma-decimal language ships.
+- **Place names** from the geocoder are requested in English (`language: 'en'`); changing that
+  changes a network request, so it's left for a language that needs it.
 
 ## Why
 
@@ -76,8 +122,8 @@ Phases 2–3 are mostly setup and waiting for translators.
   [Medical and legal wording](#medical-and-legal-wording).
 - **Notifications** (`notifications.dart`): "How was today?", "Migraine in progress", and the
   action buttons (*No migraine today*, *Log*, *End*). Notifications are scheduled ahead with their
-  text baked in, so the app **reschedules them at startup when the language has changed** (store
-  the language used last time in `app_settings`).
+  text baked in, so the app **reschedules them when the language changes** (as built: at every
+  start, and on `didChangeLocales`).
 - **Native strings outside Dart**:
   - Android: `res/values/strings.xml` (the "Log migraine" shortcut). Translations go in
     `values-<lang>/strings.xml`.
@@ -190,6 +236,37 @@ tests pass, the export is identical, and the pseudo-locale pass finds no hard-co
 - A short `docs/TRANSLATING.md` for volunteers: the Weblate link, the glossary, what "community
   translation" means, how medical strings are handled, and how to request a new language.
 
+### Weblate setup (Steve, once)
+
+Needs your GitHub account, so it isn't scripted. Do it after the branch with phase 1 is merged to
+`main` (Weblate reads `main`).
+
+1. Sign in at <https://hosted.weblate.org> with GitHub, and **request libre hosting** for a new
+   project "Megrim" (the form asks for the repo URL and the licence, GPL-3.0). Approval is
+   manual and can take a few days.
+2. Add a **component** "App":
+   - Source code repository `https://github.com/smaegley/megrim.git`, branch `main`.
+   - Version control: **GitHub pull request** (Weblate pushes to its fork and opens PRs; it
+     never pushes to `main`). Authorise the Weblate GitHub app when asked.
+   - File format **ARB file**; file mask `app/lib/l10n/app_*.arb`; monolingual base language
+     file and template for new translations both `app/lib/l10n/app_en.arb`.
+   - Language code style: **underscore** (`zh_Hans`), so files come out as
+     `app_zh_Hans.arb`, which gen-l10n expects.
+3. Project settings:
+   - **Reviews: on.** `[medical]` and `[legal]` messages need a second person (D4/D5).
+     Weblate shows each message's description as its explanation.
+   - **Machine translation:** enable a free service for *suggestions*. Don't turn on automatic
+     translation (D4).
+   - **Glossary:** add migraine, aura, attack, prodrome, postdrome, preventive, relief,
+     check-in, migraine day, clear day, impact, Megrim (not translated).
+   - Contributor agreement: none needed (GPL-3.0, contributions under the same licence).
+4. Mark `appTitle` ("Megrim") read-only in Weblate.
+5. Start the languages people asked for: Ukrainian (the volunteer on #22), French, Simplified
+   Chinese (`zh_Hans`). Post the Weblate link on #22 and #19.
+
+Then, per release: `tools/l10n.py stats` shows each language's coverage; when one meets the bar,
+add it to `app/lib/l10n/shipped_locales.dart`, run `tools/l10n.py sync`, and test it on a phone.
+
 ### CI checks (on every PR, including Weblate's)
 
 - `flutter gen-l10n` succeeds (catches broken ICU syntax and placeholder mismatches).
@@ -226,8 +303,11 @@ declare its languages:
 - Android: `res/xml/locales_config.xml` and `android:localeConfig` in the manifest.
 - iOS: `CFBundleLocalizations` in `Info.plist`.
 
-Generate both lists from the ARB files that meet the bar, with a small script run in CI, so they
-can't drift. There's no in-app picker (D2).
+Both lists, and the app's own `supportedLocales`, come from **`app/lib/l10n/shipped_locales.dart`**
+(`kShippedLocales`), not from the ARB files present: gen-l10n lists every ARB it finds, and
+Weblate commits unfinished translations as they progress. `tools/l10n.py sync` writes the
+platform lists; `tools/l10n.py check` (CI) fails if they're out of step or a shipped language is
+below the bar. There's no in-app picker (D2).
 
 **When the phone's language isn't supported, the app is in English.** Flutter compares each
 language on the phone's preferred list, in order, with the app's supported languages and uses the

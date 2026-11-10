@@ -8,6 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:megrim/analytics/correlations.dart';
 import 'package:megrim/analytics/dashboard.dart';
 import 'package:megrim/database/database.dart';
+import 'package:megrim/l10n/formats.dart';
+import 'package:megrim/l10n/l10n.dart';
 import 'package:megrim/models/event_time.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
 import 'package:megrim/screens/event_detail_screen.dart';
@@ -176,9 +178,10 @@ void main() {
         createdAt: tokyo, updatedAt: tokyo));
     await tester.pumpWidget(MaterialApp(home: EventDetailScreen(repo: repo, eventId: 'tk')));
     await tester.pumpAndSettle();
-    // Tokyo wall clock, whatever zone the test host is in.
-    expect(find.text('Tue 11 Jun 2024, 03:00'), findsOneWidget);
-    expect(find.text('Tue 11 Jun 2024, 05:00'), findsOneWidget);
+    // Tokyo wall clock, whatever zone the test host is in, in the phone's locale format (D7).
+    final fmt = Formats(formatLocale(englishL10n));
+    expect(find.text(fmt.dateWeekdayTime(DateTime(2024, 6, 11, 3))), findsOneWidget);
+    expect(find.text(fmt.dateWeekdayTime(DateTime(2024, 6, 11, 5))), findsOneWidget);
 
     // Saving untouched keeps the instant and the zone.
     await tester.tap(find.byTooltip('Save'));

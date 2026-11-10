@@ -55,7 +55,12 @@ Answer "No" to all collection questions; the label renders as "Data Not Collecte
 
 ## Availability + the Ko-fi decision
 
-**Decided: Option A** (US storefront only, Ko-fi tile kept). The options as considered:
+**Decided 2026-10-30: Option B** (Steve), replacing Option A (US storefront only, Ko-fi tile
+kept), which applied from 1.0.2 to 1.0.8. From `v1.0.9` the iOS build has no Donate tile
+(a `defaultTargetPlatform` check in `settings_screen.dart`; Android keeps it). Once 1.0.9 is live,
+availability expands to the UK, the EU and other English-speaking regions (steps in
+`docs/STATUS.md`: DSA non-trader status first, then the EEA/UK medical-device declaration). The
+options as considered:
 
 - **Option A — US storefront only, keep the Ko-fi tile.** Post-Epic (guideline 3.1.1, May 2025)
   external donation links are allowed on the US storefront with no entitlement or fee. Expansion
@@ -65,8 +70,8 @@ Answer "No" to all collection questions; the label renders as "Data Not Collecte
 - **Option B — worldwide, remove the Ko-fi tile from the iOS build** (compile-time flag or
   platform check). Donations then live only on GitHub/F-Droid/website.
 
-Recommendation: **A** for v1 — it matches the reason the App Store was chosen over Play, and the
-audience loss (non-US) can be revisited with real numbers.
+Original recommendation (2026-09): **A** for v1 — it matched the reason the App Store was chosen
+over Play, with the non-US audience to be revisited later. Revisited 2026-10-30: B.
 
 ## Screenshots
 
@@ -136,13 +141,13 @@ conversation reply — captured on a physical iPhone via TestFlight internal tes
 > weather-data provider, used for (a) the place-name search during onboarding
 > (geocoding-api.open-meteo.com) and (b) opt-in historical weather/pressure for logged entries
 > (api.open-meteo.com), fetched anonymously with an approximate (~1 km rounded) location. No
-> authentication services, no payment processors, no AI services, no SDKs that phone home. The
-> Settings screen contains a link to the developer's Ko-fi page that opens in the external
-> browser. Full network behavior is documented at
+> authentication services, no payment processors, no AI services, no SDKs that phone home. (Until
+> 1.0.8, Settings also linked to the developer's Ko-fi page in the external browser; from 1.0.9
+> the iOS build has no donation link.) Full network behavior is documented at
 > https://github.com/smaegley/megrim/blob/main/docs/PRIVACY.md
 >
-> **5. Regional differences:** none — the app functions identically everywhere. Distribution is
-> currently limited to the United States storefront by choice.
+> **5. Regional differences:** none — the app functions identically everywhere. (Until 1.0.8,
+> distribution was limited to the United States storefront by choice.)
 >
 > **6. Regulated industry / protected material:** not applicable. Megrim is a personal wellness
 > diary, not a regulated medical device: it provides no diagnosis, treatment, prevention, or

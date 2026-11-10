@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
@@ -13,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
+import '../l10n/l10n.dart';
 import '../legal.dart';
 import '../models/app_lock_timeout.dart';
 import '../models/backup_status.dart';
@@ -80,7 +82,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final chosen = await showDialog<int>(
       context: context,
       builder: (context) => SimpleDialog(
-        title: const Text('Remind me to back up'),
+        title: Text(context.l10n.settingsBackupReminderTitle),
         children: [
           // SimpleDialogOption + ListTile, matching the Export dialog below rather than
           // RadioListTile, whose groupValue/onChanged are deprecated in this Flutter.
@@ -91,7 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 leading: Icon(days == _backup.reminderDays
                     ? Icons.radio_button_checked
                     : Icons.radio_button_unchecked),
-                title: Text(backupReminderLabel(days)),
+                title: Text(backupReminderLabel(days, context.l10n)),
               ),
             ),
         ],
@@ -115,11 +117,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // Backfill weather for everything already logged; runs in the background like the
       // home-location change path.
       unawaited(repo.reEnrichAll());
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Weather enrichment on — fetching weather for your entries…')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(context.l10n.settingsWeatherOnSnack)));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Weather enrichment off — no more automatic network requests.')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(context.l10n.settingsWeatherOffSnack)));
     }
   }
 
@@ -135,32 +137,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(l.settingsTitle)),
       body: ListView(
         children: [
           ListTile(
             leading: const Icon(Icons.home_outlined),
-            title: const Text('Home location'),
+            title: Text(l.settingsHomeLocation),
             subtitle: Text(_home?.label ?? (_homeLoaded ? '—' : '…')),
             onTap: () => _changeHome(context),
           ),
           SwitchListTile(
             secondary: const Icon(Icons.cloud_outlined),
-            title: const Text('Weather enrichment'),
+            title: Text(l.settingsWeather),
             subtitle: Text(_weatherEnrichment
-                ? 'Fetches weather for entries from Open-Meteo (rounded location + date only)'
-                : 'Off — no automatic network use (only searches you type)'),
+                ? l.settingsWeatherOnSubtitle
+                : l.settingsWeatherOffSubtitle),
             value: _weatherEnrichment,
             onChanged: _setWeatherEnrichment,
           ),
           const Divider(),
-          _vocabTile(context, 'Triggers', VocabKind.trigger),
-          _vocabTile(context, 'Head locations', VocabKind.headLocation),
+          _vocabTile(context, l.settingsManageTriggers, l.settingsTriggersTitle, VocabKind.trigger),
+          _vocabTile(context, l.settingsManageHeadLocations, l.settingsHeadLocationsTitle,
+              VocabKind.headLocation),
           ListTile(
             leading: const Icon(Icons.medication_outlined),
-            title: const Text('Manage Medications'),
-            subtitle: const Text('Classes, and preventive medications'),
+            title: Text(l.settingsManageMedications),
+            subtitle: Text(l.settingsManageMedicationsSubtitle),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => MedicationsScreen(repo: repo),
             )),
@@ -175,10 +179,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _backup.isOverdue ? Icons.backup_outlined : Icons.backup,
               color: _backup.isOverdue ? StatusColors.serious : null,
             ),
-            title: const Text('Last backup'),
+            title: Text(l.settingsLastBackup),
             subtitle: Text(
-              '${_backup.ageLabel} · ${backupReminderLabel(_backup.reminderDays)}'
-              '${_backup.isOverdue ? ' · due' : ''}',
+              (_backup.isOverdue ? l.settingsBackupSubtitleDue : l.settingsBackupSubtitle)(
+                  _backup.ageLabelIn(l), backupReminderLabel(_backup.reminderDays, l)),
               style: _backup.isOverdue
                   ? const TextStyle(color: StatusColors.serious)
                   : null,
@@ -188,29 +192,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.upload_file),
-            title: const Text('Export (JSON backup)'),
+            title: Text(l.settingsExportJson),
             onTap: () => _exportJson(context),
           ),
           ListTile(
             leading: const Icon(Icons.table_chart_outlined),
-            title: const Text('Export (CSV)'),
+            title: Text(l.settingsExportCsv),
             onTap: () => _exportCsv(context),
           ),
           ListTile(
             leading: const Icon(Icons.picture_as_pdf_outlined),
-            title: const Text('Export report (PDF)'),
-            subtitle: const Text('A printable summary to share with a clinician'),
+            title: Text(l.settingsExportReport),
+            subtitle: Text(l.settingsExportReportSubtitle),
             onTap: () => _exportReport(context),
           ),
           ListTile(
             leading: const Icon(Icons.download),
-            title: const Text('Import (JSON)'),
+            title: Text(l.settingsImport),
             onTap: () => _import(context),
           ),
           ListTile(
             leading: const Icon(Icons.menu_book_outlined),
-            title: const Text('Import format guide'),
-            subtitle: const Text('Bring in data from another app'),
+            title: Text(l.settingsImportGuide),
+            subtitle: Text(l.settingsImportGuideSubtitle),
             onTap: () => _launch(context, kImportDocUrl),
           ),
           if (AppLockScope.maybeOf(context) case final lock?) ...[
@@ -218,20 +222,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ..._privacyTiles(context, lock),
           ],
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.favorite_outline),
-            title: const Text('Donate'),
-            subtitle: const Text('Support development'),
-            onTap: () => _launch(context, 'https://ko-fi.com/smaegley'),
-          ),
+          // Not on iOS: an external tip link is allowed only on the US App Store (guideline
+          // 3.1.1), and one binary serves every storefront (docs/APP_STORE.md, Option B).
+          if (defaultTargetPlatform != TargetPlatform.iOS)
+            ListTile(
+              leading: const Icon(Icons.favorite_outline),
+              title: Text(l.settingsDonate),
+              subtitle: Text(l.settingsDonateSubtitle),
+              onTap: () => _launch(context, 'https://ko-fi.com/smaegley'),
+            ),
           ListTile(
             leading: const Icon(Icons.code),
-            title: const Text('Source code'),
+            title: Text(l.settingsSourceCode),
             onTap: () => _launch(context, kSourceUrl),
           ),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('About & privacy'),
+            title: Text(l.settingsAbout),
             onTap: () => _about(context),
           ),
         ],
@@ -243,18 +250,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<Widget> _notificationTiles(BuildContext context, NotificationsController n) => [
         ListTile(
           leading: const Icon(Icons.notifications_outlined),
-          title: const Text('Daily reminder'),
+          title: Text(context.l10n.settingsDailyReminder),
           subtitle: Text(n.reminder == null
-              ? 'Off'
-              : 'Every day at ${n.reminder!.format(context)}, unless the day is already logged'),
+              ? context.l10n.settingsOff
+              : context.l10n.settingsDailyReminderOn(n.reminder!.format(context))),
           trailing: const Icon(Icons.edit_outlined),
           onTap: () => _pickReminder(context, n),
         ),
         if (n.supportsOngoing)
           SwitchListTile(
             secondary: const Icon(Icons.timer_outlined),
-            title: const Text('Notification during a migraine'),
-            subtitle: const Text('A running clock and an End button while one is in progress'),
+            title: Text(context.l10n.settingsOngoingTitle),
+            subtitle: Text(context.l10n.settingsOngoingSubtitle),
             value: n.ongoingEnabled,
             onChanged: (on) async {
               if (!await n.setOngoing(on) && context.mounted) _notificationsRefused(context);
@@ -266,13 +273,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final choice = await showDialog<String>(
       context: context,
       builder: (context) => SimpleDialog(
-        title: const Text('Daily reminder'),
+        title: Text(context.l10n.settingsDailyReminder),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
             child: Text(
-              'One notification a day asking how the day was, with "No migraine today" and '
-              '"Log". It says nothing about your health, and nothing leaves the phone.',
+              context.l10n.settingsDailyReminderExplain,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
@@ -281,7 +287,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: ListTile(
               leading: Icon(
                   n.reminder == null ? Icons.radio_button_checked : Icons.radio_button_unchecked),
-              title: const Text('Off'),
+              title: Text(context.l10n.settingsOff),
             ),
           ),
           SimpleDialogOption(
@@ -290,8 +296,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leading: Icon(
                   n.reminder != null ? Icons.radio_button_checked : Icons.radio_button_unchecked),
               title: Text(n.reminder == null
-                  ? 'Choose a time…'
-                  : 'At ${n.reminder!.format(context)} (change…)'),
+                  ? context.l10n.settingsReminderChooseTime
+                  : context.l10n.settingsReminderAtTime(n.reminder!.format(context))),
             ),
           ),
         ],
@@ -305,40 +311,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final t = await showTimePicker(
       context: context,
       initialTime: n.reminder ?? const TimeOfDay(hour: 20, minute: 0),
-      helpText: 'Remind me at',
+      helpText: context.l10n.settingsRemindMeAt,
     );
     if (t == null || !context.mounted) return;
     if (!await n.setReminder(t) && context.mounted) _notificationsRefused(context);
   }
 
   void _notificationsRefused(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Notifications are off for Megrim in the phone\'s settings, so this '
-            'stays off. Allow them there, then try again.')));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(context.l10n.settingsNotificationsRefused)));
   }
 
   /// Privacy (backlog #24): app lock with the phone's own unlock, and hide from recent apps.
   List<Widget> _privacyTiles(BuildContext context, AppLockController lock) => [
         SwitchListTile(
           secondary: const Icon(Icons.lock_outline),
-          title: const Text('App lock'),
-          subtitle: const Text('Ask for your fingerprint, face or phone PIN when opening Megrim'),
+          title: Text(context.l10n.settingsAppLock),
+          subtitle: Text(context.l10n.settingsAppLockSubtitle),
           value: lock.enabled,
           onChanged: (on) => _setAppLock(context, lock, on),
         ),
         ListTile(
           leading: const Icon(Icons.timer_outlined),
-          title: const Text('Lock after'),
-          subtitle: Text('${appLockTimeoutLabel(lock.timeout)} in the background'),
+          title: Text(context.l10n.settingsLockAfter),
+          subtitle: Text(
+              context.l10n.settingsLockAfterSubtitle(appLockTimeoutLabel(lock.timeout, context.l10n))),
           enabled: lock.enabled,
           onTap: () => _pickLockTimeout(lock),
         ),
         SwitchListTile(
           secondary: const Icon(Icons.visibility_off_outlined),
-          title: const Text('Hide in recent apps'),
+          title: Text(context.l10n.settingsHideInRecents),
           subtitle: Text(Platform.isAndroid
-              ? 'Blank Megrim in the app switcher. Also blocks screenshots of the app.'
-              : 'Blank Megrim in the app switcher.'),
+              ? context.l10n.settingsHideInRecentsAndroid
+              : context.l10n.settingsHideInRecentsIos),
           value: lock.hideInSwitcher,
           onChanged: lock.setHideInSwitcher,
         ),
@@ -346,33 +352,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _setAppLock(BuildContext context, AppLockController lock, bool on) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l = context.l10n;
     final outcome = await lock.setEnabled(on);
     if (!context.mounted) return;
     switch (outcome) {
       case AuthOutcome.success:
         messenger.showSnackBar(SnackBar(
-            content: Text(on ? 'App lock on.' : 'App lock off.'), duration: const Duration(seconds: 2)));
+            content: Text(on ? l.settingsAppLockOn : l.settingsAppLockOff),
+            duration: const Duration(seconds: 2)));
       case AuthOutcome.noCredential:
         await showDialog<void>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('No screen lock on this phone'),
-            content: const Text('App lock uses your phone\'s own unlock — fingerprint, face, or '
-                'PIN, pattern or password. Set a screen lock in your phone\'s settings first, then '
-                'turn app lock on here.'),
+            title: Text(l.settingsNoScreenLockTitle),
+            content: Text(l.settingsNoScreenLockBody),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
+              TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(MaterialLocalizations.of(context).okButtonLabel)),
             ],
           ),
         );
       case AuthOutcome.lockedOut:
-        messenger.showSnackBar(const SnackBar(
-            content: Text('Too many attempts. Wait a moment, then try again.')));
+        messenger.showSnackBar(SnackBar(content: Text(l.settingsTooManyAttempts)));
       case AuthOutcome.cancelled:
         break;
       case AuthOutcome.error:
-        messenger.showSnackBar(
-            const SnackBar(content: Text('Couldn\'t ask for your phone\'s unlock.')));
+        messenger.showSnackBar(SnackBar(content: Text(l.settingsUnlockError)));
     }
   }
 
@@ -380,7 +386,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final chosen = await showDialog<Duration>(
       context: context,
       builder: (context) => SimpleDialog(
-        title: const Text('Lock after'),
+        title: Text(context.l10n.settingsLockAfter),
         children: [
           for (final d in kAppLockTimeoutChoices)
             SimpleDialogOption(
@@ -388,7 +394,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: ListTile(
                 leading: Icon(
                     d == lock.timeout ? Icons.radio_button_checked : Icons.radio_button_unchecked),
-                title: Text(appLockTimeoutLabel(d)),
+                title: Text(appLockTimeoutLabel(d, context.l10n)),
               ),
             ),
         ],
@@ -397,9 +403,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (chosen != null) await lock.setTimeout(chosen);
   }
 
-  Widget _vocabTile(BuildContext context, String title, String kind) => ListTile(
+  Widget _vocabTile(BuildContext context, String label, String title, String kind) => ListTile(
         leading: const Icon(Icons.label_outline),
-        title: Text('Manage $title'),
+        title: Text(label),
         onTap: () => Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => ManageVocabScreen(repo: repo, kind: kind, title: title),
         )),
@@ -407,11 +413,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _changeHome(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l = context.l10n;
     HomeLocation? picked;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Change home location'),
+        title: Text(l.settingsChangeHomeTitle),
         content: SizedBox(
           width: 400,
           child: LocationPickerField(onSelected: (loc) => picked = loc),
@@ -419,10 +426,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
           FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Save & re-enrich')),
+              child: Text(l.settingsSaveReenrich)),
         ],
       ),
     );
@@ -431,10 +438,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // Update the tile straight from the picked value — no DB re-read, so it shows immediately
       // even before the (slow) re-enrich below runs (backlog #7).
       if (mounted) setState(() => _home = picked);
-      messenger.showSnackBar(
-          const SnackBar(content: Text('Re-enriching entries…')));
+      messenger.showSnackBar(SnackBar(content: Text(l.settingsReenriching)));
       await repo.reEnrichAll();
-      messenger.showSnackBar(const SnackBar(content: Text('Done.')));
+      messenger.showSnackBar(SnackBar(content: Text(l.settingsDone)));
     }
   }
 
@@ -450,20 +456,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// a PDF can't be imported back, the same reason CSV doesn't.
   Future<void> _exportReport(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l = context.l10n; // the report follows the app's language (D1)
     messenger.showSnackBar(
-        const SnackBar(content: Text('Building report…'), duration: Duration(seconds: 2)));
+        SnackBar(content: Text(l.settingsBuildingReport), duration: const Duration(seconds: 2)));
     try {
       final regular = await rootBundle.load('assets/fonts/NotoSans-Regular.ttf');
       final bold = await rootBundle.load('assets/fonts/NotoSans-Bold.ttf');
       // Exact glyph coverage of the embedded font, so anything it can't draw becomes "?" rather
       // than silently disappearing.
       final coverage = TtfParser(regular).charToGlyphIndexMap;
-      final content = await repo.reportContent(canRender: coverage.containsKey);
-      final bytes = await renderReportPdf(content, regular: regular, bold: bold);
+      final content = await repo.reportContent(canRender: coverage.containsKey, l10n: l);
+      final bytes = await renderReportPdf(content, regular: regular, bold: bold, l10n: l);
       if (!context.mounted) return;
       await _exportBytes(context, bytes, ExportServiceFilename.pdf());
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Report failed: $e')));
+      messenger.showSnackBar(SnackBar(content: Text(l.settingsReportFailed('$e'))));
     }
   }
 
@@ -491,20 +498,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final action = await showDialog<_ExportAction>(
       context: context,
       builder: (context) => SimpleDialog(
-        title: const Text('Export'),
+        title: Text(context.l10n.settingsExportTitle),
         children: [
           SimpleDialogOption(
             onPressed: () => Navigator.pop(context, _ExportAction.share),
-            child: const ListTile(
-              leading: Icon(Icons.share_outlined),
-              title: Text('Share'),
+            child: ListTile(
+              leading: const Icon(Icons.share_outlined),
+              title: Text(context.l10n.settingsShare),
             ),
           ),
           SimpleDialogOption(
             onPressed: () => Navigator.pop(context, _ExportAction.save),
-            child: const ListTile(
-              leading: Icon(Icons.save_alt_outlined),
-              title: Text('Save to device'),
+            child: ListTile(
+              leading: const Icon(Icons.save_alt_outlined),
+              title: Text(context.l10n.settingsSaveToDevice),
             ),
           ),
         ],
@@ -520,18 +527,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<bool> _saveToFile(
       BuildContext context, Uint8List bytes, String filename) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l = context.l10n;
     try {
       // The system save dialog is Megrim's own trip out, so it doesn't count as leaving (#24).
       final path = await AppLockScope.external(
           context, () => FilePicker.platform.saveFile(fileName: filename, bytes: bytes));
       if (path != null) {
-        messenger.showSnackBar(const SnackBar(content: Text('Saved.')));
+        messenger.showSnackBar(SnackBar(content: Text(l.settingsSaved)));
         return true;
       }
       // path == null: the user cancelled the save dialog — nothing to report.
       return false;
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Save failed: $e')));
+      messenger.showSnackBar(SnackBar(content: Text(l.settingsSaveFailed('$e'))));
       return false;
     }
   }
@@ -567,6 +575,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _import(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l = context.l10n;
     final result =
         await AppLockScope.external(context, () => FilePicker.platform.pickFiles(withData: true));
     if (result == null || result.files.isEmpty) return;
@@ -577,17 +586,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final replace = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Import'),
-        content: const Text(
-            'Merge with your existing entries, or replace everything?\n\n'
-            'Replace permanently deletes all current entries first.'),
+        title: Text(l.settingsImportTitle),
+        content: Text(l.settingsImportBody),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Merge')),
+              child: Text(l.settingsImportMerge)),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Replace',
+            child: Text(l.settingsImportReplace,
                 style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
         ],
@@ -597,13 +604,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     try {
       final r = await repo.importer.importJsonBytes(bytes, replace: replace);
-      messenger.showSnackBar(SnackBar(
-          content: Text('Imported ${r.imported}, skipped ${r.skipped}.')));
+      messenger.showSnackBar(
+          SnackBar(content: Text(l.settingsImported(r.imported, r.skipped))));
       await repo.processEnrichmentQueue();
     } on ImportException catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Import failed: ${e.message}')));
+      messenger.showSnackBar(SnackBar(content: Text(l.settingsImportFailed(e.messageIn(l)))));
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Import failed: $e')));
+      messenger.showSnackBar(SnackBar(content: Text(l.settingsImportFailed('$e'))));
     }
   }
 
@@ -612,17 +619,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // Android 11+ package-visibility, whereas canLaunchUrl() needs the <queries> browser intent
     // declared in AndroidManifest and returns false without it — the old cause of a silent no-op.
     final messenger = ScaffoldMessenger.of(context);
+    final l = context.l10n;
     try {
       final opened =
           await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
       if (!opened) throw Exception('no handler for $url');
     } catch (_) {
-      messenger.showSnackBar(SnackBar(content: Text('Could not open $url')));
+      messenger.showSnackBar(SnackBar(content: Text(l.settingsCouldNotOpen(url))));
     }
   }
 
   Future<void> _about(BuildContext context) async {
     final theme = Theme.of(context);
+    final l = context.l10n;
     showAboutDialog(
       context: context,
       applicationName: 'Megrim',
@@ -631,23 +640,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
         borderRadius: BorderRadius.circular(12),
         child: Image.asset('assets/logo.png', width: 56, height: 56),
       ),
-      applicationLegalese: 'GPL-3.0-or-later · $kWeatherAttribution',
+      applicationLegalese: l.settingsAboutLegalese(l.legalWeatherAttribution),
       children: [
         const SizedBox(height: 12),
-        Text(kAppTitle, style: theme.textTheme.titleMedium),
-        Text(kAppSubtitle,
+        Text(l.legalAppTitle, style: theme.textTheme.titleMedium),
+        Text(l.legalAppSubtitle,
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.primary)),
         const SizedBox(height: 12),
-        Text(kShortDescription,
+        Text(l.legalShortDescription,
             style: theme.textTheme.bodyMedium
                 ?.copyWith(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
-        const Text(kFullDescription),
+        Text(l.legalFullDescription),
         const Divider(height: 24),
-        const Text(kPrivacySummary),
+        Text(l.legalPrivacySummary),
         const SizedBox(height: 12),
-        const Text(kMedicalDisclaimer),
+        Text(l.legalMedicalDisclaimer),
+        // Community translations: English is the version that counts for the legal wording.
+        if (!l.localeName.startsWith('en')) ...[
+          const SizedBox(height: 12),
+          Text(l.legalTranslationNote, style: theme.textTheme.bodySmall),
+        ],
       ],
     );
   }

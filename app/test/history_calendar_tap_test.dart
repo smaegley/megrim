@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:megrim/database/database.dart';
+import 'package:megrim/l10n/formats.dart';
+import 'package:megrim/l10n/l10n.dart';
 import 'package:megrim/repositories/megrim_repository.dart';
 import 'package:megrim/screens/event_detail_screen.dart';
 import 'package:megrim/screens/history_screen.dart';
@@ -74,7 +76,9 @@ void main() {
 
     // A picker lists both entries rather than navigating straight to either one.
     expect(find.byType(EventDetailScreen), findsNothing);
-    expect(find.text('2 entries on Mon 10 Jun 2024'), findsOneWidget);
+    // The date follows the phone's locale (D7).
+    final day = Formats(formatLocale(englishL10n)).dateWeekday(DateTime(2024, 6, 10));
+    expect(find.text('2 entries on $day'), findsOneWidget);
     expect(find.text('Severity 4/10'), findsOneWidget);
     expect(find.text('Severity 8/10'), findsOneWidget);
 
