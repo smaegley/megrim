@@ -1,0 +1,63 @@
+name: Weblate auto-merge
+
+# Merges Weblate's translation pull requests once CI has passed on them (docs/TRANSLATIONS.md).
+# A translation can't reach users until its language is added to kShippedLocales, so merging
+# them unattended is safe. Only pull requests opened by weblate that change nothing but
+# translation files (never app_en.arb) are merged; anything else is left for review.
+#
+# This runs in the base repository, after CI, with a write token: it must never check out or run
+# the pull request's code. It only reads the file list through the API and asks GitHub to merge
+# the exact commit CI tested.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: weblate-automerge
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == 'weblate/megrim'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge if it only changes translations
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          # workflow_run carries no pull request number for forks: find it by the tested commit.
+          pr=$(gh api "repos/$REPO/pulls?state=open&per_page=100" \
+            --jq ".[] | select(.head.sha == \"$SHA\" and .user.login == \"weblate\") | .number" | head -n1)
+          if [ -z "$pr" ]; then
+            echo "No open Weblate pull request at $SHA; nothing to do."
+            exit 0
+          fi
+
+          files=$(gh api "repos/$REPO/pulls/$pr/files" --paginate --jq '.[].filename')
+          echo "Pull request #$pr changes:"
+          echo "$files"
+          if [ -z "$files" ]; then
+            echo "No changed files listed; leaving #$pr for review."
+            exit 0
+          fi
+          while IFS= read -r f; do
+            if [[ ! "$f" =~ ^app/lib/l10n/app_[A-Za-z_]+\.arb$ || "$f" == app/lib/l10n/app_en.arb ]]; then
+              echo "$f is not a translation file; leaving #$pr for review."
+              exit 0
+            fi
+          done <<< "$files"
+
+          # --match-head-commit: merge only if the pull request is still at the commit CI passed.
+          gh pr merge "$pr" --repo "$REPO" --merge --match-head-commit "$SHA"

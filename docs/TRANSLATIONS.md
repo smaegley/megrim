@@ -226,8 +226,15 @@ tests pass, the export is identical, and the pseudo-locale pass finds no hard-co
   1. **App** (`app/lib/l10n/app_*.arb`, format "ARB file", template `app_en.arb`).
   2. Later, **Android strings** and **iOS InfoPlist.strings** (a handful of strings each).
   3. Phase 4: **F-Droid listing** (`fastlane/metadata/android/<locale>/`).
-- Weblate commits translations and opens a **pull request** on GitHub. Steve (or I) reviews and
-  merges like any other PR, and CI runs on it. Weblate doesn't push to `main` directly.
+- Weblate commits translations and opens a **pull request** on GitHub from its fork, and CI runs
+  on it. Weblate doesn't push to `main` directly. **Auto-merge** (Steve, 2026-11-10):
+  `.github/workflows/weblate-automerge.yml` merges it once CI passes, if it was opened by
+  `weblate` and changes only `app/lib/l10n/app_*.arb` other than `app_en.arb`; anything else
+  waits for review. Safe because a language reaches users only when it's added to
+  `kShippedLocales`. Weblate's own "Merge pull requests automatically" stays **off**: it uses
+  GitHub auto-merge, which merges at once when `main` has no required checks, and Weblate has
+  no write access to turn it on anyway. A merge made by the workflow doesn't start CI on `main`
+  (GitHub doesn't chain runs from its own token); CI already passed on the pull request.
 - Weblate offers machine-translation suggestions. Whether they can be saved as translations is
   Decided: suggestions only (**D4**).
 - **Glossary** in Weblate for the terms that must stay consistent: migraine, aura, attack,
