@@ -238,31 +238,68 @@ tests pass, the export is identical, and the pseudo-locale pass finds no hard-co
 
 ### Weblate setup (Steve, once)
 
-Needs your GitHub account, so it isn't scripted. Do it after the branch with phase 1 is merged to
-`main` (Weblate reads `main`).
+Needs your GitHub account, so it isn't scripted. Weblate reads `main`. This is the one checklist;
+Claude's chat instructions use the same numbers. Steps 1–2 and 4–10 done 2026-11-10; 4, 5, 7 and 8 finished and checked by Claude through the Weblate API (token in `~/.config/weblate-token` on the VM) (settings checked through
+Weblate's public API: `https://hosted.weblate.org/api/components/megrim/app/`).
 
-1. Sign in at <https://hosted.weblate.org> with GitHub, and **request libre hosting** for a new
-   project "Megrim" (the form asks for the repo URL and the licence, GPL-3.0). Approval is
-   manual and can take a few days.
-2. Add a **component** "App":
-   - Source code repository `https://github.com/smaegley/megrim.git`, branch `main`.
-   - Version control: **GitHub pull request** (Weblate pushes to its fork and opens PRs; it
-     never pushes to `main`). Authorise the Weblate GitHub app when asked.
-   - File format **ARB file**; file mask `app/lib/l10n/app_*.arb`; monolingual base language
-     file and template for new translations both `app/lib/l10n/app_en.arb`.
-   - Language code style: **underscore** (`zh_Hans`), so files come out as
-     `app_zh_Hans.arb`, which gen-l10n expects.
-3. Project settings:
-   - **Reviews: on.** `[medical]` and `[legal]` messages need a second person (D4/D5).
-     Weblate shows each message's description as its explanation.
-   - **Machine translation:** enable a free service for *suggestions*. Don't turn on automatic
-     translation (D4).
-   - **Glossary:** add migraine, aura, attack, prodrome, postdrome, preventive, relief,
-     check-in, migraine day, clear day, impact, Megrim (not translated).
-   - Contributor agreement: none needed (GPL-3.0, contributions under the same licence).
-4. Mark `appTitle` ("Megrim") read-only in Weblate.
-5. Start the languages people asked for: Ukrainian (the volunteer on #22), French, Simplified
-   Chinese (`zh_Hans`). Post the Weblate link on #22 and #19.
+1. **[done] Project.** Sign in at <https://hosted.weblate.org> with GitHub, Add new translation
+   project: name "Megrim", URL slug `megrim` (docs/TRANSLATING.md links to it), website
+   `https://github.com/smaegley/megrim`, translation licence **GNU General Public License v3.0
+   or later**. (Weblate guesses "v3.0 only" from LICENSE; the README says or-later.)
+2. **[done] Component "App"** (slug `app`), From version control:
+   - Version control **GitHub pull request**; repository `https://github.com/smaegley/megrim.git`,
+     branch `main`; push URL **empty** (Weblate forks the repo); push branch **empty** (empty = Weblate pushes to its own fork
+     and opens PRs from there; a branch name means pushing into this repo, which needs write
+     access Weblate doesn't have: the first push failed until it was cleared, 2026-11-10); Create merge requests on; Merge automatically **off**; PR labels
+     `localization`; assignee `smaegley` (optional).
+   - File format **ARB file**; JSON indentation **2** (as `app_en.arb`; 4 would re-indent the
+     whole file in the first PR); Do not sort keys.
+   - File mask `app/lib/l10n/app_*.arb`; monolingual base file `app/lib/l10n/app_en.arb`;
+     **Edit base file off** (English changes only in the code); template for new translations
+     **empty** (a template would copy English into new languages as if translated).
+   - Language code style: untick Inherit, **POSIX style using underscore as a separator**
+     (`app_pt_BR.arb`, which gen-l10n expects). Licence: GPL-3.0-or-later.
+   - Weblate creates a second component, the **glossary**, named after the project ("Megrim",
+     slug `glossary`). Its "local" / manual-push warnings are normal.
+   - Check: the App component shows **620 strings** in English. The "No file mask matches"
+     error until the first language exists is expected.
+3. **Libre hosting.** Billing page › Libre hosting › Request approval, with a short
+   message (the app, issues #22/#19, ~620 strings, PRs through CI). Approval is manual, days.
+   They ask for Weblate to be mentioned in the README.
+4. **[done] Cleanup add-on.** App › Manage › Add-ons › **Cleanup translation files**. Removes a message
+   from every language when it's removed from English; without it CI rejects Weblate's PRs (no
+   keys the English file lacks).
+5. **[done] Reviews.** Project › Manage › Settings › Workflow: **Enable reviews** on (`[medical]` and
+   `[legal]` messages need a second person, D4/D5); source reviews off. Translation quality
+   filter: **Skip translations marked as needing editing** (not "approved only", which would hold
+   back everything until a language has a reviewer). Then App › Manage › Settings › Translation
+   › **Enforced checks**: the placeholder and ICU MessageFormat checks, so a translation that
+   breaks `{count}` is saved as needing editing and held back, instead of failing CI for the
+   whole PR. Translations go stale (needing editing) when the English changes, so those are held
+   back too and the app shows the English until they're redone.
+6. **[done] Machine translation, suggestions only.** Nothing to add: Hosted Weblate already
+   provides Apertium, LibreTranslate and its translation memory site-wide
+   (`https://hosted.weblate.org/machinery/megrim/`). The rest of the list needs your own paid API
+   keys. Don't add the *Automatic translation* add-on (D4).
+7. **[done] `appTitle` read-only.** App › search `appTitle` › source string details › Edit translation
+   flags: `read-only`. The `icu-message-format` check flag is set on the App component.
+8. **[done] Glossary.** migraine, aura, attack, prodrome, postdrome, preventive, relief, check-in,
+   migraine day, clear day, impact, each with an explanation for translators; **Megrim**
+   read-only. Add terms in English only, with an empty translation: Weblate otherwise copies the
+   English into every language as if translated.
+9. **[done] Languages.** App › Start new translation: Ukrainian, French, Chinese (Simplified Han
+   script). Chinese lives in **`app_zh.arb`**, not `app_zh_Hans.arb`: gen-l10n refuses a
+   script-specific file without a plain `app_zh.arb` fallback ("Arb file for a fallback, zh, does
+   not exist", found on Weblate's first PR, #24, 2026-11-10). So `app_zh.arb` is committed on
+   `main`, and the project's **Language aliases** has `zh:zh_Hans`, which makes Weblate treat
+   that file as Simplified Chinese. A Traditional Chinese translation later would be
+   `app_zh_Hant.arb`, which works because `app_zh.arb` exists.
+10. **[done] Webhook.** GitHub repo › Settings › Webhooks › Add: payload URL
+    `https://hosted.weblate.org/hooks/github/`, content type `application/json`. Without it
+    Weblate doesn't see new English text until someone updates it by hand.
+11. **Announce.** Post the Weblate link on #22 and #19 (Claude drafts).
+
+No contributor agreement is needed: GPL-3.0-or-later, contributions under the same licence.
 
 Then, per release: `tools/l10n.py stats` shows each language's coverage; when one meets the bar,
 add it to `app/lib/l10n/shipped_locales.dart`, run `tools/l10n.py sync`, and test it on a phone.
@@ -322,9 +359,10 @@ stay first (gen-l10n puts the template language first). Examples:
   screen never mixes English app text with German buttons.
 - **Chinese variants:** with only `zh` (Simplified) supported, a phone set to Traditional
   Chinese (Taiwan, Hong Kong) matches on the language code and gets Simplified Chinese, not
-  English. That's usually the more readable fallback, but declare the locale as
-  `zh_Hans` and decide deliberately when Simplified Chinese ships: keep that behaviour, or send
-  Traditional users to English until a `zh_Hant` translation exists.
+  English. That's usually the more readable fallback. The file is `app_zh.arb` and the shipped
+  locale `Locale('zh')` (Flutter needs the plain `zh` file; see Weblate setup step 9). When
+  Simplified Chinese ships, decide deliberately: keep that behaviour, or send Traditional users
+  to English until a `zh_Hant` translation exists.
 
 ### Credits
 
