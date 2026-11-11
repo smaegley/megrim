@@ -1,1 +1,322 @@
-{}
+{
+  "dataTriggerStress": "Stress",
+  "@dataTriggerStress": {
+    "description": "Default trigger, and the 'Stress' factor in Migraine days vs clear days (stress level 1-5)."
+  },
+  "dataTriggerSleepChange": "Changement de sommeil",
+  "@dataTriggerSleepChange": {
+    "description": "Default trigger: sleeping more or less than usual, or at different times."
+  },
+  "dataTriggerBrightLight": "Lumière",
+  "@dataTriggerBrightLight": {
+    "description": "Default trigger."
+  },
+  "dataTriggerExercise": "Activité physique",
+  "@dataTriggerExercise": {
+    "description": "Default trigger."
+  },
+  "dataTriggerWeather": "Météo / pression",
+  "@dataTriggerWeather": {
+    "description": "Default trigger: a change in the weather or barometric pressure."
+  },
+  "dataTriggerAlcohol": "Alcool",
+  "@dataTriggerAlcohol": {
+    "description": "Default trigger."
+  },
+  "dataTriggerCaffeine": "Cafféine",
+  "@dataTriggerCaffeine": {
+    "description": "Default trigger, and a default relief method (coffee or tea taken to ease a migraine)."
+  },
+  "dataTriggerFood": "Nourriture",
+  "@dataTriggerFood": {
+    "description": "Default trigger: something eaten."
+  },
+  "dataTriggerHormonal": "Hormones",
+  "@dataTriggerHormonal": {
+    "description": "Default trigger: e.g. the menstrual cycle."
+  },
+  "dataTriggerStrongSmell": "Forte odeur",
+  "@dataTriggerStrongSmell": {
+    "description": "Default trigger: perfume, smoke, paint and the like."
+  },
+  "dataTriggerScreenTime": "Temps d'écran",
+  "@dataTriggerScreenTime": {
+    "description": "Default trigger: long use of a phone or computer screen."
+  },
+  "dataTriggerTravel": "Voyage",
+  "@dataTriggerTravel": {
+    "description": "Default trigger: being away from home."
+  },
+  "dataHeadLeftTemple": "Tempe gauche",
+  "@dataHeadLeftTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadRightTemple": "Tempe droite",
+  "@dataHeadRightTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindLeftEye": "Derrière l’œil gauche",
+  "@dataHeadBehindLeftEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindRightEye": "Derrière l’œil droit",
+  "@dataHeadBehindRightEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadForehead": "Front",
+  "@dataHeadForehead": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadTop": "Haut de la tête",
+  "@dataHeadTop": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBack": "Arrière de la tête",
+  "@dataHeadBack": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadNeck": "Cou",
+  "@dataHeadNeck": {
+    "description": "Default place where the pain is."
+  },
+  "dataHeadBothSides": "Les deux côtés",
+  "@dataHeadBothSides": {
+    "description": "Default place on the head where the pain is: both sides of the head."
+  },
+  "dataSymptomNausea": "Nausée",
+  "@dataSymptomNausea": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomVomiting": "Vomissements",
+  "@dataSymptomVomiting": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomLight": "Sensibilité à la lumière",
+  "@dataSymptomLight": {
+    "description": "[medical] Default migraine symptom (photophobia)."
+  },
+  "dataSymptomSound": "Sensibilité au son",
+  "@dataSymptomSound": {
+    "description": "[medical] Default migraine symptom (phonophobia)."
+  },
+  "dataSymptomSmell": "Sensibilité aux odeurs",
+  "@dataSymptomSmell": {
+    "description": "[medical] Default migraine symptom (osmophobia)."
+  },
+  "dataSymptomNeck": "Douleurs au cou",
+  "@dataSymptomNeck": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomDizziness": "Vertiges",
+  "@dataSymptomDizziness": {
+    "description": "[medical] Default migraine symptom: feeling light-headed or unsteady. Different from vertigo."
+  },
+  "dataSymptomVertigo": "Vertiges",
+  "@dataSymptomVertigo": {
+    "description": "[medical] Default migraine symptom: a false sense that you or the room is spinning or moving. Marks vestibular migraine; keep it distinct from dizziness."
+  },
+  "dataSymptomFatigue": "Fatigue",
+  "@dataSymptomFatigue": {
+    "description": "[medical] Default migraine symptom: extreme tiredness."
+  },
+  "dataSymptomYawning": "Bâillements",
+  "@dataSymptomYawning": {
+    "description": "[medical] Default migraine symptom: repeated yawning, often before an attack."
+  },
+  "dataReliefDarkRoom": "Salle sombre",
+  "@dataReliefDarkRoom": {
+    "description": "Default non-drug relief method: resting in a dark room."
+  },
+  "dataReliefSleep": "Sommeil",
+  "@dataReliefSleep": {
+    "description": "Default non-drug relief method."
+  },
+  "dataReliefHeat": "Chaleur",
+  "@dataReliefHeat": {
+    "description": "Default non-drug relief method: a warm compress, a hot shower."
+  },
+  "dataReliefHydration": "Hydratation",
+  "@dataReliefHydration": {
+    "description": "Default non-drug relief method: drinking water."
+  },
+  "dataReliefRest": "Repos",
+  "@dataReliefRest": {
+    "description": "Default non-drug relief method."
+  },
+  "dataSeasonWinter": "Hiver",
+  "@dataSeasonWinter": {
+    "description": "Season."
+  },
+  "dataSeasonSpring": "Printemps",
+  "@dataSeasonSpring": {
+    "description": "Season."
+  },
+  "dataSeasonSummer": "Été",
+  "@dataSeasonSummer": {
+    "description": "Season."
+  },
+  "dataSeasonAutumn": "Automne",
+  "@dataSeasonAutumn": {
+    "description": "Season (fall)."
+  },
+  "dataMoonNew": "Nouvelle Lune",
+  "@dataMoonNew": {
+    "description": "Moon phase."
+  },
+  "dataMoonFirstQuarter": "Premier Quart",
+  "@dataMoonFirstQuarter": {
+    "description": "Moon phase."
+  },
+  "dataMoonFull": "Pleine Lune",
+  "@dataMoonFull": {
+    "description": "Moon phase."
+  },
+  "dataMoonLastQuarter": "Dernier Quart",
+  "@dataMoonLastQuarter": {
+    "description": "Moon phase."
+  },
+  "dataTimeMorning": "matinée",
+  "@dataTimeMorning": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeAfternoon": "après-midi",
+  "@dataTimeAfternoon": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeEvening": "soirée",
+  "@dataTimeEvening": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeNight": "nuit",
+  "@dataTimeNight": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataFactorDayOfWeek": "Jour de la semaine",
+  "@dataFactorDayOfWeek": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorSeason": "Saison",
+  "@dataFactorSeason": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorMonth": "Mois",
+  "@dataFactorMonth": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorMoonPhase": "Phase de la Lune",
+  "@dataFactorMoonPhase": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorPressure": "Pression Δ 24h (hPa)",
+  "@dataFactorPressure": {
+    "description": "Name of a factor: the change in barometric pressure over 24 hours, in hectopascals. Keep 'Δ', '24h' and 'hPa' as symbols."
+  },
+  "dataFactorSleep": "Heures de sommeil la nuit avant",
+  "@dataFactorSleep": {
+    "description": "Name of a factor in Migraine days vs clear days: hours slept the night before."
+  },
+  "dataFactorTrigger": "Déclencheurs notés",
+  "@dataFactorTrigger": {
+    "description": "Name of a factor in Migraine days vs clear days: a trigger written down for that day."
+  },
+  "dataFactorFood": "Nourriture notée",
+  "@dataFactorFood": {
+    "description": "Name of a factor in Migraine days vs clear days: a food written down for that day."
+  },
+  "dataHours": "{value}h",
+  "@dataHours": {
+    "description": "A number of hours, as a chart label: '9.5 h'. Use the usual short form for hours.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "9.5"
+      }
+    }
+  },
+  "dataBucketBelow": "<{value}",
+  "@dataBucketBelow": {
+    "description": "Chart bucket: values below a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "-10"
+      }
+    }
+  },
+  "dataBucketAbove": ">{value}",
+  "@dataBucketAbove": {
+    "description": "Chart bucket: values above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
+  "dataBucketAtLeast": "≥ {value}",
+  "@dataBucketAtLeast": {
+    "description": "Chart bucket: values at or above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "14 h"
+      }
+    }
+  },
+  "dataBucketRange": "de {from} à {to}",
+  "@dataBucketRange": {
+    "description": "Chart bucket for a range that may include negative numbers: '-10 to -5' (pressure change in hPa).",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "-10"
+      },
+      "to": {
+        "type": "String",
+        "example": "-5"
+      }
+    }
+  },
+  "dataBucketSpan": "{from}-{to}",
+  "@dataBucketSpan": {
+    "description": "Chart bucket for a range of positive numbers, written with a dash: '6–8'.",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "6"
+      },
+      "to": {
+        "type": "String",
+        "example": "8"
+      }
+    }
+  },
+  "noHeadache": "Pas de maux de tête",
+  "@noHeadache": {
+    "description": "Label on an attack recorded without headache (History, entry detail, report)."
+  },
+  "noHeadacheWithAura": "Pas de maux de tête · avec aura",
+  "@noHeadacheWithAura": {
+    "description": "[medical] Label on an attack without headache that had an aura (ICHD-3 'typical aura without headache'). Keep the '·' separator."
+  },
+  "noHeadacheWithVertigo": "Pas de maux de tête · avec vertiges",
+  "@noHeadacheWithVertigo": {
+    "description": "[medical] Label on an attack without headache that had vertigo or dizziness (as in vestibular migraine). Keep the '·' separator."
+  },
+  "impactNormal": "Normal",
+  "@impactNormal": {
+    "description": "Impact on the day, short button label: functioned normally. Answers 'How well could you do your usual things?'"
+  },
+  "impactReduced": "Réduit",
+  "@impactReduced": {
+    "description": "Impact on the day, short button label: reduced function, did less or less well."
+  },
+  "impactUnable": "Incapacité",
+  "@impactUnable": {
+    "description": "Impact on the day, short button label: unable to do usual activities. Must not read as 'unable to stop me'."
+  },
+  "impactNormalDescription": "fonctionnement normal",
+  "@impactNormalDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  }
+}
