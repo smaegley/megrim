@@ -1,1 +1,941 @@
-{}
+{
+  "dataTriggerStress": "Стрес",
+  "@dataTriggerStress": {
+    "description": "Default trigger, and the 'Stress' factor in Migraine days vs clear days (stress level 1-5)."
+  },
+  "dataTriggerSleepChange": "Зміна режиму сну",
+  "@dataTriggerSleepChange": {
+    "description": "Default trigger: sleeping more or less than usual, or at different times."
+  },
+  "dataTriggerBrightLight": "Яскраве світло",
+  "@dataTriggerBrightLight": {
+    "description": "Default trigger."
+  },
+  "dataTriggerExercise": "Фізичне навантаження",
+  "@dataTriggerExercise": {
+    "description": "Default trigger."
+  },
+  "dataTriggerWeather": "Погода / Тиск",
+  "@dataTriggerWeather": {
+    "description": "Default trigger: a change in the weather or barometric pressure."
+  },
+  "dataTriggerAlcohol": "Алкоголь",
+  "@dataTriggerAlcohol": {
+    "description": "Default trigger."
+  },
+  "dataTriggerCaffeine": "Кофеїн",
+  "@dataTriggerCaffeine": {
+    "description": "Default trigger, and a default relief method (coffee or tea taken to ease a migraine)."
+  },
+  "dataTriggerFood": "Їжа",
+  "@dataTriggerFood": {
+    "description": "Default trigger: something eaten."
+  },
+  "dataTriggerHormonal": "Гормональні зміни",
+  "@dataTriggerHormonal": {
+    "description": "Default trigger: e.g. the menstrual cycle."
+  },
+  "dataTriggerStrongSmell": "Сильний запах",
+  "@dataTriggerStrongSmell": {
+    "description": "Default trigger: perfume, smoke, paint and the like."
+  },
+  "dataTriggerScreenTime": "Екранний час",
+  "@dataTriggerScreenTime": {
+    "description": "Default trigger: long use of a phone or computer screen."
+  },
+  "dataTriggerTravel": "Поїздка",
+  "@dataTriggerTravel": {
+    "description": "Default trigger: being away from home."
+  },
+  "dataHeadLeftTemple": "Ліва скроня",
+  "@dataHeadLeftTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadRightTemple": "Права скроня",
+  "@dataHeadRightTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindLeftEye": "За лівим оком",
+  "@dataHeadBehindLeftEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindRightEye": "За правим оком",
+  "@dataHeadBehindRightEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadForehead": "Лоб",
+  "@dataHeadForehead": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadTop": "Тім'я",
+  "@dataHeadTop": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadNeck": "Шия",
+  "@dataHeadNeck": {
+    "description": "Default place where the pain is."
+  },
+  "dataHeadBothSides": "Обидва боки",
+  "@dataHeadBothSides": {
+    "description": "Default place on the head where the pain is: both sides of the head."
+  },
+  "dataSymptomNausea": "Нудота",
+  "@dataSymptomNausea": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomVomiting": "Блювання",
+  "@dataSymptomVomiting": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomLight": "Чуттливість до світла",
+  "@dataSymptomLight": {
+    "description": "[medical] Default migraine symptom (photophobia)."
+  },
+  "dataSymptomSound": "Чутливість до шуму",
+  "@dataSymptomSound": {
+    "description": "[medical] Default migraine symptom (phonophobia)."
+  },
+  "dataSymptomSmell": "Чутливість до запахів",
+  "@dataSymptomSmell": {
+    "description": "[medical] Default migraine symptom (osmophobia)."
+  },
+  "dataSymptomNeck": "Біль / скутість у шиї",
+  "@dataSymptomNeck": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomDizziness": "Запаморочення",
+  "@dataSymptomDizziness": {
+    "description": "[medical] Default migraine symptom: feeling light-headed or unsteady. Different from vertigo."
+  },
+  "dataHeadBack": "Потилиця",
+  "@dataHeadBack": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataSymptomVertigo": "Сильне запаморочення",
+  "@dataSymptomVertigo": {
+    "description": "[medical] Default migraine symptom: a false sense that you or the room is spinning or moving. Marks vestibular migraine; keep it distinct from dizziness."
+  },
+  "dataSymptomMotion": "Чутливість до руху",
+  "@dataSymptomMotion": {
+    "description": "[medical] Default migraine symptom: symptoms made worse by moving the head or by motion."
+  },
+  "dataSymptomFatigue": "Втома",
+  "@dataSymptomFatigue": {
+    "description": "[medical] Default migraine symptom: extreme tiredness."
+  },
+  "dataSymptomBrainFog": "Туман у голові",
+  "@dataSymptomBrainFog": {
+    "description": "[medical] Default migraine symptom: trouble thinking clearly or concentrating."
+  },
+  "dataSymptomYawning": "Позіхання",
+  "@dataSymptomYawning": {
+    "description": "[medical] Default migraine symptom: repeated yawning, often before an attack."
+  },
+  "dataReliefDarkRoom": "Темна кімната",
+  "@dataReliefDarkRoom": {
+    "description": "Default non-drug relief method: resting in a dark room."
+  },
+  "dataReliefSleep": "Сон",
+  "@dataReliefSleep": {
+    "description": "Default non-drug relief method."
+  },
+  "dataReliefColdPack": "Холодний компрес",
+  "@dataReliefColdPack": {
+    "description": "Default non-drug relief method: something cold on the head or neck."
+  },
+  "dataReliefHeat": "Прогрівання",
+  "@dataReliefHeat": {
+    "description": "Default non-drug relief method: a warm compress, a hot shower."
+  },
+  "dataReliefHydration": "Пиття води",
+  "@dataReliefHydration": {
+    "description": "Default non-drug relief method: drinking water."
+  },
+  "dataReliefRest": "Відпочинок",
+  "@dataReliefRest": {
+    "description": "Default non-drug relief method."
+  },
+  "dataSeasonWinter": "Зима",
+  "@dataSeasonWinter": {
+    "description": "Season."
+  },
+  "dataSeasonSpring": "Весна",
+  "@dataSeasonSpring": {
+    "description": "Season."
+  },
+  "dataSeasonSummer": "Літо",
+  "@dataSeasonSummer": {
+    "description": "Season."
+  },
+  "dataSeasonAutumn": "Осінь",
+  "@dataSeasonAutumn": {
+    "description": "Season (fall)."
+  },
+  "dataMoonNew": "Новий місяць",
+  "@dataMoonNew": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaxingCrescent": "Зростаючий місяць",
+  "@dataMoonWaxingCrescent": {
+    "description": "Moon phase."
+  },
+  "dataMoonFirstQuarter": "Перша чверть",
+  "@dataMoonFirstQuarter": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaxingGibbous": "Прибуваючий місяць",
+  "@dataMoonWaxingGibbous": {
+    "description": "Moon phase."
+  },
+  "dataMoonFull": "Повний місяць",
+  "@dataMoonFull": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaningGibbous": "Спадаючий місяць",
+  "@dataMoonWaningGibbous": {
+    "description": "Moon phase."
+  },
+  "dataMoonLastQuarter": "Остання чверть",
+  "@dataMoonLastQuarter": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaningCrescent": "Старий місяць",
+  "@dataMoonWaningCrescent": {
+    "description": "Moon phase."
+  },
+  "dataTimeMorning": "Ранок",
+  "@dataTimeMorning": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeAfternoon": "День",
+  "@dataTimeAfternoon": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeEvening": "Вечір",
+  "@dataTimeEvening": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeNight": "Ніч",
+  "@dataTimeNight": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataFactorDayOfWeek": "День тижня",
+  "@dataFactorDayOfWeek": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorSeason": "Пора року",
+  "@dataFactorSeason": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorMoonPhase": "Фаза Місяця",
+  "@dataFactorMoonPhase": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorDaylight": "Тривалість дня",
+  "@dataFactorDaylight": {
+    "description": "Name of a factor: how many hours of daylight the day had."
+  },
+  "dataFactorPressure": "Перепад тиску Δ 24 год, (гПа)",
+  "@dataFactorPressure": {
+    "description": "Name of a factor: the change in barometric pressure over 24 hours, in hectopascals. Keep 'Δ', '24h' and 'hPa' as symbols."
+  },
+  "dataFactorMonth": "Місяць",
+  "@dataFactorMonth": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorSleep": "Нічний сон",
+  "@dataFactorSleep": {
+    "description": "Name of a factor in Migraine days vs clear days: hours slept the night before."
+  },
+  "dataFactorTrigger": "Тригер зафіксовано",
+  "@dataFactorTrigger": {
+    "description": "Name of a factor in Migraine days vs clear days: a trigger written down for that day."
+  },
+  "dataFactorFood": "Прийом їжі записано",
+  "@dataFactorFood": {
+    "description": "Name of a factor in Migraine days vs clear days: a food written down for that day."
+  },
+  "dataHours": "{value} год",
+  "@dataHours": {
+    "description": "A number of hours, as a chart label: '9.5 h'. Use the usual short form for hours.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "9.5"
+      }
+    }
+  },
+  "dataBucketBelow": "менше {value}",
+  "@dataBucketBelow": {
+    "description": "Chart bucket: values below a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "-10"
+      }
+    }
+  },
+  "dataBucketAbove": "Більше {value}",
+  "@dataBucketAbove": {
+    "description": "Chart bucket: values above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
+  "dataBucketAtLeast": "Від {value}",
+  "@dataBucketAtLeast": {
+    "description": "Chart bucket: values at or above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "14 h"
+      }
+    }
+  },
+  "dataBucketRange": "{from} до {to}",
+  "@dataBucketRange": {
+    "description": "Chart bucket for a range that may include negative numbers: '-10 to -5' (pressure change in hPa).",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "-10"
+      },
+      "to": {
+        "type": "String",
+        "example": "-5"
+      }
+    }
+  },
+  "dataBucketSpan": "{from}–{to}",
+  "@dataBucketSpan": {
+    "description": "Chart bucket for a range of positive numbers, written with a dash: '6–8'.",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "6"
+      },
+      "to": {
+        "type": "String",
+        "example": "8"
+      }
+    }
+  },
+  "noHeadache": "Немає головного болю",
+  "@noHeadache": {
+    "description": "Label on an attack recorded without headache (History, entry detail, report)."
+  },
+  "noHeadacheWithAura": "Немає головного болю · з аура",
+  "@noHeadacheWithAura": {
+    "description": "[medical] Label on an attack without headache that had an aura (ICHD-3 'typical aura without headache'). Keep the '·' separator."
+  },
+  "noHeadacheWithVertigo": "Без головного болю · із запамороченням",
+  "@noHeadacheWithVertigo": {
+    "description": "[medical] Label on an attack without headache that had vertigo or dizziness (as in vestibular migraine). Keep the '·' separator."
+  },
+  "impactNormal": "Нормативно",
+  "@impactNormal": {
+    "description": "Impact on the day, short button label: functioned normally. Answers 'How well could you do your usual things?'"
+  },
+  "impactReduced": "Зниження",
+  "@impactReduced": {
+    "description": "Impact on the day, short button label: reduced function, did less or less well."
+  },
+  "impactUnable": "Вимкнено",
+  "@impactUnable": {
+    "description": "Impact on the day, short button label: unable to do usual activities. Must not read as 'unable to stop me'."
+  },
+  "impactNormalDescription": "Функціонував(-ла) нормально",
+  "@impactNormalDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactReducedDescription": "знижена функція",
+  "@impactReducedDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactUnableDescription": "не може функціонувати",
+  "@impactUnableDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactNormalExplanation": "Працював(-ла) у звичному режимі: день минув як завжди",
+  "@impactNormalExplanation": {
+    "description": "Shown under the impact buttons once 'Normal' is chosen."
+  },
+  "impactReducedExplanation": "Знижена працездатність: робив(-ла) менше або гірше",
+  "@impactReducedExplanation": {
+    "description": "Shown under the impact buttons once 'Reduced' is chosen."
+  },
+  "impactUnableExplanation": "Не міг(-ла) функціонувати: не вдавалося виконувати звичні справи",
+  "@impactUnableExplanation": {
+    "description": "Shown under the impact buttons once 'Unable' is chosen."
+  },
+  "medClassTriptan": "Триптан",
+  "@medClassTriptan": {
+    "description": "[medical] Class of acute migraine medication."
+  },
+  "medClassErgot": "Ерготаміни",
+  "@medClassErgot": {
+    "description": "[medical] Class of acute migraine medication (ergotamines)."
+  },
+  "medClassOpioid": "Опіоїд",
+  "@medClassOpioid": {
+    "description": "[medical] Class of acute medication."
+  },
+  "medClassCombination": "Комбінація больового полегшувача",
+  "@medClassCombination": {
+    "description": "[medical] Class of acute medication: a pain reliever combined with codeine, caffeine or butalbital (ICHD-3 'combination-analgesic')."
+  },
+  "medClassSimple": "Просте зняття болю",
+  "@medClassSimple": {
+    "description": "[medical] Class of acute medication: paracetamol, ibuprofen, aspirin and similar (ICHD-3 'non-opioid analgesic')."
+  },
+  "medClassGepant": "Гепант",
+  "@medClassGepant": {
+    "description": "[medical] Class of acute migraine medication (CGRP receptor antagonists)."
+  },
+  "medClassDitan": "Дітан",
+  "@medClassDitan": {
+    "description": "[medical] Class of acute migraine medication (lasmiditan)."
+  },
+  "medClassAntiemetic": "Протинудотні",
+  "@medClassAntiemetic": {
+    "description": "[medical] Class of medication against nausea (antiemetic)."
+  },
+  "medClassOther": "Інше",
+  "@medClassOther": {
+    "description": "Medication class: anything not in the other classes."
+  },
+  "medClassNotSet": "Клас не вказано",
+  "@medClassNotSet": {
+    "description": "Shown for a medication the user hasn't given a class."
+  },
+  "medClassTriptanExamples": "суматриптан, ризатриптан, золмітриптан…",
+  "@medClassTriptanExamples": {
+    "description": "[medical] Examples under the class name in the picker. Generic drug names, no brands; use the local generic names."
+  },
+  "medClassErgotExamples": "ерготамін, дигідроеробготамін",
+  "@medClassErgotExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassOpioidExamples": "кодеїн, трамадол, оксикодон…",
+  "@medClassOpioidExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassCombinationExamples": "Знеболювальне в комбінації з кодеїном, кофеїном або бутальбіталом",
+  "@medClassCombinationExamples": {
+    "description": "[medical] Examples under the class name."
+  },
+  "medClassSimpleExamples": "парацетамол (ацетамінофен), ібупрофен, напроксен, аспірин…",
+  "@medClassSimpleExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names; use the local names (paracetamol / acetaminophen)."
+  },
+  "medClassGepantExamples": "уброгепант, римегепант, завегепант",
+  "@medClassGepantExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassDitanExamples": "Ласмідитан",
+  "@medClassDitanExamples": {
+    "description": "[medical] Example under the class name. Generic drug name."
+  },
+  "medClassAntiemeticExamples": "метоклопрамід, ондансетрон, домперидон…",
+  "@medClassAntiemeticExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassOtherExamples": "Інший варіант",
+  "@medClassOtherExamples": {
+    "description": "Under 'Other' in the medication class picker."
+  },
+  "overuseNoticeTitle": "Дні прийому ліків на пороговому рівні",
+  "@overuseNoticeTitle": {
+    "description": "[medical] Title of the notice shown when acute-medication days reached the ICHD-3 medication-overuse reference level in each of the last 3 months. Calm and factual; not a warning or a diagnosis."
+  },
+  "overuseNoticeBody": "У кожному з останніх 3 повних місяців кількість днів із прийомом препаратів для купірування нападу досягла рівня, який у клінічних настановах щодо головного болю (ICHD-3) враховують при оцінці ризику головного болю, спричиненого надмірним застосуванням лікарських засобів (коли часте вживання знеболювальних робить напади частішими). Це лише підрахунок ваших записів, а не діагноз. Не змінюйте схему прийому ліків на основі цих даних, але варто обговорити це з лікарем.",
+  "@overuseNoticeBody": {
+    "description": "[medical] Body of the medication-overuse notice. It must not say the user has medication-overuse headache, and must not tell them to stop or change a medication. Needs a second reviewer."
+  },
+  "overuseLevelClass": "{medClass} на {days} дні (рівень {level})",
+  "@overuseLevelClass": {
+    "description": "[medical] One month's reason for the notice: a class's medication days and the ICHD-3 reference level, e.g. 'Triptan on 11 days (level 10)'.",
+    "placeholders": {
+      "medClass": {
+        "type": "String",
+        "example": "Triptan"
+      },
+      "days": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "overuseLevelMixed": "Комбінація різних класів препаратів протягом {days} дн. загалом (рівень {level})",
+  "@overuseLevelMixed": {
+    "description": "[medical] One month's reason for the notice when several classes together reached the level (ICHD-3 8.2.6).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsNeedEvents": "Для кореляційного аналізу потрібно щонайменше {count} подій.",
+  "@correlationsNeedEvents": {
+    "description": "Why Suspected Factors isn't shown yet.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsCaveatSample": "На основі {migraineDays} дн. із мігренню за період у {days} дн. — мала вибірка, результати мають високу похибку.",
+  "@correlationsCaveatSample": {
+    "description": "Caveat under Suspected Factors.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsMidAttackNote": "{count, plural, =1{1 день усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} one{# день усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} few{# дні усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} many{# днів усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} other{# днів усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.}}",
+  "@correlationsMidAttackNote": {
+    "description": "Caveat under Suspected Factors: days inside a multi-day attack (not its first day) are not counted.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsCaveatOddsRatio": "Корекція +0.5 використовується для порожніх комірок при розрахунку співвідношення шансів; значення поблизу 1.0 вказують на відсутність статистичного зв'язку.",
+  "@correlationsCaveatOddsRatio": {
+    "description": "Caveat under Suspected Factors. 'Odds ratio' is the statistics term; '+0.5' and '1.0' are numbers."
+  },
+  "caveatMultipleComparisons": "Оскільки водночас аналізується багато чинників (множинні порівняння), деякі помітні асоціації можуть виявитися просто випадковістю.",
+  "@caveatMultipleComparisons": {
+    "description": "Caveat under Suspected Factors and Migraine days vs clear days. 'Multiple comparisons' is the statistics term."
+  },
+  "caveatNotCausation": "Асоціація — це не причинно-наслідковий зв'язок. Використовуйте це для формування гіпотез, а не остаточних висновків.",
+  "@caveatNotCausation": {
+    "description": "Caveat under Suspected Factors and Migraine days vs clear days."
+  },
+  "trackedNeedsDays": "Потрібно {needDays} відстежених дн., із них щонайменше {needMigraine} дн. із мігренню та {needClear} дн. без болю. Наразі є: {tracked} відстежених, {migraine} із мігренню, {clear} без болю (від моменту першої відмітки).",
+  "@trackedNeedsDays": {
+    "description": "Why Migraine days vs clear days isn't shown yet. A 'clear day' is a day logged as migraine-free with a check-in.",
+    "placeholders": {
+      "needDays": {
+        "type": "int"
+      },
+      "needMigraine": {
+        "type": "int"
+      },
+      "needClear": {
+        "type": "int"
+      },
+      "tracked": {
+        "type": "int"
+      },
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedCaveatSample": "На основі {migraineDays} дн. із мігренню та {clearDays} дн. без болю від моменту першої відмітки — мала вибірка, результати мають високу похибку.",
+  "@trackedCaveatSample": {
+    "description": "Caveat under Migraine days vs clear days.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "clearDays": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedCaveatRecordedDays": "Для кожного чинника враховуються лише ті дні, коли його було зафіксовано.",
+  "@trackedCaveatRecordedDays": {
+    "description": "Caveat under Migraine days vs clear days."
+  },
+  "trackedCaveatRecallBias": "Помилка пригадування (recall bias): після мігрені люди схильні шукати причину прискіпливіше, ніж у звичайні дні, через що в дні нападів тригери можуть записуватися частіше, ніж насправді.",
+  "@trackedCaveatRecallBias": {
+    "description": "Caveat under Migraine days vs clear days. 'Recall bias' is the statistics term."
+  },
+  "homeTabLog": "Увійти",
+  "@homeTabLog": {
+    "description": "Bottom navigation tab: the screen for logging a migraine."
+  },
+  "homeTabHistory": "Історія",
+  "@homeTabHistory": {
+    "description": "Bottom navigation tab: the list and calendar of past entries."
+  },
+  "homeTabAnalytics": "Аналітика",
+  "@homeTabAnalytics": {
+    "description": "Bottom navigation tab: charts and patterns."
+  },
+  "homeTabSettings": "Налаштування",
+  "@homeTabSettings": {
+    "description": "Bottom navigation tab."
+  },
+  "legalMedicalDisclaimer": "Megrim — це особистий щоденник, який не є медичним виробом. Він не призначений для діагностики, лікування, виліковування чи профілактики будь-яких захворювань. «Імовірні чинники» — це лише статистичні асоціації у ваших власних записах, а асоціація не означає причинно-наслідковий зв'язок. Завжди консультуйтеся з кваліфікованим медичним фахівцем щодо перебігу вашої мігрені та перед прийняттям будь-яких рішень стосовно лікування.",
+  "@legalMedicalDisclaimer": {
+    "description": "[legal] [medical] The medical disclaimer, accepted during onboarding and shown in About and the PDF report. Needs a second reviewer. Keep 'Megrim' untranslated; 'Suspected factors' is the name of an Analytics card."
+  },
+  "legalPrivacySummary": "Усі дані залишаються виключно на вашому пристрої. У нас немає серверів, і ми нічого не збираємо — жодних облікових записів, аналітики, ідентифікаторів чи звітів про збої. Додавання погодних даних вимкнено, доки ви самі його не ввімкнете; у такому разі єдиний автоматичний мережевий трафік застосунку спрямовується на Open-Meteo.com для отримання погоди за приблизним розташуванням (округленим до ~1 км) і датою створених вами записів. Резервне копіювання використовує стандартні засоби вашого телефона (Google на Android, iCloud або комп’ютер на iPhone), якими ви керуєте в його налаштуваннях; експортовані файли зберігаються лише туди, куди ви вкажете.",
+  "@legalPrivacySummary": {
+    "description": "[legal] Privacy summary in About. Must stay as precise as the English: what is sent, to whom, and when. Keep 'Open-Meteo.com' as is."
+  },
+  "legalWeatherAttribution": "Погода на Open-Meteo.com",
+  "@legalWeatherAttribution": {
+    "description": "[legal] Attribution required by Open-Meteo's CC-BY 4.0 licence. Keep 'Open-Meteo.com' as is."
+  },
+  "legalAppTitle": "Megrim: Migraine Увійти",
+  "@legalAppTitle": {
+    "description": "Store-style title shown in About. Keep 'Megrim' untranslated."
+  },
+  "legalAppSubtitle": "Офлайн-щоденник мігрені",
+  "@legalAppSubtitle": {
+    "description": "Store-style subtitle shown in About and on the Log screen."
+  },
+  "legalShortDescription": "Приватний офлайн-щоденник мігрені з автоматичним аналізом закономірностей на пристрої.",
+  "@legalShortDescription": {
+    "description": "One-line description shown in About."
+  },
+  "legalFullDescription": "Megrim — це відкритий офлайн-щоденник мігрені, створений з акцентом на приватність, який допомагає виявити особисті тригери. Застосунок автоматично додає до ваших записів інформацію про час доби, сезон, світловий день і фазу місяця (а за бажанням — місцеву погоду та атмосферний тиск), повністю на пристрої обчислюючи кореляції. Жодних облікових записів, хмарних серверів чи трекінгу — ваші дані залишаються повністю конфіденційними та під вашим контролем.",
+  "@legalFullDescription": {
+    "description": "Full description shown in About. Keep 'Megrim' untranslated."
+  },
+  "legalCaveatOddsRatioExplained": "OR — співвідношення шансів: показує, у скільки разів вищі шанси мігрені за наявності цього чинника. OR 2.0 ≈ шанси удвічі вищі, ніж в інші дні; OR 1.0 — ефекту немає.",
+  "@legalCaveatOddsRatioExplained": {
+    "description": "Caveat on the Suspected Factors card. 'OR' abbreviates the statistics term 'odds ratio'; use the usual abbreviation in your language if there is one, consistently."
+  },
+  "legalCaveatSmallSample": "Мала вибірка: результати для обмеженої кількості днів із мігренню мають високу похибку.",
+  "@legalCaveatSmallSample": {
+    "description": "Caveat on the Suspected Factors card."
+  },
+  "legalTranslationNote": "Цей переклад зроблено волонтерами. У разі розбіжностей із англійським текстом медичного дисклеймера чи короткого витягу про конфіденційність пріоритетну силу має англійський текст.",
+  "@legalTranslationNote": {
+    "description": "[legal] Shown in About for every language except English. 'Volunteers' means community translators."
+  },
+  "onboardingWelcomeTitle": "Ласкаво просимо до Megrim",
+  "@onboardingWelcomeTitle": {
+    "description": "First onboarding screen, title. Keep 'Megrim' untranslated."
+  },
+  "onboardingWelcomeBody": "Приватний офлайн-щоденник мігрені. Усе залишається на вашому пристрої. За бажанням застосунок може додавати до записів дані про погоду та атмосферний тиск із Open-Meteo.com — ви оберете це далі, і функцію вимкнено, доки ви самі її не ввімкнете.",
+  "@onboardingWelcomeBody": {
+    "description": "First onboarding screen, body."
+  },
+  "onboardingGetStarted": "Почати",
+  "@onboardingGetStarted": {
+    "description": "Button on the first onboarding screen."
+  },
+  "onboardingBeforeYouBegin": "Перед тим як почати",
+  "@onboardingBeforeYouBegin": {
+    "description": "Title of the onboarding step showing the medical disclaimer."
+  },
+  "onboardingAccept": "Я розумію і приймаю.",
+  "@onboardingAccept": {
+    "description": "[legal] Checkbox the user ticks to accept the medical disclaimer before using the app."
+  },
+  "onboardingContinue": "Продовжити",
+  "@onboardingContinue": {
+    "description": "Button to the next onboarding step."
+  },
+  "onboardingHomeTitle": "Головна",
+  "@onboardingHomeTitle": {
+    "description": "Title of the onboarding step that asks for a home location."
+  },
+  "onboardingHomeBody": "Використовується на пристрої для аналізу світлового дня та сезонності, а також — лише якщо ви ввімкнете додавання погодних даних на наступному кроці — для отримання погоди до ваших записів. Пошук тут надсилає введену вами назву місця до геокодера Open-Meteo для визначення координат; після цього надсилатимуться лише округлені (~1 км) координати й виключно для отримання погоди. Не хочете шукати онлайн? Введіть натомість GPS-координати або Plus Code — обидва формати розшифровуються безпосередньо на пристрої.",
+  "@onboardingHomeBody": {
+    "description": "[legal] Explains what the home location is used for and what is sent over the network. Keep it as precise as the English. 'Plus Code' is the name of Google's open location code format."
+  },
+  "onboardingWeatherTitle": "Дані про погоду",
+  "@onboardingWeatherTitle": {
+    "description": "Title of the onboarding step that asks whether to fetch weather. 'Enrichment' means adding weather data to entries."
+  },
+  "onboardingWeatherBody": "Megrim може отримувати дані про погоду для кожного нападу мігрені — температуру, вологість, атмосферний тиск, якість повітря, — щоб модуль «Аналітика» міг шукати закономірності на кшталт коливань тиску перед нападом.\n\nЯкщо ви ввімкнете цю функцію, дата запису та округлені до ~1 км координати надсилатимуться на Open-Meteo.com — некомерційний погодний сервіс. Жодні інші дані ніколи не покидають ваш пристрій: немає ні облікового запису, ні телеметрії, ні наших серверів.\n\nЯкщо вимкнути цю функцію, Megrim працюватиме повністю в офлайн-режимі. Змінити це налаштування можна будь-коли в меню «Параметри».",
+  "@onboardingWeatherBody": {
+    "description": "[legal] Explains the weather opt-in and what is sent. Keep the blank lines between paragraphs. Keep it as precise as the English."
+  },
+  "onboardingWeatherSwitch": "Отримати погоду для моїх записів",
+  "@onboardingWeatherSwitch": {
+    "description": "Switch on the weather onboarding step."
+  },
+  "onboardingWeatherSwitchSubtitle": "Рекомендовано, якщо ви хочете перекриття тиску",
+  "@onboardingWeatherSwitchSubtitle": {
+    "description": "Under the weather switch during onboarding."
+  },
+  "onboardingFinish": "Кінець",
+  "@onboardingFinish": {
+    "description": "Button that ends onboarding."
+  },
+  "settingsTitle": "Налаштування",
+  "@settingsTitle": {
+    "description": "Title of the Settings screen."
+  },
+  "settingsOff": "Відправити",
+  "@settingsOff": {
+    "description": "A setting that is turned off: the daily reminder, or the backup reminder interval."
+  },
+  "settingsHomeLocation": "Місце проживання",
+  "@settingsHomeLocation": {
+    "description": "Settings row: the home location used for daylight, season and weather."
+  },
+  "settingsWeather": "Погода",
+  "@settingsWeather": {
+    "description": "Settings switch: fetch weather for entries. 'Enrichment' means adding weather data to entries."
+  },
+  "settingsWeatherOnSubtitle": "Отримує погоду для записів із Open-Meteo (лише округлене розташування та дата)",
+  "@settingsWeatherOnSubtitle": {
+    "description": "[legal] Under the weather switch when it's on: what is sent."
+  },
+  "settingsWeatherOffSubtitle": "Вимкнено — без автоматичного використання мережі (лише введені вручну запити) або Вимкнено — без автоматичного доступу до мережі (лише пошук, який ви вводите)",
+  "@settingsWeatherOffSubtitle": {
+    "description": "Under the weather switch when it's off."
+  },
+  "settingsWeatherOnSnack": "Погодні дані увімкнено — завантаження погоди для ваших записів…",
+  "@settingsWeatherOnSnack": {
+    "description": "Brief message after turning weather on."
+  },
+  "settingsWeatherOffSnack": "Додавання погоди вимкнено — більше жодних автоматичних запитів до мережі.",
+  "@settingsWeatherOffSnack": {
+    "description": "Brief message after turning weather off."
+  },
+  "settingsTriggersTitle": "Провокуючі фактори",
+  "@settingsTriggersTitle": {
+    "description": "Title of the screen that edits the list of trigger names."
+  },
+  "settingsHeadLocationsTitle": "Ділянки голови",
+  "@settingsHeadLocationsTitle": {
+    "description": "Title of the screen that edits the list of places on the head where pain is felt."
+  },
+  "settingsManageTriggers": "Керувати тригерами",
+  "@settingsManageTriggers": {
+    "description": "Settings row that opens the trigger list editor."
+  },
+  "settingsManageHeadLocations": "Керування зонами голови",
+  "@settingsManageHeadLocations": {
+    "description": "Settings row that opens the head-location list editor."
+  },
+  "settingsManageMedications": "Керувати ліками",
+  "@settingsManageMedications": {
+    "description": "Settings row that opens medication classes and preventive medications."
+  },
+  "settingsManageMedicationsSubtitle": "Групи препаратів і профілактичні ліки",
+  "@settingsManageMedicationsSubtitle": {
+    "description": "Under 'Manage Medications'."
+  },
+  "settingsLastBackup": "Остання резервна копія",
+  "@settingsLastBackup": {
+    "description": "Settings row: when the user last exported a JSON backup."
+  },
+  "settingsBackupSubtitle": "{age} · {reminder}",
+  "@settingsBackupSubtitle": {
+    "description": "Under 'Last backup': how long ago, then the reminder interval. E.g. '12 days ago · Every 30 days'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "12 days ago"
+      },
+      "reminder": {
+        "type": "String",
+        "example": "Every 30 days"
+      }
+    }
+  },
+  "settingsBackupSubtitleDue": "{age} · {reminder} · через",
+  "@settingsBackupSubtitleDue": {
+    "description": "Under 'Last backup' when a backup is overdue: how long ago, the reminder interval, and 'due'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "Never"
+      },
+      "reminder": {
+        "type": "String",
+        "example": "Every 30 days"
+      }
+    }
+  },
+  "backupNever": "Ніколи",
+  "@backupNever": {
+    "description": "Last backup: the user has never exported a backup."
+  },
+  "backupToday": "Сьогодні",
+  "@backupToday": {
+    "description": "Last backup: today."
+  },
+  "backupYesterday": "Учора",
+  "@backupYesterday": {
+    "description": "Last backup: yesterday."
+  },
+  "backupDaysAgo": "{count, plural, =1{1 день тому} one{{count} днів тому} few{{count} дні тому} many{{count} днів тому} other{{count} днів тому}}",
+  "@backupDaysAgo": {
+    "description": "Last backup: this many days ago (2 or more in practice).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupReminderEvery": "{count, plural, =1{Щодня} one{Кожний {count} день} few{Кожні {count} дні} many{Кожні {count} днів} other{Кожні {count} днів}}",
+  "@backupReminderEvery": {
+    "description": "Backup reminder interval (7, 14, 30 or 90 days).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsBackupReminderTitle": "Нагадувати про резервне копіювання",
+  "@settingsBackupReminderTitle": {
+    "description": "Title of the dialog choosing the backup reminder interval."
+  },
+  "settingsExportJson": "Експортувати (JSON-бекап)",
+  "@settingsExportJson": {
+    "description": "Settings row: export everything as a JSON file, which can be imported back."
+  },
+  "settingsExportCsv": "Експорт (CSV)",
+  "@settingsExportCsv": {
+    "description": "Settings row: export entries as a spreadsheet file."
+  },
+  "settingsExportReport": "Експортувати звіт (PDF)",
+  "@settingsExportReport": {
+    "description": "Settings row: make a printable PDF report."
+  },
+  "settingsExportReportSubtitle": "Друкований звіт для лікаря",
+  "@settingsExportReportSubtitle": {
+    "description": "Under 'Export report (PDF)'."
+  },
+  "settingsImport": "Імпорт (JSON)",
+  "@settingsImport": {
+    "description": "Settings row: import a JSON export."
+  },
+  "settingsImportGuide": "Інструкція щодо формату",
+  "@settingsImportGuide": {
+    "description": "Settings row: opens the import format documentation on the web."
+  },
+  "settingsImportGuideSubtitle": "Імпортувати дані з іншого додатка",
+  "@settingsImportGuideSubtitle": {
+    "description": "Under 'Import format guide'."
+  },
+  "settingsDonate": "Підтримати проєкт",
+  "@settingsDonate": {
+    "description": "Settings row: opens the developer's donation page."
+  },
+  "settingsDonateSubtitle": "Сприяти розвитку",
+  "@settingsDonateSubtitle": {
+    "description": "Under 'Donate'."
+  },
+  "settingsSourceCode": "Код джерела",
+  "@settingsSourceCode": {
+    "description": "Settings row: opens the source code on the web."
+  },
+  "settingsAbout": "Інформація та конфіденційність",
+  "@settingsAbout": {
+    "description": "Settings row: opens the About dialog with the privacy summary and disclaimer."
+  },
+  "settingsDailyReminder": "Щоденне нагадування",
+  "@settingsDailyReminder": {
+    "description": "Settings row and dialog title: a daily notification asking how the day was."
+  },
+  "settingsDailyReminderOn": "Щодня о {time}, якщо за цей день ще немає запису",
+  "@settingsDailyReminderOn": {
+    "description": "Under 'Daily reminder' when it's on.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "20:00"
+      }
+    }
+  },
+  "settingsDailyReminderExplain": "Одне сповіщення на день із запитанням, як минув день, і кнопками «Сьогодні без мігрені» та «Записати». У ньому немає жодної інформації про ваше здоров’я, і жодні дані не покидають телефон.",
+  "@settingsDailyReminderExplain": {
+    "description": "In the daily reminder dialog. 'No migraine today' and 'Log' are the notification's two buttons; use the same words as those buttons."
+  },
+  "settingsReminderChooseTime": "Виберіть час…",
+  "@settingsReminderChooseTime": {
+    "description": "Daily reminder dialog option when the reminder is off."
+  },
+  "settingsReminderAtTime": "О {time} (змінити…)",
+  "@settingsReminderAtTime": {
+    "description": "Daily reminder dialog option when the reminder is on: tap to change the time.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "20:00"
+      }
+    }
+  },
+  "settingsRemindMeAt": "Нагадувати мені о",
+  "@settingsRemindMeAt": {
+    "description": "Title of the time picker for the daily reminder."
+  },
+  "settingsOngoingTitle": "Сповіщення під час нападу",
+  "@settingsOngoingTitle": {
+    "description": "Settings switch (Android): an ongoing notification while a migraine is in progress."
+  },
+  "settingsOngoingSubtitle": "Активний таймер і кнопка «Завершити» під час нападу",
+  "@settingsOngoingSubtitle": {
+    "description": "Under 'Notification during a migraine'. 'End' is the notification's button that ends the migraine."
+  },
+  "settingsNotificationsRefused": "У налаштуваннях телефона вимкнено сповіщення для Megrim, тому цей параметр не активний. Дозвольте їх там і спробуйте знову.",
+  "@settingsNotificationsRefused": {
+    "description": "Shown when the phone's settings block Megrim's notifications."
+  },
+  "settingsAppLock": "Блокування додатка",
+  "@settingsAppLock": {
+    "description": "Settings switch: ask for the phone's unlock when opening the app."
+  },
+  "settingsAppLockSubtitle": "Запитувати відбиток пальця, розпізнавання обличчя або PIN-код телефона під час відкриття Megrim",
+  "@settingsAppLockSubtitle": {
+    "description": "Under 'App lock'."
+  },
+  "settingsLockAfter": "Блокувати через",
+  "@settingsLockAfter": {
+    "description": "Settings row and dialog title: how long the app may be in the background before it locks."
+  },
+  "settingsLockAfterSubtitle": "{timeout} у фоновому режимі",
+  "@settingsLockAfterSubtitle": {
+    "description": "Under 'Lock after', e.g. 'After 1 minute in the background' or 'Immediately in the background'.",
+    "placeholders": {
+      "timeout": {
+        "type": "String",
+        "example": "After 1 minute"
+      }
+    }
+  },
+  "appLockImmediately": "Одразу",
+  "@appLockImmediately": {
+    "description": "App lock timeout: lock as soon as the app goes to the background."
+  },
+  "appLockAfterMinutes": "{count, plural, =1{Через 1 хвилину} other{Через {count} хвилин}}",
+  "@appLockAfterMinutes": {
+    "description": "App lock timeout.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsHideInRecents": "Приховувати в недавніх додатках",
+  "@settingsHideInRecents": {
+    "description": "Settings switch: blank the app in the phone's app switcher."
+  },
+  "settingsHideInRecentsAndroid": "Робить екран Megrim порожнім у меню багатозадачності, а також забороняє робити знімки екрана.",
+  "@settingsHideInRecentsAndroid": {
+    "description": "Under 'Hide in recent apps' on Android."
+  },
+  "settingsHideInRecentsIos": "Приховування вмісту Megrim у перемикачі програм.",
+  "@settingsHideInRecentsIos": {
+    "description": "Under 'Hide in recent apps' on iPhone."
+  }
+}
