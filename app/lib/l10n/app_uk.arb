@@ -1948,7 +1948,7 @@
   "@reportStatPerYear": {
     "description": "Report summary tile: attacks per year."
   },
-  "reportStatMigraineDays30": "Дні з мігренню, останні 30 дн.",
+  "reportStatMigraineDays30": "Дні з мігренню, останні 30 дн",
   "@reportStatMigraineDays30": {
     "description": "Report summary tile: days with a migraine in the last 30 days. 'd' is short for days; keep it short."
   },
@@ -2457,7 +2457,7 @@
   "@reportColumnHelped": {
     "description": "Report table column: times it helped."
   },
-  "reportColumnDidnt": "Не дп.",
+  "reportColumnDidnt": "Ні",
   "@reportColumnDidnt": {
     "description": "Report table column: times it didn't help. Short."
   },
