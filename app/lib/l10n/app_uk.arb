@@ -327,7 +327,7 @@
   "@noHeadache": {
     "description": "Label on an attack recorded without headache (History, entry detail, report)."
   },
-  "noHeadacheWithAura": "Немає головного болю · з аура",
+  "noHeadacheWithAura": "Немає головного болю · з аурою",
   "@noHeadacheWithAura": {
     "description": "[medical] Label on an attack without headache that had an aura (ICHD-3 'typical aura without headache'). Keep the '·' separator."
   },
@@ -383,11 +383,11 @@
   "@medClassOpioid": {
     "description": "[medical] Class of acute medication."
   },
-  "medClassCombination": "Комбінація больового полегшувача",
+  "medClassCombination": "Комбінований знеболювальний засіб",
   "@medClassCombination": {
     "description": "[medical] Class of acute medication: a pain reliever combined with codeine, caffeine or butalbital (ICHD-3 'combination-analgesic')."
   },
-  "medClassSimple": "Просте зняття болю",
+  "medClassSimple": "Простий знеболювальний засіб",
   "@medClassSimple": {
     "description": "[medical] Class of acute medication: paracetamol, ibuprofen, aspirin and similar (ICHD-3 'non-opioid analgesic')."
   },
@@ -399,7 +399,7 @@
   "@medClassDitan": {
     "description": "[medical] Class of acute migraine medication (lasmiditan)."
   },
-  "medClassAntiemetic": "Протинудотні",
+  "medClassAntiemetic": "Протинудотні засоби",
   "@medClassAntiemetic": {
     "description": "[medical] Class of medication against nausea (antiemetic)."
   },
@@ -415,7 +415,7 @@
   "@medClassTriptanExamples": {
     "description": "[medical] Examples under the class name in the picker. Generic drug names, no brands; use the local generic names."
   },
-  "medClassErgotExamples": "ерготамін, дигідроеробготамін",
+  "medClassErgotExamples": "ерготамін, дигідроерготамін",
   "@medClassErgotExamples": {
     "description": "[medical] Examples under the class name. Generic drug names."
   },
@@ -435,7 +435,7 @@
   "@medClassGepantExamples": {
     "description": "[medical] Examples under the class name. Generic drug names."
   },
-  "medClassDitanExamples": "Ласмідитан",
+  "medClassDitanExamples": "ласмідитан",
   "@medClassDitanExamples": {
     "description": "[medical] Example under the class name. Generic drug name."
   },
@@ -447,7 +447,7 @@
   "@medClassOtherExamples": {
     "description": "Under 'Other' in the medication class picker."
   },
-  "overuseNoticeTitle": "Дні прийому ліків на пороговому рівні",
+  "overuseNoticeTitle": "Дні прийому ліків на довідковому рівні",
   "@overuseNoticeTitle": {
     "description": "[medical] Title of the notice shown when acute-medication days reached the ICHD-3 medication-overuse reference level in each of the last 3 months. Calm and factual; not a warning or a diagnosis."
   },
@@ -455,7 +455,7 @@
   "@overuseNoticeBody": {
     "description": "[medical] Body of the medication-overuse notice. It must not say the user has medication-overuse headache, and must not tell them to stop or change a medication. Needs a second reviewer."
   },
-  "overuseLevelClass": "{medClass} на {days} дні (рівень {level})",
+  "overuseLevelClass": "{medClass} — {days} дн. (рівень {level})",
   "@overuseLevelClass": {
     "description": "[medical] One month's reason for the notice: a class's medication days and the ICHD-3 reference level, e.g. 'Triptan on 11 days (level 10)'.",
     "placeholders": {
@@ -504,7 +504,7 @@
       }
     }
   },
-  "correlationsMidAttackNote": "{count, plural, =1{1 день усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} one{# день усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} few{# дні усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} many{# днів усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} other{# днів усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.}}",
+  "correlationsMidAttackNote": "{count, plural, =1{1 день усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} one{{count} день усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} few{{count} дні усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} many{{count} днів усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.} other{{count} днів усередині багатоденного нападу мігрені не враховано: новий напад не може початися, поки триває поточний.}}",
   "@correlationsMidAttackNote": {
     "description": "Caveat under Suspected Factors: days inside a multi-day attack (not its first day) are not counted.",
     "placeholders": {
@@ -525,7 +525,7 @@
   "@caveatNotCausation": {
     "description": "Caveat under Suspected Factors and Migraine days vs clear days."
   },
-  "trackedNeedsDays": "Потрібно {needDays} відстежених дн., із них щонайменше {needMigraine} дн. із мігренню та {needClear} дн. без болю. Наразі є: {tracked} відстежених, {migraine} із мігренню, {clear} без болю (від моменту першої відмітки).",
+  "trackedNeedsDays": "Потрібно {needDays} відстежених дн., із них щонайменше {needMigraine} дн. із мігренню та {needClear} дн. без мігрені. Наразі є: {tracked} відстежених, {migraine} із мігренню, {clear} без мігрені (від моменту першої відмітки).",
   "@trackedNeedsDays": {
     "description": "Why Migraine days vs clear days isn't shown yet. A 'clear day' is a day logged as migraine-free with a check-in.",
     "placeholders": {
@@ -549,7 +549,7 @@
       }
     }
   },
-  "trackedCaveatSample": "На основі {migraineDays} дн. із мігренню та {clearDays} дн. без болю від моменту першої відмітки — мала вибірка, результати мають високу похибку.",
+  "trackedCaveatSample": "На основі {migraineDays} дн. із мігренню та {clearDays} дн. без мігрені від моменту першої відмітки — мала вибірка, результати мають високу похибку.",
   "@trackedCaveatSample": {
     "description": "Caveat under Migraine days vs clear days.",
     "placeholders": {
@@ -569,7 +569,7 @@
   "@trackedCaveatRecallBias": {
     "description": "Caveat under Migraine days vs clear days. 'Recall bias' is the statistics term."
   },
-  "homeTabLog": "Увійти",
+  "homeTabLog": "Журнал",
   "@homeTabLog": {
     "description": "Bottom navigation tab: the screen for logging a migraine."
   },
@@ -593,11 +593,11 @@
   "@legalPrivacySummary": {
     "description": "[legal] Privacy summary in About. Must stay as precise as the English: what is sent, to whom, and when. Keep 'Open-Meteo.com' as is."
   },
-  "legalWeatherAttribution": "Погода на Open-Meteo.com",
+  "legalWeatherAttribution": "Дані про погоду надаються Open-Meteo.com",
   "@legalWeatherAttribution": {
     "description": "[legal] Attribution required by Open-Meteo's CC-BY 4.0 licence. Keep 'Open-Meteo.com' as is."
   },
-  "legalAppTitle": "Megrim: Migraine Увійти",
+  "legalAppTitle": "Megrim: Журнал мігрені",
   "@legalAppTitle": {
     "description": "Store-style title shown in About. Keep 'Megrim' untranslated."
   },
@@ -661,7 +661,7 @@
   "@onboardingWeatherTitle": {
     "description": "Title of the onboarding step that asks whether to fetch weather. 'Enrichment' means adding weather data to entries."
   },
-  "onboardingWeatherBody": "Megrim може отримувати дані про погоду для кожного нападу мігрені — температуру, вологість, атмосферний тиск, якість повітря, — щоб модуль «Аналітика» міг шукати закономірності на кшталт коливань тиску перед нападом.\n\nЯкщо ви ввімкнете цю функцію, дата запису та округлені до ~1 км координати надсилатимуться на Open-Meteo.com — некомерційний погодний сервіс. Жодні інші дані ніколи не покидають ваш пристрій: немає ні облікового запису, ні телеметрії, ні наших серверів.\n\nЯкщо вимкнути цю функцію, Megrim працюватиме повністю в офлайн-режимі. Змінити це налаштування можна будь-коли в меню «Параметри».",
+  "onboardingWeatherBody": "Megrim може отримувати дані про погоду для кожного нападу мігрені — температуру, вологість, атмосферний тиск, якість повітря, — щоб модуль «Аналітика» міг шукати закономірності на кшталт коливань тиску перед нападом.\n\nЯкщо ви ввімкнете цю функцію, дата запису та округлені до ~1 км координати надсилатимуться на Open-Meteo.com — некомерційний погодний сервіс. Жодні інші дані ніколи не покидають ваш пристрій: немає ні облікового запису, ні телеметрії, ні наших серверів.\n\nЯкщо вимкнути цю функцію, Megrim працюватиме повністю в офлайн-режимі. Змінити це налаштування можна будь-коли в меню «Налаштування».",
   "@onboardingWeatherBody": {
     "description": "[legal] Explains the weather opt-in and what is sent. Keep the blank lines between paragraphs. Keep it as precise as the English."
   },
@@ -725,11 +725,11 @@
   "@settingsManageHeadLocations": {
     "description": "Settings row that opens the head-location list editor."
   },
-  "settingsManageMedications": "Керувати ліками",
+  "settingsManageMedications": "Керувати препаратами",
   "@settingsManageMedications": {
     "description": "Settings row that opens medication classes and preventive medications."
   },
-  "settingsManageMedicationsSubtitle": "Групи препаратів і профілактичні ліки",
+  "settingsManageMedicationsSubtitle": "Групи препаратів і профілактичні препарати",
   "@settingsManageMedicationsSubtitle": {
     "description": "Under 'Manage Medications'."
   },
@@ -917,7 +917,7 @@
   "@appLockImmediately": {
     "description": "App lock timeout: lock as soon as the app goes to the background."
   },
-  "appLockAfterMinutes": "{count, plural, =1{Через 1 хвилину} other{Через {count} хвилин}}",
+  "appLockAfterMinutes": "{count, plural, =1{Через 1 хвилину} one{Через {count} хвилину} few{Через {count} хвилини} many{Через {count} хвилин} other{Через {count} хвилин}}",
   "@appLockAfterMinutes": {
     "description": "App lock timeout.",
     "placeholders": {
@@ -980,7 +980,7 @@
   "@settingsSaveReenrich": {
     "description": "Button: save the new home location and recompute weather and daylight for all entries."
   },
-  "settingsReenriching": "Повторне збагаження записів…",
+  "settingsReenriching": "Повторне збагачення записів…",
   "@settingsReenriching": {
     "description": "Brief message while weather and daylight are recomputed for all entries."
   },
@@ -1521,7 +1521,7 @@
   "@analyticsTriggersNote": {
     "description": "Analytics: note under the expanded trigger list when the user has no 'No migraine today' check-ins. 'Log › No migraine today' names the tab and the button; keep it matching their translations."
   },
-  "analyticsTriggersNoteWithCheckins": "Це підрахунок частотності того, що ви відмічали, — не кореляція. «Дні із мігренню проти днів без болю» порівнює їх із днями, які ви відмітили як дні без болю.",
+  "analyticsTriggersNoteWithCheckins": "Це підрахунок частотності того, що ви відмічали, — не кореляція. «Дні із мігренню проти днів без мігрені» порівнює їх із днями, які ви відмітили як дні без мігрені.",
   "@analyticsTriggersNoteWithCheckins": {
     "description": "Analytics: note under the expanded trigger list once the user has check-ins. \"Migraine days vs clear days\" is the title of another card; keep it matching that translation."
   },
@@ -1617,7 +1617,7 @@
       }
     }
   },
-  "analyticsFactorsTitle": "Найбільш ймовірні чинники",
+  "analyticsFactorsTitle": "Найбільш імовірні чинники",
   "@analyticsFactorsTitle": {
     "description": "Analytics: title of the card listing conditions more common on migraine days than on other days (odds ratios)."
   },
@@ -1654,7 +1654,7 @@
       }
     }
   },
-  "analyticsPressureOff": "Тиск не аналізується — збагачення погодними даними вимкнено (Налаштування › Збагаження погодними даними).",
+  "analyticsPressureOff": "Тиск не аналізується — збагачення погодними даними вимкнено (Налаштування › Збагачення погодними даними).",
   "@analyticsPressureOff": {
     "description": "Analytics, Top suspected factors: pressure can't be a factor while weather lookups are off. 'Settings › Weather enrichment' names the setting."
   },
@@ -1704,7 +1704,7 @@
   "@trackedDaysOfLast30": {
     "description": "Analytics, Days tracked: shown next to a big number (the count is displayed separately)."
   },
-  "trackedDaysBreakdown": "{migraine} — із мігренню, {clear} — без болю, {unrecorded} — без записів.",
+  "trackedDaysBreakdown": "{migraine} — із мігренню, {clear} — без мігрені, {unrecorded} — без записів.",
   "@trackedDaysBreakdown": {
     "description": "Analytics, Days tracked: the last 30 days split into migraine days, clear (checked-in) days and days with nothing recorded.",
     "placeholders": {
@@ -1735,15 +1735,15 @@
       }
     }
   },
-  "trackedFactorsTitle": "Дні із мігренню проти днів без болю",
+  "trackedFactorsTitle": "Дні із мігренню проти днів без мігрені",
   "@trackedFactorsTitle": {
     "description": "Analytics: title of the card comparing what was recorded on migraine days with days checked in as migraine-free ('clear')."
   },
-  "trackedFactorsIntro": "Те, що ви записали в дні, коли почалася мігрень, у порівнянні з днями, відміченими як дні без болю: сон, стрес, тригери та їжа.",
+  "trackedFactorsIntro": "Те, що ви записали в дні, коли почалася мігрень, у порівнянні з днями, відміченими як дні без мігрені: сон, стрес, тригери та їжа.",
   "@trackedFactorsIntro": {
     "description": "Analytics, Migraine days vs clear days: intro."
   },
-  "trackedFactorsCounts": "{migraineDays} днів із мігренню та {clearDays} днів без болю від вашої першої відмітки.",
+  "trackedFactorsCounts": "{migraineDays} днів із мігренню та {clearDays} днів без мігрені від вашої першої відмітки.",
   "@trackedFactorsCounts": {
     "description": "Analytics, Migraine days vs clear days: the counts compared.",
     "placeholders": {
@@ -2348,7 +2348,7 @@
       }
     }
   },
-  "reportTracked": "Відстежених днів за останні 30 днів: {tracked} ({migraine} — із мігренню, {clear} — відмічено як дні без болю, {notRecorded} — без записів). Починаючи з першої відмітки {firstCheckin}: {since} з {total} днів.",
+  "reportTracked": "Відстежених днів за останні 30 днів: {tracked} ({migraine} — із мігренню, {clear} — відмічено як дні без мігрені, {notRecorded} — без записів). Починаючи з першої відмітки {firstCheckin}: {since} з {total} днів.",
   "@reportTracked": {
     "description": "Report: how many days were recorded. A 'check-in' is logging a day as migraine-free ('clear').",
     "placeholders": {
@@ -2376,7 +2376,7 @@
       }
     }
   },
-  "reportTrackedWindow": "{migraine} днів із мігренню та {clear} днів без болю від першої відмітки ({tracked} відстежених днів).",
+  "reportTrackedWindow": "{migraine} днів із мігренню та {clear} днів без мігрені від першої відмітки ({tracked} відстежених днів).",
   "@reportTrackedWindow": {
     "description": "Report: what Migraine days vs clear days is based on.",
     "placeholders": {
@@ -2441,7 +2441,7 @@
       }
     }
   },
-  "reportMethods": "Описові графіки — це прості підрахунки записів: високий стовпчик означає лише те, що там було записано більше нападів. Ймовірні чинники використовують одиницю «день з мігренню», і кожен день між першим та останнім нападом є базовим. Для кожної групи будується таблиця 2x2 і обчислюється співвідношення шансів з поправкою Холдена-Енскомба (0.5 додається до кожної клітинки). Чинник позначається рядком у заголовку, лише якщо його група охоплює щонайменше 3 дні з мігренню та його співвідношення шансів перевищує 1. Фаза Місяця та світловий день обчислюються астрономічно за місцем проживання; пора року — з поправкою на півкулю.",
+  "reportMethods": "Описові графіки — це прості підрахунки записів: високий стовпчик означає лише те, що там було записано більше нападів. Імовірні чинники використовують одиницю «день з мігренню», і кожен день між першим та останнім нападом є базовим. Для кожної групи будується таблиця 2x2 і обчислюється співвідношення шансів з поправкою Холдена-Енскомба (0.5 додається до кожної клітинки). Чинник позначається рядком у заголовку, лише якщо його група охоплює щонайменше 3 дні з мігренню та його співвідношення шансів перевищує 1. Фаза Місяця та світловий день обчислюються астрономічно за місцем проживання; пора року — з поправкою на півкулю.",
   "@reportMethods": {
     "description": "Report 'Methods' section. Statistics terms: 2x2 table, Haldane-Anscombe corrected odds ratio, baseline day."
   },
@@ -2457,7 +2457,7 @@
   "@reportColumnHelped": {
     "description": "Report table column: times it helped."
   },
-  "reportColumnDidnt": "Ні",
+  "reportColumnDidnt": "Не дп",
   "@reportColumnDidnt": {
     "description": "Report table column: times it didn't help. Short."
   },
@@ -2555,7 +2555,7 @@
   "@reportReliefNote": {
     "description": "Report note under 'Relief tried'."
   },
-  "reportHeadingFactors": "Ймовірні чинники",
+  "reportHeadingFactors": "Імовірні чинники",
   "@reportHeadingFactors": {
     "description": "Report section heading: factors more common on migraine days."
   },
@@ -2600,7 +2600,7 @@
       }
     }
   },
-  "reportHeadingTracked": "Дні з мігренню проти днів без болю",
+  "reportHeadingTracked": "Дні з мігренню проти днів без мігрені",
   "@reportHeadingTracked": {
     "description": "Report section heading: comparing days a migraine started with days checked in as migraine-free."
   },
@@ -2890,7 +2890,7 @@
   "@entryOngoingHint": {
     "description": "Shown under 'Ended' while the migraine has no end yet. Lowercase in English."
   },
-  "entryClearEnd": "Скасувати (позначити як триває)",
+  "entryClearEnd": "Очистити (позначити як триває)",
   "@entryClearEnd": {
     "description": "Tooltip: remove the end time, so the migraine is still going on."
   },
@@ -2948,7 +2948,7 @@
   "@entrySymptoms": {
     "description": "[medical] Section heading for the symptom choices."
   },
-  "entryTriggers": "Ймовірні тригери",
+  "entryTriggers": "Імовірні тригери",
   "@entryTriggers": {
     "description": "Section heading: what the user thinks may have set off the migraine."
   },
@@ -3014,7 +3014,7 @@
   "@entryRemoveRelief": {
     "description": "Tooltip: take this relief method off the entry."
   },
-  "entryEnrichmentPending": "Збагаження очікує",
+  "entryEnrichmentPending": "Збагачення очікує",
   "@entryEnrichmentPending": {
     "description": "Card title: weather and astronomy for the entry haven't been added yet."
   },
@@ -3022,7 +3022,7 @@
   "@entryEnrichmentPendingBody": {
     "description": "Card text under 'Enrichment pending'."
   },
-  "entryEnrichment": "Збагаження",
+  "entryEnrichment": "Збагачення",
   "@entryEnrichment": {
     "description": "Card title: data added automatically to the entry (weather, moon, daylight...)."
   },
@@ -3062,7 +3062,7 @@
   "@entryEnrichAqi": {
     "description": "Row label in the enrichment card: air quality index (use the local abbreviation)."
   },
-  "entryWeatherOff": "Погоду не отримано — збагаження погодними даними вимкнено (Налаштування).",
+  "entryWeatherOff": "Погоду не отримано — збагачення погодними даними вимкнено (Налаштування).",
   "@entryWeatherOff": {
     "description": "Shown in the enrichment card when the user turned weather off in Settings."
   },
@@ -3100,7 +3100,7 @@
       }
     }
   },
-  "entryClearTime": "Скасувати час",
+  "entryClearTime": "Очистити час",
   "@entryClearTime": {
     "description": "Tooltip: remove the time a medication was taken."
   },
@@ -3116,7 +3116,7 @@
   "@entryReliefHint": {
     "description": "Example text in the relief field."
   },
-  "quickLogTodayHasEntry": "На сьогодні вже є запис про мігрень, тому день не позначено як день без болю.",
+  "quickLogTodayHasEntry": "На сьогодні вже є запис про мігрень, тому день не позначено як день без мігрені.",
   "@quickLogTodayHasEntry": {
     "description": "Snack bar: the 'No migraine today' notification button was tapped, but today already has a migraine entry."
   },
@@ -3218,7 +3218,7 @@
   "@checkinRemove": {
     "description": "Tooltip: remove this day's 'No migraine' check-in."
   },
-  "checkinIntro": "Усе необов'язкове. Запис однакових речей у дні без болю й у дні з мігренню дозволяє Аналітиці порівнювати їх.",
+  "checkinIntro": "Усе необов'язкове. Запис однакових речей у дні без мігрені й у дні з мігренню дозволяє Аналітиці порівнювати їх.",
   "@checkinIntro": {
     "description": "Hint at the top of the check-in screen. A 'clear day' is a migraine-free day."
   },
@@ -3471,7 +3471,7 @@
       }
     }
   },
-  "entryEnrichNoLocation": "Місцезнаходження не встановлено — задайте місце проживання, щоб увімкнути збагаження.",
+  "entryEnrichNoLocation": "Місцезнаходження не встановлено — задайте місце проживання, щоб увімкнути збагачення.",
   "@entryEnrichNoLocation": {
     "description": "Entry detail, under Weather: why this entry has no weather, moon or daylight data. 'Enrichment' = the weather, moon and daylight details Megrim adds to an entry."
   },
