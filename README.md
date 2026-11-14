@@ -107,7 +107,7 @@ come before them.
   picked up automatically.
 - **Apple App Store:** live since 2026-09 as
   [Megrim: Migraine Diary](https://apps.apple.com/us/app/megrim-migraine-diary/id6808385548)
-  (US storefront).
+  (US only until 1.0.9; 175 countries and regions since 2026-11-12, all but China mainland).
 - **GitHub releases:** signed APKs on the [Releases page](https://github.com/smaegley/megrim/releases).
 
 For a resume-here snapshot of the project (what is shipped, in flight, and known gaps), see
@@ -119,7 +119,7 @@ planned and proposed work is in [`docs/BACKLOG.md`](docs/BACKLOG.md).
 Newest first. Full notes for each release are on the
 [Releases page](https://github.com/smaegley/megrim/releases).
 
-- **`v1.0.9`** (2026-11):
+- **`v1.0.9`** (2026-11-10):
   - **Dates and times follow your phone's region** and its 12/24-hour setting, in the app and the
     PDF report; the History calendar starts on Monday where that's the custom.
   - **Ready for translation:** all text comes from one message file, translated by volunteers on
@@ -187,7 +187,7 @@ Newest first. Full notes for each release are on the
 ### iPhone (iOS 16+)
 
 **[Megrim: Migraine Diary on the App Store](https://apps.apple.com/us/app/megrim-migraine-diary/id6808385548)**,
-currently on the United States storefront. Same app, same on-device-only data model as the
+available in 175 countries and regions (all but China mainland). Same app, same on-device-only data model as the
 Android builds.
 
 ### Android

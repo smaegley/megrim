@@ -57,9 +57,11 @@ Answer "No" to all collection questions; the label renders as "Data Not Collecte
 
 **Decided 2026-10-30: Option B** (Steve), replacing Option A (US storefront only, Ko-fi tile
 kept), which applied from 1.0.2 to 1.0.8. From `v1.0.9` the iOS build has no Donate tile
-(a `defaultTargetPlatform` check in `settings_screen.dart`; Android keeps it). Once 1.0.9 is live,
-availability expands to the UK, the EU and other English-speaking regions (steps in
-`docs/STATUS.md`: DSA non-trader status first, then the EEA/UK medical-device declaration). The
+(a `defaultTargetPlatform` check in `settings_screen.dart`; Android keeps it). **Done
+2026-11-12:** after 1.0.9 (build 15) was approved on 2026-11-11, Steve declared DSA non-trader
+status, confirmed "not a regulated medical device" and made the app available in 175 countries
+and regions: all but China mainland, which needs a Chinese ICP filing number. Future regions
+are added automatically. Seen live in the UK, DE, FR, CA, AU, JP and BR stores on 2026-11-12. The
 options as considered:
 
 - **Option A — US storefront only, keep the Ko-fi tile.** Post-Epic (guideline 3.1.1, May 2025)
@@ -146,8 +148,9 @@ conversation reply — captured on a physical iPhone via TestFlight internal tes
 > the iOS build has no donation link.) Full network behavior is documented at
 > https://github.com/smaegley/megrim/blob/main/docs/PRIVACY.md
 >
-> **5. Regional differences:** none — the app functions identically everywhere. (Until 1.0.8,
-> distribution was limited to the United States storefront by choice.)
+> **5. Regional differences:** none — the app functions identically everywhere. It is
+> available in every App Store country or region except China mainland (no ICP filing). (Until
+> 1.0.9, distribution was limited to the United States storefront by choice.)
 >
 > **6. Regulated industry / protected material:** not applicable. Megrim is a personal wellness
 > diary, not a regulated medical device: it provides no diagnosis, treatment, prevention, or
