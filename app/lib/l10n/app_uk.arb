@@ -11,11 +11,11 @@
   "@dataTriggerBrightLight": {
     "description": "Default trigger."
   },
-  "dataTriggerExercise": "Фізичне навантаження",
+  "dataTriggerExercise": "Вправа",
   "@dataTriggerExercise": {
     "description": "Default trigger."
   },
-  "dataTriggerWeather": "Погода / Тиск",
+  "dataTriggerWeather": "Погода / Атмосферний тиск",
   "@dataTriggerWeather": {
     "description": "Default trigger: a change in the weather or barometric pressure."
   },
@@ -67,7 +67,7 @@
   "@dataHeadForehead": {
     "description": "Default place on the head where the pain is."
   },
-  "dataHeadTop": "Тім'я",
+  "dataHeadTop": "Тім'яна зона",
   "@dataHeadTop": {
     "description": "Default place on the head where the pain is."
   },
