@@ -1451,7 +1451,7 @@
   "@analyticsSummary": {
     "description": "Analytics: title of the summary card with six figures."
   },
-  "analyticsStatEvents": "Записи",
+  "analyticsStatEvents": "Події",
   "@analyticsStatEvents": {
     "description": "Analytics summary: label under the number of migraine entries."
   },
@@ -1475,7 +1475,7 @@
   "@analyticsStatPerYear": {
     "description": "Analytics summary: label under the average number of attacks per year."
   },
-  "analyticsHoursShort": "{value} год",
+  "analyticsHoursShort": "{value} г",
   "@analyticsHoursShort": {
     "description": "Analytics summary: a number of hours in a stat tile, very short: '5.5h'.",
     "placeholders": {
@@ -1962,7 +1962,7 @@
       }
     }
   },
-  "reportHoursShort": "{value} год",
+  "reportHoursShort": "{value} г",
   "@reportHoursShort": {
     "description": "A length in hours, very short form: '3.5h'.",
     "placeholders": {
