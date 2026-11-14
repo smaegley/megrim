@@ -67,8 +67,27 @@ def messages(arb):
 
 
 def placeholders(text):
-    """Placeholder names in an ICU message, ignoring plural/select case labels."""
-    return set(re.findall(r'\{(\w+)(?=[},])', text))
+    """Placeholder names in an ICU message. A plural/select case body is text, not a placeholder:
+    Ukrainian `=1{Щодня}` is the word "daily", where a regex took it for one."""
+    names, i = set(), 0
+    while i < len(text):
+        if text[i] != '{':
+            i += 1
+            continue
+        depth, j = 1, i + 1
+        while depth and j < len(text):
+            depth += {'{': 1, '}': -1}.get(text[j], 0)
+            j += 1
+        inner = text[i + 1:j - 1]
+        m = re.match(r'\s*(\w+)\s*,\s*(?:plural|select)\s*,(.*)$', inner, re.S)
+        if m:
+            names.add(m.group(1))
+            for _, body in _icu_cases(m.group(2)):
+                names |= placeholders(body)
+        else:
+            names.add(inner.split(',')[0].strip())
+        i = j
+    return names
 
 
 def locales_config_xml(tags):
