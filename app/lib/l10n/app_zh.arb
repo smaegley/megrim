@@ -1,1 +1,3492 @@
-{}
+{
+  "dataTriggerStress": "压力",
+  "@dataTriggerStress": {
+    "description": "Default trigger, and the 'Stress' factor in Migraine days vs clear days (stress level 1-5)."
+  },
+  "dataTriggerSleepChange": "睡眠变化",
+  "@dataTriggerSleepChange": {
+    "description": "Default trigger: sleeping more or less than usual, or at different times."
+  },
+  "dataTriggerBrightLight": "强光",
+  "@dataTriggerBrightLight": {
+    "description": "Default trigger."
+  },
+  "dataTriggerExercise": "运动",
+  "@dataTriggerExercise": {
+    "description": "Default trigger."
+  },
+  "dataTriggerWeather": "天气 / 气压",
+  "@dataTriggerWeather": {
+    "description": "Default trigger: a change in the weather or barometric pressure."
+  },
+  "dataTriggerAlcohol": "酒精",
+  "@dataTriggerAlcohol": {
+    "description": "Default trigger."
+  },
+  "dataTriggerCaffeine": "咖啡因",
+  "@dataTriggerCaffeine": {
+    "description": "Default trigger, and a default relief method (coffee or tea taken to ease a migraine)."
+  },
+  "dataTriggerFood": "食物",
+  "@dataTriggerFood": {
+    "description": "Default trigger: something eaten."
+  },
+  "dataTriggerHormonal": "激素",
+  "@dataTriggerHormonal": {
+    "description": "Default trigger: e.g. the menstrual cycle."
+  },
+  "dataTriggerStrongSmell": "强烈气味",
+  "@dataTriggerStrongSmell": {
+    "description": "Default trigger: perfume, smoke, paint and the like."
+  },
+  "dataTriggerScreenTime": "屏幕时间",
+  "@dataTriggerScreenTime": {
+    "description": "Default trigger: long use of a phone or computer screen."
+  },
+  "dataTriggerTravel": "出行",
+  "@dataTriggerTravel": {
+    "description": "Default trigger: being away from home."
+  },
+  "dataHeadLeftTemple": "左太阳穴",
+  "@dataHeadLeftTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadRightTemple": "右太阳穴",
+  "@dataHeadRightTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindLeftEye": "左眼后方",
+  "@dataHeadBehindLeftEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindRightEye": "右眼后方",
+  "@dataHeadBehindRightEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadForehead": "前额",
+  "@dataHeadForehead": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadTop": "头顶",
+  "@dataHeadTop": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBack": "后脑勺",
+  "@dataHeadBack": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadNeck": "颈部",
+  "@dataHeadNeck": {
+    "description": "Default place where the pain is."
+  },
+  "dataHeadBothSides": "双侧",
+  "@dataHeadBothSides": {
+    "description": "Default place on the head where the pain is: both sides of the head."
+  },
+  "dataSymptomNausea": "恶心",
+  "@dataSymptomNausea": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomVomiting": "呕吐",
+  "@dataSymptomVomiting": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomLight": "畏光",
+  "@dataSymptomLight": {
+    "description": "[medical] Default migraine symptom (photophobia)."
+  },
+  "dataSymptomSound": "畏声",
+  "@dataSymptomSound": {
+    "description": "[medical] Default migraine symptom (phonophobia)."
+  },
+  "dataSymptomSmell": "畏嗅",
+  "@dataSymptomSmell": {
+    "description": "[medical] Default migraine symptom (osmophobia)."
+  },
+  "dataSymptomNeck": "颈部疼痛 / 僵硬",
+  "@dataSymptomNeck": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomDizziness": "头晕",
+  "@dataSymptomDizziness": {
+    "description": "[medical] Default migraine symptom: feeling light-headed or unsteady. Different from vertigo."
+  },
+  "dataSymptomVertigo": "眩晕",
+  "@dataSymptomVertigo": {
+    "description": "[medical] Default migraine symptom: a false sense that you or the room is spinning or moving. Marks vestibular migraine; keep it distinct from dizziness."
+  },
+  "dataSymptomMotion": "运动敏感",
+  "@dataSymptomMotion": {
+    "description": "[medical] Default migraine symptom: symptoms made worse by moving the head or by motion."
+  },
+  "dataSymptomFatigue": "疲劳",
+  "@dataSymptomFatigue": {
+    "description": "[medical] Default migraine symptom: extreme tiredness."
+  },
+  "dataSymptomBrainFog": "脑雾",
+  "@dataSymptomBrainFog": {
+    "description": "[medical] Default migraine symptom: trouble thinking clearly or concentrating."
+  },
+  "dataSymptomYawning": "打哈欠",
+  "@dataSymptomYawning": {
+    "description": "[medical] Default migraine symptom: repeated yawning, often before an attack."
+  },
+  "dataReliefDarkRoom": "暗室",
+  "@dataReliefDarkRoom": {
+    "description": "Default non-drug relief method: resting in a dark room."
+  },
+  "dataReliefSleep": "睡眠",
+  "@dataReliefSleep": {
+    "description": "Default non-drug relief method."
+  },
+  "dataReliefColdPack": "冷敷",
+  "@dataReliefColdPack": {
+    "description": "Default non-drug relief method: something cold on the head or neck."
+  },
+  "dataReliefHeat": "热敷",
+  "@dataReliefHeat": {
+    "description": "Default non-drug relief method: a warm compress, a hot shower."
+  },
+  "dataReliefHydration": "补水",
+  "@dataReliefHydration": {
+    "description": "Default non-drug relief method: drinking water."
+  },
+  "dataReliefRest": "休息",
+  "@dataReliefRest": {
+    "description": "Default non-drug relief method."
+  },
+  "dataSeasonWinter": "冬季",
+  "@dataSeasonWinter": {
+    "description": "Season."
+  },
+  "dataSeasonSpring": "春季",
+  "@dataSeasonSpring": {
+    "description": "Season."
+  },
+  "dataSeasonSummer": "夏季",
+  "@dataSeasonSummer": {
+    "description": "Season."
+  },
+  "dataSeasonAutumn": "秋季",
+  "@dataSeasonAutumn": {
+    "description": "Season (fall)."
+  },
+  "dataMoonNew": "新月",
+  "@dataMoonNew": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaxingCrescent": "娥眉月",
+  "@dataMoonWaxingCrescent": {
+    "description": "Moon phase."
+  },
+  "dataMoonFirstQuarter": "上弦月",
+  "@dataMoonFirstQuarter": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaxingGibbous": "盈凸月",
+  "@dataMoonWaxingGibbous": {
+    "description": "Moon phase."
+  },
+  "dataMoonFull": "满月",
+  "@dataMoonFull": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaningGibbous": "亏凸月",
+  "@dataMoonWaningGibbous": {
+    "description": "Moon phase."
+  },
+  "dataMoonLastQuarter": "下弦月",
+  "@dataMoonLastQuarter": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaningCrescent": "残月",
+  "@dataMoonWaningCrescent": {
+    "description": "Moon phase."
+  },
+  "dataTimeMorning": "上午",
+  "@dataTimeMorning": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeAfternoon": "下午",
+  "@dataTimeAfternoon": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeEvening": "傍晚",
+  "@dataTimeEvening": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeNight": "夜间",
+  "@dataTimeNight": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataFactorDayOfWeek": "星期",
+  "@dataFactorDayOfWeek": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorSeason": "季节",
+  "@dataFactorSeason": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorMonth": "月份",
+  "@dataFactorMonth": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorMoonPhase": "月相",
+  "@dataFactorMoonPhase": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorDaylight": "日照时长",
+  "@dataFactorDaylight": {
+    "description": "Name of a factor: how many hours of daylight the day had."
+  },
+  "dataFactorPressure": "气压 Δ 24 小时（hPa）",
+  "@dataFactorPressure": {
+    "description": "Name of a factor: the change in barometric pressure over 24 hours, in hectopascals. Keep 'Δ', '24h' and 'hPa' as symbols."
+  },
+  "dataFactorSleep": "前夜睡眠",
+  "@dataFactorSleep": {
+    "description": "Name of a factor in Migraine days vs clear days: hours slept the night before."
+  },
+  "dataFactorTrigger": "记录的诱因",
+  "@dataFactorTrigger": {
+    "description": "Name of a factor in Migraine days vs clear days: a trigger written down for that day."
+  },
+  "dataFactorFood": "记录的食物",
+  "@dataFactorFood": {
+    "description": "Name of a factor in Migraine days vs clear days: a food written down for that day."
+  },
+  "dataHours": "{value} 小时",
+  "@dataHours": {
+    "description": "A number of hours, as a chart label: '9.5 h'. Use the usual short form for hours.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "9.5"
+      }
+    }
+  },
+  "dataBucketBelow": "< {value}",
+  "@dataBucketBelow": {
+    "description": "Chart bucket: values below a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "-10"
+      }
+    }
+  },
+  "dataBucketAbove": "> {value}",
+  "@dataBucketAbove": {
+    "description": "Chart bucket: values above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
+  "dataBucketAtLeast": "≥ {value}",
+  "@dataBucketAtLeast": {
+    "description": "Chart bucket: values at or above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "14 h"
+      }
+    }
+  },
+  "dataBucketRange": "{from} 至 {to}",
+  "@dataBucketRange": {
+    "description": "Chart bucket for a range that may include negative numbers: '-10 to -5' (pressure change in hPa).",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "-10"
+      },
+      "to": {
+        "type": "String",
+        "example": "-5"
+      }
+    }
+  },
+  "dataBucketSpan": "{from}–{to}",
+  "@dataBucketSpan": {
+    "description": "Chart bucket for a range of positive numbers, written with a dash: '6–8'.",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "6"
+      },
+      "to": {
+        "type": "String",
+        "example": "8"
+      }
+    }
+  },
+  "noHeadache": "无头痛",
+  "@noHeadache": {
+    "description": "Label on an attack recorded without headache (History, entry detail, report)."
+  },
+  "noHeadacheWithAura": "无头痛 · 伴先兆",
+  "@noHeadacheWithAura": {
+    "description": "[medical] Label on an attack without headache that had an aura (ICHD-3 'typical aura without headache'). Keep the '·' separator."
+  },
+  "noHeadacheWithVertigo": "无头痛 · 伴眩晕",
+  "@noHeadacheWithVertigo": {
+    "description": "[medical] Label on an attack without headache that had vertigo or dizziness (as in vestibular migraine). Keep the '·' separator."
+  },
+  "impactNormal": "正常",
+  "@impactNormal": {
+    "description": "Impact on the day, short button label: functioned normally. Answers 'How well could you do your usual things?'"
+  },
+  "impactReduced": "下降",
+  "@impactReduced": {
+    "description": "Impact on the day, short button label: reduced function, did less or less well."
+  },
+  "impactUnable": "无法",
+  "@impactUnable": {
+    "description": "Impact on the day, short button label: unable to do usual activities. Must not read as 'unable to stop me'."
+  },
+  "impactNormalDescription": "功能正常",
+  "@impactNormalDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactReducedDescription": "功能下降",
+  "@impactReducedDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactUnableDescription": "无法正常活动",
+  "@impactUnableDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactNormalExplanation": "功能正常：如常度过一天",
+  "@impactNormalExplanation": {
+    "description": "Shown under the impact buttons once 'Normal' is chosen."
+  },
+  "impactReducedExplanation": "功能下降：做得更少，或效果更差",
+  "@impactReducedExplanation": {
+    "description": "Shown under the impact buttons once 'Reduced' is chosen."
+  },
+  "impactUnableExplanation": "无法正常活动：无法完成平时的活动",
+  "@impactUnableExplanation": {
+    "description": "Shown under the impact buttons once 'Unable' is chosen."
+  },
+  "medClassTriptan": "曲普坦",
+  "@medClassTriptan": {
+    "description": "[medical] Class of acute migraine medication."
+  },
+  "medClassErgot": "麦角胺",
+  "@medClassErgot": {
+    "description": "[medical] Class of acute migraine medication (ergotamines)."
+  },
+  "medClassOpioid": "阿片类",
+  "@medClassOpioid": {
+    "description": "[medical] Class of acute medication."
+  },
+  "medClassCombination": "复方镇痛药",
+  "@medClassCombination": {
+    "description": "[medical] Class of acute medication: a pain reliever combined with codeine, caffeine or butalbital (ICHD-3 'combination-analgesic')."
+  },
+  "medClassSimple": "单一镇痛药",
+  "@medClassSimple": {
+    "description": "[medical] Class of acute medication: paracetamol, ibuprofen, aspirin and similar (ICHD-3 'non-opioid analgesic')."
+  },
+  "medClassGepant": "吉帕净类",
+  "@medClassGepant": {
+    "description": "[medical] Class of acute migraine medication (CGRP receptor antagonists)."
+  },
+  "medClassDitan": "迪坦类",
+  "@medClassDitan": {
+    "description": "[medical] Class of acute migraine medication (lasmiditan)."
+  },
+  "medClassAntiemetic": "止吐药",
+  "@medClassAntiemetic": {
+    "description": "[medical] Class of medication against nausea (antiemetic)."
+  },
+  "medClassOther": "其他",
+  "@medClassOther": {
+    "description": "Medication class: anything not in the other classes."
+  },
+  "medClassNotSet": "未设置类别",
+  "@medClassNotSet": {
+    "description": "Shown for a medication the user hasn't given a class."
+  },
+  "medClassTriptanExamples": "舒马曲普坦、利扎曲普坦、佐米曲普坦……",
+  "@medClassTriptanExamples": {
+    "description": "[medical] Examples under the class name in the picker. Generic drug names, no brands; use the local generic names."
+  },
+  "medClassErgotExamples": "麦角胺、双氢麦角胺",
+  "@medClassErgotExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassOpioidExamples": "可待因、曲马多、羟考酮……",
+  "@medClassOpioidExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassCombinationExamples": "镇痛药与可待因、咖啡因或布他比妥的复方",
+  "@medClassCombinationExamples": {
+    "description": "[medical] Examples under the class name."
+  },
+  "medClassSimpleExamples": "对乙酰氨基酚（扑热息痛）、布洛芬、萘普生、阿司匹林……",
+  "@medClassSimpleExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names; use the local names (paracetamol / acetaminophen)."
+  },
+  "medClassGepantExamples": "乌布吉帕净、瑞美吉帕净、扎维吉帕净",
+  "@medClassGepantExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassDitanExamples": "拉司米定",
+  "@medClassDitanExamples": {
+    "description": "[medical] Example under the class name. Generic drug name."
+  },
+  "medClassAntiemeticExamples": "甲氧氯普胺、昂丹司琼、多潘立酮……",
+  "@medClassAntiemeticExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassOtherExamples": "其他任何药物",
+  "@medClassOtherExamples": {
+    "description": "Under 'Other' in the medication class picker."
+  },
+  "overuseNoticeTitle": "用药天数达到参考水平",
+  "@overuseNoticeTitle": {
+    "description": "[medical] Title of the notice shown when acute-medication days reached the ICHD-3 medication-overuse reference level in each of the last 3 months. Calm and factual; not a warning or a diagnosis."
+  },
+  "overuseNoticeBody": "在过去 3 个完整月份中，您每月的急性用药天数已达到头痛指南（ICHD-3）用于评估药物过度使用性头痛的参考水平，即频繁使用急性药物可能使头痛更加频繁。这只是您记录内容的统计，并非诊断。请勿因此改变用药方式；建议与医生讨论。",
+  "@overuseNoticeBody": {
+    "description": "[medical] Body of the medication-overuse notice. It must not say the user has medication-overuse headache, and must not tell them to stop or change a medication. Needs a second reviewer."
+  },
+  "overuseLevelClass": "{medClass} 共 {days} 天（水平 {level}）",
+  "@overuseLevelClass": {
+    "description": "[medical] One month's reason for the notice: a class's medication days and the ICHD-3 reference level, e.g. 'Triptan on 11 days (level 10)'.",
+    "placeholders": {
+      "medClass": {
+        "type": "String",
+        "example": "Triptan"
+      },
+      "days": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "overuseLevelMixed": "多种类别共 {days} 天（水平 {level}）",
+  "@overuseLevelMixed": {
+    "description": "[medical] One month's reason for the notice when several classes together reached the level (ICHD-3 8.2.6).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsNeedEvents": "相关性分析至少需要 {count} 次事件。",
+  "@correlationsNeedEvents": {
+    "description": "Why Suspected Factors isn't shown yet.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsCaveatSample": "基于 {days} 天内的 {migraineDays} 个偏头痛日——样本量小，结果波动较大。",
+  "@correlationsCaveatSample": {
+    "description": "Caveat under Suspected Factors.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsMidAttackNote": "{count, plural, other{多日偏头痛期间的 {count} 天会被排除：一次发作进行中不会开始新的发作。}}",
+  "@correlationsMidAttackNote": {
+    "description": "Caveat under Suspected Factors: days inside a multi-day attack (not its first day) are not counted.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsCaveatOddsRatio": "比值比使用 +0.5 校正处理空单元格；接近 1.0 的值视为无信号。",
+  "@correlationsCaveatOddsRatio": {
+    "description": "Caveat under Suspected Factors. 'Odds ratio' is the statistics term; '+0.5' and '1.0' are numbers."
+  },
+  "caveatMultipleComparisons": "同时检验多个因素（多重比较）——某些表面的关联可能只是偶然。",
+  "@caveatMultipleComparisons": {
+    "description": "Caveat under Suspected Factors and Migraine days vs clear days. 'Multiple comparisons' is the statistics term."
+  },
+  "caveatNotCausation": "关联不等于因果。请用它来形成假设，而非结论。",
+  "@caveatNotCausation": {
+    "description": "Caveat under Suspected Factors and Migraine days vs clear days."
+  },
+  "trackedNeedsDays": "需要 {needDays} 个已追踪天数，其中至少 {needMigraine} 个偏头痛日和 {needClear} 个无偏头痛日。目前：{tracked} 个已追踪、{migraine} 个偏头痛、{clear} 个无偏头痛（自首次打卡以来）。",
+  "@trackedNeedsDays": {
+    "description": "Why Migraine days vs clear days isn't shown yet. A 'clear day' is a day logged as migraine-free with a check-in.",
+    "placeholders": {
+      "needDays": {
+        "type": "int"
+      },
+      "needMigraine": {
+        "type": "int"
+      },
+      "needClear": {
+        "type": "int"
+      },
+      "tracked": {
+        "type": "int"
+      },
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedCaveatSample": "基于自首次打卡以来的 {migraineDays} 个偏头痛日和 {clearDays} 个无偏头痛日——样本量小，结果波动较大。",
+  "@trackedCaveatSample": {
+    "description": "Caveat under Migraine days vs clear days.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "clearDays": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedCaveatRecordedDays": "每个因素只统计其被记录的天数。",
+  "@trackedCaveatRecordedDays": {
+    "description": "Caveat under Migraine days vs clear days."
+  },
+  "trackedCaveatRecallBias": "回忆偏差：偏头痛发作后，人们会比状态良好时更努力寻找原因，因此诱因可能在偏头痛日被过度记录。",
+  "@trackedCaveatRecallBias": {
+    "description": "Caveat under Migraine days vs clear days. 'Recall bias' is the statistics term."
+  },
+  "homeTabLog": "记录",
+  "@homeTabLog": {
+    "description": "Bottom navigation tab: the screen for logging a migraine."
+  },
+  "homeTabHistory": "历史",
+  "@homeTabHistory": {
+    "description": "Bottom navigation tab: the list and calendar of past entries."
+  },
+  "homeTabAnalytics": "分析",
+  "@homeTabAnalytics": {
+    "description": "Bottom navigation tab: charts and patterns."
+  },
+  "homeTabSettings": "设置",
+  "@homeTabSettings": {
+    "description": "Bottom navigation tab."
+  },
+  "legalMedicalDisclaimer": "Megrim 是一款个人日记，并非医疗器械。它不诊断、治疗、治愈或预防任何疾病。“疑似因素”只是您自己记录中的统计关联——关联不等于因果。关于偏头痛问题以及任何治疗决定，请务必咨询合格的医疗专业人员。",
+  "@legalMedicalDisclaimer": {
+    "description": "[legal] [medical] The medical disclaimer, accepted during onboarding and shown in About and the PDF report. Needs a second reviewer. Keep 'Megrim' untranslated; 'Suspected factors' is the name of an Analytics card."
+  },
+  "legalPrivacySummary": "所有数据都保留在您的设备上。我们不运营服务器，也不收集任何信息——没有账户、没有分析统计、没有标识符、没有崩溃报告。天气增强默认关闭，除非您开启；开启后，应用唯一的自动网络流量是访问 Open-Meteo.com，用于获取您创建的记录的大致位置（约 1 公里取整）和日期的天气。备份使用您手机自带的备份功能（Android 为 Google，iPhone 为 iCloud 或您的电脑），您可以在其设置中控制；导出文件会保存到您选择的位置。",
+  "@legalPrivacySummary": {
+    "description": "[legal] Privacy summary in About. Must stay as precise as the English: what is sent, to whom, and when. Keep 'Open-Meteo.com' as is."
+  },
+  "legalWeatherAttribution": "天气数据由 Open-Meteo.com 提供",
+  "@legalWeatherAttribution": {
+    "description": "[legal] Attribution required by Open-Meteo's CC-BY 4.0 licence. Keep 'Open-Meteo.com' as is."
+  },
+  "legalAppTitle": "Megrim：偏头痛记录",
+  "@legalAppTitle": {
+    "description": "Store-style title shown in About. Keep 'Megrim' untranslated."
+  },
+  "legalAppSubtitle": "离线偏头痛记录",
+  "@legalAppSubtitle": {
+    "description": "Store-style subtitle shown in About and on the Log screen."
+  },
+  "legalShortDescription": "私密的离线偏头痛记录，自动在设备端提供规律洞察。",
+  "@legalShortDescription": {
+    "description": "One-line description shown in About."
+  },
+  "legalFullDescription": "Megrim 是一款开源、离线优先的偏头痛日记，帮助您找到个人诱因。应用会自动为您的记录添加时间、季节、日照和月相信息（如果您选择加入，还会添加当地天气和气压），并完全在手机上计算相关性。没有账户、没有云服务器、零追踪，您的健康数据完全私密并由您掌控。",
+  "@legalFullDescription": {
+    "description": "Full description shown in About. Keep 'Megrim' untranslated."
+  },
+  "legalCaveatOddsRatioExplained": "OR = 比值比：在出现该因素的日子里，偏头痛的可能性高出多少。OR 2.0 ≈ 相对其他日子约两倍的可能性；OR 1.0 表示无影响。",
+  "@legalCaveatOddsRatioExplained": {
+    "description": "Caveat on the Suspected Factors card. 'OR' abbreviates the statistics term 'odds ratio'; use the usual abbreviation in your language if there is one, consistently."
+  },
+  "legalCaveatSmallSample": "小样本：基于有限偏头痛日的结果波动较大。",
+  "@legalCaveatSmallSample": {
+    "description": "Caveat on the Suspected Factors card."
+  },
+  "legalTranslationNote": "本翻译由志愿者完成。如果与医疗免责声明或隐私摘要的英文文本存在差异，以英文文本为准。",
+  "@legalTranslationNote": {
+    "description": "[legal] Shown in About for every language except English. 'Volunteers' means community translators."
+  },
+  "onboardingWelcomeTitle": "欢迎使用 Megrim",
+  "@onboardingWelcomeTitle": {
+    "description": "First onboarding screen, title. Keep 'Megrim' untranslated."
+  },
+  "onboardingWelcomeBody": "一款私密的离线偏头痛日记。所有数据都保留在您的设备上。您可以选择让它从 Open-Meteo.com 为您的记录添加天气和气压信息——稍后由您决定，默认关闭。",
+  "@onboardingWelcomeBody": {
+    "description": "First onboarding screen, body."
+  },
+  "onboardingGetStarted": "开始使用",
+  "@onboardingGetStarted": {
+    "description": "Button on the first onboarding screen."
+  },
+  "onboardingBeforeYouBegin": "开始之前",
+  "@onboardingBeforeYouBegin": {
+    "description": "Title of the onboarding step showing the medical disclaimer."
+  },
+  "onboardingAccept": "我理解并接受。",
+  "@onboardingAccept": {
+    "description": "[legal] Checkbox the user ticks to accept the medical disclaimer before using the app."
+  },
+  "onboardingContinue": "继续",
+  "@onboardingContinue": {
+    "description": "Button to the next onboarding step."
+  },
+  "onboardingHomeTitle": "您的家庭位置",
+  "@onboardingHomeTitle": {
+    "description": "Title of the onboarding step that asks for a home location."
+  },
+  "onboardingHomeBody": "用于设备端计算日照和季节分析；并且——仅当您在下一步启用天气增强时——用于为您的记录获取天气。在此处搜索会将您输入的地名发送到 Open-Meteo 的地理编码器以查找坐标；此后只发送取整后（约 1 公里）的坐标，且仅用于获取天气。不想在线搜索？可以改为输入 GPS 坐标或 Plus 代码——两者均在设备端解析。",
+  "@onboardingHomeBody": {
+    "description": "[legal] Explains what the home location is used for and what is sent over the network. Keep it as precise as the English. 'Plus Code' is the name of Google's open location code format."
+  },
+  "onboardingWeatherTitle": "天气增强",
+  "@onboardingWeatherTitle": {
+    "description": "Title of the onboarding step that asks whether to fetch weather. 'Enrichment' means adding weather data to entries."
+  },
+  "onboardingWeatherBody": "Megrim 可以获取每次偏头痛周围的天气——温度、湿度、气压、空气质量——以便分析功能寻找诸如发作前气压波动等规律。\n\n如果您开启此功能，记录的日期和取整后（约 1 公里）的坐标将发送到 Open-Meteo.com，这是一家非商业天气服务。除此之外，没有任何信息会离开您的设备：没有账户、没有遥测，也没有我们的服务器。\n\n关闭此功能，Megrim 将完全离线运行。您可以随时在设置中更改。",
+  "@onboardingWeatherBody": {
+    "description": "[legal] Explains the weather opt-in and what is sent. Keep the blank lines between paragraphs. Keep it as precise as the English."
+  },
+  "onboardingWeatherSwitch": "为我的记录获取天气",
+  "@onboardingWeatherSwitch": {
+    "description": "Switch on the weather onboarding step."
+  },
+  "onboardingWeatherSwitchSubtitle": "如果您需要气压相关性，建议开启",
+  "@onboardingWeatherSwitchSubtitle": {
+    "description": "Under the weather switch during onboarding."
+  },
+  "onboardingFinish": "完成",
+  "@onboardingFinish": {
+    "description": "Button that ends onboarding."
+  },
+  "settingsTitle": "设置",
+  "@settingsTitle": {
+    "description": "Title of the Settings screen."
+  },
+  "settingsOff": "关闭",
+  "@settingsOff": {
+    "description": "A setting that is turned off: the daily reminder, or the backup reminder interval."
+  },
+  "settingsHomeLocation": "家庭位置",
+  "@settingsHomeLocation": {
+    "description": "Settings row: the home location used for daylight, season and weather."
+  },
+  "settingsWeather": "天气增强",
+  "@settingsWeather": {
+    "description": "Settings switch: fetch weather for entries. 'Enrichment' means adding weather data to entries."
+  },
+  "settingsWeatherOnSubtitle": "从 Open-Meteo 获取记录的天气（仅取整位置和日期）",
+  "@settingsWeatherOnSubtitle": {
+    "description": "[legal] Under the weather switch when it's on: what is sent."
+  },
+  "settingsWeatherOffSubtitle": "关闭——不使用自动网络（仅您主动输入的搜索）",
+  "@settingsWeatherOffSubtitle": {
+    "description": "Under the weather switch when it's off."
+  },
+  "settingsWeatherOnSnack": "天气增强已开启——正在为您的记录获取天气……",
+  "@settingsWeatherOnSnack": {
+    "description": "Brief message after turning weather on."
+  },
+  "settingsWeatherOffSnack": "天气增强已关闭——不再发送自动网络请求。",
+  "@settingsWeatherOffSnack": {
+    "description": "Brief message after turning weather off."
+  },
+  "settingsTriggersTitle": "诱因",
+  "@settingsTriggersTitle": {
+    "description": "Title of the screen that edits the list of trigger names."
+  },
+  "settingsHeadLocationsTitle": "头部位置",
+  "@settingsHeadLocationsTitle": {
+    "description": "Title of the screen that edits the list of places on the head where pain is felt."
+  },
+  "settingsManageTriggers": "管理诱因",
+  "@settingsManageTriggers": {
+    "description": "Settings row that opens the trigger list editor."
+  },
+  "settingsManageHeadLocations": "管理头部位置",
+  "@settingsManageHeadLocations": {
+    "description": "Settings row that opens the head-location list editor."
+  },
+  "settingsManageMedications": "管理药物",
+  "@settingsManageMedications": {
+    "description": "Settings row that opens medication classes and preventive medications."
+  },
+  "settingsManageMedicationsSubtitle": "类别与预防性药物",
+  "@settingsManageMedicationsSubtitle": {
+    "description": "Under 'Manage Medications'."
+  },
+  "settingsLastBackup": "上次备份",
+  "@settingsLastBackup": {
+    "description": "Settings row: when the user last exported a JSON backup."
+  },
+  "settingsBackupSubtitle": "{age} · {reminder}",
+  "@settingsBackupSubtitle": {
+    "description": "Under 'Last backup': how long ago, then the reminder interval. E.g. '12 days ago · Every 30 days'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "12 days ago"
+      },
+      "reminder": {
+        "type": "String",
+        "example": "Every 30 days"
+      }
+    }
+  },
+  "settingsBackupSubtitleDue": "{age} · {reminder} · 到期",
+  "@settingsBackupSubtitleDue": {
+    "description": "Under 'Last backup' when a backup is overdue: how long ago, the reminder interval, and 'due'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "Never"
+      },
+      "reminder": {
+        "type": "String",
+        "example": "Every 30 days"
+      }
+    }
+  },
+  "backupNever": "从未",
+  "@backupNever": {
+    "description": "Last backup: the user has never exported a backup."
+  },
+  "backupToday": "今天",
+  "@backupToday": {
+    "description": "Last backup: today."
+  },
+  "backupYesterday": "昨天",
+  "@backupYesterday": {
+    "description": "Last backup: yesterday."
+  },
+  "backupDaysAgo": "{count, plural, other{{count} 天前}}",
+  "@backupDaysAgo": {
+    "description": "Last backup: this many days ago (2 or more in practice).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupReminderEvery": "{count, plural, other{每 {count} 天}}",
+  "@backupReminderEvery": {
+    "description": "Backup reminder interval (7, 14, 30 or 90 days).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsBackupReminderTitle": "提醒我备份",
+  "@settingsBackupReminderTitle": {
+    "description": "Title of the dialog choosing the backup reminder interval."
+  },
+  "settingsExportJson": "导出（JSON 备份）",
+  "@settingsExportJson": {
+    "description": "Settings row: export everything as a JSON file, which can be imported back."
+  },
+  "settingsExportCsv": "导出（CSV）",
+  "@settingsExportCsv": {
+    "description": "Settings row: export entries as a spreadsheet file."
+  },
+  "settingsExportReport": "导出报告（PDF）",
+  "@settingsExportReport": {
+    "description": "Settings row: make a printable PDF report."
+  },
+  "settingsExportReportSubtitle": "可打印的摘要，便于与医生分享",
+  "@settingsExportReportSubtitle": {
+    "description": "Under 'Export report (PDF)'."
+  },
+  "settingsImport": "导入（JSON）",
+  "@settingsImport": {
+    "description": "Settings row: import a JSON export."
+  },
+  "settingsImportGuide": "导入格式指南",
+  "@settingsImportGuide": {
+    "description": "Settings row: opens the import format documentation on the web."
+  },
+  "settingsImportGuideSubtitle": "从其他应用导入数据",
+  "@settingsImportGuideSubtitle": {
+    "description": "Under 'Import format guide'."
+  },
+  "settingsDonate": "捐赠",
+  "@settingsDonate": {
+    "description": "Settings row: opens the developer's donation page."
+  },
+  "settingsDonateSubtitle": "支持开发",
+  "@settingsDonateSubtitle": {
+    "description": "Under 'Donate'."
+  },
+  "settingsSourceCode": "源代码",
+  "@settingsSourceCode": {
+    "description": "Settings row: opens the source code on the web."
+  },
+  "settingsAbout": "关于与隐私",
+  "@settingsAbout": {
+    "description": "Settings row: opens the About dialog with the privacy summary and disclaimer."
+  },
+  "settingsAboutLegalese": "GPL-3.0-or-later · {attribution}",
+  "@settingsAboutLegalese": {
+    "description": "In About: the licence, then the weather data attribution. Keep 'GPL-3.0-or-later' as is.",
+    "placeholders": {
+      "attribution": {
+        "type": "String",
+        "example": "Weather data by Open-Meteo.com"
+      }
+    }
+  },
+  "settingsDailyReminder": "每日提醒",
+  "@settingsDailyReminder": {
+    "description": "Settings row and dialog title: a daily notification asking how the day was."
+  },
+  "settingsDailyReminderOn": "每天 {time}，除非当天已记录",
+  "@settingsDailyReminderOn": {
+    "description": "Under 'Daily reminder' when it's on.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "20:00"
+      }
+    }
+  },
+  "settingsDailyReminderExplain": "每天一条通知，询问当天情况，并附带“今天无偏头痛”和“记录”按钮。它不涉及您的健康信息，也没有任何数据离开手机。",
+  "@settingsDailyReminderExplain": {
+    "description": "In the daily reminder dialog. 'No migraine today' and 'Log' are the notification's two buttons; use the same words as those buttons."
+  },
+  "settingsReminderChooseTime": "选择时间……",
+  "@settingsReminderChooseTime": {
+    "description": "Daily reminder dialog option when the reminder is off."
+  },
+  "settingsReminderAtTime": "{time}（更改……）",
+  "@settingsReminderAtTime": {
+    "description": "Daily reminder dialog option when the reminder is on: tap to change the time.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "20:00"
+      }
+    }
+  },
+  "settingsRemindMeAt": "提醒时间",
+  "@settingsRemindMeAt": {
+    "description": "Title of the time picker for the daily reminder."
+  },
+  "settingsOngoingTitle": "偏头痛发作期间的通知",
+  "@settingsOngoingTitle": {
+    "description": "Settings switch (Android): an ongoing notification while a migraine is in progress."
+  },
+  "settingsOngoingSubtitle": "发作期间显示计时器和结束按钮",
+  "@settingsOngoingSubtitle": {
+    "description": "Under 'Notification during a migraine'. 'End' is the notification's button that ends the migraine."
+  },
+  "settingsNotificationsRefused": "Megrim 的通知在手机设置中已关闭，因此此功能保持关闭。请先在那里允许通知，然后重试。",
+  "@settingsNotificationsRefused": {
+    "description": "Shown when the phone's settings block Megrim's notifications."
+  },
+  "settingsAppLock": "应用锁",
+  "@settingsAppLock": {
+    "description": "Settings switch: ask for the phone's unlock when opening the app."
+  },
+  "settingsAppLockSubtitle": "打开 Megrim 时要求指纹、面部或手机 PIN 码",
+  "@settingsAppLockSubtitle": {
+    "description": "Under 'App lock'."
+  },
+  "settingsLockAfter": "锁定时机",
+  "@settingsLockAfter": {
+    "description": "Settings row and dialog title: how long the app may be in the background before it locks."
+  },
+  "settingsLockAfterSubtitle": "在后台 {timeout}",
+  "@settingsLockAfterSubtitle": {
+    "description": "Under 'Lock after', e.g. 'After 1 minute in the background' or 'Immediately in the background'.",
+    "placeholders": {
+      "timeout": {
+        "type": "String",
+        "example": "After 1 minute"
+      }
+    }
+  },
+  "appLockImmediately": "立即",
+  "@appLockImmediately": {
+    "description": "App lock timeout: lock as soon as the app goes to the background."
+  },
+  "appLockAfterMinutes": "{count, plural, other{{count} 分钟后}}",
+  "@appLockAfterMinutes": {
+    "description": "App lock timeout.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsHideInRecents": "在最近应用中隐藏",
+  "@settingsHideInRecents": {
+    "description": "Settings switch: blank the app in the phone's app switcher."
+  },
+  "settingsHideInRecentsAndroid": "在最近应用切换器中将 Megrim 显示为空白。同时阻止对应用截图。",
+  "@settingsHideInRecentsAndroid": {
+    "description": "Under 'Hide in recent apps' on Android."
+  },
+  "settingsHideInRecentsIos": "在最近应用切换器中将 Megrim 显示为空白。",
+  "@settingsHideInRecentsIos": {
+    "description": "Under 'Hide in recent apps' on iPhone."
+  },
+  "settingsAppLockOn": "应用锁已开启。",
+  "@settingsAppLockOn": {
+    "description": "Brief message after turning app lock on."
+  },
+  "settingsAppLockOff": "应用锁已关闭。",
+  "@settingsAppLockOff": {
+    "description": "Brief message after turning app lock off."
+  },
+  "settingsNoScreenLockTitle": "此手机未设置屏幕锁定",
+  "@settingsNoScreenLockTitle": {
+    "description": "Dialog title when the phone has no screen lock, so app lock can't be turned on."
+  },
+  "settingsNoScreenLockBody": "应用锁使用您手机自带的解锁方式——指纹、面部，或 PIN 码、图案、密码。请先在手机设置中设置屏幕锁定，然后在此开启应用锁。",
+  "@settingsNoScreenLockBody": {
+    "description": "Dialog body when the phone has no screen lock."
+  },
+  "settingsTooManyAttempts": "尝试次数过多。请稍候再试。",
+  "@settingsTooManyAttempts": {
+    "description": "Shown when the phone has locked out unlock attempts."
+  },
+  "settingsUnlockError": "无法调用您手机的解锁功能。",
+  "@settingsUnlockError": {
+    "description": "Shown when the phone's unlock prompt couldn't be shown."
+  },
+  "settingsChangeHomeTitle": "更改家庭位置",
+  "@settingsChangeHomeTitle": {
+    "description": "Dialog title."
+  },
+  "settingsSaveReenrich": "保存并重新增强",
+  "@settingsSaveReenrich": {
+    "description": "Button: save the new home location and recompute weather and daylight for all entries."
+  },
+  "settingsReenriching": "正在重新增强记录……",
+  "@settingsReenriching": {
+    "description": "Brief message while weather and daylight are recomputed for all entries."
+  },
+  "settingsDone": "完成。",
+  "@settingsDone": {
+    "description": "Brief message when re-enriching has finished."
+  },
+  "settingsBuildingReport": "正在生成报告……",
+  "@settingsBuildingReport": {
+    "description": "Brief message while the PDF report is made."
+  },
+  "settingsReportFailed": "报告生成失败：{error}",
+  "@settingsReportFailed": {
+    "description": "Shown when making the PDF report failed. {error} is a technical message in English.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsExportTitle": "导出",
+  "@settingsExportTitle": {
+    "description": "Title of the dialog choosing how to export: share or save."
+  },
+  "settingsShare": "分享",
+  "@settingsShare": {
+    "description": "Export option: open the phone's share sheet."
+  },
+  "settingsSaveToDevice": "保存到设备",
+  "@settingsSaveToDevice": {
+    "description": "Export option: save the file to a folder on the phone."
+  },
+  "settingsSaved": "已保存。",
+  "@settingsSaved": {
+    "description": "Brief message after an export was saved."
+  },
+  "settingsSaveFailed": "保存失败：{error}",
+  "@settingsSaveFailed": {
+    "description": "Shown when saving an export failed. {error} is a technical message in English.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsImportTitle": "导入",
+  "@settingsImportTitle": {
+    "description": "Title of the import dialog."
+  },
+  "settingsImportBody": "与您现有的记录合并，还是替换全部内容？\n\n替换会先永久删除所有当前记录。",
+  "@settingsImportBody": {
+    "description": "Import dialog body. 'Merge' and 'Replace' are its two buttons; use the same words."
+  },
+  "settingsImportMerge": "合并",
+  "@settingsImportMerge": {
+    "description": "Import dialog button: add the imported entries to the existing ones."
+  },
+  "settingsImportReplace": "替换",
+  "@settingsImportReplace": {
+    "description": "Import dialog button: delete all current entries, then import."
+  },
+  "settingsImported": "已导入 {imported} 条，跳过 {skipped} 条。",
+  "@settingsImported": {
+    "description": "After an import: how many entries were imported, and how many were skipped (already present or invalid).",
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsImportFailed": "导入失败：{error}",
+  "@settingsImportFailed": {
+    "description": "Shown when an import failed, with the reason.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsCouldNotOpen": "无法打开 {url}",
+  "@settingsCouldNotOpen": {
+    "description": "Shown when a web link couldn't be opened.",
+    "placeholders": {
+      "url": {
+        "type": "String",
+        "example": "https://github.com/smaegley/megrim"
+      }
+    }
+  },
+  "daysSinceNoHistory": "历史记录不足，暂无法评估。",
+  "@daysSinceNoHistory": {
+    "description": "Days-since-last-migraine card (Log and Analytics): shown until there are enough attacks to compare the current gap with the usual one."
+  },
+  "daysSinceWellWithin": "远低于您的通常间隔（平均 {avg} 天）。",
+  "@daysSinceWellWithin": {
+    "description": "Days-since-last-migraine card: the gap since the last migraine is well below the usual gap between migraines. 'd' = days.",
+    "placeholders": {
+      "avg": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "daysSinceApproaching": "接近您的平均间隔（平均 {avg} 天）。",
+  "@daysSinceApproaching": {
+    "description": "Days-since-last-migraine card: the gap is getting close to the average gap between migraines. 'd' = days.",
+    "placeholders": {
+      "avg": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "daysSincePast": "已超过您的平均间隔（平均 {avg} 天）。",
+  "@daysSincePast": {
+    "description": "Days-since-last-migraine card: the gap is longer than the average gap between migraines. 'd' = days.",
+    "placeholders": {
+      "avg": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "daysSinceWellPast": "远超您的平均间隔（平均 {avg} 天）。",
+  "@daysSinceWellPast": {
+    "description": "Days-since-last-migraine card: the gap is much longer than usual. 'd' = days.",
+    "placeholders": {
+      "avg": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "daysSinceLabel": "{count, plural, other{距上次偏头痛 {count} 天}}",
+  "@daysSinceLabel": {
+    "description": "Days-since-last-migraine card: shown next to a big number (the count is displayed separately, so the text has no number).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysSinceLast": "上次：{date}",
+  "@daysSinceLast": {
+    "description": "Days-since-last-migraine card: the date of the last migraine.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Mon, Nov 9, 2026"
+      }
+    }
+  },
+  "monthlyTitle": "每月偏头痛天数",
+  "@monthlyTitle": {
+    "description": "Title of the Analytics card and chart counting days with a migraine in each calendar month."
+  },
+  "monthlyLast30": "最近 30 天",
+  "@monthlyLast30": {
+    "description": "Monthly migraine days card: label under the count for the last 30 days."
+  },
+  "monthlyLast30Including": "最近 30 天\n其中 {count} 天无头痛",
+  "@monthlyLast30Including": {
+    "description": "Monthly migraine days card: label under the count for the last 30 days, when some of those days had only attacks without headache. Keep the line break.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "monthlyAvg3Months": "平均/月，最近 3 个月",
+  "@monthlyAvg3Months": {
+    "description": "Monthly migraine days card: label under the average migraine days per month over the last 3 complete months."
+  },
+  "monthlyAvgNeedsHistory": "需要 3 个完整月份的历史记录",
+  "@monthlyAvgNeedsHistory": {
+    "description": "Monthly migraine days card: tooltip when the 3-month average can't be computed yet."
+  },
+  "monthlyWithoutHeadache": "{count} 天无头痛",
+  "@monthlyWithoutHeadache": {
+    "description": "Monthly chart, read by screen readers: how many of a month's migraine days had only attacks without headache.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "monthlyFootnote": "指偏头痛天数，而非记录条数。* 当月未结束。",
+  "@monthlyFootnote": {
+    "description": "Note under the monthly chart. The '*' marks the current, unfinished month on the chart."
+  },
+  "monthlyFootnoteWithLower": "指偏头痛天数，而非记录条数。* 当月未结束。柱体下部分：仅有无头痛发作的天数。",
+  "@monthlyFootnoteWithLower": {
+    "description": "Note under the monthly chart when some bars have a lighter lower part. The '*' marks the current, unfinished month."
+  },
+  "monthlyPreventiveFrom": "{name} 自 {start}",
+  "@monthlyPreventiveFrom": {
+    "description": "Monthly chart note: a preventive medication still being taken, and the month it started.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Propranolol"
+      },
+      "start": {
+        "type": "String",
+        "example": "Aug 2026"
+      }
+    }
+  },
+  "monthlyPreventiveRange": "{name} {start} – {stop}",
+  "@monthlyPreventiveRange": {
+    "description": "Monthly chart note: a preventive medication, the month it started and the month it stopped.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Topiramate"
+      },
+      "start": {
+        "type": "String",
+        "example": "Jun 2026"
+      },
+      "stop": {
+        "type": "String",
+        "example": "Aug 2026"
+      }
+    }
+  },
+  "monthlyPreventives": "预防性药物（▲ 开始，▼ 停止）：{list}。",
+  "@monthlyPreventives": {
+    "description": "Monthly chart note listing preventive medications; ▲ and ▼ are the markers drawn above the chart. {list} is a '; '-separated list.",
+    "placeholders": {
+      "list": {
+        "type": "String",
+        "example": "Propranolol from Aug 2026"
+      }
+    }
+  },
+  "chartMonthDays": "{month}：{count, plural, other{{count} 天}}",
+  "@chartMonthDays": {
+    "description": "Month chart, read by screen readers: one month and its count of days.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Sep 2026"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chartMonthDaysSoFar": "{month} 至今：{count, plural, other{{count} 天}}",
+  "@chartMonthDaysSoFar": {
+    "description": "Month chart, read by screen readers: the current, unfinished month and its count of days so far.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Oct 2026"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chartMonthDaysWithDetail": "{days}，{detail}",
+  "@chartMonthDaysWithDetail": {
+    "description": "Month chart, read by screen readers: a month's count followed by a detail, e.g. 'Sep 2026: 3 days, 1 without headache'.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "Sep 2026: 3 days"
+      },
+      "detail": {
+        "type": "String",
+        "example": "1 without headache"
+      }
+    }
+  },
+  "chartSpoken": "{title}，最新在前。{months}",
+  "@chartSpoken": {
+    "description": "Month chart, read by screen readers: the chart title, then each month newest first.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Migraine days per month"
+      },
+      "months": {
+        "type": "String",
+        "example": "Oct 2026 so far: 5 days; Sep 2026: 3 days"
+      }
+    }
+  },
+  "chartSpokenWithMarkers": "{title}，最新在前。{months}。已标记治疗变更。",
+  "@chartSpokenWithMarkers": {
+    "description": "Month chart, read by screen readers, when preventive medication starts/stops are marked on the chart.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Migraine days per month"
+      },
+      "months": {
+        "type": "String",
+        "example": "Oct 2026 so far: 5 days; Sep 2026: 3 days"
+      }
+    }
+  },
+  "medCardTitle": "急性用药天数",
+  "@medCardTitle": {
+    "description": "Title of the Analytics card counting days on which medication was taken for an attack."
+  },
+  "medCardIntro": "为发作服药的天数。同一天服用两次只计一次。",
+  "@medCardIntro": {
+    "description": "Intro text of the Acute medication days card."
+  },
+  "medCardLast30Label": "最近 30 天的天数",
+  "@medCardLast30Label": {
+    "description": "Acute medication days card: shown next to a big number (the count is displayed separately)."
+  },
+  "medCardNoneLast30": "最近 30 天无记录。",
+  "@medCardNoneLast30": {
+    "description": "Acute medication days card: no medication days in the last 30 days."
+  },
+  "medCardClassDays": "{count, plural, other{{count} 天}}",
+  "@medCardClassDays": {
+    "description": "Acute medication days card: days for one medication class, shown next to the class name.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medCardChartTitle": "每月急性用药天数",
+  "@medCardChartTitle": {
+    "description": "Title of the per-month bar chart on the Acute medication days card (read by screen readers)."
+  },
+  "medCardFootnote": "* 当月未结束。同一天使用两类药物在柱体中只计一次。",
+  "@medCardFootnote": {
+    "description": "Note under the medication days chart. '*' marks the current, unfinished month."
+  },
+  "medCardUnclassified": "{count, plural, other{{count} 种药物未设置类别（{names}），因此不与参考水平进行比较。}}",
+  "@medCardUnclassified": {
+    "description": "[medical] Acute medication days card: medications without a class are not compared with the ICHD-3 medication-overuse reference levels. {names} is a comma-separated list of names the user typed.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String",
+        "example": "Mystery pill, Another tablet"
+      }
+    }
+  },
+  "medCardSetClasses": "设置类别",
+  "@medCardSetClasses": {
+    "description": "Button on the Acute medication days card: opens Settings › Medications to give medications a class."
+  },
+  "medCardNoticePdfNote": "PDF 报告包含这些计数。",
+  "@medCardNoticePdfNote": {
+    "description": "Sentence after the medication-overuse notice body on the Analytics card."
+  },
+  "overuseNoticeMonth": "{month}：{reason}",
+  "@overuseNoticeMonth": {
+    "description": "[medical] One line of the medication-overuse notice: a month and why it reached the reference level, e.g. 'Sep 2026: Triptan on 11 days (level 10)'.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Sep 2026"
+      },
+      "reason": {
+        "type": "String",
+        "example": "Triptan on 11 days (level 10)"
+      }
+    }
+  },
+  "helpedTitle": "哪些方法有效",
+  "@helpedTitle": {
+    "description": "Title of the Analytics card showing how often each medication or relief method helped."
+  },
+  "helpedIntro": "在您回答“有效？”的次数中，每种药物或缓解方法起效的频率。未知答案不计入占比。",
+  "@helpedIntro": {
+    "description": "Intro text of the What helped card. \"Helped?\" is the question asked for each medication or relief on an entry."
+  },
+  "helpedMedications": "药物",
+  "@helpedMedications": {
+    "description": "What helped card: heading of the medications section."
+  },
+  "helpedRelief": "尝试过的缓解方法",
+  "@helpedRelief": {
+    "description": "What helped card: heading of the non-drug relief section (dark room, cold pack…)."
+  },
+  "helpedFootnote": "这是您每次发作后的记录，而非治疗方法的比较：某种方法的效果取决于服药时机和方式。",
+  "@helpedFootnote": {
+    "description": "[medical] Note at the end of the What helped card."
+  },
+  "helpedNoAnswer": "尝试 {count} 次，未记录答案",
+  "@helpedNoAnswer": {
+    "description": "What helped card: a medication or relief tried this many times, with no 'Helped?' answer given. '×' means 'times'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "helpedShare": "有效 {percent}（{answered} 次已回答）",
+  "@helpedShare": {
+    "description": "What helped card: the share of answered tries that helped, e.g. 'helped 75% (4 answered)'.",
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "75%"
+      },
+      "answered": {
+        "type": "int"
+      }
+    }
+  },
+  "helpedShareWithUnknown": "有效 {percent}（{answered} 次已回答，{unknown} 次未知）",
+  "@helpedShareWithUnknown": {
+    "description": "What helped card: the share of answered tries that helped, and how many tries had 'Unknown' as the answer.",
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "75%"
+      },
+      "answered": {
+        "type": "int"
+      },
+      "unknown": {
+        "type": "int"
+      }
+    }
+  },
+  "helpedMore": "以及 {count} 种更多（见导出）。",
+  "@helpedMore": {
+    "description": "What helped card: more rows than shown; the full list is in the data export.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsTitle": "分析",
+  "@analyticsTitle": {
+    "description": "Title of the Analytics tab (statistics about the user's migraines)."
+  },
+  "analyticsRefresh": "刷新",
+  "@analyticsRefresh": {
+    "description": "Analytics: tooltip of the button that recomputes the statistics."
+  },
+  "analyticsLoadError": "无法加载分析。",
+  "@analyticsLoadError": {
+    "description": "Analytics: shown when the statistics couldn't be computed."
+  },
+  "analyticsRetry": "重试",
+  "@analyticsRetry": {
+    "description": "Analytics: button to try loading the statistics again."
+  },
+  "analyticsEmpty": "记录几次偏头痛后即可查看分析。",
+  "@analyticsEmpty": {
+    "description": "Analytics: shown before any migraine has been logged."
+  },
+  "analyticsNotEnoughData": "数据尚不足。",
+  "@analyticsNotEnoughData": {
+    "description": "Analytics: generic note on a card that can't be computed yet."
+  },
+  "analyticsSummary": "摘要",
+  "@analyticsSummary": {
+    "description": "Analytics: title of the summary card with six figures."
+  },
+  "analyticsStatEvents": "事件",
+  "@analyticsStatEvents": {
+    "description": "Analytics summary: label under the number of migraine entries."
+  },
+  "analyticsStatYears": "追踪年数",
+  "@analyticsStatYears": {
+    "description": "Analytics summary: label under the number of years between the first and last entry."
+  },
+  "analyticsStatSeverity": "平均严重程度",
+  "@analyticsStatSeverity": {
+    "description": "Analytics summary: label under the average pain severity (1-10)."
+  },
+  "analyticsStatDuration": "平均持续时长",
+  "@analyticsStatDuration": {
+    "description": "Analytics summary: label under the average length of an attack."
+  },
+  "analyticsStatInterval": "平均间隔",
+  "@analyticsStatInterval": {
+    "description": "Analytics summary: label under the average number of days between attacks."
+  },
+  "analyticsStatPerYear": "每年",
+  "@analyticsStatPerYear": {
+    "description": "Analytics summary: label under the average number of attacks per year."
+  },
+  "analyticsHoursShort": "{value} 小时",
+  "@analyticsHoursShort": {
+    "description": "Analytics summary: a number of hours in a stat tile, very short: '5.5h'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "5.5"
+      }
+    }
+  },
+  "analyticsDaysShort": "{value} 天",
+  "@analyticsDaysShort": {
+    "description": "Analytics summary: a number of days in a stat tile, very short: '12.3d'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "12.3"
+      }
+    }
+  },
+  "analyticsTriggersTitle": "最常标记的诱因",
+  "@analyticsTriggersTitle": {
+    "description": "Analytics: title of the card listing how often each trigger was tagged."
+  },
+  "analyticsTriggersDescription": "{count, plural, other{在 {count} 次偏头痛中，您标记每个诱因的频率。}}",
+  "@analyticsTriggersDescription": {
+    "description": "Analytics: intro of the Most-tagged triggers card.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsShowAllTriggers": "显示全部 {count} 个诱因",
+  "@analyticsShowAllTriggers": {
+    "description": "Analytics: button that expands the trigger list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsTriggersNote": "这是您记录内容的频率统计，而非相关性分析。自行报告的诱因只在偏头痛日记录，因此没有无偏头痛的基线可供对照。请将其视为个人笔记，而非因果证据。在无偏头痛的日子打卡（记录 › 今天无偏头痛）可为它们提供基线。",
+  "@analyticsTriggersNote": {
+    "description": "Analytics: note under the expanded trigger list when the user has no 'No migraine today' check-ins. 'Log › No migraine today' names the tab and the button; keep it matching their translations."
+  },
+  "analyticsTriggersNoteWithCheckins": "这是您记录内容的频率统计，而非相关性分析。“偏头痛日 vs 无偏头痛日”会将它们与您打卡为无偏头痛的日子进行比较。",
+  "@analyticsTriggersNoteWithCheckins": {
+    "description": "Analytics: note under the expanded trigger list once the user has check-ins. \"Migraine days vs clear days\" is the title of another card; keep it matching that translation."
+  },
+  "analyticsSymptomsTitle": "最常见症状",
+  "@analyticsSymptomsTitle": {
+    "description": "Analytics: title of the card listing how often each symptom was ticked."
+  },
+  "analyticsSymptomsDescription": "{count, plural, other{在 {count} 次偏头痛中，您勾选每个症状的频率。}}",
+  "@analyticsSymptomsDescription": {
+    "description": "Analytics: intro of the Most common symptoms card.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsShowAllSymptoms": "显示全部 {count} 个症状",
+  "@analyticsShowAllSymptoms": {
+    "description": "Analytics: button that expands the symptom list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsSymptomsNote": "对您每次偏头痛所记录内容的计数。在可记录症状之前创建的记录没有症状，因此会降低百分比。",
+  "@analyticsSymptomsNote": {
+    "description": "Analytics: note under the expanded symptom list."
+  },
+  "analyticsShowTop5": "显示前 5 项",
+  "@analyticsShowTop5": {
+    "description": "Analytics: button that collapses a list back to its first five rows."
+  },
+  "analyticsCountShare": "{count} · {percent}",
+  "@analyticsCountShare": {
+    "description": "Analytics: a count and its share of all migraines, e.g. '12 · 40%'. Keep the '·' separator.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String",
+        "example": "40%"
+      }
+    }
+  },
+  "analyticsByYear": "按年份",
+  "@analyticsByYear": {
+    "description": "Analytics: title of a chart of migraines per year."
+  },
+  "analyticsByDayOfWeek": "按星期",
+  "@analyticsByDayOfWeek": {
+    "description": "Analytics: title of a chart of migraines per day of the week."
+  },
+  "analyticsBySeason": "按季节",
+  "@analyticsBySeason": {
+    "description": "Analytics: title of a chart of migraines per season."
+  },
+  "analyticsByTimeOfDay": "按一天中的时段",
+  "@analyticsByTimeOfDay": {
+    "description": "Analytics: title of a chart of migraines by the time of day they started."
+  },
+  "analyticsByDaylight": "按日照时长",
+  "@analyticsByDaylight": {
+    "description": "Analytics: title of a chart of migraines by how many hours of daylight the day had."
+  },
+  "analyticsByPressure": "气压变化（24 小时）",
+  "@analyticsByPressure": {
+    "description": "Analytics: title of a chart of migraines by the change in barometric pressure over 24 hours."
+  },
+  "analyticsByMoonPhase": "按月相",
+  "@analyticsByMoonPhase": {
+    "description": "Analytics: title of a chart of migraines per moon phase."
+  },
+  "analyticsNeedsWeather": "需要天气增强（已关闭）——请在设置中开启",
+  "@analyticsNeedsWeather": {
+    "description": "Analytics: shown on the pressure chart when weather lookups are turned off. 'Weather enrichment' is the Settings option's name."
+  },
+  "analyticsNoData": "暂无数据",
+  "@analyticsNoData": {
+    "description": "Analytics: shown on a chart with nothing to show."
+  },
+  "analyticsMost": "最多：{label}（{count}）",
+  "@analyticsMost": {
+    "description": "Analytics: under a collapsed chart's title, the bucket with the most migraines and its count, e.g. 'Most: Mon (5)'.",
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "Mon"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsFactorsTitle": "主要疑似因素",
+  "@analyticsFactorsTitle": {
+    "description": "Analytics: title of the card listing conditions more common on migraine days than on other days (odds ratios)."
+  },
+  "analyticsBaseRate": "基线率：{percent}% 的天数（{migraineDays}/{days}）",
+  "@analyticsBaseRate": {
+    "description": "Analytics, Top suspected factors: the share of all days that had a migraine, and the two counts.",
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "migraineDays": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsNoFactors": "尚无超出偶然的因素。",
+  "@analyticsNoFactors": {
+    "description": "Analytics, Top suspected factors: nothing is more common on migraine days than chance would explain."
+  },
+  "analyticsShowTopPerCategory": "显示每个类别的主要因素",
+  "@analyticsShowTopPerCategory": {
+    "description": "Analytics, Top suspected factors: button that collapses the list to the strongest condition per factor."
+  },
+  "analyticsShowAllFactors": "显示全部 {count} 个因素",
+  "@analyticsShowAllFactors": {
+    "description": "Analytics, Top suspected factors: button that shows every factor and the caveats.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsPressureOff": "未分析气压——天气增强已关闭（设置 › 天气增强）。",
+  "@analyticsPressureOff": {
+    "description": "Analytics, Top suspected factors: pressure can't be a factor while weather lookups are off. 'Settings › Weather enrichment' names the setting."
+  },
+  "analyticsBullet": "• {text}",
+  "@analyticsBullet": {
+    "description": "A bulleted line in a list of caveats.",
+    "placeholders": {
+      "text": {
+        "type": "String",
+        "example": "Association is not causation."
+      }
+    }
+  },
+  "analyticsFactorCondition": "{factor}：{condition}",
+  "@analyticsFactorCondition": {
+    "description": "Analytics: a factor and the condition that stood out, e.g. 'Day of week: Mon' or 'Trigger noted: Stress'.",
+    "placeholders": {
+      "factor": {
+        "type": "String",
+        "example": "Day of week"
+      },
+      "condition": {
+        "type": "String",
+        "example": "Mon"
+      }
+    }
+  },
+  "analyticsOddsRatio": "OR {value}",
+  "@analyticsOddsRatio": {
+    "description": "Analytics: the odds ratio of a factor, e.g. 'OR 2.5'. 'OR' = odds ratio (see analyticsCaveatOddsRatioExplained).",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "2.5"
+      }
+    }
+  },
+  "trackedDaysTitle": "已追踪天数",
+  "@trackedDaysTitle": {
+    "description": "Analytics: title of the card counting days with an entry or a check-in."
+  },
+  "trackedDaysIntro": "有记录或“无偏头痛”打卡的天数。",
+  "@trackedDaysIntro": {
+    "description": "Analytics, Days tracked: intro. \"No migraine\" refers to the 'No migraine today' check-in button."
+  },
+  "trackedDaysOfLast30": "最近 30 天内",
+  "@trackedDaysOfLast30": {
+    "description": "Analytics, Days tracked: shown next to a big number (the count is displayed separately)."
+  },
+  "trackedDaysBreakdown": "{migraine} 天偏头痛、{clear} 天无偏头痛、{unrecorded} 天未记录。",
+  "@trackedDaysBreakdown": {
+    "description": "Analytics, Days tracked: the last 30 days split into migraine days, clear (checked-in) days and days with nothing recorded.",
+    "placeholders": {
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      },
+      "unrecorded": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedDaysSinceFirst": "自首次打卡（{date}）以来的 {days} 天中，已追踪 {tracked} 天。某天未记录任何内容时，它可能属于任一种情况，因此追踪的天数越多，这里的数字越可信。",
+  "@trackedDaysSinceFirst": {
+    "description": "Analytics, Days tracked: days tracked since the first 'No migraine today' check-in.",
+    "placeholders": {
+      "tracked": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String",
+        "example": "Oct 1, 2026"
+      }
+    }
+  },
+  "trackedFactorsTitle": "偏头痛日 vs 无偏头痛日",
+  "@trackedFactorsTitle": {
+    "description": "Analytics: title of the card comparing what was recorded on migraine days with days checked in as migraine-free ('clear')."
+  },
+  "trackedFactorsIntro": "您在偏头痛开始日记录的内容，与您打卡为无偏头痛的日子进行比较：睡眠、压力、诱因和食物。",
+  "@trackedFactorsIntro": {
+    "description": "Analytics, Migraine days vs clear days: intro."
+  },
+  "trackedFactorsCounts": "自首次打卡以来，{migraineDays} 个偏头痛日和 {clearDays} 个无偏头痛日。",
+  "@trackedFactorsCounts": {
+    "description": "Analytics, Migraine days vs clear days: the counts compared.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "clearDays": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedFactorsNone": "您记录的内容中尚无超出偶然的因素。",
+  "@trackedFactorsNone": {
+    "description": "Analytics, Migraine days vs clear days: nothing is more common on migraine days than chance would explain."
+  },
+  "trackedFactorsShowLess": "显示更少",
+  "@trackedFactorsShowLess": {
+    "description": "Analytics, Migraine days vs clear days: button that collapses the list."
+  },
+  "trackedFactorsShowAll": "显示全部 {count} 项及注意事项",
+  "@trackedFactorsShowAll": {
+    "description": "Analytics, Migraine days vs clear days: button that shows every factor and the caveats.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedFactorsShowCaveats": "显示注意事项",
+  "@trackedFactorsShowCaveats": {
+    "description": "Analytics, Migraine days vs clear days: button that shows the caveats."
+  },
+  "impactCardTitle": "对当天的影响",
+  "@impactCardTitle": {
+    "description": "Analytics: title of the card counting migraine days by how much they affected usual activities."
+  },
+  "impactCardIntro": "最近 30 天内的偏头痛日，按其影响程度分类。",
+  "@impactCardIntro": {
+    "description": "Analytics, Impact on the day: intro."
+  },
+  "impactCardUnable": "无法正常活动",
+  "@impactCardUnable": {
+    "description": "Analytics, Impact on the day: label under the count of days the user couldn't do usual activities."
+  },
+  "impactCardReduced": "功能下降",
+  "@impactCardReduced": {
+    "description": "Analytics, Impact on the day: label under the count of days the user did less, or less well."
+  },
+  "impactCardAverage": "最近 3 个完整月份的平均/月：{unable} 次无法正常活动，{reduced} 次功能下降。",
+  "@impactCardAverage": {
+    "description": "Analytics, Impact on the day: monthly averages of 'unable' and 'reduced' days.",
+    "placeholders": {
+      "unable": {
+        "type": "String",
+        "example": "2.3"
+      },
+      "reduced": {
+        "type": "String",
+        "example": "4.0"
+      }
+    }
+  },
+  "impactCardRecorded": "最近 30 天内，{days} 个偏头痛日中有 {recorded} 个记录了影响。一天按最严重的影响计。",
+  "@impactCardRecorded": {
+    "description": "Analytics, Impact on the day: how many migraine days have an impact recorded.",
+    "placeholders": {
+      "recorded": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "awayTitle": "远离住所",
+  "@awayTitle": {
+    "description": "Analytics: title of the card about migraines logged away from the home location."
+  },
+  "awayIntro": "记录位置距您的家庭位置超过 {km} 公里的记录。仅供描述——它显示您在哪里记录了偏头痛，而非出行导致偏头痛。",
+  "@awayIntro": {
+    "description": "Analytics, Away from home: intro. 'km' = kilometres.",
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "awayNone": "{count, plural, other{全部 {count} 条已定位记录都在距住所 {km} 公里以内。}}",
+  "@awayNone": {
+    "description": "Analytics, Away from home: every entry with a location was near home. 'Located' = has a recorded location.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "awayShare": "{located} 条已定位记录中有 {away} 条（{percent}%）",
+  "@awayShare": {
+    "description": "Analytics, Away from home: how many of the entries with a location were away from home, and the share.",
+    "placeholders": {
+      "away": {
+        "type": "int"
+      },
+      "located": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String",
+        "example": "25.0"
+      }
+    }
+  },
+  "awayFarthest": "最远：距住所 {km} 公里。",
+  "@awayFarthest": {
+    "description": "Analytics, Away from home: the greatest distance from home of a logged migraine.",
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "awayUnlocated": "{count, plural, other{{count} 条记录没有记录位置，不计入此处。}}",
+  "@awayUnlocated": {
+    "description": "Analytics, Away from home: entries without a location.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportTitle": "偏头痛报告",
+  "@reportTitle": {
+    "description": "Title of the printable PDF report a patient can give their doctor."
+  },
+  "reportEntryCount": "{count, plural, other{{count} 条记录}}",
+  "@reportEntryCount": {
+    "description": "Report subtitle: how many entries (logged migraine attacks) the report covers.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDateRange": "{from} 至 {to}",
+  "@reportDateRange": {
+    "description": "Report subtitle: the dates of the first and last entry.",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "5 Jan 2024"
+      },
+      "to": {
+        "type": "String",
+        "example": "1 Jun 2026"
+      }
+    }
+  },
+  "reportGenerated": "生成于 {date}",
+  "@reportGenerated": {
+    "description": "Report subtitle: the day the report was made. Lowercase in English: it follows a '·' separator.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "5 Oct 2026"
+      }
+    }
+  },
+  "reportAppVersion": "Megrim {version}",
+  "@reportAppVersion": {
+    "description": "Report subtitle: the app name and version.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.9"
+      }
+    }
+  },
+  "reportStatEntries": "记录数",
+  "@reportStatEntries": {
+    "description": "Report summary tile: number of logged attacks."
+  },
+  "reportStatYearsTracked": "追踪年数",
+  "@reportStatYearsTracked": {
+    "description": "Report summary tile."
+  },
+  "reportStatAvgSeverity": "平均严重程度",
+  "@reportStatAvgSeverity": {
+    "description": "Report summary tile: average pain severity (1-10). Short: the tile is narrow."
+  },
+  "reportStatAvgDuration": "平均持续时长",
+  "@reportStatAvgDuration": {
+    "description": "Report summary tile: average attack length. Short."
+  },
+  "reportStatAvgInterval": "平均间隔",
+  "@reportStatAvgInterval": {
+    "description": "Report summary tile: average time between attacks. Short."
+  },
+  "reportStatPerYear": "每年",
+  "@reportStatPerYear": {
+    "description": "Report summary tile: attacks per year."
+  },
+  "reportStatMigraineDays30": "偏头痛天数，最近 30 天",
+  "@reportStatMigraineDays30": {
+    "description": "Report summary tile: days with a migraine in the last 30 days. 'd' is short for days; keep it short."
+  },
+  "reportSeverityOutOf10": "{value}/10",
+  "@reportSeverityOutOf10": {
+    "description": "Average severity on a 1-10 scale.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "6.2"
+      }
+    }
+  },
+  "reportHoursShort": "{value} 小时",
+  "@reportHoursShort": {
+    "description": "A length in hours, very short form: '3.5h'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "3.5"
+      }
+    }
+  },
+  "reportDaysShort": "{value} 天",
+  "@reportDaysShort": {
+    "description": "A length in days, very short form: '12.3d'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "12.3"
+      }
+    }
+  },
+  "reportMinutesShort": "{value} 分钟",
+  "@reportMinutesShort": {
+    "description": "A length in minutes, very short form: '45m'.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDaysHoursShort": "{days} 天 {hours} 小时",
+  "@reportDaysHoursShort": {
+    "description": "A length in days and hours, very short form: '2d 4h'.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "reportChartMonthly": "每月偏头痛天数",
+  "@reportChartMonthly": {
+    "description": "Report chart title."
+  },
+  "reportMonthlyNote": "指偏头痛天数，而非记录条数；多日偏头痛每天各计一次。",
+  "@reportMonthlyNote": {
+    "description": "Note under the monthly chart."
+  },
+  "reportMonthlyAverage": "最近 3 个完整月份的平均值：{value}。",
+  "@reportMonthlyAverage": {
+    "description": "Note under the monthly chart.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "4.3"
+      }
+    }
+  },
+  "reportMonthlyWithoutHeadache": "{count, plural, other{其中 {count} 天仅有无头痛的发作。}}",
+  "@reportMonthlyWithoutHeadache": {
+    "description": "Note under the monthly chart: days whose only attacks had no headache (aura only, vertigo).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportMonthInProgress": "* 当月未结束。",
+  "@reportMonthInProgress": {
+    "description": "Note under a monthly chart or table: the month marked * isn't finished yet. Keep the '*'."
+  },
+  "reportMonthMarkedInProgress": "{month} *",
+  "@reportMonthMarkedInProgress": {
+    "description": "A month label marked as still in progress.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Oct 2026"
+      }
+    }
+  },
+  "reportChartByYear": "按年份",
+  "@reportChartByYear": {
+    "description": "Report chart title: attacks per year."
+  },
+  "reportChartByDayOfWeek": "按星期",
+  "@reportChartByDayOfWeek": {
+    "description": "Report chart title."
+  },
+  "reportChartBySeason": "按季节",
+  "@reportChartBySeason": {
+    "description": "Report chart title."
+  },
+  "reportChartByTimeOfDay": "按一天中的时段",
+  "@reportChartByTimeOfDay": {
+    "description": "Report chart title."
+  },
+  "reportChartByDaylight": "按日照时长",
+  "@reportChartByDaylight": {
+    "description": "Report chart title: hours of daylight on the day."
+  },
+  "reportChartPressure": "气压变化（24 小时）",
+  "@reportChartPressure": {
+    "description": "Report chart title: change in barometric pressure over 24 hours."
+  },
+  "reportChartPressureOff": "天气增强已关闭，因此此处为空。",
+  "@reportChartPressureOff": {
+    "description": "Note under the pressure chart when the weather lookup is turned off."
+  },
+  "reportChartByMoon": "按月相",
+  "@reportChartByMoon": {
+    "description": "Report chart title."
+  },
+  "reportAwayAllHome": "{count, plural, other{全部 {count} 条已定位记录都在距住所 {km} 公里以内。}}",
+  "@reportAwayAllHome": {
+    "description": "Report: none of the entries with a location was far from home.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "reportAwaySome": "{located} 条已定位记录中有 {away} 条（{pct}%）记录在距住所超过 {km} 公里的地方。",
+  "@reportAwaySome": {
+    "description": "Report: share of entries logged away from home.",
+    "placeholders": {
+      "away": {
+        "type": "int"
+      },
+      "located": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "reportAwaySomePlaces": "{located} 条已定位记录中有 {away} 条（{pct}%）记录在距住所超过 {km} 公里的地方：{places}。",
+  "@reportAwaySomePlaces": {
+    "description": "Report: share of entries logged away from home, with up to five places and their counts.",
+    "placeholders": {
+      "away": {
+        "type": "int"
+      },
+      "located": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "km": {
+        "type": "int"
+      },
+      "places": {
+        "type": "String",
+        "example": "Paris (2), Lyon (1)"
+      }
+    }
+  },
+  "reportAwayPlace": "{place}（{count}）",
+  "@reportAwayPlace": {
+    "description": "One place in the away-from-home list, with its number of entries.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Paris"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDayCount": "{count, plural, other{{count} 天}}",
+  "@reportDayCount": {
+    "description": "A number of days, used inside other report sentences.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportImpact": "影响，最近 30 天：{unable} 次无法正常活动，{reduced} 次功能下降（{migraineDays} 个偏头痛日中记录了 {recorded} 个的影响）。",
+  "@reportImpact": {
+    "description": "Report: days by impact on daily life. {unable} and {reduced} are '3 days' style counts.",
+    "placeholders": {
+      "unable": {
+        "type": "String",
+        "example": "3 days"
+      },
+      "reduced": {
+        "type": "String",
+        "example": "1 day"
+      },
+      "recorded": {
+        "type": "int"
+      },
+      "migraineDays": {
+        "type": "int"
+      }
+    }
+  },
+  "reportImpactAverage": "最近 3 个完整月份的月平均值：{unable} 次无法正常活动，{reduced} 次功能下降。",
+  "@reportImpactAverage": {
+    "description": "Report: follows the impact sentence.",
+    "placeholders": {
+      "unable": {
+        "type": "String",
+        "example": "2.3"
+      },
+      "reduced": {
+        "type": "String",
+        "example": "1.0"
+      }
+    }
+  },
+  "reportWithoutHeadacheSummary": "{total} 条记录中有 {events} 条（{pct}%）记录为无头痛：{aura} 条伴先兆，{vertigo} 条伴眩晕或头晕，{other} 条其他。",
+  "@reportWithoutHeadacheSummary": {
+    "description": "[medical] Report: attacks recorded with no headache, by kind.",
+    "placeholders": {
+      "events": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "aura": {
+        "type": "int"
+      },
+      "vertigo": {
+        "type": "int"
+      },
+      "other": {
+        "type": "int"
+      }
+    }
+  },
+  "reportWithoutHeadacheMedian": "中位时长 {hours} 小时。",
+  "@reportWithoutHeadacheMedian": {
+    "description": "Report: follows the attacks-without-headache summary.",
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "5.5"
+      }
+    }
+  },
+  "reportWithAura": "伴先兆",
+  "@reportWithAura": {
+    "description": "[medical] Bar label: attacks without headache that had an aura."
+  },
+  "reportWithVertigo": "伴眩晕或头晕",
+  "@reportWithVertigo": {
+    "description": "[medical] Bar label: attacks without headache with vertigo or dizziness."
+  },
+  "reportOther": "其他",
+  "@reportOther": {
+    "description": "Bar label: attacks without headache of any other kind."
+  },
+  "reportMedDaysSummary": "急性用药天数，最近 30 天：{days}。",
+  "@reportMedDaysSummary": {
+    "description": "[medical] Report: days on which an acute (as-needed) medication was taken.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "8 days"
+      }
+    }
+  },
+  "reportMedDaysSummaryByClass": "急性用药天数，最近 30 天：{days}（{breakdown}）。",
+  "@reportMedDaysSummaryByClass": {
+    "description": "[medical] Report: as above, with days per medication class.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "8 days"
+      },
+      "breakdown": {
+        "type": "String",
+        "example": "Triptan 6, Simple pain reliever 3"
+      }
+    }
+  },
+  "reportMedClassDays": "{medClass} {count}",
+  "@reportMedClassDays": {
+    "description": "One class in the breakdown above: class name and its number of days.",
+    "placeholders": {
+      "medClass": {
+        "type": "String",
+        "example": "Triptan"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportColumnMonth": "月份",
+  "@reportColumnMonth": {
+    "description": "Report table column header."
+  },
+  "reportColumnAny": "任意",
+  "@reportColumnAny": {
+    "description": "[medical] Report table column header: days with any acute medication. Short. Referred to in reportMedUnclassified."
+  },
+  "reportOveruseMonthReason": "{month}：{reason}",
+  "@reportOveruseMonthReason": {
+    "description": "[medical] One month that reached the medication reference level, with its reason.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Jul 2026"
+      },
+      "reason": {
+        "type": "String",
+        "example": "Triptan on 10 days (level 10)"
+      }
+    }
+  },
+  "reportMedUnclassified": "{medications} 未设置类别：已计入“任意”，但不与参考水平进行比较。",
+  "@reportMedUnclassified": {
+    "description": "[medical] Report: medications without a class. \"Any\" is the column header reportColumnAny; use the same word.",
+    "placeholders": {
+      "medications": {
+        "type": "String",
+        "example": "Ibuprofen, Aspirin"
+      }
+    }
+  },
+  "reportPreventiveSince": "{medication}：自 {start}",
+  "@reportPreventiveSince": {
+    "description": "[medical] Report: a preventive medication still taken. {medication} is its name and dose as the user typed them.",
+    "placeholders": {
+      "medication": {
+        "type": "String",
+        "example": "Propranolol 40 mg"
+      },
+      "start": {
+        "type": "String",
+        "example": "4 Aug 2026"
+      }
+    }
+  },
+  "reportPreventiveRange": "{medication}：{start} 至 {stop}",
+  "@reportPreventiveRange": {
+    "description": "[medical] Report: a preventive medication taken from one date to another.",
+    "placeholders": {
+      "medication": {
+        "type": "String",
+        "example": "Topiramate 50 mg"
+      },
+      "start": {
+        "type": "String",
+        "example": "1 Jun 2026"
+      },
+      "stop": {
+        "type": "String",
+        "example": "20 Aug 2026"
+      }
+    }
+  },
+  "reportPreventiveNotes": "{line}。{notes}",
+  "@reportPreventiveNotes": {
+    "description": "Report: a preventive medication line followed by the user's notes on it.",
+    "placeholders": {
+      "line": {
+        "type": "String",
+        "example": "Propranolol 40 mg: since 4 Aug 2026"
+      },
+      "notes": {
+        "type": "String",
+        "example": "for prevention"
+      }
+    }
+  },
+  "reportTracked": "已追踪天数，最近 30 天：{tracked}（{migraine} 天偏头痛、{clear} 天打卡为无偏头痛、{notRecorded} 天未记录）。自 {firstCheckin} 首次打卡以来：{total} 天中的 {since} 天。",
+  "@reportTracked": {
+    "description": "Report: how many days were recorded. A 'check-in' is logging a day as migraine-free ('clear').",
+    "placeholders": {
+      "tracked": {
+        "type": "int"
+      },
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      },
+      "notRecorded": {
+        "type": "int"
+      },
+      "firstCheckin": {
+        "type": "String",
+        "example": "30 Sep 2026"
+      },
+      "since": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reportTrackedWindow": "自首次打卡以来的 {migraine} 个偏头痛日和 {clear} 个无偏头痛日（共 {tracked} 个已追踪天数）。",
+  "@reportTrackedWindow": {
+    "description": "Report: what Migraine days vs clear days is based on.",
+    "placeholders": {
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      },
+      "tracked": {
+        "type": "int"
+      }
+    }
+  },
+  "reportSeverityNone": "无",
+  "@reportSeverityNone": {
+    "description": "Report entries table, Sev column: an attack without headache has no pain severity. Very short."
+  },
+  "reportDurationOngoing": "进行中",
+  "@reportDurationOngoing": {
+    "description": "Report entries table, Duration column: the attack hasn't ended. Short."
+  },
+  "reportYes": "是",
+  "@reportYes": {
+    "description": "Report entries table, Aura column. Short."
+  },
+  "reportNo": "否",
+  "@reportNo": {
+    "description": "Report entries table, Aura column. Short."
+  },
+  "reportReliefLine": "缓解方法：{relief}",
+  "@reportReliefLine": {
+    "description": "Report entries table, Meds column: the non-drug relief tried, on its own line.",
+    "placeholders": {
+      "relief": {
+        "type": "String",
+        "example": "Dark room, Cold pack"
+      }
+    }
+  },
+  "reportFootnotePressure": "未显示气压因素：它需要您家庭位置的气压历史缓存，应用会在首次联网运行分析并开启天气增强时建立。此处缺失表示“不可用”，而非“无影响”。",
+  "@reportFootnotePressure": {
+    "description": "Report footnote."
+  },
+  "reportFootnoteFont": "您记录中的某些字符无法用此报告的字体绘制，显示为“?”。应用本身仍正确保存这些字符，JSON 导出也会保留它们。",
+  "@reportFootnoteFont": {
+    "description": "Report footnote. Keep the '?'."
+  },
+  "reportFactorsWindow": "{days} 天内共 {migraineDays} 个偏头痛日（占天数的 {pct}%）。",
+  "@reportFactorsWindow": {
+    "description": "Report: what Suspected Factors is based on.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      }
+    }
+  },
+  "reportMethods": "描述性图表是已记录条目的简单计数：柱体越高仅表示该处记录了更多偏头痛。疑似因素使用偏头痛日作为单位，首次与末次偏头痛之间的每一天都是基线日。对每个分桶构建 2x2 列联表，并计算经 Haldane-Anscombe 校正的比值比（每个单元格加 0.5）。只有当某因素的分桶覆盖至少 3 个偏头痛日且其比值比超过 1 时，才将其标记为标题行。月相和日照根据家庭位置进行天文计算；季节按半球校正。",
+  "@reportMethods": {
+    "description": "Report 'Methods' section. Statistics terms: 2x2 table, Haldane-Anscombe corrected odds ratio, baseline day."
+  },
+  "reportNoData": "暂无数据。",
+  "@reportNoData": {
+    "description": "Report: shown in place of an empty chart."
+  },
+  "reportColumnTaken": "已服用",
+  "@reportColumnTaken": {
+    "description": "Report table column: times a medication or relief was used."
+  },
+  "reportColumnHelped": "有效",
+  "@reportColumnHelped": {
+    "description": "Report table column: times it helped."
+  },
+  "reportColumnDidnt": "无效",
+  "@reportColumnDidnt": {
+    "description": "Report table column: times it didn't help. Short."
+  },
+  "reportColumnUnknown": "未知",
+  "@reportColumnUnknown": {
+    "description": "Report table column: times the outcome wasn't recorded."
+  },
+  "reportColumnHelpedPct": "有效 %",
+  "@reportColumnHelpedPct": {
+    "description": "Report table column: share of recorded outcomes where it helped."
+  },
+  "reportPercent": "{value}%",
+  "@reportPercent": {
+    "description": "A percentage in a report table or sentence. Use the local spacing (42 % in French).",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "42"
+      }
+    }
+  },
+  "reportHeadingSummary": "摘要",
+  "@reportHeadingSummary": {
+    "description": "Report section heading."
+  },
+  "reportHeadingWithoutHeadache": "无头痛的发作",
+  "@reportHeadingWithoutHeadache": {
+    "description": "[medical] Report section heading: migraine attacks with no headache (aura only, vertigo, other)."
+  },
+  "reportWithoutHeadacheNote": "标记为无头痛的记录：仅有先兆、眩晕，或其他无疼痛的症状。它们在上文计为偏头痛日。不对它们评定严重程度，因此平均严重程度仅涵盖有头痛的发作。当同时记录先兆和眩晕时，该记录计为“伴先兆”。",
+  "@reportWithoutHeadacheNote": {
+    "description": "[medical] Report note under 'Attacks without headache'."
+  },
+  "reportTheirSymptoms": "症状",
+  "@reportTheirSymptoms": {
+    "description": "Report sub-heading: symptoms of the attacks without headache."
+  },
+  "reportHeadingPatterns": "规律",
+  "@reportHeadingPatterns": {
+    "description": "Report section heading: the descriptive charts."
+  },
+  "reportPatternsNote": "已记录条目的计数。柱体越高仅表示该处记录了更多偏头痛，别无其他含义。",
+  "@reportPatternsNote": {
+    "description": "Report note under 'Patterns'."
+  },
+  "reportHeadingTriggers": "最常标记的诱因",
+  "@reportHeadingTriggers": {
+    "description": "Report section heading: triggers recorded most often."
+  },
+  "reportTriggersNote": "自行报告，且仅在偏头痛日记录——没有与您感觉良好的日子进行比较，因此这些是计数，而非相关性。",
+  "@reportTriggersNote": {
+    "description": "Report note under 'Most-tagged triggers'."
+  },
+  "reportHeadingSymptoms": "症状",
+  "@reportHeadingSymptoms": {
+    "description": "Report section heading."
+  },
+  "reportSymptomsNote": "在所有记录中，每个症状被记录的频率。在可记录症状之前创建的记录没有症状。",
+  "@reportSymptomsNote": {
+    "description": "Report note under 'Symptoms'."
+  },
+  "reportHeadingMedDays": "急性用药天数",
+  "@reportHeadingMedDays": {
+    "description": "[medical] Report section heading: days with as-needed (acute) medication."
+  },
+  "reportMedDaysNote": "每月至少服用一次剂量的不同天数；同一天使用两类药物在“任意”中只计一次。参考水平（ICHD-3 8.2）：曲普坦类、麦角胺类、阿片类和复方镇痛药为每月 10 天；单一镇痛药为 15 天；以上混合使用合计 10 天。吉帕净类、迪坦类和止吐药被计入但不检查。* 当月未结束。",
+  "@reportMedDaysNote": {
+    "description": "[medical] Report note under the medication-days table. \"Any\" is the column header reportColumnAny. ICHD-3 8.2 is the headache classification's section on medication overuse. Needs a second reviewer."
+  },
+  "reportHeadingPreventives": "预防性药物",
+  "@reportHeadingPreventives": {
+    "description": "[medical] Report section heading: medications taken daily to prevent migraines."
+  },
+  "reportHeadingMedications": "药物",
+  "@reportHeadingMedications": {
+    "description": "Report section heading."
+  },
+  "reportColumnMedication": "药物",
+  "@reportColumnMedication": {
+    "description": "Report table column header."
+  },
+  "reportMedicationsNote": "“有效 %”排除未知答案。个人观察，非临床试验。",
+  "@reportMedicationsNote": {
+    "description": "Report note under 'Medications'. \"Helped %\" is the column reportColumnHelpedPct."
+  },
+  "reportHeadingRelief": "尝试过的缓解方法",
+  "@reportHeadingRelief": {
+    "description": "Report section heading: non-drug relief (dark room, cold pack…)."
+  },
+  "reportColumnRelief": "缓解方法",
+  "@reportColumnRelief": {
+    "description": "Report table column header: a non-drug relief method."
+  },
+  "reportReliefNote": "记录中非药物缓解方法的计数。“有效 %”排除未知答案。",
+  "@reportReliefNote": {
+    "description": "Report note under 'Relief tried'."
+  },
+  "reportHeadingFactors": "疑似因素",
+  "@reportHeadingFactors": {
+    "description": "Report section heading: factors more common on migraine days."
+  },
+  "reportFactorsReadFirst": "请先阅读。这些是您个人记录中、基于偏头痛日计算的关联。关联不等于因果；小样本波动较大，且由于同时检验多个因素，某些因素会因偶然而显得偏高。请将它们视为待讨论的问题，而非结论。",
+  "@reportFactorsReadFirst": {
+    "description": "[medical] Report box at the top of 'Suspected factors'."
+  },
+  "reportNotEnoughData": "数据尚不足。",
+  "@reportNotEnoughData": {
+    "description": "Report: shown when a section has too little data."
+  },
+  "reportColumnBucket": "分桶",
+  "@reportColumnBucket": {
+    "description": "Report table column: the value range or category of a factor."
+  },
+  "reportColumnMigraineDays": "偏头痛日",
+  "@reportColumnMigraineDays": {
+    "description": "Report table column."
+  },
+  "reportColumnAllDays": "全部天数",
+  "@reportColumnAllDays": {
+    "description": "Report table column."
+  },
+  "reportColumnRate": "比率",
+  "@reportColumnRate": {
+    "description": "Report table column: share of days that were migraine days."
+  },
+  "reportColumnOddsRatio": "比值比",
+  "@reportColumnOddsRatio": {
+    "description": "Report table column (statistics term)."
+  },
+  "reportFactorsStarNote": "* 标记应用突出显示的行：分桶中至少有 3 个偏头痛日，且比值比大于 1。",
+  "@reportFactorsStarNote": {
+    "description": "Report note under the factor tables. Keep the '*'."
+  },
+  "reportCaveatItem": "- {caveat}",
+  "@reportCaveatItem": {
+    "description": "One caveat in a list under a factor table.",
+    "placeholders": {
+      "caveat": {
+        "type": "String"
+      }
+    }
+  },
+  "reportHeadingTracked": "偏头痛日 vs 无偏头痛日",
+  "@reportHeadingTracked": {
+    "description": "Report section heading: comparing days a migraine started with days checked in as migraine-free."
+  },
+  "reportTrackedNote": "在偏头痛开始的日子的睡眠、压力、诱因和食物记录，与打卡为无偏头痛的日子进行比较。只统计已追踪的天数，每个因素只统计其被记录的日子。与上文相同的注意事项同样适用。",
+  "@reportTrackedNote": {
+    "description": "Report note under 'Migraine days vs clear days'."
+  },
+  "reportColumnRecorded": "已记录",
+  "@reportColumnRecorded": {
+    "description": "Report table column: what was recorded (a sleep range, a trigger…)."
+  },
+  "reportColumnTrackedDays": "已追踪天数",
+  "@reportColumnTrackedDays": {
+    "description": "Report table column."
+  },
+  "reportHeadingEntries": "记录",
+  "@reportHeadingEntries": {
+    "description": "Report section heading: the list of logged attacks."
+  },
+  "reportEntriesNote": "最新在前。时间显示为记录时所在的时区。严重程度“无”：无头痛的发作。",
+  "@reportEntriesNote": {
+    "description": "Report note above the entries table. \"none\" is reportSeverityNone; 'Sev' is reportColumnSev."
+  },
+  "reportColumnDate": "日期",
+  "@reportColumnDate": {
+    "description": "Report entries table column. Narrow."
+  },
+  "reportColumnTime": "时间",
+  "@reportColumnTime": {
+    "description": "Report entries table column. Narrow."
+  },
+  "reportColumnSev": "严重程度",
+  "@reportColumnSev": {
+    "description": "Report entries table column: severity, abbreviated. Very narrow."
+  },
+  "reportColumnDuration": "持续时长",
+  "@reportColumnDuration": {
+    "description": "Report entries table column. Narrow."
+  },
+  "reportColumnAura": "先兆",
+  "@reportColumnAura": {
+    "description": "[medical] Report entries table column. Very narrow."
+  },
+  "reportColumnHead": "头部",
+  "@reportColumnHead": {
+    "description": "Report entries table column: where on the head the pain was. Narrow."
+  },
+  "reportColumnSymptoms": "症状",
+  "@reportColumnSymptoms": {
+    "description": "Report entries table column."
+  },
+  "reportColumnTriggers": "诱因",
+  "@reportColumnTriggers": {
+    "description": "Report entries table column."
+  },
+  "reportColumnMeds": "药物",
+  "@reportColumnMeds": {
+    "description": "Report entries table column: medications, abbreviated. Narrow."
+  },
+  "reportColumnNotes": "备注",
+  "@reportColumnNotes": {
+    "description": "Report entries table column."
+  },
+  "reportHeadingMethods": "方法",
+  "@reportHeadingMethods": {
+    "description": "Report section heading."
+  },
+  "reportHeadingDisclaimer": "免责声明",
+  "@reportHeadingDisclaimer": {
+    "description": "[legal] Report section heading."
+  },
+  "reportPageOf": "第 {page} 页，共 {pages} 页",
+  "@reportPageOf": {
+    "description": "Report page footer.",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
+  },
+  "notifReminderTitle": "Megrim",
+  "@notifReminderTitle": {
+    "description": "Title of the daily reminder notification: the app's name."
+  },
+  "notifReminderBody": "今天感觉如何？",
+  "@notifReminderBody": {
+    "description": "Text of the daily reminder notification. Kept generic on purpose: it may be seen by others."
+  },
+  "notifActionNoMigraine": "今天无偏头痛",
+  "@notifActionNoMigraine": {
+    "description": "Button on the daily reminder: record today as migraine-free."
+  },
+  "notifActionLog": "记录",
+  "@notifActionLog": {
+    "description": "Button on the daily reminder: open the app to log a migraine. Short."
+  },
+  "notifReminderChannel": "每日提醒",
+  "@notifReminderChannel": {
+    "description": "Android notification channel name, shown in the phone's notification settings."
+  },
+  "notifReminderChannelDescription": "每天一次的记录提醒",
+  "@notifReminderChannelDescription": {
+    "description": "Android notification channel description, shown in the phone's notification settings."
+  },
+  "notifOngoingTitle": "偏头痛发作中",
+  "@notifOngoingTitle": {
+    "description": "Title of the ongoing notification shown while a migraine is running (with a clock); also its channel name."
+  },
+  "notifOngoingChannelDescription": "在偏头痛发作期间显示，附带计时器和结束按钮",
+  "@notifOngoingChannelDescription": {
+    "description": "Android notification channel description. 'End' is the button notifActionEnd."
+  },
+  "notifActionEnd": "结束",
+  "@notifActionEnd": {
+    "description": "Button on the 'Migraine in progress' notification: end the migraine now. Short."
+  },
+  "appLockUnlockReason": "解锁 Megrim",
+  "@appLockUnlockReason": {
+    "description": "Shown by the phone's own unlock prompt (fingerprint, face, PIN) when the app is locked."
+  },
+  "appLockConfirmTurnOn": "确认是本人以开启应用锁",
+  "@appLockConfirmTurnOn": {
+    "description": "Shown by the phone's unlock prompt when turning app lock on."
+  },
+  "appLockConfirmTurnOff": "确认是本人以关闭应用锁",
+  "@appLockConfirmTurnOff": {
+    "description": "Shown by the phone's unlock prompt when turning app lock off."
+  },
+  "appLockLockedOut": "尝试次数过多。请稍候再试。",
+  "@appLockLockedOut": {
+    "description": "Lock screen: the phone refused after too many failed unlock attempts."
+  },
+  "appLockError": "无法调用您手机的解锁功能。请重试。",
+  "@appLockError": {
+    "description": "Lock screen: the unlock prompt could not be shown."
+  },
+  "appLockTurnedOffTitle": "应用锁已关闭",
+  "@appLockTurnedOffTitle": {
+    "description": "Lock screen title when the phone no longer has a screen lock."
+  },
+  "appLockTurnedOffBody": "您的手机已没有屏幕锁定，因此 Megrim 无法确认是本人操作。应用锁已关闭。请在手机设置中设置屏幕锁定，然后在“设置 › 隐私”中重新开启应用锁。",
+  "@appLockTurnedOffBody": {
+    "description": "Lock screen text. 'Settings › Privacy' is where the option is in the app; keep the '›'."
+  },
+  "appLockContinue": "继续",
+  "@appLockContinue": {
+    "description": "Button: dismiss the 'App lock turned off' message."
+  },
+  "appLockLocked": "Megrim 已锁定",
+  "@appLockLocked": {
+    "description": "Lock screen title."
+  },
+  "appLockUnlock": "解锁",
+  "@appLockUnlock": {
+    "description": "Lock screen button: show the phone's unlock prompt."
+  },
+  "importErrorNotUtf8": "文件不是有效的 UTF-8 文本。",
+  "@importErrorNotUtf8": {
+    "description": "Import error: the chosen file isn't text."
+  },
+  "importErrorNotJson": "文件不是有效的 JSON。",
+  "@importErrorNotJson": {
+    "description": "Import error."
+  },
+  "importErrorStructure": "文件结构不符合预期。",
+  "@importErrorStructure": {
+    "description": "Import error: the file is JSON but not shaped like an export."
+  },
+  "importErrorNotMegrim": "不是 Megrim 导出文件。",
+  "@importErrorNotMegrim": {
+    "description": "Import error."
+  },
+  "importErrorVersion": "不支持的导出版本：{version}（本应用支持 {supported}）。",
+  "@importErrorVersion": {
+    "description": "Import error: the file comes from a newer (or unknown) export format.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "3"
+      },
+      "supported": {
+        "type": "int"
+      }
+    }
+  },
+  "importErrorEvent": "事件“{id}”格式错误（{detail}）。未导入任何内容。",
+  "@importErrorEvent": {
+    "description": "Import error: one entry in the file is broken. {detail} is a technical message, in English.",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "commonUndo": "撤销",
+  "@commonUndo": {
+    "description": "Snack bar action that reverses what was just done (a delete, a removed check-in)."
+  },
+  "commonAdd": "添加",
+  "@commonAdd": {
+    "description": "Dialog button that adds what was typed."
+  },
+  "commonYes": "是",
+  "@commonYes": {
+    "description": "Answer choice in a Yes / No / ... selector."
+  },
+  "commonNo": "否",
+  "@commonNo": {
+    "description": "Answer choice in a Yes / No / ... selector."
+  },
+  "commonUnknown": "未知",
+  "@commonUnknown": {
+    "description": "Answer choice: the user doesn't know (e.g. whether there was an aura, whether a medication helped)."
+  },
+  "commonNotSet": "未设置",
+  "@commonNotSet": {
+    "description": "Shown where an optional value hasn't been entered."
+  },
+  "commonManage": "管理",
+  "@commonManage": {
+    "description": "Button next to a section heading that opens the screen to add, rename or remove its choices."
+  },
+  "entryEndBeforeStart": "结束时间必须晚于开始时间。",
+  "@entryEndBeforeStart": {
+    "description": "Error when saving an entry whose end is before its start."
+  },
+  "entryCheckinsRemoved": "{count, plural, other{已移除 {count} 个“无偏头痛”打卡。}}",
+  "@entryCheckinsRemoved": {
+    "description": "Snack bar after saving an entry: check-ins (days logged as migraine-free) on the days the entry covers were removed, since an entry wins. 'No migraine' is the check-in's name.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "entryDeleteTitle": "删除这条记录？",
+  "@entryDeleteTitle": {
+    "description": "Title of the confirmation before deleting a migraine entry."
+  },
+  "entryDeleteBody": "这将永久删除该偏头痛及其计算出的因素。",
+  "@entryDeleteBody": {
+    "description": "Body of the confirmation before deleting a migraine entry. 'Computed factors' are the weather, moon phase etc. added automatically."
+  },
+  "entryDeleted": "记录已删除",
+  "@entryDeleted": {
+    "description": "Snack bar after an entry was deleted (with Undo)."
+  },
+  "entryRecordedLocation": "记录的位置",
+  "@entryRecordedLocation": {
+    "description": "Where the user was during the migraine; title of the tile and of the dialog to change it."
+  },
+  "entryUseLocation": "使用位置",
+  "@entryUseLocation": {
+    "description": "Dialog button: use the chosen place as the entry's location."
+  },
+  "entryTitleNew": "新建记录",
+  "@entryTitleNew": {
+    "description": "Screen title when creating a migraine entry."
+  },
+  "entryTitleEdit": "事件详情",
+  "@entryTitleEdit": {
+    "description": "Screen title when viewing or editing an existing migraine entry."
+  },
+  "entryDiscard": "放弃",
+  "@entryDiscard": {
+    "description": "Tooltip: leave a new entry without saving it."
+  },
+  "entryDeleteTooltip": "删除记录",
+  "@entryDeleteTooltip": {
+    "description": "Tooltip on the delete button of an existing entry."
+  },
+  "entryStarted": "开始",
+  "@entryStarted": {
+    "description": "When the migraine started (date and time)."
+  },
+  "entryEnded": "结束",
+  "@entryEnded": {
+    "description": "When the migraine ended (date and time)."
+  },
+  "entryOngoingHint": "进行中——点击设置",
+  "@entryOngoingHint": {
+    "description": "Shown under 'Ended' while the migraine has no end yet. Lowercase in English."
+  },
+  "entryClearEnd": "清除（标记为进行中）",
+  "@entryClearEnd": {
+    "description": "Tooltip: remove the end time, so the migraine is still going on."
+  },
+  "entryLocationNotSet": "未设置——点击添加",
+  "@entryLocationNotSet": {
+    "description": "Shown under 'Recorded location' when none is set."
+  },
+  "entryHeadacheQuestion": "是否头痛？",
+  "@entryHeadacheQuestion": {
+    "description": "Question above Yes / No / Not sure: did this attack have a headache? (Some migraine attacks have none.)"
+  },
+  "entryHeadacheNotSure": "不确定",
+  "@entryHeadacheNotSure": {
+    "description": "Answer to 'Headache?': the user isn't sure."
+  },
+  "entrySeverityValue": "严重程度：{value} / 10",
+  "@entrySeverityValue": {
+    "description": "[medical] Headache pain severity on a 1-10 scale; {value} is a number or a dash when not set.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "7"
+      }
+    }
+  },
+  "entryHeadLocation": "头部位置",
+  "@entryHeadLocation": {
+    "description": "Section heading: where on the head the pain was."
+  },
+  "entryNoHeadacheNote": "已记录为无头痛的发作。请在下方记录它对您的影响。",
+  "@entryNoHeadacheNote": {
+    "description": "[medical] Shown instead of severity when 'Headache?' is No."
+  },
+  "entryImpactTitle": "对当天的影响",
+  "@entryImpactTitle": {
+    "description": "Section heading: how much the attack affected the user's day."
+  },
+  "entryImpactQuestion": "您完成日常事务的情况如何？",
+  "@entryImpactQuestion": {
+    "description": "Hint under 'Impact on the day', above Normal / Reduced / Unable."
+  },
+  "entryAura": "先兆",
+  "@entryAura": {
+    "description": "[medical] Section heading: migraine aura (visual or other disturbance before or during the attack)."
+  },
+  "entryAuraDescription": "先兆描述（可选）",
+  "@entryAuraDescription": {
+    "description": "[medical] Field label: describe the aura."
+  },
+  "entryAuraHint": "例如：闪光、锯齿状线条",
+  "@entryAuraHint": {
+    "description": "[medical] Example text in the aura description field."
+  },
+  "entrySymptoms": "症状",
+  "@entrySymptoms": {
+    "description": "[medical] Section heading for the symptom choices."
+  },
+  "entryTriggers": "疑似诱因",
+  "@entryTriggers": {
+    "description": "Section heading: what the user thinks may have set off the migraine."
+  },
+  "entryFoods": "值得注意的食物",
+  "@entryFoods": {
+    "description": "Section heading: foods the user wants to note for this migraine."
+  },
+  "entryMedications": "药物",
+  "@entryMedications": {
+    "description": "Section heading: medications taken for this migraine."
+  },
+  "entryRelief": "尝试过的缓解方法",
+  "@entryRelief": {
+    "description": "Section heading: non-drug things tried for relief (dark room, cold pack...)."
+  },
+  "entrySleepHours": "睡眠时长（前一晚）",
+  "@entrySleepHours": {
+    "description": "Field label: hours slept the night before."
+  },
+  "entryStressValue": "压力水平：{value} / 5",
+  "@entryStressValue": {
+    "description": "Stress on a 1-5 scale; {value} is a number or a dash when not set.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "3"
+      }
+    }
+  },
+  "entryNotes": "备注",
+  "@entryNotes": {
+    "description": "Field label for free notes."
+  },
+  "entryAddFood": "添加食物",
+  "@entryAddFood": {
+    "description": "Button and dialog title: add a food to this entry."
+  },
+  "entryFoodHint": "例如：巧克力、红酒",
+  "@entryFoodHint": {
+    "description": "Example text in the add-food field."
+  },
+  "entryAddMedication": "添加药物",
+  "@entryAddMedication": {
+    "description": "Button and dialog title: add a medication taken."
+  },
+  "entryEditMedication": "编辑药物",
+  "@entryEditMedication": {
+    "description": "Dialog title when changing a medication already on the entry."
+  },
+  "entryRemoveMedication": "移除药物",
+  "@entryRemoveMedication": {
+    "description": "Tooltip: take this medication off the entry."
+  },
+  "entryAddRelief": "添加缓解方法",
+  "@entryAddRelief": {
+    "description": "Button and dialog title: add a relief method tried."
+  },
+  "entryEditRelief": "编辑缓解方法",
+  "@entryEditRelief": {
+    "description": "Dialog title when changing a relief method already on the entry."
+  },
+  "entryRemoveRelief": "移除缓解方法",
+  "@entryRemoveRelief": {
+    "description": "Tooltip: take this relief method off the entry."
+  },
+  "entryEnrichmentPending": "增强待处理",
+  "@entryEnrichmentPending": {
+    "description": "Card title: weather and astronomy for the entry haven't been added yet."
+  },
+  "entryEnrichmentPendingBody": "联网后将添加天气和天文信息。",
+  "@entryEnrichmentPendingBody": {
+    "description": "Card text under 'Enrichment pending'."
+  },
+  "entryEnrichment": "增强",
+  "@entryEnrichment": {
+    "description": "Card title: data added automatically to the entry (weather, moon, daylight...)."
+  },
+  "entryEnrichSeason": "季节",
+  "@entryEnrichSeason": {
+    "description": "Row label in the enrichment card."
+  },
+  "entryEnrichTimeOfDay": "一天中的时段",
+  "@entryEnrichTimeOfDay": {
+    "description": "Row label in the enrichment card: morning, afternoon, evening or night."
+  },
+  "entryEnrichDaylight": "日照",
+  "@entryEnrichDaylight": {
+    "description": "Row label in the enrichment card: hours of daylight that day."
+  },
+  "entryEnrichMoon": "月相",
+  "@entryEnrichMoon": {
+    "description": "Row label in the enrichment card: moon phase."
+  },
+  "entryEnrichTemp": "温度",
+  "@entryEnrichTemp": {
+    "description": "Row label in the enrichment card: air temperature (short)."
+  },
+  "entryEnrichHumidity": "湿度",
+  "@entryEnrichHumidity": {
+    "description": "Row label in the enrichment card."
+  },
+  "entryEnrichPressure": "气压",
+  "@entryEnrichPressure": {
+    "description": "Row label in the enrichment card: barometric pressure."
+  },
+  "entryEnrichPressureDelta": "气压 Δ 24 小时",
+  "@entryEnrichPressureDelta": {
+    "description": "Row label in the enrichment card: change in pressure over 24 hours. Keep 'Δ' and '24h'."
+  },
+  "entryEnrichAqi": "空气质量指数",
+  "@entryEnrichAqi": {
+    "description": "Row label in the enrichment card: air quality index (use the local abbreviation)."
+  },
+  "entryWeatherOff": "未获取天气——天气增强已关闭（设置）。",
+  "@entryWeatherOff": {
+    "description": "Shown in the enrichment card when the user turned weather off in Settings."
+  },
+  "entryMedName": "名称",
+  "@entryMedName": {
+    "description": "Field label: the medication's name."
+  },
+  "entryDose": "剂量（可选）",
+  "@entryDose": {
+    "description": "Field label: the medication dose."
+  },
+  "entryDoseHint": "例如：400 毫克",
+  "@entryDoseHint": {
+    "description": "Example text in the dose field."
+  },
+  "entryTimeTaken": "服药时间",
+  "@entryTimeTaken": {
+    "description": "When the medication was taken."
+  },
+  "entryDayTaken": "服药日期",
+  "@entryDayTaken": {
+    "description": "Title of the date picker for the day a dose was taken (multi-day entries)."
+  },
+  "entryDoseDayTime": "{day}，{time}",
+  "@entryDoseDayTime": {
+    "description": "A dose's day and time on a multi-day entry: 'Mon 9 Nov, 14:05'.",
+    "placeholders": {
+      "day": {
+        "type": "String",
+        "example": "Mon 9 Nov"
+      },
+      "time": {
+        "type": "String",
+        "example": "14:05"
+      }
+    }
+  },
+  "entryClearTime": "清除时间",
+  "@entryClearTime": {
+    "description": "Tooltip: remove the time a medication was taken."
+  },
+  "entryHelped": "有效？",
+  "@entryHelped": {
+    "description": "Question above Yes / No / Unknown: did the medication or relief help?"
+  },
+  "entryReliefQuestion": "您尝试了什么？",
+  "@entryReliefQuestion": {
+    "description": "Field label in the relief dialog."
+  },
+  "entryReliefHint": "例如：暗室、冷敷",
+  "@entryReliefHint": {
+    "description": "Example text in the relief field."
+  },
+  "quickLogTodayHasEntry": "今天已有偏头痛记录，因此未标记为无偏头痛。",
+  "@quickLogTodayHasEntry": {
+    "description": "Snack bar: the 'No migraine today' notification button was tapped, but today already has a migraine entry."
+  },
+  "quickLogCheckinRemoved": "今天的“无偏头痛”打卡已被移除。",
+  "@quickLogCheckinRemoved": {
+    "description": "Snack bar after starting a migraine on a day already checked in as migraine-free."
+  },
+  "quickLogOfferOngoingTitle": "在发作期间显示通知？",
+  "@quickLogOfferOngoingTitle": {
+    "description": "Dialog title, asked once on the first migraine started (Android): show a notification while the migraine is in progress?"
+  },
+  "quickLogOfferOngoingBody": "一条“偏头痛发作中”通知，附带计时器和结束按钮，以免您忘记计时器正在运行。它不会显示在锁定屏幕上。您可以在设置中更改。",
+  "@quickLogOfferOngoingBody": {
+    "description": "Dialog body for the 'Migraine in progress' notification offer. 'End' is the notification's button."
+  },
+  "quickLogNotNow": "暂不",
+  "@quickLogNotNow": {
+    "description": "Dialog button: decline for now."
+  },
+  "quickLogShowIt": "显示",
+  "@quickLogShowIt": {
+    "description": "Dialog button: yes, show the notification."
+  },
+  "quickLogNotificationsOff": "Megrim 的通知在手机设置中已关闭。",
+  "@quickLogNotificationsOff": {
+    "description": "Snack bar: the notification can't be shown because the phone blocks Megrim's notifications."
+  },
+  "quickLogDiscardTitle": "放弃这次偏头痛？",
+  "@quickLogDiscardTitle": {
+    "description": "Confirmation title before deleting the migraine that is in progress."
+  },
+  "quickLogDiscardBody": "这将停止计时器并永久删除进行中的记录。",
+  "@quickLogDiscardBody": {
+    "description": "Confirmation body before deleting the migraine that is in progress."
+  },
+  "quickLogKeep": "保留",
+  "@quickLogKeep": {
+    "description": "Dialog button: don't discard, keep the migraine."
+  },
+  "quickLogDiscard": "放弃",
+  "@quickLogDiscard": {
+    "description": "Button: delete the migraine in progress (started by mistake)."
+  },
+  "quickLogDiscarded": "已放弃偏头痛",
+  "@quickLogDiscarded": {
+    "description": "Snack bar after the migraine in progress was discarded (with Undo)."
+  },
+  "quickLogLastBackup": "上次备份：{age}",
+  "@quickLogLastBackup": {
+    "description": "Line at the bottom of the Log screen; {age} is 'Today', 'Yesterday', '12 days ago' or 'Never'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "12 days ago"
+      }
+    }
+  },
+  "quickLogStart": "记录偏头痛",
+  "@quickLogStart": {
+    "description": "The main button on the Log screen: start timing a migraine now. Upper case in English; use what reads as a strong button label."
+  },
+  "quickLogStartHint": "点击开始。您可以随时添加详情。",
+  "@quickLogStartHint": {
+    "description": "Hint under the LOG MIGRAINE button."
+  },
+  "quickLogNoMigraineToday": "今天无偏头痛",
+  "@quickLogNoMigraineToday": {
+    "description": "Button: record today as a migraine-free day (a check-in). Upper case in English, like LOG MIGRAINE."
+  },
+  "quickLogCheckedIn": "今天无偏头痛",
+  "@quickLogCheckedIn": {
+    "description": "Shown once today is checked in as migraine-free."
+  },
+  "quickLogAddDetails": "添加详情",
+  "@quickLogAddDetails": {
+    "description": "Button: add optional details (sleep, stress...) to today's check-in."
+  },
+  "quickLogInProgress": "偏头痛发作中",
+  "@quickLogInProgress": {
+    "description": "Heading while a migraine is being timed."
+  },
+  "quickLogEnded": "偏头痛已结束",
+  "@quickLogEnded": {
+    "description": "Button: the migraine is over; stop the timer. Upper case in English."
+  },
+  "quickLogMoreDetails": "添加更多详情",
+  "@quickLogMoreDetails": {
+    "description": "Button: open the full entry to add details."
+  },
+  "checkinRemoved": "打卡已移除",
+  "@checkinRemoved": {
+    "description": "Snack bar after a day's 'No migraine' check-in was removed (with Undo)."
+  },
+  "checkinTitle": "无偏头痛",
+  "@checkinTitle": {
+    "description": "Screen title: a day checked in as migraine-free, with optional details."
+  },
+  "checkinRemove": "移除打卡",
+  "@checkinRemove": {
+    "description": "Tooltip: remove this day's 'No migraine' check-in."
+  },
+  "checkinIntro": "全部可选。在无偏头痛的日子记录与偏头痛日相同的内容，分析功能才能对两者进行比较。",
+  "@checkinIntro": {
+    "description": "Hint at the top of the check-in screen. A 'clear day' is a migraine-free day."
+  },
+  "checkinTriggers": "可能的诱因",
+  "@checkinTriggers": {
+    "description": "Section heading on a migraine-free day: things that might have triggered a migraine, noted for comparison."
+  },
+  "historyTitle": "历史",
+  "@historyTitle": {
+    "description": "Screen title and bottom tab: the list and calendar of past migraines."
+  },
+  "historyAddPast": "添加过去的记录",
+  "@historyAddPast": {
+    "description": "Button: log a migraine that happened earlier."
+  },
+  "historyAddPastTooltip": "记录更早发生的偏头痛",
+  "@historyAddPastTooltip": {
+    "description": "Tooltip on the 'Add past entry' button."
+  },
+  "historyViewList": "列表",
+  "@historyViewList": {
+    "description": "Toggle between the list and calendar views: the list."
+  },
+  "historyViewCalendar": "日历",
+  "@historyViewCalendar": {
+    "description": "Toggle between the list and calendar views: the calendar."
+  },
+  "historyEmpty": "尚未记录任何偏头痛。",
+  "@historyEmpty": {
+    "description": "Shown in the list view when nothing has been logged."
+  },
+  "historySeverity": "严重程度 {value}/10",
+  "@historySeverity": {
+    "description": "[medical] A logged migraine's pain severity, in a list row.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "historySpanDays": "{count, plural, other{{count} 天}}",
+  "@historySpanDays": {
+    "description": "How many calendar days a migraine covered, in a list row (only shown for 2 or more).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "historyOngoing": "进行中",
+  "@historyOngoing": {
+    "description": "A migraine with no end time yet, in a list row. Lowercase in English."
+  },
+  "historyEntriesOn": "{count, plural, other{{date} 有 {count} 条记录}}",
+  "@historyEntriesOn": {
+    "description": "Heading of the sheet listing a day's entries when it has several.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String",
+        "example": "Mon, 9 Nov 2026"
+      }
+    }
+  },
+  "historyNoMigraineThisDay": "当天无偏头痛",
+  "@historyNoMigraineThisDay": {
+    "description": "Choice for an empty calendar day: record it as migraine-free (a check-in)."
+  },
+  "historyCheckinDetails": "无偏头痛：详情",
+  "@historyCheckinDetails": {
+    "description": "Choice for a checked-in day: open its optional details."
+  },
+  "historyCheckinDetailsHint": "睡眠、压力、诱因和食物",
+  "@historyCheckinDetailsHint": {
+    "description": "Under 'No migraine: details': what can be added."
+  },
+  "historyRemoveCheckin": "移除该打卡",
+  "@historyRemoveCheckin": {
+    "description": "Choice for a checked-in day: remove the 'No migraine' check-in."
+  },
+  "historyLogOnDay": "在这一天记录偏头痛",
+  "@historyLogOnDay": {
+    "description": "Choice for a calendar day: add a migraine entry on that day."
+  },
+  "historyMarkedClear": "已标记为无偏头痛的一天",
+  "@historyMarkedClear": {
+    "description": "Snack bar after a calendar day was checked in as migraine-free."
+  },
+  "historyCalendarEmpty": "尚未记录任何偏头痛——点击下方日期添加。",
+  "@historyCalendarEmpty": {
+    "description": "Shown above the calendar when nothing has been logged."
+  },
+  "historyCheckinMark": "无偏头痛",
+  "@historyCheckinMark": {
+    "description": "Screen-reader label for the tick on a calendar day checked in as migraine-free. Lowercase in English."
+  },
+  "medsTitle": "药物",
+  "@medsTitle": {
+    "description": "Screen title: the user's medications (acute and preventive)."
+  },
+  "medsRename": "重命名",
+  "@medsRename": {
+    "description": "Dialog title and tooltip: rename a medication or a choice in a list."
+  },
+  "medsAcuteTitle": "用于发作",
+  "@medsAcuteTitle": {
+    "description": "Section heading: acute medications, taken to treat a migraine attack."
+  },
+  "medsAcuteHint": "从您的记录中学习。类别用于分析中的用药天数统计。",
+  "@medsAcuteHint": {
+    "description": "[medical] Under 'Taken for an attack': the list is built from what was typed in entries; the class (triptan, etc.) is used to count medication days."
+  },
+  "medsPreventiveTitle": "预防性药物",
+  "@medsPreventiveTitle": {
+    "description": "[medical] Section heading: preventive medications, taken daily to reduce attacks."
+  },
+  "medsPreventiveHint": "每日服用以预防发作。开始和停止日期会标记在偏头痛天数图表上。",
+  "@medsPreventiveHint": {
+    "description": "[medical] Under 'Preventive'."
+  },
+  "medsAddPreventive": "添加预防性药物",
+  "@medsAddPreventive": {
+    "description": "Button and dialog title: add a preventive medication."
+  },
+  "medsEditPreventive": "编辑预防性药物",
+  "@medsEditPreventive": {
+    "description": "Dialog title: change a preventive medication."
+  },
+  "medsPreventiveDoseHint": "例如：40 毫克，每日两次",
+  "@medsPreventiveDoseHint": {
+    "description": "Example text in a preventive medication's dose field."
+  },
+  "medsStarted": "开始",
+  "@medsStarted": {
+    "description": "The day a preventive medication was started."
+  },
+  "medsStillTaking": "仍在服用",
+  "@medsStillTaking": {
+    "description": "Switch: the preventive medication hasn't been stopped."
+  },
+  "medsStopped": "已停止",
+  "@medsStopped": {
+    "description": "The day a preventive medication was stopped."
+  },
+  "medsNotes": "备注（可选）",
+  "@medsNotes": {
+    "description": "Field label: notes on a preventive medication."
+  },
+  "medsNotesHint": "例如：停止原因",
+  "@medsNotesHint": {
+    "description": "Example text in a preventive medication's notes field."
+  },
+  "medsSince": "自 {date}",
+  "@medsSince": {
+    "description": "When a preventive medication was started and is still taken: 'Since 1 Mar 2026'.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "1 Mar 2026"
+      }
+    }
+  },
+  "medsSpan": "{start} – {end}",
+  "@medsSpan": {
+    "description": "When a preventive medication was taken: '1 Mar 2026 – 30 Sep 2026'.",
+    "placeholders": {
+      "start": {
+        "type": "String",
+        "example": "1 Mar 2026"
+      },
+      "end": {
+        "type": "String",
+        "example": "30 Sep 2026"
+      }
+    }
+  },
+  "vocabAddTitle": "添加 {item}",
+  "@vocabAddTitle": {
+    "description": "Dialog title and tooltip for adding a choice to a list; {item} is the list's name as it reads mid-sentence, e.g. 'Add suspected triggers'.",
+    "placeholders": {
+      "item": {
+        "type": "String",
+        "example": "suspected triggers"
+      }
+    }
+  },
+  "vocabManageTitle": "管理 {item}",
+  "@vocabManageTitle": {
+    "description": "Screen title for editing a list of choices; {item} is the list's name as it reads mid-sentence, e.g. 'Manage suspected triggers'.",
+    "placeholders": {
+      "item": {
+        "type": "String",
+        "example": "suspected triggers"
+      }
+    }
+  },
+  "medClassPickerTitle": "{name} 是哪一类药物？",
+  "@medClassPickerTitle": {
+    "description": "Title of the medication class picker; {name} is the medication's name as the user typed it.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Ibuprofen"
+      }
+    }
+  },
+  "medClassPickerHint": "用于按类别统计用药天数。可选；您可以稍后在“设置 › 药物”中更改。",
+  "@medClassPickerHint": {
+    "description": "[medical] Hint under the medication class picker's title. Keep the '›' between Settings and Medications."
+  },
+  "locationSearchLabel": "城市搜索——或 GPS / Plus 代码",
+  "@locationSearchLabel": {
+    "description": "Label of the place search field. 'GPS' means coordinates typed in; 'Plus Code' is Google's open location code format (keep the name)."
+  },
+  "locationSearchHelper": "例如：Boulder · 40.01, -105.27 · 849VCWC8+R9",
+  "@locationSearchHelper": {
+    "description": "Examples under the place search field: a city, coordinates, a Plus Code. Use a city name familiar in your language; keep the coordinates and code as they are."
+  },
+  "locationUse": "使用 {place}",
+  "@locationUse": {
+    "description": "Choice to use what was typed (coordinates or a Plus Code) as the location.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "40.01, -105.27"
+      }
+    }
+  },
+  "locationEnteredDirectly": "直接输入——不会向网络发送任何内容",
+  "@locationEnteredDirectly": {
+    "description": "Under 'Use ...': the typed location is used as is, with no online lookup."
+  },
+  "locationRecent": "最近",
+  "@locationRecent": {
+    "description": "Heading above recently used locations."
+  },
+  "locationSelected": "已选择：{place}（{coordinates}）",
+  "@locationSelected": {
+    "description": "The chosen location with its coordinates.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Boulder, Colorado, United States"
+      },
+      "coordinates": {
+        "type": "String",
+        "example": "40.01, -105.27"
+      }
+    }
+  },
+  "entryEnrichNoLocation": "未设置位置——请设置家庭位置以启用增强。",
+  "@entryEnrichNoLocation": {
+    "description": "Entry detail, under Weather: why this entry has no weather, moon or daylight data. 'Enrichment' = the weather, moon and daylight details Megrim adds to an entry."
+  },
+  "formatDateTime": "{date}，{time}",
+  "@formatDateTime": {
+    "description": "A date followed by a time, e.g. 'Mon, Nov 9, 2026, 2:05 PM'. Both come already formatted for the language; only change the joiner if your language writes it differently.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Mon, Nov 9, 2026"
+      },
+      "time": {
+        "type": "String",
+        "example": "2:05 PM"
+      }
+    }
+  }
+}
