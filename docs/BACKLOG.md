@@ -7,12 +7,13 @@ Non-blocking improvements captured for later. Not committed to a release; groom 
 > **Status (2026-11-02):** #1–14 are **DONE** (see [`SPEC.md` §12](SPEC.md)), kept here as a
 > record. #17, #23 (1) and #24 shipped in `v1.0.7`. **`v1.0.8` (2026-10-30) shipped #16, #18,
 > #19, #20, #22(a), #26, #27 and #23 (3) on Android.** Still open:
-> - **Next release (planned):** **#29** (App Store custom header and iPhone Duo screenshots; Steve
->   wants a cycle on it) and **#28** (`share_plus` before the next Flutter upgrade).
+> - **Next release (planned):** **#32** (a 12-month calendar page in the PDF, GitHub issue #23)
+>   and **#28** (`share_plus` before the next Flutter upgrade). #29 (App Store header and iPhone
+>   Duo screenshots) went out with `v1.0.9` (2026-11-10).
 > - **1.1.0:** #23 (2) home-screen widget on both platforms and #23 (3) iOS Live Activity (group
 >   C2, deferred by Steve 2026-10-30; the Live Activity shows only "Megrim" and a timer).
 > - **Proposed:** #30 (postdrome: "Headache ended" inside an attack, plus Aphasia as a default
->   symptom), #31 (a "needed care" impact level, and impact per day on multi-day attacks), #25 (translations, **next**;
+>   symptom), #33 (a colour-blind friendly colours setting), #31 (a "needed care" impact level, and impact per day on multi-day attacks), #25 (translations, **next**;
 >   design in `TRANSLATIONS.md`, GitHub #22/#19), #21 (menstrual cycle
 >   log), #22(b) (blocked on licensing). **#15 is DEFERRED.**
 >
@@ -990,6 +991,61 @@ else for 10–24 hours. #22(a)'s Impact (Normal / Reduced / Unable) has two gaps
 **Verification:** (a) worst-of-day ordering with the new level, Analytics/PDF counts, an import
 of an unknown value still dropped cleanly. (b) migration, per-day fallback to the entry value,
 monthly impact counts, export/import round-trip.
+
+### 32. PDF report: a calendar page of the last 12 months, shaded by severity — **PLANNED for the next release** *(2026-11-10, from GitHub issue #23)*
+
+**Want:** GitHub issue #23 (Krackmou, 2026-11-09/10): doctors want the calendar, the fastest way to
+see how headaches are evolving. The report lists every entry, but "it's pretty hard to digest".
+They suggested exporting a chosen time frame as a calendar.
+
+**Decided (Steve, 2026-11-10):** no separate calendar export and no time-frame picker. That would
+split the export in two. Instead the existing PDF gains one section:
+
+- **The last 12 months**, three months across and four down, so one A4 page. That's the same
+  window as the report's two other 12-month sections (migraine days per month, medication days).
+  Newest first, like the History calendar. Days after today in the current month are blank.
+- **On its own page right after the Summary**, as it's the quickest picture for a doctor.
+- **Shaded with a single-hue purple scale, not the app's green → red**, so it reads the same
+  printed in black and white and for colour-blind readers: pale to deep for severity 0–3, 4–5,
+  6–7, 8–10. Use the Analytics sequential purple (`_seqPurpleLight` in
+  `analytics_screen.dart`, already checked for monotone lightness). The day number is dark on
+  the pale steps and white on the dark ones. No severity number in the square (no room at about
+  8 mm). An attack without a headache is a grey outline; a day with nothing logged is white.
+- **No "No migraine today" ticks** (clutter on paper).
+- **A legend** under the grid: the four purples with their bands, the outline for "no
+  headache", and "white: nothing logged" (a blank day isn't proof of a clear day).
+- Same day rules as the app: reuse `severityByLocalDay` / `localDaysSpanned` from
+  `history_screen.dart` (move them somewhere shared if needed), so a multi-day attack shades
+  every day it covers and the PDF can't disagree with the app. The first weekday follows the
+  region, as in the app (TRANSLATIONS.md D7). Strings in `app_en.arb`.
+- Twelve months on one page is tight (about 7.5 mm per week row). Check in
+  `tools/review_screens.sh`; if the day numbers come out too small, use two pages of six.
+
+**Verification:** report-content test for the 12-month window, the bands and a multi-day attack
+crossing a month boundary; the PDF rendered in the visual review (light content on A4, numbers
+readable, legend present), also as a greyscale conversion to check the steps stay in order.
+No schema change, no new permissions.
+
+### 33. Settings: colour-blind friendly colours — **PROPOSED** *(2026-11-10, Steve, from #32)*
+
+**Want:** severity is the one place the app uses red against green (`severityColor` in
+`app/lib/widgets/severity_badge.dart`: green 0–3, yellow 4–5, orange 6–7, red 8–10), which
+red-green colour-blind users can't tell apart. Fits the open and accessible ethos.
+
+**Shape:**
+
+- A switch in Settings › Appearance, **"Colour-blind friendly colours"**, off by default.
+- When on, severity uses the same single-hue purple scale as the #32 PDF calendar (the dark-mode
+  ramp in dark mode) instead of green → red.
+- It affects the two places that draw severity: the History calendar and the severity badge
+  (History list, Event Detail). The badges already print the number, so the calendar gains most.
+- **Not the donuts** (Steve agreed, 2026-11-10): their four colours were already checked
+  against colour-blindness types in #11, every slice is labelled, and seasons and times of day
+  have no order, so a gradient would suggest a ranking that isn't there.
+- Stored with the other display settings; not in the export.
+
+**Verification:** widget tests for the calendar and badge in both settings and both themes;
+the visual review renders both.
 
 ### Reviewed, not planned *(2026-10-06)*
 
