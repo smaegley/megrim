@@ -103,11 +103,11 @@
   "@dataSymptomSmell": {
     "description": "[medical] Default migraine symptom (osmophobia)."
   },
-  "dataSymptomNeck": "Douleurs au cou",
+  "dataSymptomNeck": "Douleurs ou raideur au cou",
   "@dataSymptomNeck": {
     "description": "[medical] Default migraine symptom."
   },
-  "dataSymptomDizziness": "Vertiges",
+  "dataSymptomDizziness": "Étourdissements",
   "@dataSymptomDizziness": {
     "description": "[medical] Default migraine symptom: feeling light-headed or unsteady. Different from vertigo."
   },
@@ -2716,7 +2716,7 @@
   "@notifOngoingChannelDescription": {
     "description": "Android notification channel description. 'End' is the button notifActionEnd."
   },
-  "notifActionEnd": "Terminer",
+  "notifActionEnd": "Arrêter",
   "@notifActionEnd": {
     "description": "Button on the 'Migraine in progress' notification: end the migraine now. Short."
   },
