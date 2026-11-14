@@ -43,7 +43,7 @@
   "@dataTriggerScreenTime": {
     "description": "Default trigger: long use of a phone or computer screen."
   },
-  "dataTriggerTravel": "Поїздка",
+  "dataTriggerTravel": "Подорож",
   "@dataTriggerTravel": {
     "description": "Default trigger: being away from home."
   },
