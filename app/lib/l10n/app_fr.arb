@@ -103,11 +103,11 @@
   "@dataSymptomSmell": {
     "description": "[medical] Default migraine symptom (osmophobia)."
   },
-  "dataSymptomNeck": "Douleurs ou raideur au cou",
+  "dataSymptomNeck": "Douleurs au cou",
   "@dataSymptomNeck": {
     "description": "[medical] Default migraine symptom."
   },
-  "dataSymptomDizziness": "Étourdissements",
+  "dataSymptomDizziness": "Vertiges",
   "@dataSymptomDizziness": {
     "description": "[medical] Default migraine symptom: feeling light-headed or unsteady. Different from vertigo."
   },
@@ -1932,15 +1932,15 @@
   "@reportStatYearsTracked": {
     "description": "Report summary tile."
   },
-  "reportStatAvgSeverity": "Intensité moy.",
+  "reportStatAvgSeverity": "Intensité moyenne",
   "@reportStatAvgSeverity": {
     "description": "Report summary tile: average pain severity (1-10). Short: the tile is narrow."
   },
-  "reportStatAvgDuration": "Durée moy.",
+  "reportStatAvgDuration": "Durée moyenne",
   "@reportStatAvgDuration": {
     "description": "Report summary tile: average attack length. Short."
   },
-  "reportStatAvgInterval": "Intervalle moy.",
+  "reportStatAvgInterval": "Intervalle moyen",
   "@reportStatAvgInterval": {
     "description": "Report summary tile: average time between attacks. Short."
   },
@@ -2612,7 +2612,7 @@
   "@reportColumnRecorded": {
     "description": "Report table column: what was recorded (a sleep range, a trigger…)."
   },
-  "reportColumnTrackedDays": "Jours suivis",
+  "reportColumnTrackedDays": "Jours de suivi",
   "@reportColumnTrackedDays": {
     "description": "Report table column."
   },
@@ -2716,7 +2716,7 @@
   "@notifOngoingChannelDescription": {
     "description": "Android notification channel description. 'End' is the button notifActionEnd."
   },
-  "notifActionEnd": "Arrêter",
+  "notifActionEnd": "Terminer",
   "@notifActionEnd": {
     "description": "Button on the 'Migraine in progress' notification: end the migraine now. Short."
   },
@@ -3297,7 +3297,7 @@
   "@historyCheckinDetailsHint": {
     "description": "Under 'No migraine: details': what can be added."
   },
-  "historyRemoveCheckin": "Supprimer le pointage",
+  "historyRemoveCheckin": "Supprimer le pointage de ce jour",
   "@historyRemoveCheckin": {
     "description": "Choice for a checked-in day: remove the 'No migraine' check-in."
   },
