@@ -347,7 +347,7 @@
   "@dataMoonWaningCrescent": {
     "description": "Moon phase."
   },
-  "dataFactorDaylight": "Heures de jour",
+  "dataFactorDaylight": "Heure de jour",
   "@dataFactorDaylight": {
     "description": "Name of a factor: how many hours of daylight the day had."
   },
