@@ -1,1 +1,1324 @@
-{}
+{
+  "dataTriggerStress": "Stress",
+  "@dataTriggerStress": {
+    "description": "Default trigger, and the 'Stress' factor in Migraine days vs clear days (stress level 1-5)."
+  },
+  "dataTriggerSleepChange": "Veränderter Schlaf",
+  "@dataTriggerSleepChange": {
+    "description": "Default trigger: sleeping more or less than usual, or at different times."
+  },
+  "dataTriggerBrightLight": "Helles Licht",
+  "@dataTriggerBrightLight": {
+    "description": "Default trigger."
+  },
+  "dataTriggerExercise": "Sport",
+  "@dataTriggerExercise": {
+    "description": "Default trigger."
+  },
+  "dataTriggerWeather": "Wetter / Druck",
+  "@dataTriggerWeather": {
+    "description": "Default trigger: a change in the weather or barometric pressure."
+  },
+  "dataTriggerAlcohol": "Alkohol",
+  "@dataTriggerAlcohol": {
+    "description": "Default trigger."
+  },
+  "dataTriggerCaffeine": "Koffein",
+  "@dataTriggerCaffeine": {
+    "description": "Default trigger, and a default relief method (coffee or tea taken to ease a migraine)."
+  },
+  "dataTriggerFood": "Essen",
+  "@dataTriggerFood": {
+    "description": "Default trigger: something eaten."
+  },
+  "dataTriggerHormonal": "Hormonell",
+  "@dataTriggerHormonal": {
+    "description": "Default trigger: e.g. the menstrual cycle."
+  },
+  "dataTriggerStrongSmell": "Starker Geruch",
+  "@dataTriggerStrongSmell": {
+    "description": "Default trigger: perfume, smoke, paint and the like."
+  },
+  "dataTriggerScreenTime": "Bildschirmzeit",
+  "@dataTriggerScreenTime": {
+    "description": "Default trigger: long use of a phone or computer screen."
+  },
+  "dataTriggerTravel": "Reisen",
+  "@dataTriggerTravel": {
+    "description": "Default trigger: being away from home."
+  },
+  "dataHeadLeftTemple": "Linke Schläfe",
+  "@dataHeadLeftTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadRightTemple": "Rechte Schläfe",
+  "@dataHeadRightTemple": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindLeftEye": "Hinter dem linken Auge",
+  "@dataHeadBehindLeftEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBehindRightEye": "Hinter dem rechten Auge",
+  "@dataHeadBehindRightEye": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadForehead": "Stirn",
+  "@dataHeadForehead": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadTop": "Scheitel",
+  "@dataHeadTop": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadBack": "Hinterkopf",
+  "@dataHeadBack": {
+    "description": "Default place on the head where the pain is."
+  },
+  "dataHeadNeck": "Nacken",
+  "@dataHeadNeck": {
+    "description": "Default place where the pain is."
+  },
+  "dataHeadBothSides": "Beide Seiten",
+  "@dataHeadBothSides": {
+    "description": "Default place on the head where the pain is: both sides of the head."
+  },
+  "dataSymptomNausea": "Übelkeit",
+  "@dataSymptomNausea": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomVomiting": "Erbrechen",
+  "@dataSymptomVomiting": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomLight": "Lichtempfindlichkeit",
+  "@dataSymptomLight": {
+    "description": "[medical] Default migraine symptom (photophobia)."
+  },
+  "dataSymptomSound": "Geräuschempfindlichkeit",
+  "@dataSymptomSound": {
+    "description": "[medical] Default migraine symptom (phonophobia)."
+  },
+  "dataSymptomSmell": "Geruchsempfindlichkeit",
+  "@dataSymptomSmell": {
+    "description": "[medical] Default migraine symptom (osmophobia)."
+  },
+  "dataSymptomNeck": "Nackenschmerzen / -steifheit",
+  "@dataSymptomNeck": {
+    "description": "[medical] Default migraine symptom."
+  },
+  "dataSymptomDizziness": "Benommenheit",
+  "@dataSymptomDizziness": {
+    "description": "[medical] Default migraine symptom: feeling light-headed or unsteady. Different from vertigo."
+  },
+  "dataSymptomVertigo": "Schwindel",
+  "@dataSymptomVertigo": {
+    "description": "[medical] Default migraine symptom: a false sense that you or the room is spinning or moving. Marks vestibular migraine; keep it distinct from dizziness."
+  },
+  "dataSymptomMotion": "Bewegungsempfindlichkeit",
+  "@dataSymptomMotion": {
+    "description": "[medical] Default migraine symptom: symptoms made worse by moving the head or by motion."
+  },
+  "dataSymptomFatigue": "Erschöpfung",
+  "@dataSymptomFatigue": {
+    "description": "[medical] Default migraine symptom: extreme tiredness."
+  },
+  "dataSymptomBrainFog": "Gehirnnebel",
+  "@dataSymptomBrainFog": {
+    "description": "[medical] Default migraine symptom: trouble thinking clearly or concentrating."
+  },
+  "dataSymptomYawning": "Gähnen",
+  "@dataSymptomYawning": {
+    "description": "[medical] Default migraine symptom: repeated yawning, often before an attack."
+  },
+  "dataReliefDarkRoom": "Dunkler Raum",
+  "@dataReliefDarkRoom": {
+    "description": "Default non-drug relief method: resting in a dark room."
+  },
+  "dataReliefSleep": "Schlaf",
+  "@dataReliefSleep": {
+    "description": "Default non-drug relief method."
+  },
+  "dataReliefColdPack": "Kühlpack",
+  "@dataReliefColdPack": {
+    "description": "Default non-drug relief method: something cold on the head or neck."
+  },
+  "dataReliefHeat": "Wärme",
+  "@dataReliefHeat": {
+    "description": "Default non-drug relief method: a warm compress, a hot shower."
+  },
+  "dataReliefHydration": "Flüssigkeit",
+  "@dataReliefHydration": {
+    "description": "Default non-drug relief method: drinking water."
+  },
+  "dataReliefRest": "Ruhe",
+  "@dataReliefRest": {
+    "description": "Default non-drug relief method."
+  },
+  "dataSeasonWinter": "Winter",
+  "@dataSeasonWinter": {
+    "description": "Season."
+  },
+  "dataSeasonSpring": "Frühling",
+  "@dataSeasonSpring": {
+    "description": "Season."
+  },
+  "dataSeasonSummer": "Sommer",
+  "@dataSeasonSummer": {
+    "description": "Season."
+  },
+  "dataSeasonAutumn": "Herbst",
+  "@dataSeasonAutumn": {
+    "description": "Season (fall)."
+  },
+  "dataMoonNew": "Neumond",
+  "@dataMoonNew": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaxingCrescent": "Zunehmende Mondsichel",
+  "@dataMoonWaxingCrescent": {
+    "description": "Moon phase."
+  },
+  "dataMoonFirstQuarter": "Zunehmender Halbmond",
+  "@dataMoonFirstQuarter": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaxingGibbous": "Zunehmender Dreiviertelmond",
+  "@dataMoonWaxingGibbous": {
+    "description": "Moon phase."
+  },
+  "dataMoonFull": "Vollmond",
+  "@dataMoonFull": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaningGibbous": "Abnehmender Dreiviertelmond",
+  "@dataMoonWaningGibbous": {
+    "description": "Moon phase."
+  },
+  "dataMoonLastQuarter": "Abnehmender Halbmond",
+  "@dataMoonLastQuarter": {
+    "description": "Moon phase."
+  },
+  "dataMoonWaningCrescent": "Abnehmende Mondsichel",
+  "@dataMoonWaningCrescent": {
+    "description": "Moon phase."
+  },
+  "dataTimeMorning": "Vormittag",
+  "@dataTimeMorning": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeAfternoon": "Nachmittag",
+  "@dataTimeAfternoon": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeEvening": "Abend",
+  "@dataTimeEvening": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataTimeNight": "Nacht",
+  "@dataTimeNight": {
+    "description": "Time of day an attack started; a chart label. Lowercase in English."
+  },
+  "dataFactorDayOfWeek": "Wochentag",
+  "@dataFactorDayOfWeek": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorSeason": "Jahreszeit",
+  "@dataFactorSeason": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorMonth": "Monat",
+  "@dataFactorMonth": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorMoonPhase": "Mondphase",
+  "@dataFactorMoonPhase": {
+    "description": "Name of a factor compared on migraine days vs other days (Suspected Factors)."
+  },
+  "dataFactorDaylight": "Tageslänge",
+  "@dataFactorDaylight": {
+    "description": "Name of a factor: how many hours of daylight the day had."
+  },
+  "dataFactorPressure": "Druck Δ 24h (hPa)",
+  "@dataFactorPressure": {
+    "description": "Name of a factor: the change in barometric pressure over 24 hours, in hectopascals. Keep 'Δ', '24h' and 'hPa' as symbols."
+  },
+  "dataFactorSleep": "Die Nacht davor geschlafen",
+  "@dataFactorSleep": {
+    "description": "Name of a factor in Migraine days vs clear days: hours slept the night before."
+  },
+  "dataFactorTrigger": "Trigger notiert",
+  "@dataFactorTrigger": {
+    "description": "Name of a factor in Migraine days vs clear days: a trigger written down for that day."
+  },
+  "dataFactorFood": "Essen notiert",
+  "@dataFactorFood": {
+    "description": "Name of a factor in Migraine days vs clear days: a food written down for that day."
+  },
+  "dataHours": "{value} h",
+  "@dataHours": {
+    "description": "A number of hours, as a chart label: '9.5 h'. Use the usual short form for hours.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "9.5"
+      }
+    }
+  },
+  "dataBucketBelow": "< {value}",
+  "@dataBucketBelow": {
+    "description": "Chart bucket: values below a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "-10"
+      }
+    }
+  },
+  "dataBucketAbove": "> {value}",
+  "@dataBucketAbove": {
+    "description": "Chart bucket: values above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
+  "dataBucketAtLeast": "≥ {value}",
+  "@dataBucketAtLeast": {
+    "description": "Chart bucket: values at or above a bound.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "14 h"
+      }
+    }
+  },
+  "dataBucketRange": "{from} bis {to}",
+  "@dataBucketRange": {
+    "description": "Chart bucket for a range that may include negative numbers: '-10 to -5' (pressure change in hPa).",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "-10"
+      },
+      "to": {
+        "type": "String",
+        "example": "-5"
+      }
+    }
+  },
+  "dataBucketSpan": "{from}–{to}",
+  "@dataBucketSpan": {
+    "description": "Chart bucket for a range of positive numbers, written with a dash: '6–8'.",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "6"
+      },
+      "to": {
+        "type": "String",
+        "example": "8"
+      }
+    }
+  },
+  "noHeadache": "Keine Kopfschmerzen",
+  "@noHeadache": {
+    "description": "Label on an attack recorded without headache (History, entry detail, report)."
+  },
+  "noHeadacheWithAura": "Keine Kopfschmerzen · mit Aura",
+  "@noHeadacheWithAura": {
+    "description": "[medical] Label on an attack without headache that had an aura (ICHD-3 'typical aura without headache'). Keep the '·' separator."
+  },
+  "noHeadacheWithVertigo": "Keine Kopfschmerzen · mit Schwindel",
+  "@noHeadacheWithVertigo": {
+    "description": "[medical] Label on an attack without headache that had vertigo or dizziness (as in vestibular migraine). Keep the '·' separator."
+  },
+  "impactNormal": "Normal",
+  "@impactNormal": {
+    "description": "Impact on the day, short button label: functioned normally. Answers 'How well could you do your usual things?'"
+  },
+  "impactReduced": "Eingeschränkt",
+  "@impactReduced": {
+    "description": "Impact on the day, short button label: reduced function, did less or less well."
+  },
+  "impactUnable": "Unfähig",
+  "@impactUnable": {
+    "description": "Impact on the day, short button label: unable to do usual activities. Must not read as 'unable to stop me'."
+  },
+  "impactNormalDescription": "Funktionierte normal",
+  "@impactNormalDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactReducedDescription": "Eingeschränkte Funktion",
+  "@impactReducedDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactUnableDescription": "Unfähig etwas zu tun",
+  "@impactUnableDescription": {
+    "description": "Impact on the day, read back in a sentence (lowercase in English)."
+  },
+  "impactNormalExplanation": "Funktionierte normal: Tag wurde wie gewohnt bewältigt",
+  "@impactNormalExplanation": {
+    "description": "Shown under the impact buttons once 'Normal' is chosen."
+  },
+  "impactReducedExplanation": "Eingeschränkte Funktion: machte weniger, oder weniger gut",
+  "@impactReducedExplanation": {
+    "description": "Shown under the impact buttons once 'Reduced' is chosen."
+  },
+  "impactUnableExplanation": "Unfähig etwas zu tun: konnte den gewohnten Tätigkeiten nicht nachgehen",
+  "@impactUnableExplanation": {
+    "description": "Shown under the impact buttons once 'Unable' is chosen."
+  },
+  "medClassTriptan": "Triptan",
+  "@medClassTriptan": {
+    "description": "[medical] Class of acute migraine medication."
+  },
+  "medClassErgot": "Ergot",
+  "@medClassErgot": {
+    "description": "[medical] Class of acute migraine medication (ergotamines)."
+  },
+  "medClassOpioid": "Opiat",
+  "@medClassOpioid": {
+    "description": "[medical] Class of acute medication."
+  },
+  "medClassCombination": "Kombiniertes Schmerzmittel",
+  "@medClassCombination": {
+    "description": "[medical] Class of acute medication: a pain reliever combined with codeine, caffeine or butalbital (ICHD-3 'combination-analgesic')."
+  },
+  "medClassSimple": "Einfaches Schmerzmittel",
+  "@medClassSimple": {
+    "description": "[medical] Class of acute medication: paracetamol, ibuprofen, aspirin and similar (ICHD-3 'non-opioid analgesic')."
+  },
+  "medClassGepant": "Gepant",
+  "@medClassGepant": {
+    "description": "[medical] Class of acute migraine medication (CGRP receptor antagonists)."
+  },
+  "medClassDitan": "Ditan",
+  "@medClassDitan": {
+    "description": "[medical] Class of acute migraine medication (lasmiditan)."
+  },
+  "medClassAntiemetic": "Mittel gegen Übelkeit",
+  "@medClassAntiemetic": {
+    "description": "[medical] Class of medication against nausea (antiemetic)."
+  },
+  "medClassOther": "Andere",
+  "@medClassOther": {
+    "description": "Medication class: anything not in the other classes."
+  },
+  "medClassNotSet": "Keine Klasse gewählt",
+  "@medClassNotSet": {
+    "description": "Shown for a medication the user hasn't given a class."
+  },
+  "medClassTriptanExamples": "Sumatriptan, Rizatriptan, Zolmitriptan…",
+  "@medClassTriptanExamples": {
+    "description": "[medical] Examples under the class name in the picker. Generic drug names, no brands; use the local generic names."
+  },
+  "medClassErgotExamples": "Ergotamin, Dihydroergotamin",
+  "@medClassErgotExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassOpioidExamples": "Codein, Tramadol, Oxycodon…",
+  "@medClassOpioidExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassCombinationExamples": "Ein Schmerzmittel kombiniert mir Codein, Koffein oder Butalbital",
+  "@medClassCombinationExamples": {
+    "description": "[medical] Examples under the class name."
+  },
+  "medClassSimpleExamples": "Paracetamol (Acetaminophen), Ibuprofen, Naproxen, Aspirin (Aspro)…",
+  "@medClassSimpleExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names; use the local names (paracetamol / acetaminophen)."
+  },
+  "medClassGepantExamples": "Ubrogepant, Rimegepant, Zavegepant",
+  "@medClassGepantExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassDitanExamples": "Lasmiditan",
+  "@medClassDitanExamples": {
+    "description": "[medical] Example under the class name. Generic drug name."
+  },
+  "medClassAntiemeticExamples": "Metoclopramid, Ondansetron, Domperidon…",
+  "@medClassAntiemeticExamples": {
+    "description": "[medical] Examples under the class name. Generic drug names."
+  },
+  "medClassOtherExamples": "etwas Anderes",
+  "@medClassOtherExamples": {
+    "description": "Under 'Other' in the medication class picker."
+  },
+  "homeTabHistory": "Verlauf",
+  "@homeTabHistory": {
+    "description": "Bottom navigation tab: the list and calendar of past entries."
+  },
+  "homeTabAnalytics": "Analyse",
+  "@homeTabAnalytics": {
+    "description": "Bottom navigation tab: charts and patterns."
+  },
+  "homeTabSettings": "Einstellungen",
+  "@homeTabSettings": {
+    "description": "Bottom navigation tab."
+  },
+  "homeTabLog": "Eintrag",
+  "@homeTabLog": {
+    "description": "Bottom navigation tab: the screen for logging a migraine."
+  },
+  "overuseLevelClass": "{medClass} an {days} Tagen (Schwellenwert {level})",
+  "@overuseLevelClass": {
+    "description": "[medical] One month's reason for the notice: a class's medication days and the ICHD-3 reference level, e.g. 'Triptan on 11 days (level 10)'.",
+    "placeholders": {
+      "medClass": {
+        "type": "String",
+        "example": "Triptan"
+      },
+      "days": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsNeedEvents": "Mindestens {count} Ereignisse erforderlich, um Zusammenhänge zu erkennen.",
+  "@correlationsNeedEvents": {
+    "description": "Why Suspected Factors isn't shown yet.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overuseLevelMixed": "Kombination verschiedener Wirkstoffklassen an insgesamt {days} Tagen (Schwellenwert: {level})",
+  "@overuseLevelMixed": {
+    "description": "[medical] One month's reason for the notice when several classes together reached the level (ICHD-3 8.2.6).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "overuseNoticeTitle": "Medikationstage im Bereich eines Schwellenwerts",
+  "@overuseNoticeTitle": {
+    "description": "[medical] Title of the notice shown when acute-medication days reached the ICHD-3 medication-overuse reference level in each of the last 3 months. Calm and factual; not a warning or a diagnosis."
+  },
+  "overuseNoticeBody": "In jedem der letzten 3 vollen Monate hat die Anzahl deiner Tage mit Akutmedikation einen Schwellenwert erreicht, der in den Kopfschmerz-Leitlinien (ICHD-3) für Medikamentenübergebrauch-Kopfschmerz herangezogen wird. Ein Zustand, bei dem die häufige Einnahme von Akutmedikamenten dazu führen kann, dass Kopfschmerzen noch häufiger auftreten. Dies ist lediglich eine Auswertung deiner erfassten Daten und keine Diagnose. Ändere deine Medikamenteneinnahme deswegen nicht eigenmächtig; es empfiehlt sich, dies mit deiner Ärztin oder deinem Arzt zu besprechen.",
+  "@overuseNoticeBody": {
+    "description": "[medical] Body of the medication-overuse notice. It must not say the user has medication-overuse headache, and must not tell them to stop or change a medication. Needs a second reviewer."
+  },
+  "correlationsCaveatSample": "Basierend auf {migraineDays} Migränetage über {days} Tage — kleine Stichprobe, Ergebnisse sind ungenau.",
+  "@correlationsCaveatSample": {
+    "description": "Caveat under Suspected Factors.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "correlationsMidAttackNote": "{count, plural, =1{1 Tag mitten in einer mehrtägigen Migräne wird ausgelassen: Eine neue Attacke kann nicht beginnen, während bereits eine andauert.} other{{count} Tage mitten in einer mehrtägigen Migräne werden ausgelassen: Eine neue Attacke kann nicht beginnen, während bereits eine andauert.}}",
+  "@correlationsMidAttackNote": {
+    "description": "Caveat under Suspected Factors: days inside a multi-day attack (not its first day) are not counted.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "legalWeatherAttribution": "Wetterdaten von Open-Meteo.com",
+  "@legalWeatherAttribution": {
+    "description": "[legal] Attribution required by Open-Meteo's CC-BY 4.0 licence. Keep 'Open-Meteo.com' as is."
+  },
+  "onboardingWelcomeTitle": "Willkommen bei Megrim",
+  "@onboardingWelcomeTitle": {
+    "description": "First onboarding screen, title. Keep 'Megrim' untranslated."
+  },
+  "legalAppTitle": "Megrim: Migräne-Tagebuch",
+  "@legalAppTitle": {
+    "description": "Store-style title shown in About. Keep 'Megrim' untranslated."
+  },
+  "legalAppSubtitle": "Offline Migräne-Tagebuch",
+  "@legalAppSubtitle": {
+    "description": "Store-style subtitle shown in About and on the Log screen."
+  },
+  "legalMedicalDisclaimer": "Megrim ist ein persönliches Tagebuch und kein Medizinprodukt. Es dient nicht dazu, Erkrankungen zu diagnostizieren, zu behandeln, zu heilen oder ihnen vorzubeugen. „Vermutete Faktoren“ sind lediglich statistische Zusammenhänge in deinen eigenen Aufzeichnungen — ein Zusammenhang bedeutet nicht automatisch eine Ursache. Wende dich bei Fragen zu deiner Migräne und vor jeglichen Behandlungsentscheidungen immer an qualifiziertes medizinisches Fachpersonal.",
+  "@legalMedicalDisclaimer": {
+    "description": "[legal] [medical] The medical disclaimer, accepted during onboarding and shown in About and the PDF report. Needs a second reviewer. Keep 'Megrim' untranslated; 'Suspected factors' is the name of an Analytics card."
+  },
+  "correlationsCaveatOddsRatio": "Odds-Ratios verwenden bei leeren Zellen eine Korrektur von +0,5; Werte nahe 1,0 sind als „kein Signal“ zu werten.",
+  "@correlationsCaveatOddsRatio": {
+    "description": "Caveat under Suspected Factors. 'Odds ratio' is the statistics term; '+0.5' and '1.0' are numbers."
+  },
+  "caveatMultipleComparisons": "Viele Faktoren werden gleichzeitig getestet (multiple Vergleiche) — manche scheinbaren Zusammenhänge beruhen auf Zufall.",
+  "@caveatMultipleComparisons": {
+    "description": "Caveat under Suspected Factors and Migraine days vs clear days. 'Multiple comparisons' is the statistics term."
+  },
+  "caveatNotCausation": "Zusammenhang ist nicht gleichbedeutend mit Kausalität. Nutze das, um Hypothesen aufzustellen, nicht um Schlussfolgerungen zu ziehen.",
+  "@caveatNotCausation": {
+    "description": "Caveat under Suspected Factors and Migraine days vs clear days."
+  },
+  "trackedNeedsDays": "Erfordert {needDays} erfasste Tage mit mindestens {needMigraine} Migränetagen und {needClear} beschwerdefreien Tagen. Bisher: {tracked} erfasst, {migraine} mit Migräne, {clear} beschwerdefrei (seit deinem ersten Check-in).",
+  "@trackedNeedsDays": {
+    "description": "Why Migraine days vs clear days isn't shown yet. A 'clear day' is a day logged as migraine-free with a check-in.",
+    "placeholders": {
+      "needDays": {
+        "type": "int"
+      },
+      "needMigraine": {
+        "type": "int"
+      },
+      "needClear": {
+        "type": "int"
+      },
+      "tracked": {
+        "type": "int"
+      },
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedCaveatSample": "Basiert auf {migraineDays} Migränetagen und {clearDays} beschwerdefreien Tagen seit deinem ersten Check-in — kleine Stichprobe, Ergebnisse sind ungenau.",
+  "@trackedCaveatSample": {
+    "description": "Caveat under Migraine days vs clear days.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "clearDays": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedCaveatRecordedDays": "Jeder Faktor zählt nur für die Tage, an denen er erfasst wurde.",
+  "@trackedCaveatRecordedDays": {
+    "description": "Caveat under Migraine days vs clear days."
+  },
+  "trackedCaveatRecallBias": "Erinnerungsverzerrung: Nach einer Migräne sucht man intensiver nach Ursachen als an einem guten Tag. Daher werden Auslöser an Migränetagen mitunter übererfasst.",
+  "@trackedCaveatRecallBias": {
+    "description": "Caveat under Migraine days vs clear days. 'Recall bias' is the statistics term."
+  },
+  "legalPrivacySummary": "Alle Daten bleiben auf deinem Gerät. Wir betreiben keine Server und erfassen nichts — keine Benutzerkonten, keine Analysedaten, keine Identifikatoren, keine Absturzberichte. Die Wetter-Erweiterung ist standardmäßig deaktiviert. Erst wenn du sie einschaltest, besteht der einzige automatische Datenverkehr der App zu Open-Meteo.com, um das Wetter für den ungefähren (auf ca. 1 km gerundeten) Standort und das Datum deiner Einträge abzurufen. Backups erfolgen über die systemeigene Sicherung deines Smartphones (Google auf Android, iCloud oder dein Computer auf dem iPhone), die du in den Geräteeinstellungen verwaltest; exportierte Dateien werden genau dort gespeichert, wo du es festlegst.",
+  "@legalPrivacySummary": {
+    "description": "[legal] Privacy summary in About. Must stay as precise as the English: what is sent, to whom, and when. Keep 'Open-Meteo.com' as is."
+  },
+  "legalShortDescription": "Privates, offline Migräne-Tagebuch mit automatischer Musteranalyse direkt auf dem Gerät.",
+  "@legalShortDescription": {
+    "description": "One-line description shown in About."
+  },
+  "legalFullDescription": "Megrim ist ein open-source, offline-first Migränetagebuch, das dir dabei hilft, deine persönlichen Auslöser zu finden. Die App ergänzt deine Einträge automatisch um Tageszeit, Jahreszeit, Tageslicht und Mondphasen (sowie auf Wunsch um lokales Wetter und Luftdruck) und berechnet Korrelationen vollständig lokal auf deinem Smartphone. Ohne Benutzerkonto, ohne Cloud-Server und mit null Tracking bleiben deine Gesundheitsdaten vollkommen privat und unter deiner Kontrolle.",
+  "@legalFullDescription": {
+    "description": "Full description shown in About. Keep 'Megrim' untranslated."
+  },
+  "legalCaveatOddsRatioExplained": "OR = Odds Ratio: Gibt an, um wie viel wahrscheinlicher eine Migräne an Tagen mit diesem Faktor ist. OR 2,0 ≈ doppelt so hohe Chance im Vergleich zu anderen Tagen; OR 1,0 bedeutet kein Effekt.",
+  "@legalCaveatOddsRatioExplained": {
+    "description": "Caveat on the Suspected Factors card. 'OR' abbreviates the statistics term 'odds ratio'; use the usual abbreviation in your language if there is one, consistently."
+  },
+  "legalCaveatSmallSample": "Kleine Stichprobe: Ergebnisse aus einer geringen Anzahl an Migränetagen sind ungenau.",
+  "@legalCaveatSmallSample": {
+    "description": "Caveat on the Suspected Factors card."
+  },
+  "legalTranslationNote": "Diese Übersetzung wurde von Freiwilligen erstellt. Sollte sie vom englischen Text des medizinischen Haftungsausschlusses oder der Datenschutzübersicht abweichen, ist die englische Fassung maßgebend.",
+  "@legalTranslationNote": {
+    "description": "[legal] Shown in About for every language except English. 'Volunteers' means community translators."
+  },
+  "onboardingWelcomeBody": "Ein privates Offline-Migränetagebuch. Alles bleibt auf deinem Gerät. Optional können deine Einträge um Wetter- und Luftdruckdaten von Open-Meteo.com ergänzt werden — du kannst gleich darüber entscheiden, und die Funktion ist deaktiviert, solange du sie nicht einschaltest.",
+  "@onboardingWelcomeBody": {
+    "description": "First onboarding screen, body."
+  },
+  "onboardingGetStarted": "Loslegen",
+  "@onboardingGetStarted": {
+    "description": "Button on the first onboarding screen."
+  },
+  "onboardingBeforeYouBegin": "Bevor es losgeht",
+  "@onboardingBeforeYouBegin": {
+    "description": "Title of the onboarding step showing the medical disclaimer."
+  },
+  "onboardingAccept": "Ich habe verstanden und stimme zu.",
+  "@onboardingAccept": {
+    "description": "[legal] Checkbox the user ticks to accept the medical disclaimer before using the app."
+  },
+  "onboardingContinue": "Weiter",
+  "@onboardingContinue": {
+    "description": "Button to the next onboarding step."
+  },
+  "onboardingHomeTitle": "Dein Wohnort",
+  "@onboardingHomeTitle": {
+    "description": "Title of the onboarding step that asks for a home location."
+  },
+  "backupToday": "Heute",
+  "@backupToday": {
+    "description": "Last backup: today."
+  },
+  "backupYesterday": "Gestern",
+  "@backupYesterday": {
+    "description": "Last backup: yesterday."
+  },
+  "settingsDonate": "Spenden",
+  "@settingsDonate": {
+    "description": "Settings row: opens the developer's donation page."
+  },
+  "settingsDonateSubtitle": "Unterstütze die Entwicklung",
+  "@settingsDonateSubtitle": {
+    "description": "Under 'Donate'."
+  },
+  "settingsSourceCode": "Quellcode",
+  "@settingsSourceCode": {
+    "description": "Settings row: opens the source code on the web."
+  },
+  "settingsAbout": "Über uns & Datenschutz",
+  "@settingsAbout": {
+    "description": "Settings row: opens the About dialog with the privacy summary and disclaimer."
+  },
+  "settingsAboutLegalese": "GPL-3.0-or-later · {attribution}",
+  "@settingsAboutLegalese": {
+    "description": "In About: the licence, then the weather data attribution. Keep 'GPL-3.0-or-later' as is.",
+    "placeholders": {
+      "attribution": {
+        "type": "String",
+        "example": "Weather data by Open-Meteo.com"
+      }
+    }
+  },
+  "settingsAppLock": "App Sperre",
+  "@settingsAppLock": {
+    "description": "Settings switch: ask for the phone's unlock when opening the app."
+  },
+  "settingsTitle": "Einstellungen",
+  "@settingsTitle": {
+    "description": "Title of the Settings screen."
+  },
+  "settingsHomeLocation": "Wohnort",
+  "@settingsHomeLocation": {
+    "description": "Settings row: the home location used for daylight, season and weather."
+  },
+  "settingsOff": "Aus",
+  "@settingsOff": {
+    "description": "A setting that is turned off: the daily reminder, or the backup reminder interval."
+  },
+  "settingsLastBackup": "Letztes Backup",
+  "@settingsLastBackup": {
+    "description": "Settings row: when the user last exported a JSON backup."
+  },
+  "settingsBackupSubtitle": "{age} · {reminder}",
+  "@settingsBackupSubtitle": {
+    "description": "Under 'Last backup': how long ago, then the reminder interval. E.g. '12 days ago · Every 30 days'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "12 days ago"
+      },
+      "reminder": {
+        "type": "String",
+        "example": "Every 30 days"
+      }
+    }
+  },
+  "settingsBackupSubtitleDue": "{age} · {reminder} · fällig",
+  "@settingsBackupSubtitleDue": {
+    "description": "Under 'Last backup' when a backup is overdue: how long ago, the reminder interval, and 'due'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "Never"
+      },
+      "reminder": {
+        "type": "String",
+        "example": "Every 30 days"
+      }
+    }
+  },
+  "backupNever": "Nie",
+  "@backupNever": {
+    "description": "Last backup: the user has never exported a backup."
+  },
+  "settingsExportReport": "Exportieren Bericht (PDF)",
+  "@settingsExportReport": {
+    "description": "Settings row: make a printable PDF report."
+  },
+  "settingsExportCsv": "Exportieren (CSV)",
+  "@settingsExportCsv": {
+    "description": "Settings row: export entries as a spreadsheet file."
+  },
+  "settingsExportJson": "Exportieren (JSON Backup)",
+  "@settingsExportJson": {
+    "description": "Settings row: export everything as a JSON file, which can be imported back."
+  },
+  "settingsImport": "Importieren (JSON)",
+  "@settingsImport": {
+    "description": "Settings row: import a JSON export."
+  },
+  "settingsOngoingTitle": "Benachrichtigung während einer Migräne",
+  "@settingsOngoingTitle": {
+    "description": "Settings switch (Android): an ongoing notification while a migraine is in progress."
+  },
+  "settingsTriggersTitle": "Auslöser",
+  "@settingsTriggersTitle": {
+    "description": "Title of the screen that edits the list of trigger names."
+  },
+  "settingsHeadLocationsTitle": "Kopfbereiche",
+  "@settingsHeadLocationsTitle": {
+    "description": "Title of the screen that edits the list of places on the head where pain is felt."
+  },
+  "settingsSaved": "Gespeichert.",
+  "@settingsSaved": {
+    "description": "Brief message after an export was saved."
+  },
+  "settingsSaveFailed": "Speichern fehlgeschlagen: {error}",
+  "@settingsSaveFailed": {
+    "description": "Shown when saving an export failed. {error} is a technical message in English.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsShare": "Teilen",
+  "@settingsShare": {
+    "description": "Export option: open the phone's share sheet."
+  },
+  "settingsExportTitle": "Exportieren",
+  "@settingsExportTitle": {
+    "description": "Title of the dialog choosing how to export: share or save."
+  },
+  "settingsReportFailed": "Bericht fehlgeschlagen: {error}",
+  "@settingsReportFailed": {
+    "description": "Shown when making the PDF report failed. {error} is a technical message in English.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsChangeHomeTitle": "Ändere Wohnort",
+  "@settingsChangeHomeTitle": {
+    "description": "Dialog title."
+  },
+  "settingsImportTitle": "Importieren",
+  "@settingsImportTitle": {
+    "description": "Title of the import dialog."
+  },
+  "monthlyTitle": "Migränetage pro Monat",
+  "@monthlyTitle": {
+    "description": "Title of the Analytics card and chart counting days with a migraine in each calendar month."
+  },
+  "monthlyLast30": "Letzten 30 Tage",
+  "@monthlyLast30": {
+    "description": "Monthly migraine days card: label under the count for the last 30 days."
+  },
+  "monthlyLast30Including": "Letzten 30 Tage\neinschließlich {count} ohne Kopfschmerzen",
+  "@monthlyLast30Including": {
+    "description": "Monthly migraine days card: label under the count for the last 30 days, when some of those days had only attacks without headache. Keep the line break.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "monthlyWithoutHeadache": "{count} ohne Kopfschmerzen",
+  "@monthlyWithoutHeadache": {
+    "description": "Monthly chart, read by screen readers: how many of a month's migraine days had only attacks without headache.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingHomeBody": "Wird direkt auf dem Gerät für Tageslicht- und Jahreszeiten-Analysen genutzt — und nur, falls du im nächsten Schritt die Wetter-Erweiterung aktivierst, um Wetterdaten für deine Einträge abzurufen. Eine Suche an dieser Stelle sendet den eingegebenen Ortsnamen an den Geocoder von Open-Meteo, um die Koordinaten zu ermitteln. Danach werden ausschließlich gerundete Koordinaten (~1 km) übertragen, und das auch nur für die Wetterabfrage. Du möchtest nicht online suchen? Gib stattdessen einfach GPS-Koordinaten oder einen Plus Code ein — beides wird vollständig lokal auf deinem Gerät aufgelöst.",
+  "@onboardingHomeBody": {
+    "description": "[legal] Explains what the home location is used for and what is sent over the network. Keep it as precise as the English. 'Plus Code' is the name of Google's open location code format."
+  },
+  "onboardingWeatherTitle": "Wetter-Erweiterung",
+  "@onboardingWeatherTitle": {
+    "description": "Title of the onboarding step that asks whether to fetch weather. 'Enrichment' means adding weather data to entries."
+  },
+  "onboardingWeatherBody": "Megrim kann das Wetter rund um jede Migräne abrufen — Temperatur, Luftfeuchtigkeit, Luftdruck und Luftqualität — , damit die Analyse nach Mustern wie Luftdruckschwankungen vor einer Attacke suchen kann.\n\nWenn du diese Funktion aktivierst, werden das Datum des Eintrags und gerundete Koordinaten (~1 km) an Open-Meteo.com übertragen, einen nicht-kommerziellen Wetterdienst. Nichts anderes verlässt jemals dein Gerät: kein Benutzerkonto, keine Telemetriedaten und keine Server unsererseits.\n\nLässt du die Option deaktiviert, bleibt Megrim komplett offline. Du kannst dies jederzeit in den Einstellungen ändern.",
+  "@onboardingWeatherBody": {
+    "description": "[legal] Explains the weather opt-in and what is sent. Keep the blank lines between paragraphs. Keep it as precise as the English."
+  },
+  "onboardingWeatherSwitch": "Wetter für meine Einträge abrufen",
+  "@onboardingWeatherSwitch": {
+    "description": "Switch on the weather onboarding step."
+  },
+  "onboardingWeatherSwitchSubtitle": "Empfohlen, wenn du Zusammenhänge mit dem Luftdruck analysieren möchtest",
+  "@onboardingWeatherSwitchSubtitle": {
+    "description": "Under the weather switch during onboarding."
+  },
+  "onboardingFinish": "Fertig",
+  "@onboardingFinish": {
+    "description": "Button that ends onboarding."
+  },
+  "settingsWeather": "Wetter-Erweiterung",
+  "@settingsWeather": {
+    "description": "Settings switch: fetch weather for entries. 'Enrichment' means adding weather data to entries."
+  },
+  "settingsWeatherOnSubtitle": "Ruft Wetterdaten für Einträge von Open-Meteo ab (nur gerundeter Standort + Datum)",
+  "@settingsWeatherOnSubtitle": {
+    "description": "[legal] Under the weather switch when it's on: what is sent."
+  },
+  "settingsWeatherOffSubtitle": "Aus – keine automatische Netzwerknutzung (nur bei manueller Suche)",
+  "@settingsWeatherOffSubtitle": {
+    "description": "Under the weather switch when it's off."
+  },
+  "settingsWeatherOnSnack": "Wetter-Erweiterung an — Wetterdaten für deine Einträge werden abgerufen…",
+  "@settingsWeatherOnSnack": {
+    "description": "Brief message after turning weather on."
+  },
+  "settingsWeatherOffSnack": "Wetter-Erweiterung aus — keine automatischen Netzwerkanfragen mehr.",
+  "@settingsWeatherOffSnack": {
+    "description": "Brief message after turning weather off."
+  },
+  "settingsManageTriggers": "Auslöser verwalten",
+  "@settingsManageTriggers": {
+    "description": "Settings row that opens the trigger list editor."
+  },
+  "settingsManageHeadLocations": "Kopfbereiche verwalten",
+  "@settingsManageHeadLocations": {
+    "description": "Settings row that opens the head-location list editor."
+  },
+  "settingsManageMedications": "Medikamente verwalten",
+  "@settingsManageMedications": {
+    "description": "Settings row that opens medication classes and preventive medications."
+  },
+  "settingsManageMedicationsSubtitle": "Wirkstoffklassen und vorbeugende Medikamente",
+  "@settingsManageMedicationsSubtitle": {
+    "description": "Under 'Manage Medications'."
+  },
+  "backupDaysAgo": "{count, plural, =1{Vor 1 Tag} other{Vor {count} Tagen}}",
+  "@backupDaysAgo": {
+    "description": "Last backup: this many days ago (2 or more in practice).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupReminderEvery": "{count, plural, =1{Jeden Tag} other{Alle {count} Tage}}",
+  "@backupReminderEvery": {
+    "description": "Backup reminder interval (7, 14, 30 or 90 days).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsExportReportSubtitle": "Eine ausdruckbare Zusammenfassung zur Vorlage an einen Arzt",
+  "@settingsExportReportSubtitle": {
+    "description": "Under 'Export report (PDF)'."
+  },
+  "settingsImportGuide": "Anleitung zum Importformat",
+  "@settingsImportGuide": {
+    "description": "Settings row: opens the import format documentation on the web."
+  },
+  "settingsBackupReminderTitle": "An Backup erinnern",
+  "@settingsBackupReminderTitle": {
+    "description": "Title of the dialog choosing the backup reminder interval."
+  },
+  "settingsImportGuideSubtitle": "Daten aus einer anderen App importieren",
+  "@settingsImportGuideSubtitle": {
+    "description": "Under 'Import format guide'."
+  },
+  "settingsDailyReminder": "Tägliche Erinnerung",
+  "@settingsDailyReminder": {
+    "description": "Settings row and dialog title: a daily notification asking how the day was."
+  },
+  "settingsDailyReminderOn": "Jeden Tag um {time}, es sei denn, der Tag ist bereits erfasst",
+  "@settingsDailyReminderOn": {
+    "description": "Under 'Daily reminder' when it's on.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "20:00"
+      }
+    }
+  },
+  "settingsDailyReminderExplain": "Eine Benachrichtigung pro Tag mit der Frage, wie dein Tag war, mit „Heute keine Migräne“ und „Eintragen“. Sie verrät nichts über deinen Gesundheitszustand und nichts verlässt dein Smartphone.",
+  "@settingsDailyReminderExplain": {
+    "description": "In the daily reminder dialog. 'No migraine today' and 'Log' are the notification's two buttons; use the same words as those buttons."
+  },
+  "settingsReminderChooseTime": "Wähle eine Uhrzeit…",
+  "@settingsReminderChooseTime": {
+    "description": "Daily reminder dialog option when the reminder is off."
+  },
+  "settingsRemindMeAt": "Erinnere mich um",
+  "@settingsRemindMeAt": {
+    "description": "Title of the time picker for the daily reminder."
+  },
+  "settingsReminderAtTime": "Um {time} (ändern...)",
+  "@settingsReminderAtTime": {
+    "description": "Daily reminder dialog option when the reminder is on: tap to change the time.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "20:00"
+      }
+    }
+  },
+  "appLockImmediately": "Sofort",
+  "@appLockImmediately": {
+    "description": "App lock timeout: lock as soon as the app goes to the background."
+  },
+  "settingsOngoingSubtitle": "Laufende Zeitanzeige und ein „Beenden“-Button während aktiver Migräne",
+  "@settingsOngoingSubtitle": {
+    "description": "Under 'Notification during a migraine'. 'End' is the notification's button that ends the migraine."
+  },
+  "settingsNotificationsRefused": "Benachrichtigungen für Megrim sind in den Geräteeinstellungen deaktiviert, daher bleibt diese Funktion ausgeschaltet. Erlaube sie dort und versuche es dann erneut.",
+  "@settingsNotificationsRefused": {
+    "description": "Shown when the phone's settings block Megrim's notifications."
+  },
+  "settingsAppLockSubtitle": "Beim Öffnen von Megrim nach Fingerabdruck, Gesichtserkennung oder Geräte-PIN fragen",
+  "@settingsAppLockSubtitle": {
+    "description": "Under 'App lock'."
+  },
+  "settingsLockAfter": "Sperren nach",
+  "@settingsLockAfter": {
+    "description": "Settings row and dialog title: how long the app may be in the background before it locks."
+  },
+  "settingsLockAfterSubtitle": "{timeout} im Hintergrund",
+  "@settingsLockAfterSubtitle": {
+    "description": "Under 'Lock after', e.g. 'After 1 minute in the background' or 'Immediately in the background'.",
+    "placeholders": {
+      "timeout": {
+        "type": "String",
+        "example": "After 1 minute"
+      }
+    }
+  },
+  "appLockAfterMinutes": "{count, plural, =1{Nach 1 Minute} other{Nach {count} Minuten}}",
+  "@appLockAfterMinutes": {
+    "description": "App lock timeout.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppLockOn": "App-Sperre an.",
+  "@settingsAppLockOn": {
+    "description": "Brief message after turning app lock on."
+  },
+  "settingsAppLockOff": "App-Sperre aus.",
+  "@settingsAppLockOff": {
+    "description": "Brief message after turning app lock off."
+  },
+  "settingsBuildingReport": "Erstelle Bericht…",
+  "@settingsBuildingReport": {
+    "description": "Brief message while the PDF report is made."
+  },
+  "settingsDone": "Erledigt.",
+  "@settingsDone": {
+    "description": "Brief message when re-enriching has finished."
+  },
+  "settingsSaveToDevice": "Auf Gerät speichern",
+  "@settingsSaveToDevice": {
+    "description": "Export option: save the file to a folder on the phone."
+  },
+  "settingsHideInRecentsIos": "Blendet Megrim in der App-Übersicht aus.",
+  "@settingsHideInRecentsIos": {
+    "description": "Under 'Hide in recent apps' on iPhone."
+  },
+  "settingsHideInRecentsAndroid": "Blendet Megrim in der App-Übersicht aus. Blockiert außerdem Screenshots der App.",
+  "@settingsHideInRecentsAndroid": {
+    "description": "Under 'Hide in recent apps' on Android."
+  },
+  "settingsHideInRecents": "In den zuletzt verwendeten Apps ausblenden",
+  "@settingsHideInRecents": {
+    "description": "Settings switch: blank the app in the phone's app switcher."
+  },
+  "settingsNoScreenLockTitle": "Keine Bildschirmsperre auf diesem Telefon eingerichtet",
+  "@settingsNoScreenLockTitle": {
+    "description": "Dialog title when the phone has no screen lock, so app lock can't be turned on."
+  },
+  "settingsNoScreenLockBody": "Die App-Sperre nutzt die Entsperrmethode deines Telefons — Fingerabdruck, Gesicht oder PIN, Muster oder Passwort. Richte zuerst in den Einstellungen deines Telefons eine Bildschirmsperre ein und aktiviere dann hier die App-Sperre.",
+  "@settingsNoScreenLockBody": {
+    "description": "Dialog body when the phone has no screen lock."
+  },
+  "settingsTooManyAttempts": "Zu viele Versuche. Warte einen Moment und versuche es dann erneut.",
+  "@settingsTooManyAttempts": {
+    "description": "Shown when the phone has locked out unlock attempts."
+  },
+  "settingsUnlockError": "Die Entsperrung deines Telefons konnte nicht abgefragt werden.",
+  "@settingsUnlockError": {
+    "description": "Shown when the phone's unlock prompt couldn't be shown."
+  },
+  "settingsSaveReenrich": "Speichern & Daten neu abrufen",
+  "@settingsSaveReenrich": {
+    "description": "Button: save the new home location and recompute weather and daylight for all entries."
+  },
+  "settingsReenriching": "Einträge werden neu abgerufen…",
+  "@settingsReenriching": {
+    "description": "Brief message while weather and daylight are recomputed for all entries."
+  },
+  "settingsImportBody": "Mit den vorhandenen Einträgen zusammenführen oder alles ersetzen?\n\nBeim Ersetzen werden zuerst alle aktuellen Einträge unwiderruflich gelöscht.",
+  "@settingsImportBody": {
+    "description": "Import dialog body. 'Merge' and 'Replace' are its two buttons; use the same words."
+  },
+  "settingsImportMerge": "Zusammenführen",
+  "@settingsImportMerge": {
+    "description": "Import dialog button: add the imported entries to the existing ones."
+  },
+  "settingsImportReplace": "Ersetzen",
+  "@settingsImportReplace": {
+    "description": "Import dialog button: delete all current entries, then import."
+  },
+  "settingsImported": "Importiert {imported}, übersprungen {skipped}.",
+  "@settingsImported": {
+    "description": "After an import: how many entries were imported, and how many were skipped (already present or invalid).",
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsImportFailed": "Import fehlgeschlagen: {error}",
+  "@settingsImportFailed": {
+    "description": "Shown when an import failed, with the reason.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsCouldNotOpen": "{url} konnte nicht geöffnet werden",
+  "@settingsCouldNotOpen": {
+    "description": "Shown when a web link couldn't be opened.",
+    "placeholders": {
+      "url": {
+        "type": "String",
+        "example": "https://github.com/smaegley/megrim"
+      }
+    }
+  },
+  "daysSinceNoHistory": "Noch nicht genügend Daten für eine Einschätzung.",
+  "@daysSinceNoHistory": {
+    "description": "Days-since-last-migraine card (Log and Analytics): shown until there are enough attacks to compare the current gap with the usual one."
+  },
+  "daysSinceWellWithin": "Deutlich innerhalb deines üblichen Abstands (Ø {avg} d).",
+  "@daysSinceWellWithin": {
+    "description": "Days-since-last-migraine card: the gap since the last migraine is well below the usual gap between migraines. 'd' = days.",
+    "placeholders": {
+      "avg": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "daysSinceApproaching": "Nähert sich deinem durchschnittlichen Abstand (Ø {avg} d).",
+  "@daysSinceApproaching": {
+    "description": "Days-since-last-migraine card: the gap is getting close to the average gap between migraines. 'd' = days.",
+    "placeholders": {
+      "avg": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "daysSincePast": "Über deinem durchschnittlichen Abstand (Ø {avg} d).",
+  "@daysSincePast": {
+    "description": "Days-since-last-migraine card: the gap is longer than the average gap between migraines. 'd' = days.",
+    "placeholders": {
+      "avg": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "daysSinceWellPast": "Deutlich über deinem durchschnittlichen Abstand (Ø {avg} d).",
+  "@daysSinceWellPast": {
+    "description": "Days-since-last-migraine card: the gap is much longer than usual. 'd' = days.",
+    "placeholders": {
+      "avg": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "daysSinceLabel": "{count, plural, =1{Tag seit der letzten Migräne} other{Tage seit der letzten Migräne}}",
+  "@daysSinceLabel": {
+    "description": "Days-since-last-migraine card: shown next to a big number (the count is displayed separately, so the text has no number).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysSinceLast": "Zuletzt: {date}",
+  "@daysSinceLast": {
+    "description": "Days-since-last-migraine card: the date of the last migraine.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Mon, Nov 9, 2026"
+      }
+    }
+  },
+  "monthlyAvg3Months": "Ø/Monat, letzten 3 Monate",
+  "@monthlyAvg3Months": {
+    "description": "Monthly migraine days card: label under the average migraine days per month over the last 3 complete months."
+  },
+  "monthlyAvgNeedsHistory": "Benötigt 3 vollständige Monate Verlauf",
+  "@monthlyAvgNeedsHistory": {
+    "description": "Monthly migraine days card: tooltip when the 3-month average can't be computed yet."
+  },
+  "monthlyFootnote": "Tage mit Migräne, nicht Einträge. * laufender Monat.",
+  "@monthlyFootnote": {
+    "description": "Note under the monthly chart. The '*' marks the current, unfinished month on the chart."
+  },
+  "monthlyFootnoteWithLower": "Tage mit Migräne, nicht Einträge. * laufender Monat. Unterer Teil des Balkens: Tage mit ausschließlich Attacken ohne Kopfschmerzen.",
+  "@monthlyFootnoteWithLower": {
+    "description": "Note under the monthly chart when some bars have a lighter lower part. The '*' marks the current, unfinished month."
+  },
+  "monthlyPreventiveFrom": "{name} ab {start}",
+  "@monthlyPreventiveFrom": {
+    "description": "Monthly chart note: a preventive medication still being taken, and the month it started.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Propranolol"
+      },
+      "start": {
+        "type": "String",
+        "example": "Aug 2026"
+      }
+    }
+  },
+  "monthlyPreventiveRange": "{name} {start} – {stop}",
+  "@monthlyPreventiveRange": {
+    "description": "Monthly chart note: a preventive medication, the month it started and the month it stopped.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Topiramate"
+      },
+      "start": {
+        "type": "String",
+        "example": "Jun 2026"
+      },
+      "stop": {
+        "type": "String",
+        "example": "Aug 2026"
+      }
+    }
+  },
+  "monthlyPreventives": "Prophylaktika (▲ begonnen, ▼ beendet): {list}.",
+  "@monthlyPreventives": {
+    "description": "Monthly chart note listing preventive medications; ▲ and ▼ are the markers drawn above the chart. {list} is a '; '-separated list.",
+    "placeholders": {
+      "list": {
+        "type": "String",
+        "example": "Propranolol from Aug 2026"
+      }
+    }
+  },
+  "chartMonthDays": "{month}: {count, plural, =1{1 Tag} other{{count} Tage}}",
+  "@chartMonthDays": {
+    "description": "Month chart, read by screen readers: one month and its count of days.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Sep 2026"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chartMonthDaysSoFar": "{month} bisher: {count, plural, =1{1 Tag} other{{count} Tage}}",
+  "@chartMonthDaysSoFar": {
+    "description": "Month chart, read by screen readers: the current, unfinished month and its count of days so far.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Oct 2026"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chartMonthDaysWithDetail": "{days}, {detail}",
+  "@chartMonthDaysWithDetail": {
+    "description": "Month chart, read by screen readers: a month's count followed by a detail, e.g. 'Sep 2026: 3 days, 1 without headache'.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "Sep 2026: 3 days"
+      },
+      "detail": {
+        "type": "String",
+        "example": "1 without headache"
+      }
+    }
+  },
+  "chartSpoken": "{title}, neueste zuerst. {months}",
+  "@chartSpoken": {
+    "description": "Month chart, read by screen readers: the chart title, then each month newest first.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Migraine days per month"
+      },
+      "months": {
+        "type": "String",
+        "example": "Oct 2026 so far: 5 days; Sep 2026: 3 days"
+      }
+    }
+  },
+  "chartSpokenWithMarkers": "{title}, neueste zuerst. {months}. Therapieänderungen sind markiert.",
+  "@chartSpokenWithMarkers": {
+    "description": "Month chart, read by screen readers, when preventive medication starts/stops are marked on the chart.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Migraine days per month"
+      },
+      "months": {
+        "type": "String",
+        "example": "Oct 2026 so far: 5 days; Sep 2026: 3 days"
+      }
+    }
+  },
+  "medCardTitle": "Tage mit Akutmedikation",
+  "@medCardTitle": {
+    "description": "Title of the Analytics card counting days on which medication was taken for an attack."
+  },
+  "medCardIntro": "Tage, an denen du wegen einer Attacke Medikamente genommen hast. Zwei Dosen an einem Tag zählen einmal.",
+  "@medCardIntro": {
+    "description": "Intro text of the Acute medication days card."
+  },
+  "medCardLast30Label": "Tage in den letzten 30 Tagen",
+  "@medCardLast30Label": {
+    "description": "Acute medication days card: shown next to a big number (the count is displayed separately)."
+  },
+  "medCardNoneLast30": "Keine in den letzten 30 Tagen.",
+  "@medCardNoneLast30": {
+    "description": "Acute medication days card: no medication days in the last 30 days."
+  },
+  "medCardClassDays": "{count, plural, =1{1 Tag} other{{count} Tage}}",
+  "@medCardClassDays": {
+    "description": "Acute medication days card: days for one medication class, shown next to the class name.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medCardChartTitle": "Tage mit Akutmedikation pro Monat",
+  "@medCardChartTitle": {
+    "description": "Title of the per-month bar chart on the Acute medication days card (read by screen readers)."
+  },
+  "medCardFootnote": "* laufender Monat. Ein Tag mit zwei Wirkstoffklassen wird im Balken einmal gezählt.",
+  "@medCardFootnote": {
+    "description": "Note under the medication days chart. '*' marks the current, unfinished month."
+  }
+}
