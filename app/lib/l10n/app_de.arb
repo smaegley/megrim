@@ -508,7 +508,7 @@
   "@overuseNoticeBody": {
     "description": "[medical] Body of the medication-overuse notice. It must not say the user has medication-overuse headache, and must not tell them to stop or change a medication. Needs a second reviewer."
   },
-  "correlationsCaveatSample": "Basierend auf {migraineDays} Migränetage über {days} Tage — kleine Stichprobe, Ergebnisse sind ungenau.",
+  "correlationsCaveatSample": "Basierend auf {migraineDays} Migränetage über {days} Tage – kleine Stichprobe, Ergebnisse sind ungenau.",
   "@correlationsCaveatSample": {
     "description": "Caveat under Suspected Factors.",
     "placeholders": {
@@ -545,7 +545,7 @@
   "@legalAppSubtitle": {
     "description": "Store-style subtitle shown in About and on the Log screen."
   },
-  "legalMedicalDisclaimer": "Megrim ist ein persönliches Tagebuch und kein Medizinprodukt. Es dient nicht dazu, Erkrankungen zu diagnostizieren, zu behandeln, zu heilen oder ihnen vorzubeugen. „Vermutete Faktoren“ sind lediglich statistische Zusammenhänge in deinen eigenen Aufzeichnungen — ein Zusammenhang bedeutet nicht automatisch eine Ursache. Wende dich bei Fragen zu deiner Migräne und vor jeglichen Behandlungsentscheidungen immer an qualifiziertes medizinisches Fachpersonal.",
+  "legalMedicalDisclaimer": "Megrim ist ein persönliches Tagebuch und kein Medizinprodukt. Es dient nicht dazu, Erkrankungen zu diagnostizieren, zu behandeln, zu heilen oder ihnen vorzubeugen. „Vermutete Faktoren“ sind lediglich statistische Zusammenhänge in deinen eigenen Aufzeichnungen – ein Zusammenhang bedeutet nicht automatisch eine Ursache. Wende dich bei Fragen zu deiner Migräne und vor jeglichen Behandlungsentscheidungen immer an qualifiziertes medizinisches Fachpersonal.",
   "@legalMedicalDisclaimer": {
     "description": "[legal] [medical] The medical disclaimer, accepted during onboarding and shown in About and the PDF report. Needs a second reviewer. Keep 'Megrim' untranslated; 'Suspected factors' is the name of an Analytics card."
   },
@@ -553,7 +553,7 @@
   "@correlationsCaveatOddsRatio": {
     "description": "Caveat under Suspected Factors. 'Odds ratio' is the statistics term; '+0.5' and '1.0' are numbers."
   },
-  "caveatMultipleComparisons": "Viele Faktoren werden gleichzeitig getestet (multiple Vergleiche) — manche scheinbaren Zusammenhänge beruhen auf Zufall.",
+  "caveatMultipleComparisons": "Viele Faktoren werden gleichzeitig getestet (multiple Vergleiche) – manche scheinbaren Zusammenhänge beruhen auf Zufall.",
   "@caveatMultipleComparisons": {
     "description": "Caveat under Suspected Factors and Migraine days vs clear days. 'Multiple comparisons' is the statistics term."
   },
@@ -585,7 +585,7 @@
       }
     }
   },
-  "trackedCaveatSample": "Basiert auf {migraineDays} Migränetagen und {clearDays} beschwerdefreien Tagen seit deinem ersten Check-in — kleine Stichprobe, Ergebnisse sind ungenau.",
+  "trackedCaveatSample": "Basiert auf {migraineDays} Migränetagen und {clearDays} beschwerdefreien Tagen seit deinem ersten Check-in – kleine Stichprobe, Ergebnisse sind ungenau.",
   "@trackedCaveatSample": {
     "description": "Caveat under Migraine days vs clear days.",
     "placeholders": {
@@ -605,7 +605,7 @@
   "@trackedCaveatRecallBias": {
     "description": "Caveat under Migraine days vs clear days. 'Recall bias' is the statistics term."
   },
-  "legalPrivacySummary": "Alle Daten bleiben auf deinem Gerät. Wir betreiben keine Server und erfassen nichts — keine Benutzerkonten, keine Analysedaten, keine Identifikatoren, keine Absturzberichte. Die Wetter-Erweiterung ist standardmäßig deaktiviert. Erst wenn du sie einschaltest, besteht der einzige automatische Datenverkehr der App zu Open-Meteo.com, um das Wetter für den ungefähren (auf ca. 1 km gerundeten) Standort und das Datum deiner Einträge abzurufen. Backups erfolgen über die systemeigene Sicherung deines Smartphones (Google auf Android, iCloud oder dein Computer auf dem iPhone), die du in den Geräteeinstellungen verwaltest; exportierte Dateien werden genau dort gespeichert, wo du es festlegst.",
+  "legalPrivacySummary": "Alle Daten bleiben auf deinem Gerät. Wir betreiben keine Server und erfassen nichts – keine Benutzerkonten, keine Analysedaten, keine Identifikatoren, keine Absturzberichte. Die Wetter-Erweiterung ist standardmäßig deaktiviert. Erst wenn du sie einschaltest, besteht der einzige automatische Datenverkehr der App zu Open-Meteo.com, um das Wetter für den ungefähren (auf ca. 1 km gerundeten) Standort und das Datum deiner Einträge abzurufen. Backups erfolgen über die systemeigene Sicherung deines Smartphones (Google auf Android, iCloud oder dein Computer auf dem iPhone), die du in den Geräteeinstellungen verwaltest; exportierte Dateien werden genau dort gespeichert, wo du es festlegst.",
   "@legalPrivacySummary": {
     "description": "[legal] Privacy summary in About. Must stay as precise as the English: what is sent, to whom, and when. Keep 'Open-Meteo.com' as is."
   },
@@ -629,7 +629,7 @@
   "@legalTranslationNote": {
     "description": "[legal] Shown in About for every language except English. 'Volunteers' means community translators."
   },
-  "onboardingWelcomeBody": "Ein privates Offline-Migränetagebuch. Alles bleibt auf deinem Gerät. Optional können deine Einträge um Wetter- und Luftdruckdaten von Open-Meteo.com ergänzt werden — du kannst gleich darüber entscheiden, und die Funktion ist deaktiviert, solange du sie nicht einschaltest.",
+  "onboardingWelcomeBody": "Ein privates Offline-Migränetagebuch. Alles bleibt auf deinem Gerät. Optional können deine Einträge um Wetter- und Luftdruckdaten von Open-Meteo.com ergänzt werden – du kannst gleich darüber entscheiden, und die Funktion ist deaktiviert, solange du sie nicht einschaltest.",
   "@onboardingWelcomeBody": {
     "description": "First onboarding screen, body."
   },
@@ -831,7 +831,7 @@
       }
     }
   },
-  "onboardingHomeBody": "Wird direkt auf dem Gerät für Tageslicht- und Jahreszeiten-Analysen genutzt — und nur, falls du im nächsten Schritt die Wetter-Erweiterung aktivierst, um Wetterdaten für deine Einträge abzurufen. Eine Suche an dieser Stelle sendet den eingegebenen Ortsnamen an den Geocoder von Open-Meteo, um die Koordinaten zu ermitteln. Danach werden ausschließlich gerundete Koordinaten (~1 km) übertragen, und das auch nur für die Wetterabfrage. Du möchtest nicht online suchen? Gib stattdessen einfach GPS-Koordinaten oder einen Plus Code ein — beides wird vollständig lokal auf deinem Gerät aufgelöst.",
+  "onboardingHomeBody": "Wird direkt auf dem Gerät für Tageslicht- und Jahreszeiten-Analysen genutzt – und nur, falls du im nächsten Schritt die Wetter-Erweiterung aktivierst, um Wetterdaten für deine Einträge abzurufen. Eine Suche an dieser Stelle sendet den eingegebenen Ortsnamen an den Geocoder von Open-Meteo, um die Koordinaten zu ermitteln. Danach werden ausschließlich gerundete Koordinaten (~1 km) übertragen, und das auch nur für die Wetterabfrage. Du möchtest nicht online suchen? Gib stattdessen einfach GPS-Koordinaten oder einen Plus Code ein – beides wird vollständig lokal auf deinem Gerät aufgelöst.",
   "@onboardingHomeBody": {
     "description": "[legal] Explains what the home location is used for and what is sent over the network. Keep it as precise as the English. 'Plus Code' is the name of Google's open location code format."
   },
@@ -839,7 +839,7 @@
   "@onboardingWeatherTitle": {
     "description": "Title of the onboarding step that asks whether to fetch weather. 'Enrichment' means adding weather data to entries."
   },
-  "onboardingWeatherBody": "Megrim kann das Wetter rund um jede Migräne abrufen — Temperatur, Luftfeuchtigkeit, Luftdruck und Luftqualität — , damit die Analyse nach Mustern wie Luftdruckschwankungen vor einer Attacke suchen kann.\n\nWenn du diese Funktion aktivierst, werden das Datum des Eintrags und gerundete Koordinaten (~1 km) an Open-Meteo.com übertragen, einen nicht-kommerziellen Wetterdienst. Nichts anderes verlässt jemals dein Gerät: kein Benutzerkonto, keine Telemetriedaten und keine Server unsererseits.\n\nLässt du die Option deaktiviert, bleibt Megrim komplett offline. Du kannst dies jederzeit in den Einstellungen ändern.",
+  "onboardingWeatherBody": "Megrim kann das Wetter rund um jede Migräne abrufen – Temperatur, Luftfeuchtigkeit, Luftdruck und Luftqualität – , damit die Analyse nach Mustern wie Luftdruckschwankungen vor einer Attacke suchen kann.\n\nWenn du diese Funktion aktivierst, werden das Datum des Eintrags und gerundete Koordinaten (~1 km) an Open-Meteo.com übertragen, einen nicht-kommerziellen Wetterdienst. Nichts anderes verlässt jemals dein Gerät: kein Benutzerkonto, keine Telemetriedaten und keine Server unsererseits.\n\nLässt du die Option deaktiviert, bleibt Megrim komplett offline. Du kannst dies jederzeit in den Einstellungen ändern.",
   "@onboardingWeatherBody": {
     "description": "[legal] Explains the weather opt-in and what is sent. Keep the blank lines between paragraphs. Keep it as precise as the English."
   },
@@ -867,11 +867,11 @@
   "@settingsWeatherOffSubtitle": {
     "description": "Under the weather switch when it's off."
   },
-  "settingsWeatherOnSnack": "Wetter-Erweiterung an — Wetterdaten für deine Einträge werden abgerufen…",
+  "settingsWeatherOnSnack": "Wetter-Erweiterung an – Wetterdaten für deine Einträge werden abgerufen…",
   "@settingsWeatherOnSnack": {
     "description": "Brief message after turning weather on."
   },
-  "settingsWeatherOffSnack": "Wetter-Erweiterung aus — keine automatischen Netzwerkanfragen mehr.",
+  "settingsWeatherOffSnack": "Wetter-Erweiterung aus – keine automatischen Netzwerkanfragen mehr.",
   "@settingsWeatherOffSnack": {
     "description": "Brief message after turning weather off."
   },
@@ -1036,7 +1036,7 @@
   "@settingsNoScreenLockTitle": {
     "description": "Dialog title when the phone has no screen lock, so app lock can't be turned on."
   },
-  "settingsNoScreenLockBody": "Die App-Sperre nutzt die Entsperrmethode deines Telefons — Fingerabdruck, Gesicht oder PIN, Muster oder Passwort. Richte zuerst in den Einstellungen deines Telefons eine Bildschirmsperre ein und aktiviere dann hier die App-Sperre.",
+  "settingsNoScreenLockBody": "Die App-Sperre nutzt die Entsperrmethode deines Telefons – Fingerabdruck, Gesicht oder PIN, Muster oder Passwort. Richte zuerst in den Einstellungen deines Telefons eine Bildschirmsperre ein und aktiviere dann hier die App-Sperre.",
   "@settingsNoScreenLockBody": {
     "description": "Dialog body when the phone has no screen lock."
   },
@@ -1320,5 +1320,2173 @@
   "medCardFootnote": "* laufender Monat. Ein Tag mit zwei Wirkstoffklassen wird im Balken einmal gezählt.",
   "@medCardFootnote": {
     "description": "Note under the medication days chart. '*' marks the current, unfinished month."
+  },
+  "medCardUnclassified": "{count, plural, =1{1 Medikament hat keine Klasse ({names}) und wird daher nicht gegen die Referenzwerte geprüft.} other{{count} Medikamente haben keine Klasse ({names}) und werden daher nicht gegen die Referenzwerte geprüft.}}",
+  "@medCardUnclassified": {
+    "description": "[medical] Acute medication days card: medications without a class are not compared with the ICHD-3 medication-overuse reference levels. {names} is a comma-separated list of names the user typed.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String",
+        "example": "Mystery pill, Another tablet"
+      }
+    }
+  },
+  "medCardSetClasses": "Klassen festlegen",
+  "@medCardSetClasses": {
+    "description": "Button on the Acute medication days card: opens Settings › Medications to give medications a class."
+  },
+  "medCardNoticePdfNote": "Der PDF-Bericht enthält diese Zählungen.",
+  "@medCardNoticePdfNote": {
+    "description": "Sentence after the medication-overuse notice body on the Analytics card."
+  },
+  "overuseNoticeMonth": "{month}: {reason}",
+  "@overuseNoticeMonth": {
+    "description": "[medical] One line of the medication-overuse notice: a month and why it reached the reference level, e.g. 'Sep 2026: Triptan on 11 days (level 10)'.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Sep 2026"
+      },
+      "reason": {
+        "type": "String",
+        "example": "Triptan on 11 days (level 10)"
+      }
+    }
+  },
+  "helpedTitle": "Was geholfen hat",
+  "@helpedTitle": {
+    "description": "Title of the Analytics card showing how often each medication or relief method helped."
+  },
+  "helpedIntro": "Wie oft jedes Medikament oder jede Methode geholfen hat, unter den Fällen, bei denen du „Geholfen?“ beantwortet hast. Unbekannte Antworten fließen nicht in den Anteil ein.",
+  "@helpedIntro": {
+    "description": "Intro text of the What helped card. \"Helped?\" is the question asked for each medication or relief on an entry."
+  },
+  "helpedMedications": "Medikamente",
+  "@helpedMedications": {
+    "description": "What helped card: heading of the medications section."
+  },
+  "helpedRelief": "Ausprobierte Linderung",
+  "@helpedRelief": {
+    "description": "What helped card: heading of the non-drug relief section (dark room, cold pack…)."
+  },
+  "helpedFootnote": "Das, was du nach jeder Attacke notiert hast, kein Vergleich von Behandlungen: Wie gut etwas wirkt, hängt davon ab, wann und wie es eingenommen wurde.",
+  "@helpedFootnote": {
+    "description": "[medical] Note at the end of the What helped card."
+  },
+  "helpedNoAnswer": "{count}× ausprobiert, keine Antwort erfasst",
+  "@helpedNoAnswer": {
+    "description": "What helped card: a medication or relief tried this many times, with no 'Helped?' answer given. '×' means 'times'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "helpedShare": "geholfen {percent} ({answered} beantwortet)",
+  "@helpedShare": {
+    "description": "What helped card: the share of answered tries that helped, e.g. 'helped 75% (4 answered)'.",
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "75%"
+      },
+      "answered": {
+        "type": "int"
+      }
+    }
+  },
+  "helpedShareWithUnknown": "geholfen {percent} ({answered} beantwortet, {unknown} unbekannt)",
+  "@helpedShareWithUnknown": {
+    "description": "What helped card: the share of answered tries that helped, and how many tries had 'Unknown' as the answer.",
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "75%"
+      },
+      "answered": {
+        "type": "int"
+      },
+      "unknown": {
+        "type": "int"
+      }
+    }
+  },
+  "helpedMore": "und {count} weitere (im Export).",
+  "@helpedMore": {
+    "description": "What helped card: more rows than shown; the full list is in the data export.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsTitle": "Analyse",
+  "@analyticsTitle": {
+    "description": "Title of the Analytics tab (statistics about the user's migraines)."
+  },
+  "analyticsRefresh": "Aktualisieren",
+  "@analyticsRefresh": {
+    "description": "Analytics: tooltip of the button that recomputes the statistics."
+  },
+  "analyticsLoadError": "Analyse konnte nicht geladen werden.",
+  "@analyticsLoadError": {
+    "description": "Analytics: shown when the statistics couldn't be computed."
+  },
+  "analyticsRetry": "Erneut versuchen",
+  "@analyticsRetry": {
+    "description": "Analytics: button to try loading the statistics again."
+  },
+  "analyticsEmpty": "Erfasse ein paar Migräneattacken, um die Analyse zu sehen.",
+  "@analyticsEmpty": {
+    "description": "Analytics: shown before any migraine has been logged."
+  },
+  "analyticsNotEnoughData": "Noch nicht genügend Daten.",
+  "@analyticsNotEnoughData": {
+    "description": "Analytics: generic note on a card that can't be computed yet."
+  },
+  "analyticsSummary": "Übersicht",
+  "@analyticsSummary": {
+    "description": "Analytics: title of the summary card with six figures."
+  },
+  "analyticsStatEvents": "Ereignisse",
+  "@analyticsStatEvents": {
+    "description": "Analytics summary: label under the number of migraine entries."
+  },
+  "analyticsStatYears": "Erfasste Jahre",
+  "@analyticsStatYears": {
+    "description": "Analytics summary: label under the number of years between the first and last entry."
+  },
+  "analyticsStatSeverity": "Ø Schwere",
+  "@analyticsStatSeverity": {
+    "description": "Analytics summary: label under the average pain severity (1-10)."
+  },
+  "analyticsStatDuration": "Ø Dauer",
+  "@analyticsStatDuration": {
+    "description": "Analytics summary: label under the average length of an attack."
+  },
+  "analyticsStatInterval": "Ø Abstand",
+  "@analyticsStatInterval": {
+    "description": "Analytics summary: label under the average number of days between attacks."
+  },
+  "analyticsStatPerYear": "Pro Jahr",
+  "@analyticsStatPerYear": {
+    "description": "Analytics summary: label under the average number of attacks per year."
+  },
+  "analyticsHoursShort": "{value} h",
+  "@analyticsHoursShort": {
+    "description": "Analytics summary: a number of hours in a stat tile, very short: '5.5h'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "5.5"
+      }
+    }
+  },
+  "analyticsDaysShort": "{value} d",
+  "@analyticsDaysShort": {
+    "description": "Analytics summary: a number of days in a stat tile, very short: '12.3d'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "12.3"
+      }
+    }
+  },
+  "analyticsTriggersTitle": "Am häufigsten notierte Auslöser",
+  "@analyticsTriggersTitle": {
+    "description": "Analytics: title of the card listing how often each trigger was tagged."
+  },
+  "analyticsTriggersDescription": "{count, plural, =1{Wie oft du jeden Auslöser bei 1 Migräne notiert hast.} other{Wie oft du jeden Auslöser bei {count} Migräneattacken notiert hast.}}",
+  "@analyticsTriggersDescription": {
+    "description": "Analytics: intro of the Most-tagged triggers card.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsShowAllTriggers": "Alle {count} Auslöser anzeigen",
+  "@analyticsShowAllTriggers": {
+    "description": "Analytics: button that expands the trigger list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsTriggersNote": "Dies ist eine Häufigkeitszählung deiner Notizen, keine Korrelation. Selbst gemeldete Auslöser werden nur an Migränetagen erfasst, es gibt also keine Vergleichsbasis ohne Migräne. Betrachte sie als persönliche Notizen, nicht als Belege für Ursachen. Check-ins an Tagen ohne Migräne (Eintrag › Heute keine Migräne) schaffen eine solche Basis.",
+  "@analyticsTriggersNote": {
+    "description": "Analytics: note under the expanded trigger list when the user has no 'No migraine today' check-ins. 'Log › No migraine today' names the tab and the button; keep it matching their translations."
+  },
+  "analyticsTriggersNoteWithCheckins": "Dies ist eine Häufigkeitszählung deiner Notizen, keine Korrelation. „Migränetage vs. beschwerdefreie Tage“ vergleicht sie mit den Tagen, die du als beschwerdefrei eingecheckt hast.",
+  "@analyticsTriggersNoteWithCheckins": {
+    "description": "Analytics: note under the expanded trigger list once the user has check-ins. \"Migraine days vs clear days\" is the title of another card; keep it matching that translation."
+  },
+  "analyticsSymptomsTitle": "Häufigste Symptome",
+  "@analyticsSymptomsTitle": {
+    "description": "Analytics: title of the card listing how often each symptom was ticked."
+  },
+  "analyticsSymptomsDescription": "{count, plural, =1{Wie oft du jedes Symptom bei 1 Migräne angekreuzt hast.} other{Wie oft du jedes Symptom bei {count} Migräneattacken angekreuzt hast.}}",
+  "@analyticsSymptomsDescription": {
+    "description": "Analytics: intro of the Most common symptoms card.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsShowAllSymptoms": "Alle {count} Symptome anzeigen",
+  "@analyticsShowAllSymptoms": {
+    "description": "Analytics: button that expands the symptom list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsSymptomsNote": "Eine Zählung dessen, was du bei jeder Migräne notiert hast. Einträge aus der Zeit, bevor Symptome erfasst werden konnten, haben keine, was die Prozentsätze senkt.",
+  "@analyticsSymptomsNote": {
+    "description": "Analytics: note under the expanded symptom list."
+  },
+  "analyticsShowTop5": "Top 5 anzeigen",
+  "@analyticsShowTop5": {
+    "description": "Analytics: button that collapses a list back to its first five rows."
+  },
+  "analyticsCountShare": "{count} · {percent}",
+  "@analyticsCountShare": {
+    "description": "Analytics: a count and its share of all migraines, e.g. '12 · 40%'. Keep the '·' separator.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String",
+        "example": "40%"
+      }
+    }
+  },
+  "analyticsByYear": "Nach Jahr",
+  "@analyticsByYear": {
+    "description": "Analytics: title of a chart of migraines per year."
+  },
+  "analyticsByDayOfWeek": "Nach Wochentag",
+  "@analyticsByDayOfWeek": {
+    "description": "Analytics: title of a chart of migraines per day of the week."
+  },
+  "analyticsBySeason": "Nach Jahreszeit",
+  "@analyticsBySeason": {
+    "description": "Analytics: title of a chart of migraines per season."
+  },
+  "analyticsByTimeOfDay": "Nach Tageszeit",
+  "@analyticsByTimeOfDay": {
+    "description": "Analytics: title of a chart of migraines by the time of day they started."
+  },
+  "analyticsByDaylight": "Nach Tageslicht",
+  "@analyticsByDaylight": {
+    "description": "Analytics: title of a chart of migraines by how many hours of daylight the day had."
+  },
+  "analyticsByPressure": "Druckänderung (24 h)",
+  "@analyticsByPressure": {
+    "description": "Analytics: title of a chart of migraines by the change in barometric pressure over 24 hours."
+  },
+  "analyticsByMoonPhase": "Nach Mondphase",
+  "@analyticsByMoonPhase": {
+    "description": "Analytics: title of a chart of migraines per moon phase."
+  },
+  "analyticsNeedsWeather": "Benötigt Wetter-Erweiterung (aus), in den Einstellungen aktivieren",
+  "@analyticsNeedsWeather": {
+    "description": "Analytics: shown on the pressure chart when weather lookups are turned off. 'Weather enrichment' is the Settings option's name."
+  },
+  "analyticsNoData": "Noch keine Daten",
+  "@analyticsNoData": {
+    "description": "Analytics: shown on a chart with nothing to show."
+  },
+  "analyticsMost": "Am meisten: {label} ({count})",
+  "@analyticsMost": {
+    "description": "Analytics: under a collapsed chart's title, the bucket with the most migraines and its count, e.g. 'Most: Mon (5)'.",
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "Mon"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsFactorsTitle": "Top vermutete Faktoren",
+  "@analyticsFactorsTitle": {
+    "description": "Analytics: title of the card listing conditions more common on migraine days than on other days (odds ratios)."
+  },
+  "analyticsBaseRate": "Basisrate: {percent} % der Tage ({migraineDays}/{days})",
+  "@analyticsBaseRate": {
+    "description": "Analytics, Top suspected factors: the share of all days that had a migraine, and the two counts.",
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "migraineDays": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsNoFactors": "Noch hebt sich kein Faktor über das Zufallsmaß hinaus.",
+  "@analyticsNoFactors": {
+    "description": "Analytics, Top suspected factors: nothing is more common on migraine days than chance would explain."
+  },
+  "analyticsShowTopPerCategory": "Top-Faktor pro Kategorie anzeigen",
+  "@analyticsShowTopPerCategory": {
+    "description": "Analytics, Top suspected factors: button that collapses the list to the strongest condition per factor."
+  },
+  "analyticsShowAllFactors": "Alle {count} Faktoren anzeigen",
+  "@analyticsShowAllFactors": {
+    "description": "Analytics, Top suspected factors: button that shows every factor and the caveats.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "analyticsPressureOff": "Druck wird nicht analysiert, die Wetter-Erweiterung ist aus (Einstellungen › Wetter-Erweiterung).",
+  "@analyticsPressureOff": {
+    "description": "Analytics, Top suspected factors: pressure can't be a factor while weather lookups are off. 'Settings › Weather enrichment' names the setting."
+  },
+  "analyticsBullet": "• {text}",
+  "@analyticsBullet": {
+    "description": "A bulleted line in a list of caveats.",
+    "placeholders": {
+      "text": {
+        "type": "String",
+        "example": "Association is not causation."
+      }
+    }
+  },
+  "analyticsFactorCondition": "{factor}: {condition}",
+  "@analyticsFactorCondition": {
+    "description": "Analytics: a factor and the condition that stood out, e.g. 'Day of week: Mon' or 'Trigger noted: Stress'.",
+    "placeholders": {
+      "factor": {
+        "type": "String",
+        "example": "Day of week"
+      },
+      "condition": {
+        "type": "String",
+        "example": "Mon"
+      }
+    }
+  },
+  "analyticsOddsRatio": "OR {value}",
+  "@analyticsOddsRatio": {
+    "description": "Analytics: the odds ratio of a factor, e.g. 'OR 2.5'. 'OR' = odds ratio (see analyticsCaveatOddsRatioExplained).",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "2.5"
+      }
+    }
+  },
+  "trackedDaysTitle": "Erfasste Tage",
+  "@trackedDaysTitle": {
+    "description": "Analytics: title of the card counting days with an entry or a check-in."
+  },
+  "trackedDaysIntro": "Tage mit einem Eintrag oder einem „Keine Migräne“-Check-in.",
+  "@trackedDaysIntro": {
+    "description": "Analytics, Days tracked: intro. \"No migraine\" refers to the 'No migraine today' check-in button."
+  },
+  "trackedDaysOfLast30": "der letzten 30 Tage",
+  "@trackedDaysOfLast30": {
+    "description": "Analytics, Days tracked: shown next to a big number (the count is displayed separately)."
+  },
+  "trackedDaysBreakdown": "{migraine} mit Migräne, {clear} ohne, {unrecorded} nicht erfasst.",
+  "@trackedDaysBreakdown": {
+    "description": "Analytics, Days tracked: the last 30 days split into migraine days, clear (checked-in) days and days with nothing recorded.",
+    "placeholders": {
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      },
+      "unrecorded": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedDaysSinceFirst": "{tracked} von {days} Tagen seit deinem ersten Check-in ({date}). Ein Tag ohne Eintrag könnte beides gewesen sein, daher sind die Zahlen hier umso vertrauenswürdiger, je mehr Tage erfasst sind.",
+  "@trackedDaysSinceFirst": {
+    "description": "Analytics, Days tracked: days tracked since the first 'No migraine today' check-in.",
+    "placeholders": {
+      "tracked": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String",
+        "example": "Oct 1, 2026"
+      }
+    }
+  },
+  "trackedFactorsTitle": "Migränetage vs. beschwerdefreie Tage",
+  "@trackedFactorsTitle": {
+    "description": "Analytics: title of the card comparing what was recorded on migraine days with days checked in as migraine-free ('clear')."
+  },
+  "trackedFactorsIntro": "Was du an Tagen mit Migränebeginn erfasst hast, im Vergleich zu Tagen, die du als beschwerdefrei eingecheckt hast: Schlaf, Stress, Auslöser und Essen.",
+  "@trackedFactorsIntro": {
+    "description": "Analytics, Migraine days vs clear days: intro."
+  },
+  "trackedFactorsCounts": "{migraineDays} Migränetage und {clearDays} beschwerdefreie Tage seit deinem ersten Check-in.",
+  "@trackedFactorsCounts": {
+    "description": "Analytics, Migraine days vs clear days: the counts compared.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "clearDays": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedFactorsNone": "Noch hebt sich nichts von dem, was du erfasst hast, über das Zufallsmaß hinaus.",
+  "@trackedFactorsNone": {
+    "description": "Analytics, Migraine days vs clear days: nothing is more common on migraine days than chance would explain."
+  },
+  "trackedFactorsShowLess": "Weniger anzeigen",
+  "@trackedFactorsShowLess": {
+    "description": "Analytics, Migraine days vs clear days: button that collapses the list."
+  },
+  "trackedFactorsShowAll": "Alle {count} und die Hinweise anzeigen",
+  "@trackedFactorsShowAll": {
+    "description": "Analytics, Migraine days vs clear days: button that shows every factor and the caveats.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trackedFactorsShowCaveats": "Die Hinweise anzeigen",
+  "@trackedFactorsShowCaveats": {
+    "description": "Analytics, Migraine days vs clear days: button that shows the caveats."
+  },
+  "impactCardTitle": "Auswirkung auf den Tag",
+  "@impactCardTitle": {
+    "description": "Analytics: title of the card counting migraine days by how much they affected usual activities."
+  },
+  "impactCardIntro": "Migränetage der letzten 30 Tage, nach dem Grad ihrer Behinderung.",
+  "@impactCardIntro": {
+    "description": "Analytics, Impact on the day: intro."
+  },
+  "impactCardUnable": "Unfähig zu funktionieren",
+  "@impactCardUnable": {
+    "description": "Analytics, Impact on the day: label under the count of days the user couldn't do usual activities."
+  },
+  "impactCardReduced": "Eingeschränkte Funktion",
+  "@impactCardReduced": {
+    "description": "Analytics, Impact on the day: label under the count of days the user did less, or less well."
+  },
+  "impactCardAverage": "Ø/Monat über die letzten 3 vollständigen Monate: {unable} unfähig, {reduced} eingeschränkt.",
+  "@impactCardAverage": {
+    "description": "Analytics, Impact on the day: monthly averages of 'unable' and 'reduced' days.",
+    "placeholders": {
+      "unable": {
+        "type": "String",
+        "example": "2.3"
+      },
+      "reduced": {
+        "type": "String",
+        "example": "4.0"
+      }
+    }
+  },
+  "impactCardRecorded": "Auswirkung erfasst an {recorded} von {days} Migränetagen der letzten 30 Tage. Ein Tag zählt mit seiner schlimmsten Auswirkung.",
+  "@impactCardRecorded": {
+    "description": "Analytics, Impact on the day: how many migraine days have an impact recorded.",
+    "placeholders": {
+      "recorded": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "awayTitle": "Weg von zu Hause",
+  "@awayTitle": {
+    "description": "Analytics: title of the card about migraines logged away from the home location."
+  },
+  "awayIntro": "Einträge, die mehr als {km} km von deinem Wohnort entfernt erfasst wurden. Nur beschreibend, es zeigt, wo du Migräne erfasst hast, nicht, dass Reisen sie verursacht hat.",
+  "@awayIntro": {
+    "description": "Analytics, Away from home: intro. 'km' = kilometres.",
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "awayNone": "{count, plural, =1{Alle 1 lokalisierten Einträge lagen innerhalb von {km} km von zu Hause.} other{Alle {count} lokalisierten Einträge lagen innerhalb von {km} km von zu Hause.}}",
+  "@awayNone": {
+    "description": "Analytics, Away from home: every entry with a location was near home. 'Located' = has a recorded location.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "awayShare": "{away} von {located} lokalisierten Einträgen ({percent} %)",
+  "@awayShare": {
+    "description": "Analytics, Away from home: how many of the entries with a location were away from home, and the share.",
+    "placeholders": {
+      "away": {
+        "type": "int"
+      },
+      "located": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String",
+        "example": "25.0"
+      }
+    }
+  },
+  "awayFarthest": "Am weitesten: {km} km von zu Hause.",
+  "@awayFarthest": {
+    "description": "Analytics, Away from home: the greatest distance from home of a logged migraine.",
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "awayUnlocated": "{count, plural, =1{1 Eintrag hat keinen erfassten Standort und wird hier nicht gezählt.} other{{count} Einträge haben keinen erfassten Standort und werden hier nicht gezählt.}}",
+  "@awayUnlocated": {
+    "description": "Analytics, Away from home: entries without a location.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportTitle": "Migränebericht",
+  "@reportTitle": {
+    "description": "Title of the printable PDF report a patient can give their doctor."
+  },
+  "reportEntryCount": "{count, plural, =1{1 Eintrag} other{{count} Einträge}}",
+  "@reportEntryCount": {
+    "description": "Report subtitle: how many entries (logged migraine attacks) the report covers.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDateRange": "{from} bis {to}",
+  "@reportDateRange": {
+    "description": "Report subtitle: the dates of the first and last entry.",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "5 Jan 2024"
+      },
+      "to": {
+        "type": "String",
+        "example": "1 Jun 2026"
+      }
+    }
+  },
+  "reportGenerated": "erstellt {date}",
+  "@reportGenerated": {
+    "description": "Report subtitle: the day the report was made. Lowercase in English: it follows a '·' separator.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "5 Oct 2026"
+      }
+    }
+  },
+  "reportStatEntries": "Einträge",
+  "@reportStatEntries": {
+    "description": "Report summary tile: number of logged attacks."
+  },
+  "reportStatYearsTracked": "Erfasste Jahre",
+  "@reportStatYearsTracked": {
+    "description": "Report summary tile."
+  },
+  "reportStatAvgSeverity": "Ø Schwere",
+  "@reportStatAvgSeverity": {
+    "description": "Report summary tile: average pain severity (1-10). Short: the tile is narrow."
+  },
+  "reportStatAvgDuration": "Ø Dauer",
+  "@reportStatAvgDuration": {
+    "description": "Report summary tile: average attack length. Short."
+  },
+  "reportStatAvgInterval": "Ø Abstand",
+  "@reportStatAvgInterval": {
+    "description": "Report summary tile: average time between attacks. Short."
+  },
+  "reportStatPerYear": "Pro Jahr",
+  "@reportStatPerYear": {
+    "description": "Report summary tile: attacks per year."
+  },
+  "reportStatMigraineDays30": "Migränetage, letzte 30 T.",
+  "@reportStatMigraineDays30": {
+    "description": "Report summary tile: days with a migraine in the last 30 days. 'd' is short for days; keep it short."
+  },
+  "reportSeverityOutOf10": "{value}/10",
+  "@reportSeverityOutOf10": {
+    "description": "Average severity on a 1-10 scale.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "6.2"
+      }
+    }
+  },
+  "reportHoursShort": "{value} h",
+  "@reportHoursShort": {
+    "description": "A length in hours, very short form: '3.5h'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "3.5"
+      }
+    }
+  },
+  "reportDaysShort": "{value} d",
+  "@reportDaysShort": {
+    "description": "A length in days, very short form: '12.3d'.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "12.3"
+      }
+    }
+  },
+  "reportMinutesShort": "{value} min",
+  "@reportMinutesShort": {
+    "description": "A length in minutes, very short form: '45m'.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDaysHoursShort": "{days} d {hours} h",
+  "@reportDaysHoursShort": {
+    "description": "A length in days and hours, very short form: '2d 4h'.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "reportChartMonthly": "Migränetage pro Monat",
+  "@reportChartMonthly": {
+    "description": "Report chart title."
+  },
+  "reportMonthlyNote": "Tage mit Migräne, nicht Einträge; eine mehrtägige Migräne zählt jeden Tag.",
+  "@reportMonthlyNote": {
+    "description": "Note under the monthly chart."
+  },
+  "reportMonthlyAverage": "Durchschnitt über die letzten 3 vollständigen Monate: {value}.",
+  "@reportMonthlyAverage": {
+    "description": "Note under the monthly chart.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "4.3"
+      }
+    }
+  },
+  "reportMonthlyWithoutHeadache": "{count, plural, =1{Enthält 1 Tag mit nur Attacken ohne Kopfschmerzen.} other{Enthält {count} Tage mit nur Attacken ohne Kopfschmerzen.}}",
+  "@reportMonthlyWithoutHeadache": {
+    "description": "Note under the monthly chart: days whose only attacks had no headache (aura only, vertigo).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportMonthInProgress": "* laufender Monat.",
+  "@reportMonthInProgress": {
+    "description": "Note under a monthly chart or table: the month marked * isn't finished yet. Keep the '*'."
+  },
+  "reportMonthMarkedInProgress": "{month} *",
+  "@reportMonthMarkedInProgress": {
+    "description": "A month label marked as still in progress.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Oct 2026"
+      }
+    }
+  },
+  "reportChartByYear": "Nach Jahr",
+  "@reportChartByYear": {
+    "description": "Report chart title: attacks per year."
+  },
+  "reportChartByDayOfWeek": "Nach Wochentag",
+  "@reportChartByDayOfWeek": {
+    "description": "Report chart title."
+  },
+  "reportChartBySeason": "Nach Jahreszeit",
+  "@reportChartBySeason": {
+    "description": "Report chart title."
+  },
+  "reportChartByTimeOfDay": "Nach Tageszeit",
+  "@reportChartByTimeOfDay": {
+    "description": "Report chart title."
+  },
+  "reportChartByDaylight": "Nach Tageslicht",
+  "@reportChartByDaylight": {
+    "description": "Report chart title: hours of daylight on the day."
+  },
+  "reportChartPressure": "Druckänderung (24 h)",
+  "@reportChartPressure": {
+    "description": "Report chart title: change in barometric pressure over 24 hours."
+  },
+  "reportChartPressureOff": "Die Wetter-Erweiterung ist aus, daher ist dies leer.",
+  "@reportChartPressureOff": {
+    "description": "Note under the pressure chart when the weather lookup is turned off."
+  },
+  "reportChartByMoon": "Nach Mondphase",
+  "@reportChartByMoon": {
+    "description": "Report chart title."
+  },
+  "reportAwayAllHome": "{count, plural, =1{Alle 1 lokalisierten Einträge lagen innerhalb von {km} km von zu Hause.} other{Alle {count} lokalisierten Einträge lagen innerhalb von {km} km von zu Hause.}}",
+  "@reportAwayAllHome": {
+    "description": "Report: none of the entries with a location was far from home.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "reportAwaySome": "{away} von {located} lokalisierten Einträgen ({pct} %) wurden mehr als {km} km von zu Hause erfasst.",
+  "@reportAwaySome": {
+    "description": "Report: share of entries logged away from home.",
+    "placeholders": {
+      "away": {
+        "type": "int"
+      },
+      "located": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "reportAwaySomePlaces": "{away} von {located} lokalisierten Einträgen ({pct} %) wurden mehr als {km} km von zu Hause erfasst: {places}.",
+  "@reportAwaySomePlaces": {
+    "description": "Report: share of entries logged away from home, with up to five places and their counts.",
+    "placeholders": {
+      "away": {
+        "type": "int"
+      },
+      "located": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "km": {
+        "type": "int"
+      },
+      "places": {
+        "type": "String",
+        "example": "Paris (2), Lyon (1)"
+      }
+    }
+  },
+  "reportAwayPlace": "{place} ({count})",
+  "@reportAwayPlace": {
+    "description": "One place in the away-from-home list, with its number of entries.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Paris"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDayCount": "{count, plural, =1{1 Tag} other{{count} Tage}}",
+  "@reportDayCount": {
+    "description": "A number of days, used inside other report sentences.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportImpact": "Auswirkung, letzte 30 Tage: {unable} unfähig zu funktionieren, {reduced} mit eingeschränkter Funktion (Auswirkung erfasst an {recorded} von {migraineDays} Migränetagen).",
+  "@reportImpact": {
+    "description": "Report: days by impact on daily life. {unable} and {reduced} are '3 days' style counts.",
+    "placeholders": {
+      "unable": {
+        "type": "String",
+        "example": "3 days"
+      },
+      "reduced": {
+        "type": "String",
+        "example": "1 day"
+      },
+      "recorded": {
+        "type": "int"
+      },
+      "migraineDays": {
+        "type": "int"
+      }
+    }
+  },
+  "reportImpactAverage": "Monatlicher Durchschnitt über die letzten 3 vollständigen Monate: {unable} unfähig, {reduced} eingeschränkt.",
+  "@reportImpactAverage": {
+    "description": "Report: follows the impact sentence.",
+    "placeholders": {
+      "unable": {
+        "type": "String",
+        "example": "2.3"
+      },
+      "reduced": {
+        "type": "String",
+        "example": "1.0"
+      }
+    }
+  },
+  "reportWithoutHeadacheSummary": "{events} von {total} Einträgen ({pct} %) wurden ohne Kopfschmerzen erfasst: {aura} mit Aura, {vertigo} mit Schwindel oder Benommenheit, {other} andere.",
+  "@reportWithoutHeadacheSummary": {
+    "description": "[medical] Report: attacks recorded with no headache, by kind.",
+    "placeholders": {
+      "events": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      },
+      "aura": {
+        "type": "int"
+      },
+      "vertigo": {
+        "type": "int"
+      },
+      "other": {
+        "type": "int"
+      }
+    }
+  },
+  "reportWithoutHeadacheMedian": "Median der Dauer {hours} h.",
+  "@reportWithoutHeadacheMedian": {
+    "description": "Report: follows the attacks-without-headache summary.",
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "5.5"
+      }
+    }
+  },
+  "reportWithAura": "Mit Aura",
+  "@reportWithAura": {
+    "description": "[medical] Bar label: attacks without headache that had an aura."
+  },
+  "reportWithVertigo": "Mit Schwindel oder Benommenheit",
+  "@reportWithVertigo": {
+    "description": "[medical] Bar label: attacks without headache with vertigo or dizziness."
+  },
+  "reportOther": "Andere",
+  "@reportOther": {
+    "description": "Bar label: attacks without headache of any other kind."
+  },
+  "reportMedDaysSummary": "Tage mit Akutmedikation, letzte 30 Tage: {days}.",
+  "@reportMedDaysSummary": {
+    "description": "[medical] Report: days on which an acute (as-needed) medication was taken.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "8 days"
+      }
+    }
+  },
+  "reportMedDaysSummaryByClass": "Tage mit Akutmedikation, letzte 30 Tage: {days} ({breakdown}).",
+  "@reportMedDaysSummaryByClass": {
+    "description": "[medical] Report: as above, with days per medication class.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "8 days"
+      },
+      "breakdown": {
+        "type": "String",
+        "example": "Triptan 6, Simple pain reliever 3"
+      }
+    }
+  },
+  "reportMedClassDays": "{medClass} {count}",
+  "@reportMedClassDays": {
+    "description": "One class in the breakdown above: class name and its number of days.",
+    "placeholders": {
+      "medClass": {
+        "type": "String",
+        "example": "Triptan"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportColumnAny": "Beliebig",
+  "@reportColumnAny": {
+    "description": "[medical] Report table column header: days with any acute medication. Short. Referred to in reportMedUnclassified."
+  },
+  "reportOveruseMonthReason": "{month}: {reason}",
+  "@reportOveruseMonthReason": {
+    "description": "[medical] One month that reached the medication reference level, with its reason.",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "Jul 2026"
+      },
+      "reason": {
+        "type": "String",
+        "example": "Triptan on 10 days (level 10)"
+      }
+    }
+  },
+  "reportMedUnclassified": "Keine Klasse festgelegt für {medications}: wird unter „Beliebig“ gezählt, aber nicht gegen die Referenzwerte geprüft.",
+  "@reportMedUnclassified": {
+    "description": "[medical] Report: medications without a class. \"Any\" is the column header reportColumnAny; use the same word.",
+    "placeholders": {
+      "medications": {
+        "type": "String",
+        "example": "Ibuprofen, Aspirin"
+      }
+    }
+  },
+  "reportPreventiveSince": "{medication}: seit {start}",
+  "@reportPreventiveSince": {
+    "description": "[medical] Report: a preventive medication still taken. {medication} is its name and dose as the user typed them.",
+    "placeholders": {
+      "medication": {
+        "type": "String",
+        "example": "Propranolol 40 mg"
+      },
+      "start": {
+        "type": "String",
+        "example": "4 Aug 2026"
+      }
+    }
+  },
+  "reportPreventiveRange": "{medication}: {start} bis {stop}",
+  "@reportPreventiveRange": {
+    "description": "[medical] Report: a preventive medication taken from one date to another.",
+    "placeholders": {
+      "medication": {
+        "type": "String",
+        "example": "Topiramate 50 mg"
+      },
+      "start": {
+        "type": "String",
+        "example": "1 Jun 2026"
+      },
+      "stop": {
+        "type": "String",
+        "example": "20 Aug 2026"
+      }
+    }
+  },
+  "reportPreventiveNotes": "{line}. {notes}",
+  "@reportPreventiveNotes": {
+    "description": "Report: a preventive medication line followed by the user's notes on it.",
+    "placeholders": {
+      "line": {
+        "type": "String",
+        "example": "Propranolol 40 mg: since 4 Aug 2026"
+      },
+      "notes": {
+        "type": "String",
+        "example": "for prevention"
+      }
+    }
+  },
+  "reportTracked": "Erfasste Tage, letzte 30 Tage: {tracked} ({migraine} mit Migräne, {clear} als beschwerdefrei eingecheckt, {notRecorded} nicht erfasst). Seit dem ersten Check-in am {firstCheckin}: {since} von {total} Tagen.",
+  "@reportTracked": {
+    "description": "Report: how many days were recorded. A 'check-in' is logging a day as migraine-free ('clear').",
+    "placeholders": {
+      "tracked": {
+        "type": "int"
+      },
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      },
+      "notRecorded": {
+        "type": "int"
+      },
+      "firstCheckin": {
+        "type": "String",
+        "example": "30 Sep 2026"
+      },
+      "since": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reportTrackedWindow": "{migraine} Migränetage und {clear} beschwerdefreie Tage seit dem ersten Check-in ({tracked} erfasste Tage).",
+  "@reportTrackedWindow": {
+    "description": "Report: what Migraine days vs clear days is based on.",
+    "placeholders": {
+      "migraine": {
+        "type": "int"
+      },
+      "clear": {
+        "type": "int"
+      },
+      "tracked": {
+        "type": "int"
+      }
+    }
+  },
+  "reportSeverityNone": "keine",
+  "@reportSeverityNone": {
+    "description": "Report entries table, Sev column: an attack without headache has no pain severity. Very short."
+  },
+  "reportDurationOngoing": "andauernd",
+  "@reportDurationOngoing": {
+    "description": "Report entries table, Duration column: the attack hasn't ended. Short."
+  },
+  "reportYes": "ja",
+  "@reportYes": {
+    "description": "Report entries table, Aura column. Short."
+  },
+  "reportNo": "nein",
+  "@reportNo": {
+    "description": "Report entries table, Aura column. Short."
+  },
+  "reportReliefLine": "Linderung: {relief}",
+  "@reportReliefLine": {
+    "description": "Report entries table, Meds column: the non-drug relief tried, on its own line.",
+    "placeholders": {
+      "relief": {
+        "type": "String",
+        "example": "Dark room, Cold pack"
+      }
+    }
+  },
+  "reportFootnotePressure": "Der Faktor Luftdruck wird nicht angezeigt: er erfordert einen zwischengespeicherten Druckverlauf für deinen Wohnort, den die App beim ersten Online-Betrieb der Analyse mit aktivierter Wetter-Erweiterung aufbaut. Fehlt er hier, bedeutet das „nicht verfügbar“, nicht „kein Effekt“.",
+  "@reportFootnotePressure": {
+    "description": "Report footnote."
+  },
+  "reportFootnoteFont": "Einige Zeichen in deinen Einträgen konnten mit der Schrift dieses Berichts nicht dargestellt werden und erscheinen als „?“. Die App selbst speichert sie weiterhin korrekt, und ein JSON-Export bewahrt sie.",
+  "@reportFootnoteFont": {
+    "description": "Report footnote. Keep the '?'."
+  },
+  "reportFactorsWindow": "{migraineDays} Migränetage über {days} Tage ({pct} % der Tage).",
+  "@reportFactorsWindow": {
+    "description": "Report: what Suspected Factors is based on.",
+    "placeholders": {
+      "migraineDays": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "String",
+        "example": "12.5"
+      }
+    }
+  },
+  "reportMethods": "Beschriftete Diagramme sind reine Zählungen erfasster Einträge: ein hoher Balken bedeutet nur, dass dort mehr Migräne erfasst wurde. Vermutete Faktoren verwenden die Einheit des Migränetags, und jeder Tag zwischen der ersten und der letzten Migräne ist ein Basistag. Für jede Gruppe wird eine 2x2-Tabelle erstellt und ein Haldane-Anscombe-korrigiertes Odds Ratio berechnet (0,5 zu jeder Zelle addiert). Ein Faktor wird nur dann als hervorgehobene Zeile markiert, wenn seine Gruppe mindestens 3 Migränetage umfasst und sein Odds Ratio über 1 liegt. Mondphase und Tageslicht werden astronomisch aus dem Wohnort berechnet; die Jahreszeit wird hemisphärenkorrigiert.",
+  "@reportMethods": {
+    "description": "Report 'Methods' section. Statistics terms: 2x2 table, Haldane-Anscombe corrected odds ratio, baseline day."
+  },
+  "reportNoData": "Keine Daten.",
+  "@reportNoData": {
+    "description": "Report: shown in place of an empty chart."
+  },
+  "reportColumnTaken": "Eingenommen",
+  "@reportColumnTaken": {
+    "description": "Report table column: times a medication or relief was used."
+  },
+  "reportColumnHelped": "Geholfen",
+  "@reportColumnHelped": {
+    "description": "Report table column: times it helped."
+  },
+  "reportColumnDidnt": "Nicht",
+  "@reportColumnDidnt": {
+    "description": "Report table column: times it didn't help. Short."
+  },
+  "reportColumnUnknown": "Unbekannt",
+  "@reportColumnUnknown": {
+    "description": "Report table column: times the outcome wasn't recorded."
+  },
+  "reportColumnHelpedPct": "Geholfen %",
+  "@reportColumnHelpedPct": {
+    "description": "Report table column: share of recorded outcomes where it helped."
+  },
+  "reportPercent": "{value} %",
+  "@reportPercent": {
+    "description": "A percentage in a report table or sentence. Use the local spacing (42 % in French).",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "42"
+      }
+    }
+  },
+  "reportHeadingSummary": "Übersicht",
+  "@reportHeadingSummary": {
+    "description": "Report section heading."
+  },
+  "reportHeadingWithoutHeadache": "Attacken ohne Kopfschmerzen",
+  "@reportHeadingWithoutHeadache": {
+    "description": "[medical] Report section heading: migraine attacks with no headache (aura only, vertigo, other)."
+  },
+  "reportWithoutHeadacheNote": "Einträge, die als kopfschmerzfrei markiert sind: nur Aura, Schwindel oder andere Symptome ohne Schmerzen. Sie zählen oben als Migränetage. Für sie wird keine Schwere bewertet, daher bezieht sich die durchschnittliche Schwere nur auf Attacken mit Kopfschmerzen. Wenn sowohl Aura als auch Schwindel erfasst sind, zählt der Eintrag als „mit Aura“.",
+  "@reportWithoutHeadacheNote": {
+    "description": "[medical] Report note under 'Attacks without headache'."
+  },
+  "reportTheirSymptoms": "Deren Symptome",
+  "@reportTheirSymptoms": {
+    "description": "Report sub-heading: symptoms of the attacks without headache."
+  },
+  "reportHeadingPatterns": "Muster",
+  "@reportHeadingPatterns": {
+    "description": "Report section heading: the descriptive charts."
+  },
+  "reportPatternsNote": "Zählungen erfasster Einträge. Ein hoher Balken bedeutet nur, dass dort mehr Migräne erfasst wurde.",
+  "@reportPatternsNote": {
+    "description": "Report note under 'Patterns'."
+  },
+  "reportHeadingTriggers": "Am häufigsten notierte Auslöser",
+  "@reportHeadingTriggers": {
+    "description": "Report section heading: triggers recorded most often."
+  },
+  "reportTriggersNote": "Selbst gemeldet und nur an Migränetagen erfasst, es gibt keinen Vergleich mit Tagen, an denen du dich gut gefühlt hast, daher sind dies Zählungen, keine Korrelationen.",
+  "@reportTriggersNote": {
+    "description": "Report note under 'Most-tagged triggers'."
+  },
+  "reportHeadingSymptoms": "Symptome",
+  "@reportHeadingSymptoms": {
+    "description": "Report section heading."
+  },
+  "reportSymptomsNote": "Wie oft jedes Symptom über alle Einträge hinweg erfasst wurde. Einträge aus der Zeit, bevor Symptome erfasst werden konnten, haben keine.",
+  "@reportSymptomsNote": {
+    "description": "Report note under 'Symptoms'."
+  },
+  "reportHeadingMedDays": "Tage mit Akutmedikation",
+  "@reportHeadingMedDays": {
+    "description": "[medical] Report section heading: days with as-needed (acute) medication."
+  },
+  "reportMedDaysNote": "Unterschiedliche Tage pro Monat mit mindestens einer Dosis; ein Tag mit zwei Klassen zählt einmal unter „Beliebig“. Referenzwerte (ICHD-3 8.2): 10 Tage im Monat für Triptane, Ergotamine, Opiate und kombinierte Schmerzmittel; 15 für einfache Schmerzmittel; insgesamt 10 für eine Mischung daraus. Gepants, Ditans und Mittel gegen Übelkeit werden gezählt, aber nicht geprüft. * laufender Monat.",
+  "@reportMedDaysNote": {
+    "description": "[medical] Report note under the medication-days table. \"Any\" is the column header reportColumnAny. ICHD-3 8.2 is the headache classification's section on medication overuse. Needs a second reviewer."
+  },
+  "reportHeadingPreventives": "Vorbeugende Medikamente",
+  "@reportHeadingPreventives": {
+    "description": "[medical] Report section heading: medications taken daily to prevent migraines."
+  },
+  "reportHeadingMedications": "Medikamente",
+  "@reportHeadingMedications": {
+    "description": "Report section heading."
+  },
+  "reportColumnMedication": "Medikament",
+  "@reportColumnMedication": {
+    "description": "Report table column header."
+  },
+  "reportMedicationsNote": "„Geholfen %“ schließt Unbekannte aus. Persönliche Beobachtung, keine klinische Studie.",
+  "@reportMedicationsNote": {
+    "description": "Report note under 'Medications'. \"Helped %\" is the column reportColumnHelpedPct."
+  },
+  "reportHeadingRelief": "Ausprobierte Linderung",
+  "@reportHeadingRelief": {
+    "description": "Report section heading: non-drug relief (dark room, cold pack…)."
+  },
+  "reportColumnRelief": "Linderung",
+  "@reportColumnRelief": {
+    "description": "Report table column header: a non-drug relief method."
+  },
+  "reportReliefNote": "Nicht-medikamentöse Linderung, die an Einträgen erfasst wurde. „Geholfen %“ schließt Unbekannte aus.",
+  "@reportReliefNote": {
+    "description": "Report note under 'Relief tried'."
+  },
+  "reportHeadingFactors": "Vermutete Faktoren",
+  "@reportHeadingFactors": {
+    "description": "Report section heading: factors more common on migraine days."
+  },
+  "reportFactorsReadFirst": "Lies dies zuerst. Dies sind Zusammenhänge innerhalb deines eigenen Protokolls, berechnet über Migränetage. Zusammenhang ist nicht gleichbedeutend mit Kausalität; kleine Stichproben sind verrauscht, und da viele Faktoren gleichzeitig geprüft werden, sehen einige zufällig erhöht aus. Betrachte sie als Fragen zur Diskussion, nicht als Befunde.",
+  "@reportFactorsReadFirst": {
+    "description": "[medical] Report box at the top of 'Suspected factors'."
+  },
+  "reportNotEnoughData": "Noch nicht genügend Daten.",
+  "@reportNotEnoughData": {
+    "description": "Report: shown when a section has too little data."
+  },
+  "reportColumnBucket": "Gruppe",
+  "@reportColumnBucket": {
+    "description": "Report table column: the value range or category of a factor."
+  },
+  "reportColumnMigraineDays": "Migränetage",
+  "@reportColumnMigraineDays": {
+    "description": "Report table column."
+  },
+  "reportColumnAllDays": "Alle Tage",
+  "@reportColumnAllDays": {
+    "description": "Report table column."
+  },
+  "reportColumnRate": "Rate",
+  "@reportColumnRate": {
+    "description": "Report table column: share of days that were migraine days."
+  },
+  "reportColumnOddsRatio": "Odds Ratio",
+  "@reportColumnOddsRatio": {
+    "description": "Report table column (statistics term)."
+  },
+  "reportFactorsStarNote": "* markiert die Zeilen, die die App hervorhebt: mindestens 3 Migränetage in der Gruppe und ein Odds Ratio über 1.",
+  "@reportFactorsStarNote": {
+    "description": "Report note under the factor tables. Keep the '*'."
+  },
+  "reportCaveatItem": "- {caveat}",
+  "@reportCaveatItem": {
+    "description": "One caveat in a list under a factor table.",
+    "placeholders": {
+      "caveat": {
+        "type": "String"
+      }
+    }
+  },
+  "reportHeadingTracked": "Migränetage vs. beschwerdefreie Tage",
+  "@reportHeadingTracked": {
+    "description": "Report section heading: comparing days a migraine started with days checked in as migraine-free."
+  },
+  "reportTrackedNote": "Schlaf, Stress, Auslöser und Essen, wie sie an Tagen mit Migränebeginn erfasst wurden, im Vergleich zu Tagen, die als ohne Migräne eingecheckt wurden. Nur erfasste Tage zählen, und jeder Faktor nur die Tage, an denen er erfasst wurde. Es gilt derselbe Vorbehalt wie oben.",
+  "@reportTrackedNote": {
+    "description": "Report note under 'Migraine days vs clear days'."
+  },
+  "reportColumnRecorded": "Erfasst",
+  "@reportColumnRecorded": {
+    "description": "Report table column: what was recorded (a sleep range, a trigger…)."
+  },
+  "reportColumnTrackedDays": "Erfasste Tage",
+  "@reportColumnTrackedDays": {
+    "description": "Report table column."
+  },
+  "reportHeadingEntries": "Einträge",
+  "@reportHeadingEntries": {
+    "description": "Report section heading: the list of logged attacks."
+  },
+  "reportEntriesNote": "Neueste zuerst. Zeiten werden in der Zone angezeigt, in der jeder Eintrag erfasst wurde. Schwere „keine“: eine Attacke ohne Kopfschmerzen.",
+  "@reportEntriesNote": {
+    "description": "Report note above the entries table. \"none\" is reportSeverityNone; 'Sev' is reportColumnSev."
+  },
+  "reportColumnDate": "Datum",
+  "@reportColumnDate": {
+    "description": "Report entries table column. Narrow."
+  },
+  "reportColumnTime": "Zeit",
+  "@reportColumnTime": {
+    "description": "Report entries table column. Narrow."
+  },
+  "reportColumnSev": "Schwere",
+  "@reportColumnSev": {
+    "description": "Report entries table column: severity, abbreviated. Very narrow."
+  },
+  "reportColumnDuration": "Dauer",
+  "@reportColumnDuration": {
+    "description": "Report entries table column. Narrow."
+  },
+  "reportColumnAura": "Aura",
+  "@reportColumnAura": {
+    "description": "[medical] Report entries table column. Very narrow."
+  },
+  "reportColumnHead": "Kopf",
+  "@reportColumnHead": {
+    "description": "Report entries table column: where on the head the pain was. Narrow."
+  },
+  "reportColumnSymptoms": "Symptome",
+  "@reportColumnSymptoms": {
+    "description": "Report entries table column."
+  },
+  "reportColumnTriggers": "Auslöser",
+  "@reportColumnTriggers": {
+    "description": "Report entries table column."
+  },
+  "reportColumnMeds": "Medikamente",
+  "@reportColumnMeds": {
+    "description": "Report entries table column: medications, abbreviated. Narrow."
+  },
+  "reportColumnNotes": "Notizen",
+  "@reportColumnNotes": {
+    "description": "Report entries table column."
+  },
+  "reportHeadingMethods": "Methoden",
+  "@reportHeadingMethods": {
+    "description": "Report section heading."
+  },
+  "reportHeadingDisclaimer": "Haftungsausschluss",
+  "@reportHeadingDisclaimer": {
+    "description": "[legal] Report section heading."
+  },
+  "reportPageOf": "Seite {page} von {pages}",
+  "@reportPageOf": {
+    "description": "Report page footer.",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
+  },
+  "notifReminderTitle": "Megrim",
+  "@notifReminderTitle": {
+    "description": "Title of the daily reminder notification: the app's name."
+  },
+  "notifReminderBody": "Wie war dein Tag?",
+  "@notifReminderBody": {
+    "description": "Text of the daily reminder notification. Kept generic on purpose: it may be seen by others."
+  },
+  "notifActionNoMigraine": "Heute keine Migräne",
+  "@notifActionNoMigraine": {
+    "description": "Button on the daily reminder: record today as migraine-free."
+  },
+  "notifActionLog": "Eintragen",
+  "@notifActionLog": {
+    "description": "Button on the daily reminder: open the app to log a migraine. Short."
+  },
+  "notifReminderChannel": "Tägliche Erinnerung",
+  "@notifReminderChannel": {
+    "description": "Android notification channel name, shown in the phone's notification settings."
+  },
+  "notifReminderChannelDescription": "Die einmal täglich erscheinende Erinnerung, den Tag zu erfassen",
+  "@notifReminderChannelDescription": {
+    "description": "Android notification channel description, shown in the phone's notification settings."
+  },
+  "notifOngoingTitle": "Migräne läuft",
+  "@notifOngoingTitle": {
+    "description": "Title of the ongoing notification shown while a migraine is running (with a clock); also its channel name."
+  },
+  "notifOngoingChannelDescription": "Wird während einer laufenden Migräne mit Uhr und „Beenden“ angezeigt",
+  "@notifOngoingChannelDescription": {
+    "description": "Android notification channel description. 'End' is the button notifActionEnd."
+  },
+  "notifActionEnd": "Beenden",
+  "@notifActionEnd": {
+    "description": "Button on the 'Migraine in progress' notification: end the migraine now. Short."
+  },
+  "appLockUnlockReason": "Megrim entsperren",
+  "@appLockUnlockReason": {
+    "description": "Shown by the phone's own unlock prompt (fingerprint, face, PIN) when the app is locked."
+  },
+  "appLockConfirmTurnOn": "Bestätige, dass du es bist, um die App-Sperre zu aktivieren",
+  "@appLockConfirmTurnOn": {
+    "description": "Shown by the phone's unlock prompt when turning app lock on."
+  },
+  "appLockConfirmTurnOff": "Bestätige, dass du es bist, um die App-Sperre zu deaktivieren",
+  "@appLockConfirmTurnOff": {
+    "description": "Shown by the phone's unlock prompt when turning app lock off."
+  },
+  "appLockLockedOut": "Zu viele Versuche. Warte einen Moment und versuche es dann erneut.",
+  "@appLockLockedOut": {
+    "description": "Lock screen: the phone refused after too many failed unlock attempts."
+  },
+  "appLockError": "Die Entsperrung deines Telefons konnte nicht abgefragt werden. Versuche es erneut.",
+  "@appLockError": {
+    "description": "Lock screen: the unlock prompt could not be shown."
+  },
+  "appLockTurnedOffTitle": "App-Sperre deaktiviert",
+  "@appLockTurnedOffTitle": {
+    "description": "Lock screen title when the phone no longer has a screen lock."
+  },
+  "appLockTurnedOffBody": "Dein Telefon hat keine Bildschirmsperre mehr, daher kann Megrim nicht prüfen, ob du es bist. Die App-Sperre wurde deaktiviert. Richte in den Einstellungen deines Telefons eine Bildschirmsperre ein und aktiviere die App-Sperre dann unter Einstellungen › Datenschutz erneut.",
+  "@appLockTurnedOffBody": {
+    "description": "Lock screen text. 'Settings › Privacy' is where the option is in the app; keep the '›'."
+  },
+  "appLockContinue": "Weiter",
+  "@appLockContinue": {
+    "description": "Button: dismiss the 'App lock turned off' message."
+  },
+  "appLockLocked": "Megrim ist gesperrt",
+  "@appLockLocked": {
+    "description": "Lock screen title."
+  },
+  "appLockUnlock": "Entsperren",
+  "@appLockUnlock": {
+    "description": "Lock screen button: show the phone's unlock prompt."
+  },
+  "importErrorNotUtf8": "Die Datei ist kein gültiger UTF-8-Text.",
+  "@importErrorNotUtf8": {
+    "description": "Import error: the chosen file isn't text."
+  },
+  "importErrorNotJson": "Die Datei ist kein gültiges JSON.",
+  "@importErrorNotJson": {
+    "description": "Import error."
+  },
+  "importErrorStructure": "Unerwartete Dateistruktur.",
+  "@importErrorStructure": {
+    "description": "Import error: the file is JSON but not shaped like an export."
+  },
+  "importErrorNotMegrim": "Keine Megrim-Exportdatei.",
+  "@importErrorNotMegrim": {
+    "description": "Import error."
+  },
+  "importErrorVersion": "Nicht unterstützte Exportversion: {version} (diese App unterstützt {supported}).",
+  "@importErrorVersion": {
+    "description": "Import error: the file comes from a newer (or unknown) export format.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "3"
+      },
+      "supported": {
+        "type": "int"
+      }
+    }
+  },
+  "importErrorEvent": "Ereignis „{id}“ ist fehlerhaft ({detail}). Es wurde nichts importiert.",
+  "@importErrorEvent": {
+    "description": "Import error: one entry in the file is broken. {detail} is a technical message, in English.",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "commonUndo": "Rückgängig",
+  "@commonUndo": {
+    "description": "Snack bar action that reverses what was just done (a delete, a removed check-in)."
+  },
+  "commonAdd": "Hinzufügen",
+  "@commonAdd": {
+    "description": "Dialog button that adds what was typed."
+  },
+  "commonYes": "Ja",
+  "@commonYes": {
+    "description": "Answer choice in a Yes / No / ... selector."
+  },
+  "commonNo": "Nein",
+  "@commonNo": {
+    "description": "Answer choice in a Yes / No / ... selector."
+  },
+  "commonUnknown": "Unbekannt",
+  "@commonUnknown": {
+    "description": "Answer choice: the user doesn't know (e.g. whether there was an aura, whether a medication helped)."
+  },
+  "commonNotSet": "Nicht festgelegt",
+  "@commonNotSet": {
+    "description": "Shown where an optional value hasn't been entered."
+  },
+  "commonManage": "Verwalten",
+  "@commonManage": {
+    "description": "Button next to a section heading that opens the screen to add, rename or remove its choices."
+  },
+  "entryEndBeforeStart": "Die Endzeit muss nach der Startzeit liegen.",
+  "@entryEndBeforeStart": {
+    "description": "Error when saving an entry whose end is before its start."
+  },
+  "entryCheckinsRemoved": "{count, plural, =1{Der „Keine Migräne“-Check-in für diesen Tag wurde entfernt.} other{Die {count} „Keine Migräne“-Check-ins für diese Tage wurden entfernt.}}",
+  "@entryCheckinsRemoved": {
+    "description": "Snack bar after saving an entry: check-ins (days logged as migraine-free) on the days the entry covers were removed, since an entry wins. 'No migraine' is the check-in's name.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "entryDeleteTitle": "Diesen Eintrag löschen?",
+  "@entryDeleteTitle": {
+    "description": "Title of the confirmation before deleting a migraine entry."
+  },
+  "entryDeleteBody": "Dadurch werden die Migräne und die berechneten Faktoren dauerhaft entfernt.",
+  "@entryDeleteBody": {
+    "description": "Body of the confirmation before deleting a migraine entry. 'Computed factors' are the weather, moon phase etc. added automatically."
+  },
+  "entryDeleted": "Eintrag gelöscht",
+  "@entryDeleted": {
+    "description": "Snack bar after an entry was deleted (with Undo)."
+  },
+  "entryRecordedLocation": "Erfasster Standort",
+  "@entryRecordedLocation": {
+    "description": "Where the user was during the migraine; title of the tile and of the dialog to change it."
+  },
+  "entryUseLocation": "Standort verwenden",
+  "@entryUseLocation": {
+    "description": "Dialog button: use the chosen place as the entry's location."
+  },
+  "entryTitleNew": "Neuer Eintrag",
+  "@entryTitleNew": {
+    "description": "Screen title when creating a migraine entry."
+  },
+  "entryTitleEdit": "Ereignisdetails",
+  "@entryTitleEdit": {
+    "description": "Screen title when viewing or editing an existing migraine entry."
+  },
+  "entryDiscard": "Verwerfen",
+  "@entryDiscard": {
+    "description": "Tooltip: leave a new entry without saving it."
+  },
+  "entryDeleteTooltip": "Eintrag löschen",
+  "@entryDeleteTooltip": {
+    "description": "Tooltip on the delete button of an existing entry."
+  },
+  "entryStarted": "Begonnen",
+  "@entryStarted": {
+    "description": "When the migraine started (date and time)."
+  },
+  "entryEnded": "Beendet",
+  "@entryEnded": {
+    "description": "When the migraine ended (date and time)."
+  },
+  "entryOngoingHint": "andauernd, tippen zum Festlegen",
+  "@entryOngoingHint": {
+    "description": "Shown under 'Ended' while the migraine has no end yet. Lowercase in English."
+  },
+  "entryClearEnd": "Löschen (als andauernd markieren)",
+  "@entryClearEnd": {
+    "description": "Tooltip: remove the end time, so the migraine is still going on."
+  },
+  "entryLocationNotSet": "Nicht festgelegt, tippen zum Hinzufügen",
+  "@entryLocationNotSet": {
+    "description": "Shown under 'Recorded location' when none is set."
+  },
+  "entryHeadacheQuestion": "Kopfschmerzen?",
+  "@entryHeadacheQuestion": {
+    "description": "Question above Yes / No / Not sure: did this attack have a headache? (Some migraine attacks have none.)"
+  },
+  "entryHeadacheNotSure": "Nicht sicher",
+  "@entryHeadacheNotSure": {
+    "description": "Answer to 'Headache?': the user isn't sure."
+  },
+  "entrySeverityValue": "Schwere: {value} / 10",
+  "@entrySeverityValue": {
+    "description": "[medical] Headache pain severity on a 1-10 scale; {value} is a number or a dash when not set.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "7"
+      }
+    }
+  },
+  "entryHeadLocation": "Kopfbereich",
+  "@entryHeadLocation": {
+    "description": "Section heading: where on the head the pain was."
+  },
+  "entryNoHeadacheNote": "Als Attacke ohne Kopfschmerzen erfasst. Notiere unten, wie sie dich beeinträchtigt hat.",
+  "@entryNoHeadacheNote": {
+    "description": "[medical] Shown instead of severity when 'Headache?' is No."
+  },
+  "entryImpactTitle": "Auswirkung auf den Tag",
+  "@entryImpactTitle": {
+    "description": "Section heading: how much the attack affected the user's day."
+  },
+  "entryImpactQuestion": "Wie gut konntest du deine gewohnten Dinge erledigen?",
+  "@entryImpactQuestion": {
+    "description": "Hint under 'Impact on the day', above Normal / Reduced / Unable."
+  },
+  "entryAura": "Aura",
+  "@entryAura": {
+    "description": "[medical] Section heading: migraine aura (visual or other disturbance before or during the attack)."
+  },
+  "entryAuraDescription": "Aura-Beschreibung (optional)",
+  "@entryAuraDescription": {
+    "description": "[medical] Field label: describe the aura."
+  },
+  "entryAuraHint": "z. B. flackernde Lichter, Zickzack-Linien",
+  "@entryAuraHint": {
+    "description": "[medical] Example text in the aura description field."
+  },
+  "entrySymptoms": "Symptome",
+  "@entrySymptoms": {
+    "description": "[medical] Section heading for the symptom choices."
+  },
+  "entryTriggers": "Vermutete Auslöser",
+  "@entryTriggers": {
+    "description": "Section heading: what the user thinks may have set off the migraine."
+  },
+  "entryFoods": "Bemerkenswertes Essen",
+  "@entryFoods": {
+    "description": "Section heading: foods the user wants to note for this migraine."
+  },
+  "entryMedications": "Medikamente",
+  "@entryMedications": {
+    "description": "Section heading: medications taken for this migraine."
+  },
+  "entryRelief": "Ausprobierte Linderung",
+  "@entryRelief": {
+    "description": "Section heading: non-drug things tried for relief (dark room, cold pack...)."
+  },
+  "entrySleepHours": "Schlafstunden (vorherige Nacht)",
+  "@entrySleepHours": {
+    "description": "Field label: hours slept the night before."
+  },
+  "entryStressValue": "Stresslevel: {value} / 5",
+  "@entryStressValue": {
+    "description": "Stress on a 1-5 scale; {value} is a number or a dash when not set.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "3"
+      }
+    }
+  },
+  "entryNotes": "Notizen",
+  "@entryNotes": {
+    "description": "Field label for free notes."
+  },
+  "entryAddFood": "Essen hinzufügen",
+  "@entryAddFood": {
+    "description": "Button and dialog title: add a food to this entry."
+  },
+  "entryFoodHint": "z. B. Schokolade, Rotwein",
+  "@entryFoodHint": {
+    "description": "Example text in the add-food field."
+  },
+  "entryAddMedication": "Medikament hinzufügen",
+  "@entryAddMedication": {
+    "description": "Button and dialog title: add a medication taken."
+  },
+  "entryEditMedication": "Medikament bearbeiten",
+  "@entryEditMedication": {
+    "description": "Dialog title when changing a medication already on the entry."
+  },
+  "entryRemoveMedication": "Medikament entfernen",
+  "@entryRemoveMedication": {
+    "description": "Tooltip: take this medication off the entry."
+  },
+  "entryAddRelief": "Linderung hinzufügen",
+  "@entryAddRelief": {
+    "description": "Button and dialog title: add a relief method tried."
+  },
+  "entryEditRelief": "Linderung bearbeiten",
+  "@entryEditRelief": {
+    "description": "Dialog title when changing a relief method already on the entry."
+  },
+  "entryRemoveRelief": "Linderung entfernen",
+  "@entryRemoveRelief": {
+    "description": "Tooltip: take this relief method off the entry."
+  },
+  "entryEnrichmentPending": "Anreicherung ausstehend",
+  "@entryEnrichmentPending": {
+    "description": "Card title: weather and astronomy for the entry haven't been added yet."
+  },
+  "entryEnrichmentPendingBody": "Wetter und Astronomie werden bei Verbindung hinzugefügt.",
+  "@entryEnrichmentPendingBody": {
+    "description": "Card text under 'Enrichment pending'."
+  },
+  "entryEnrichment": "Anreicherung",
+  "@entryEnrichment": {
+    "description": "Card title: data added automatically to the entry (weather, moon, daylight...)."
+  },
+  "entryEnrichSeason": "Jahreszeit",
+  "@entryEnrichSeason": {
+    "description": "Row label in the enrichment card."
+  },
+  "entryEnrichTimeOfDay": "Tageszeit",
+  "@entryEnrichTimeOfDay": {
+    "description": "Row label in the enrichment card: morning, afternoon, evening or night."
+  },
+  "entryEnrichDaylight": "Tageslicht",
+  "@entryEnrichDaylight": {
+    "description": "Row label in the enrichment card: hours of daylight that day."
+  },
+  "entryEnrichMoon": "Mond",
+  "@entryEnrichMoon": {
+    "description": "Row label in the enrichment card: moon phase."
+  },
+  "entryEnrichTemp": "Temp.",
+  "@entryEnrichTemp": {
+    "description": "Row label in the enrichment card: air temperature (short)."
+  },
+  "entryEnrichHumidity": "Luftfeuchtigkeit",
+  "@entryEnrichHumidity": {
+    "description": "Row label in the enrichment card."
+  },
+  "entryEnrichPressure": "Druck",
+  "@entryEnrichPressure": {
+    "description": "Row label in the enrichment card: barometric pressure."
+  },
+  "entryEnrichPressureDelta": "Druck Δ 24h",
+  "@entryEnrichPressureDelta": {
+    "description": "Row label in the enrichment card: change in pressure over 24 hours. Keep 'Δ' and '24h'."
+  },
+  "entryEnrichAqi": "AQI",
+  "@entryEnrichAqi": {
+    "description": "Row label in the enrichment card: air quality index (use the local abbreviation)."
+  },
+  "entryWeatherOff": "Kein Wetter abgerufen, die Wetter-Erweiterung ist aus (Einstellungen).",
+  "@entryWeatherOff": {
+    "description": "Shown in the enrichment card when the user turned weather off in Settings."
+  },
+  "entryMedName": "Name",
+  "@entryMedName": {
+    "description": "Field label: the medication's name."
+  },
+  "entryDose": "Dosis (optional)",
+  "@entryDose": {
+    "description": "Field label: the medication dose."
+  },
+  "entryDoseHint": "z. B. 400 mg",
+  "@entryDoseHint": {
+    "description": "Example text in the dose field."
+  },
+  "entryTimeTaken": "Einnahmezeit",
+  "@entryTimeTaken": {
+    "description": "When the medication was taken."
+  },
+  "entryDayTaken": "Einnahmetag",
+  "@entryDayTaken": {
+    "description": "Title of the date picker for the day a dose was taken (multi-day entries)."
+  },
+  "entryDoseDayTime": "{day}, {time}",
+  "@entryDoseDayTime": {
+    "description": "A dose's day and time on a multi-day entry: 'Mon 9 Nov, 14:05'.",
+    "placeholders": {
+      "day": {
+        "type": "String",
+        "example": "Mon 9 Nov"
+      },
+      "time": {
+        "type": "String",
+        "example": "14:05"
+      }
+    }
+  },
+  "entryClearTime": "Zeit löschen",
+  "@entryClearTime": {
+    "description": "Tooltip: remove the time a medication was taken."
+  },
+  "entryHelped": "Geholfen?",
+  "@entryHelped": {
+    "description": "Question above Yes / No / Unknown: did the medication or relief help?"
+  },
+  "entryReliefQuestion": "Was hast du ausprobiert?",
+  "@entryReliefQuestion": {
+    "description": "Field label in the relief dialog."
+  },
+  "entryReliefHint": "z. B. dunkler Raum, Kühlpack",
+  "@entryReliefHint": {
+    "description": "Example text in the relief field."
+  },
+  "quickLogTodayHasEntry": "Für heute gibt es bereits einen Migräneeintrag, daher wurde er nicht als beschwerdefrei markiert.",
+  "@quickLogTodayHasEntry": {
+    "description": "Snack bar: the 'No migraine today' notification button was tapped, but today already has a migraine entry."
+  },
+  "quickLogCheckinRemoved": "Der „Keine Migräne“-Check-in für heute wurde entfernt.",
+  "@quickLogCheckinRemoved": {
+    "description": "Snack bar after starting a migraine on a day already checked in as migraine-free."
+  },
+  "quickLogOfferOngoingTitle": "Während sie dauert eine Benachrichtigung anzeigen?",
+  "@quickLogOfferOngoingTitle": {
+    "description": "Dialog title, asked once on the first migraine started (Android): show a notification while the migraine is in progress?"
+  },
+  "quickLogOfferOngoingBody": "Eine Benachrichtigung „Migräne läuft“ mit laufender Uhr und einem „Beenden“-Button, damit du den Timer nicht vergisst. Sie wird nicht auf dem Sperrbildschirm angezeigt. Du kannst dies in den Einstellungen ändern.",
+  "@quickLogOfferOngoingBody": {
+    "description": "Dialog body for the 'Migraine in progress' notification offer. 'End' is the notification's button."
+  },
+  "quickLogNotNow": "Nicht jetzt",
+  "@quickLogNotNow": {
+    "description": "Dialog button: decline for now."
+  },
+  "quickLogShowIt": "Anzeigen",
+  "@quickLogShowIt": {
+    "description": "Dialog button: yes, show the notification."
+  },
+  "quickLogNotificationsOff": "Benachrichtigungen sind für Megrim in den Geräteeinstellungen aus.",
+  "@quickLogNotificationsOff": {
+    "description": "Snack bar: the notification can't be shown because the phone blocks Megrim's notifications."
+  },
+  "quickLogDiscardTitle": "Diese Migräne verwerfen?",
+  "@quickLogDiscardTitle": {
+    "description": "Confirmation title before deleting the migraine that is in progress."
+  },
+  "quickLogDiscardBody": "Dadurch wird der Timer gestoppt und der laufende Eintrag dauerhaft gelöscht.",
+  "@quickLogDiscardBody": {
+    "description": "Confirmation body before deleting the migraine that is in progress."
+  },
+  "quickLogKeep": "Behalten",
+  "@quickLogKeep": {
+    "description": "Dialog button: don't discard, keep the migraine."
+  },
+  "quickLogDiscard": "Verwerfen",
+  "@quickLogDiscard": {
+    "description": "Button: delete the migraine in progress (started by mistake)."
+  },
+  "quickLogDiscarded": "Migräne verworfen",
+  "@quickLogDiscarded": {
+    "description": "Snack bar after the migraine in progress was discarded (with Undo)."
+  },
+  "quickLogLastBackup": "Letztes Backup: {age}",
+  "@quickLogLastBackup": {
+    "description": "Line at the bottom of the Log screen; {age} is 'Today', 'Yesterday', '12 days ago' or 'Never'.",
+    "placeholders": {
+      "age": {
+        "type": "String",
+        "example": "12 days ago"
+      }
+    }
+  },
+  "quickLogStart": "MIGRÄNE EINTRAGEN",
+  "@quickLogStart": {
+    "description": "The main button on the Log screen: start timing a migraine now. Upper case in English; use what reads as a strong button label."
+  },
+  "quickLogStartHint": "Tippen zum Starten. Details kannst du jederzeit hinzufügen.",
+  "@quickLogStartHint": {
+    "description": "Hint under the LOG MIGRAINE button."
+  },
+  "quickLogNoMigraineToday": "HEUTE KEINE MIGRÄNE",
+  "@quickLogNoMigraineToday": {
+    "description": "Button: record today as a migraine-free day (a check-in). Upper case in English, like LOG MIGRAINE."
+  },
+  "quickLogCheckedIn": "Heute keine Migräne",
+  "@quickLogCheckedIn": {
+    "description": "Shown once today is checked in as migraine-free."
+  },
+  "quickLogAddDetails": "Details hinzufügen",
+  "@quickLogAddDetails": {
+    "description": "Button: add optional details (sleep, stress...) to today's check-in."
+  },
+  "quickLogInProgress": "Migräne läuft",
+  "@quickLogInProgress": {
+    "description": "Heading while a migraine is being timed."
+  },
+  "quickLogEnded": "MIGRÄNE BEENDET",
+  "@quickLogEnded": {
+    "description": "Button: the migraine is over; stop the timer. Upper case in English."
+  },
+  "quickLogMoreDetails": "Weitere Details hinzufügen",
+  "@quickLogMoreDetails": {
+    "description": "Button: open the full entry to add details."
+  },
+  "checkinRemoved": "Check-in entfernt",
+  "@checkinRemoved": {
+    "description": "Snack bar after a day's 'No migraine' check-in was removed (with Undo)."
+  },
+  "checkinTitle": "Keine Migräne",
+  "@checkinTitle": {
+    "description": "Screen title: a day checked in as migraine-free, with optional details."
+  },
+  "checkinRemove": "Check-in entfernen",
+  "@checkinRemove": {
+    "description": "Tooltip: remove this day's 'No migraine' check-in."
+  },
+  "checkinIntro": "Alles optional. Dass du an beschwerdefreien Tagen dasselbe erfasst wie an Migränetagen, ermöglicht der Analyse, beides zu vergleichen.",
+  "@checkinIntro": {
+    "description": "Hint at the top of the check-in screen. A 'clear day' is a migraine-free day."
+  },
+  "checkinTriggers": "Mögliche Auslöser",
+  "@checkinTriggers": {
+    "description": "Section heading on a migraine-free day: things that might have triggered a migraine, noted for comparison."
+  },
+  "historyTitle": "Verlauf",
+  "@historyTitle": {
+    "description": "Screen title and bottom tab: the list and calendar of past migraines."
+  },
+  "historyAddPast": "Vergangenen Eintrag hinzufügen",
+  "@historyAddPast": {
+    "description": "Button: log a migraine that happened earlier."
+  },
+  "historyAddPastTooltip": "Eine früher stattgefundene Migräne erfassen",
+  "@historyAddPastTooltip": {
+    "description": "Tooltip on the 'Add past entry' button."
+  },
+  "historyViewList": "Liste",
+  "@historyViewList": {
+    "description": "Toggle between the list and calendar views: the list."
+  },
+  "historyViewCalendar": "Kalender",
+  "@historyViewCalendar": {
+    "description": "Toggle between the list and calendar views: the calendar."
+  },
+  "historyEmpty": "Noch keine Migräne erfasst.",
+  "@historyEmpty": {
+    "description": "Shown in the list view when nothing has been logged."
+  },
+  "historySeverity": "Schwere {value}/10",
+  "@historySeverity": {
+    "description": "[medical] A logged migraine's pain severity, in a list row.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "historySpanDays": "{count, plural, =1{1 Tag} other{{count} Tage}}",
+  "@historySpanDays": {
+    "description": "How many calendar days a migraine covered, in a list row (only shown for 2 or more).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "historyOngoing": "andauernd",
+  "@historyOngoing": {
+    "description": "A migraine with no end time yet, in a list row. Lowercase in English."
+  },
+  "historyEntriesOn": "{count, plural, =1{1 Eintrag am {date}} other{{count} Einträge am {date}}}",
+  "@historyEntriesOn": {
+    "description": "Heading of the sheet listing a day's entries when it has several.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String",
+        "example": "Mon, 9 Nov 2026"
+      }
+    }
+  },
+  "historyNoMigraineThisDay": "An diesem Tag keine Migräne",
+  "@historyNoMigraineThisDay": {
+    "description": "Choice for an empty calendar day: record it as migraine-free (a check-in)."
+  },
+  "historyCheckinDetails": "Keine Migräne: Details",
+  "@historyCheckinDetails": {
+    "description": "Choice for a checked-in day: open its optional details."
+  },
+  "historyCheckinDetailsHint": "Schlaf, Stress, Auslöser und Essen",
+  "@historyCheckinDetailsHint": {
+    "description": "Under 'No migraine: details': what can be added."
+  },
+  "historyRemoveCheckin": "Check-in entfernen",
+  "@historyRemoveCheckin": {
+    "description": "Choice for a checked-in day: remove the 'No migraine' check-in."
+  },
+  "historyLogOnDay": "An diesem Tag eine Migräne erfassen",
+  "@historyLogOnDay": {
+    "description": "Choice for a calendar day: add a migraine entry on that day."
+  },
+  "historyMarkedClear": "Als Tag ohne Migräne markiert",
+  "@historyMarkedClear": {
+    "description": "Snack bar after a calendar day was checked in as migraine-free."
+  },
+  "historyCalendarEmpty": "Noch keine Migräne erfasst, tippe unten auf ein Datum, um einen hinzuzufügen.",
+  "@historyCalendarEmpty": {
+    "description": "Shown above the calendar when nothing has been logged."
+  },
+  "historyCheckinMark": "keine Migräne",
+  "@historyCheckinMark": {
+    "description": "Screen-reader label for the tick on a calendar day checked in as migraine-free. Lowercase in English."
+  },
+  "medsTitle": "Medikamente",
+  "@medsTitle": {
+    "description": "Screen title: the user's medications (acute and preventive)."
+  },
+  "medsRename": "Umbenennen",
+  "@medsRename": {
+    "description": "Dialog title and tooltip: rename a medication or a choice in a list."
+  },
+  "medsAcuteTitle": "Für eine Attacke eingenommen",
+  "@medsAcuteTitle": {
+    "description": "Section heading: acute medications, taken to treat a migraine attack."
+  },
+  "medsAcuteHint": "Aus deinen Einträgen übernommen. Die Klasse zählt die Medikamentstage in der Analyse.",
+  "@medsAcuteHint": {
+    "description": "[medical] Under 'Taken for an attack': the list is built from what was typed in entries; the class (triptan, etc.) is used to count medication days."
+  },
+  "medsPreventiveTitle": "Vorbeugend",
+  "@medsPreventiveTitle": {
+    "description": "[medical] Section heading: preventive medications, taken daily to reduce attacks."
+  },
+  "medsPreventiveHint": "Täglich zur Vorbeugung eingenommen. Beginn und Ende werden im Migränetage-Diagramm markiert.",
+  "@medsPreventiveHint": {
+    "description": "[medical] Under 'Preventive'."
+  },
+  "medsAddPreventive": "Vorbeugendes Medikament hinzufügen",
+  "@medsAddPreventive": {
+    "description": "Button and dialog title: add a preventive medication."
+  },
+  "medsEditPreventive": "Vorbeugendes Medikament bearbeiten",
+  "@medsEditPreventive": {
+    "description": "Dialog title: change a preventive medication."
+  },
+  "medsPreventiveDoseHint": "z. B. 40 mg zweimal täglich",
+  "@medsPreventiveDoseHint": {
+    "description": "Example text in a preventive medication's dose field."
+  },
+  "medsStarted": "Begonnen",
+  "@medsStarted": {
+    "description": "The day a preventive medication was started."
+  },
+  "medsStillTaking": "Wird immer noch eingenommen",
+  "@medsStillTaking": {
+    "description": "Switch: the preventive medication hasn't been stopped."
+  },
+  "medsStopped": "Beendet",
+  "@medsStopped": {
+    "description": "The day a preventive medication was stopped."
+  },
+  "medsNotes": "Notizen (optional)",
+  "@medsNotes": {
+    "description": "Field label: notes on a preventive medication."
+  },
+  "medsNotesHint": "z. B. warum es beendet wurde",
+  "@medsNotesHint": {
+    "description": "Example text in a preventive medication's notes field."
+  },
+  "medsSince": "Seit {date}",
+  "@medsSince": {
+    "description": "When a preventive medication was started and is still taken: 'Since 1 Mar 2026'.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "1 Mar 2026"
+      }
+    }
+  },
+  "medsSpan": "{start} – {end}",
+  "@medsSpan": {
+    "description": "When a preventive medication was taken: '1 Mar 2026 – 30 Sep 2026'.",
+    "placeholders": {
+      "start": {
+        "type": "String",
+        "example": "1 Mar 2026"
+      },
+      "end": {
+        "type": "String",
+        "example": "30 Sep 2026"
+      }
+    }
+  },
+  "vocabAddTitle": "{item} hinzufügen",
+  "@vocabAddTitle": {
+    "description": "Dialog title and tooltip for adding a choice to a list; {item} is the list's name as it reads mid-sentence, e.g. 'Add suspected triggers'.",
+    "placeholders": {
+      "item": {
+        "type": "String",
+        "example": "suspected triggers"
+      }
+    }
+  },
+  "vocabManageTitle": "{item} verwalten",
+  "@vocabManageTitle": {
+    "description": "Screen title for editing a list of choices; {item} is the list's name as it reads mid-sentence, e.g. 'Manage suspected triggers'.",
+    "placeholders": {
+      "item": {
+        "type": "String",
+        "example": "suspected triggers"
+      }
+    }
+  },
+  "medClassPickerTitle": "Was für ein Medikament ist {name}?",
+  "@medClassPickerTitle": {
+    "description": "Title of the medication class picker; {name} is the medication's name as the user typed it.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Ibuprofen"
+      }
+    }
+  },
+  "medClassPickerHint": "Wird verwendet, um Medikamentstage nach Klasse zu zählen. Optional, du kannst es später unter Einstellungen › Medikamente ändern.",
+  "@medClassPickerHint": {
+    "description": "[medical] Hint under the medication class picker's title. Keep the '›' between Settings and Medications."
+  },
+  "locationSearchLabel": "Städtesuche, oder GPS / Plus Code",
+  "@locationSearchLabel": {
+    "description": "Label of the place search field. 'GPS' means coordinates typed in; 'Plus Code' is Google's open location code format (keep the name)."
+  },
+  "locationSearchHelper": "z. B. Boulder · 40.01, -105.27 · 849VCWC8+R9",
+  "@locationSearchHelper": {
+    "description": "Examples under the place search field: a city, coordinates, a Plus Code. Use a city name familiar in your language; keep the coordinates and code as they are."
+  },
+  "locationUse": "{place} verwenden",
+  "@locationUse": {
+    "description": "Choice to use what was typed (coordinates or a Plus Code) as the location.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "40.01, -105.27"
+      }
+    }
+  },
+  "locationEnteredDirectly": "Direkt eingegeben, nichts online gesendet",
+  "@locationEnteredDirectly": {
+    "description": "Under 'Use ...': the typed location is used as is, with no online lookup."
+  },
+  "locationRecent": "Zuletzt",
+  "@locationRecent": {
+    "description": "Heading above recently used locations."
+  },
+  "locationSelected": "Ausgewählt: {place} ({coordinates})",
+  "@locationSelected": {
+    "description": "The chosen location with its coordinates.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Boulder, Colorado, United States"
+      },
+      "coordinates": {
+        "type": "String",
+        "example": "40.01, -105.27"
+      }
+    }
+  },
+  "entryEnrichNoLocation": "Kein Standort festgelegt, lege einen Wohnort fest, um die Anreicherung zu aktivieren.",
+  "@entryEnrichNoLocation": {
+    "description": "Entry detail, under Weather: why this entry has no weather, moon or daylight data. 'Enrichment' = the weather, moon and daylight details Megrim adds to an entry."
+  },
+  "formatDateTime": "{date}, {time}",
+  "@formatDateTime": {
+    "description": "A date followed by a time, e.g. 'Mon, Nov 9, 2026, 2:05 PM'. Both come already formatted for the language; only change the joiner if your language writes it differently.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Mon, Nov 9, 2026"
+      },
+      "time": {
+        "type": "String",
+        "example": "2:05 PM"
+      }
+    }
+  },
+  "reportAppVersion": "Megrim {version}",
+  "@reportAppVersion": {
+    "description": "Report subtitle: the app name and version.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.9"
+      }
+    }
+  },
+  "reportColumnMonth": "Monat",
+  "@reportColumnMonth": {
+    "description": "Report table column header."
   }
 }
